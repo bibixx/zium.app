@@ -94,7 +94,7 @@ export const DriverVideoWindow = forwardRef<
           <select value={gridWindow.streamIdentifier} onChange={onChange}>
             {availableDrivers.map((driver) => (
               <option value={driver.id} key={driver.id}>
-                {driver.firstName} {driver.lastName}
+                {driver.lastName} {driver.firstName}
               </option>
             ))}
           </select>

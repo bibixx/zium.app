@@ -174,3 +174,7 @@ body,
 video {
   object-fit: cover;
 }
+
+.vjs-fullscreen video {
+  object-fit: contain;
+}

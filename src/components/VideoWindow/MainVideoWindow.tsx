@@ -113,6 +113,6 @@ const ADDITIONAL_OPTIONS: VideoJsPlayerOptions = {
     progressControl: true,
     volumePanel: true,
     audioTrackButton: true,
-    fullscreenToggle: false,
+    fullscreenToggle: true,
   },
 };
