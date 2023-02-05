@@ -153,3 +153,24 @@ body,
 .react-grid-item:hover::after {
   box-shadow: inset -8px 0 0 0 white, inset 0 -8px 0 0 white;
 }
+
+.races {
+  padding: 8px;
+}
+
+.races summary {
+  cursor: pointer;
+}
+
+.races ul {
+  margin: 0;
+}
+
+.races h2 {
+  margin: 0;
+  display: inline-block;
+}
+
+video {
+  object-fit: cover;
+}

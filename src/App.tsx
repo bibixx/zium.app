@@ -10,6 +10,8 @@ import { NoCompanion } from "./views/NoCompanion/NoCompanion";
 import { assertNever } from "./utils/assertNever";
 import { useLoggedInState } from "./hooks/useLoggedInState";
 import { LogIn } from "./views/LogIn/LogIn";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { Races } from "./views/Races/Races";
 
 const WithCompanion = ({ children }: React.PropsWithChildren<unknown>) => {
   const companionState = useHasCompanion();
@@ -51,7 +53,12 @@ export default function App() {
   return (
     <WithCompanion>
       <WithLoggedIn>
-        <ViewerWithState />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Races />} />
+            <Route path="/race/:raceId" element={<ViewerWithState />} />
+          </Routes>
+        </BrowserRouter>
       </WithLoggedIn>
     </WithCompanion>
   );

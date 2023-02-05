@@ -11,11 +11,12 @@ import { VideoJsPlayer } from "video.js";
 import { DriverVideoWindow } from "../../components/VideoWindow/DriverVideoWindow";
 import { assertNever } from "../../utils/assertNever";
 import { DataChannelVideoWindow } from "../../components/VideoWindow/DataChannelVideoWindow";
-import { StreamsStateData } from "../../hooks/useRaceDetails/useRaceDetails.types";
+import { StreamsStateData } from "../../hooks/useVideoRaceDetails/useVideoRaceDetails.types";
 import { combineWindowsWithStreams, getAvailableDrivers } from "./Viewer.utils";
 import { useVideoAudio, useSyncVideos } from "./Viewer.hooks";
 import { DriverTrackerVideoWindow } from "../../components/VideoWindow/DriverTrackerVideoWindow";
-import { useRaceDetails } from "../../hooks/useRaceDetails/useRaceDetails";
+import { useVideoRaceDetails } from "../../hooks/useVideoRaceDetails/useVideoRaceDetails";
+import { useParams } from "react-router-dom";
 
 const COLUMNS = 100;
 const ROWS = 100;
@@ -195,9 +196,8 @@ export const Viewer = ({ streams }: ViewerProps) => {
 };
 
 export const ViewerWithState = () => {
-  const state = useRaceDetails("1000005659");
-
-  // const state = useRaceDetails("1000005104");
+  const { raceId } = useParams();
+  const state = useVideoRaceDetails(raceId as string);
 
   if (state.state === "error") {
     return <div>Error occurred</div>;

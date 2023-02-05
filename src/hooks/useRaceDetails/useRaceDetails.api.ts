@@ -1,13 +1,29 @@
 import { fetchJSON } from "../../utils/api";
-import { StreamDataDTO } from "./useRaceDetails.types";
+import { RaceDetailsData } from "./useRacesDetails.types";
 
-export const fetchRaceStreams = async (
+export const fetchRaceDetailsId = async (
   raceId: string,
-  signal: AbortSignal
-): Promise<StreamDataDTO[]> => {
-  const url = `/3.0/R/ENG/BIG_SCREEN_HLS/ALL/CONTENT/VIDEO/${raceId}/F1_TV_Pro_Annual/14`;
+  signal: AbortSignal,
+): Promise<RaceDetailsData[]> => {
+  const url = `/2.0/R/ENG/WEB_DASH/ALL/PAGE/${raceId}/F1_TV_Pro_Annual/14`;
   const body = await fetchJSON(url, undefined, signal);
 
-  const streams = body.resultObj.containers[0].metadata.additionalStreams;
-  return streams;
+  const replays = body.resultObj.containers.find(
+    (c) => c.metadata.label === "Replays",
+  );
+
+  if (replays === undefined) {
+    return [];
+  }
+
+  const raceEvents = replays.retrieveItems.resultObj.containers
+    .filter((r) =>
+      ["RACE", "QUALIFYING", "PRACTICE"].includes(r.metadata.genres[0]),
+    )
+    .map((r) => ({
+      title: r.metadata.title,
+      id: r.metadata.contentId,
+    }));
+
+  return raceEvents;
 };

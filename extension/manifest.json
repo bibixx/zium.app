@@ -24,7 +24,7 @@
       "js": ["content-script-f1.js"]
     },
     {
-      "matches": ["http://localhost/", "https://www.zium.app/"],
+      "matches": ["http://localhost/*", "https://www.zium.app/*"],
       "js": ["content-script-zium.js"],
       "run_at": "document_start"
     }

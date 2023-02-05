@@ -2,7 +2,7 @@ import {
   DriverStreamInfo,
   StreamDataDTO,
   StreamInfo,
-} from "./useRaceDetails.types";
+} from "./useVideoRaceDetails.types";
 
 const getStreamPrettyName = (name: string) => {
   switch (name) {

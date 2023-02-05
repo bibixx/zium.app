@@ -1,4 +1,4 @@
-import { StreamsStateData } from "../../hooks/useRaceDetails/useRaceDetails.types";
+import { StreamsStateData } from "../../hooks/useVideoRaceDetails/useVideoRaceDetails.types";
 import { GridWindow } from "../../types/GridWindow";
 import { assertNever } from "../../utils/assertNever";
 
