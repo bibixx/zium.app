@@ -9,11 +9,11 @@ export const fetchRacesList = async (
   const body = await fetchJSON(url, undefined, signal);
 
   const containers = body.resultObj.containers
-    .flatMap((c) => c.retrieveItems.resultObj.containers)
-    .filter((c) => c?.metadata?.genres?.includes("RACE"));
+    .flatMap((c: any) => c.retrieveItems.resultObj.containers)
+    .filter((c: any) => c?.metadata?.genres?.includes("RACE"));
 
   const races = containers
-    .map((racePage) => {
+    .map((racePage: any) => {
       const racePageId = racePage.metadata.emfAttributes.PageID;
       const title = racePage.metadata.shortDescription;
 
@@ -23,7 +23,7 @@ export const fetchRacesList = async (
 
       return { id: racePageId, title };
     })
-    .filter((r) => r != null);
+    .filter((r: any) => r != null);
 
   return races;
 };

@@ -9,7 +9,7 @@ export const fetchRaceDetailsId = async (
   const body = await fetchJSON(url, undefined, signal);
 
   const replays = body.resultObj.containers.find(
-    (c) => c.metadata.label === "Replays",
+    (c: any) => c.metadata.label === "Replays",
   );
 
   if (replays === undefined) {
@@ -17,10 +17,10 @@ export const fetchRaceDetailsId = async (
   }
 
   const raceEvents = replays.retrieveItems.resultObj.containers
-    .filter((r) =>
+    .filter((r: any) =>
       ["RACE", "QUALIFYING", "PRACTICE"].includes(r.metadata.genres[0]),
     )
-    .map((r) => ({
+    .map((r: any) => ({
       title: r.metadata.title,
       id: r.metadata.contentId,
     }));
