@@ -15,7 +15,7 @@ interface DriverTrackerVideoWindowProps extends VideoWindowProps {
 export const DriverTrackerVideoWindow = forwardRef<
   VideoJsPlayer | null,
   DriverTrackerVideoWindowProps
->(({ gridWindow, executeOnAll }, forwardedRef) => {
+>(({ gridWindow, isPaused }, forwardedRef) => {
   const playerRef = useRef<VideoJsPlayer | null>(null);
   const streamVideoState = useStreamVideo(gridWindow.url);
 
@@ -25,7 +25,7 @@ export const DriverTrackerVideoWindow = forwardRef<
   };
 
   const onReady = (player: VideoJsPlayer) => {
-    onVideoWindowReadyBase(player, executeOnAll, gridWindow.id);
+    onVideoWindowReadyBase(player);
   };
 
   if (streamVideoState.state !== "done") {
@@ -39,6 +39,7 @@ export const DriverTrackerVideoWindow = forwardRef<
         options={ADDITIONAL_OPTIONS}
         ref={ref}
         onReady={onReady}
+        isPaused={isPaused}
       />
     </VideoWindowWrapper>
   );
@@ -46,5 +47,4 @@ export const DriverTrackerVideoWindow = forwardRef<
 
 const ADDITIONAL_OPTIONS: VideoJsPlayerOptions = {
   controls: false,
-  muted: true,
 };

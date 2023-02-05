@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useReducer, useRef } from "react";
+import { useCallback, useMemo, useReducer, useRef, useState } from "react";
 import GridLayout from "react-grid-layout";
 import { useWindowSize } from "../../hooks/useWindowSize";
 import { GridWindow } from "../../types/GridWindow";
@@ -13,7 +13,7 @@ import { assertNever } from "../../utils/assertNever";
 import { DataChannelVideoWindow } from "../../components/VideoWindow/DataChannelVideoWindow";
 import { StreamsStateData } from "../../hooks/useRaceDetails/useRaceDetails.types";
 import { combineWindowsWithStreams, getAvailableDrivers } from "./Viewer.utils";
-import { useSyncVideos } from "./Viewer.hooks";
+import { useVideoAudio, useSyncVideos } from "./Viewer.hooks";
 import { DriverTrackerVideoWindow } from "../../components/VideoWindow/DriverTrackerVideoWindow";
 import { useRaceDetails } from "../../hooks/useRaceDetails/useRaceDetails";
 
@@ -26,11 +26,17 @@ interface ViewerProps {
 
 export const Viewer = ({ streams }: ViewerProps) => {
   const { width, height } = useWindowSize();
+  const [areVideosPaused, setAreVideosPaused] = useState(true);
 
   const [{ layout, windows }, dispatch] = useReducer(
     windowGridReducer,
     getInitialState(),
   );
+
+  const { audioFocusedWindow, onWindowAudioFocus, setVolume, volume } =
+    useVideoAudio({
+      windows,
+    });
 
   const windowsWithUrls = useMemo(
     () => combineWindowsWithStreams(windows, streams),
@@ -52,20 +58,20 @@ export const Viewer = ({ streams }: ViewerProps) => {
     });
   };
 
-  const executeOnAll = (
-    cb: (player: VideoJsPlayer) => void,
-    callerId: string,
-  ) => {
-    windowsWithUrls.forEach((w) => {
-      const player = windowVideojsRefMapRef.current[w.id];
+  const executeOnAll = useCallback(
+    (cb: (player: VideoJsPlayer) => void, callerId: string) => {
+      windowsWithUrls.forEach((w) => {
+        const player = windowVideojsRefMapRef.current[w.id];
 
-      if (w.id === callerId || player == null) {
-        return;
-      }
+        if (w.id === callerId || player == null) {
+          return;
+        }
 
-      cb(player);
-    });
-  };
+        cb(player);
+      });
+    },
+    [windowsWithUrls],
+  );
 
   const availableDrivers = useMemo(
     () => getAvailableDrivers(streams),
@@ -84,6 +90,14 @@ export const Viewer = ({ streams }: ViewerProps) => {
             gridWindow={gridWindow}
             ref={setRef}
             executeOnAll={executeOnAll}
+            onPlayingChange={(isPaused: boolean) =>
+              setAreVideosPaused(isPaused)
+            }
+            isPaused={areVideosPaused}
+            isAudioFocused={audioFocusedWindow === gridWindow.id}
+            onWindowAudioFocus={() => onWindowAudioFocus(gridWindow.id)}
+            volume={volume}
+            setVolume={setVolume}
           />
         );
       }
@@ -109,9 +123,12 @@ export const Viewer = ({ streams }: ViewerProps) => {
           <DriverVideoWindow
             gridWindow={gridWindow}
             ref={setRef}
-            executeOnAll={executeOnAll}
             availableDrivers={availableDrivers}
             onDriverChange={onDriverChange}
+            isPaused={areVideosPaused}
+            isAudioFocused={audioFocusedWindow === gridWindow.id}
+            onWindowAudioFocus={() => onWindowAudioFocus(gridWindow.id)}
+            volume={volume}
           />
         );
       }
@@ -121,7 +138,7 @@ export const Viewer = ({ streams }: ViewerProps) => {
           <DriverTrackerVideoWindow
             gridWindow={gridWindow}
             ref={setRef}
-            executeOnAll={executeOnAll}
+            isPaused={areVideosPaused}
           />
         );
       }
@@ -131,14 +148,22 @@ export const Viewer = ({ streams }: ViewerProps) => {
           <DataChannelVideoWindow
             gridWindow={gridWindow}
             ref={setRef}
-            executeOnAll={executeOnAll}
+            isPaused={areVideosPaused}
           />
         );
       }
 
       return assertNever(gridWindow);
     },
-    [executeOnAll],
+    [
+      executeOnAll,
+      areVideosPaused,
+      audioFocusedWindow,
+      volume,
+      setVolume,
+      onWindowAudioFocus,
+      availableDrivers,
+    ],
   );
 
   useSyncVideos({ windows, windowVideojsRefMapRef });
@@ -151,8 +176,8 @@ export const Viewer = ({ streams }: ViewerProps) => {
         rowHeight={height / ROWS}
         maxRows={ROWS}
         width={width}
-        // compactType={null}
-        // preventCollision
+        compactType={null}
+        preventCollision
         margin={[0, 0]}
         resizeHandles={["s", "e", "se"]}
         onLayoutChange={onLayoutChange}

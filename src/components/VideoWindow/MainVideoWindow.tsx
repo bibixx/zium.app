@@ -1,6 +1,5 @@
 import { forwardRef, useRef } from "react";
 import { VideoJsPlayer, VideoJsPlayerOptions } from "video.js";
-import { QualityLevel } from "videojs-contrib-quality-levels";
 import { useStreamVideo } from "../../hooks/useStreamVideo/useStreamVideo";
 import { MainGridWindow } from "../../types/GridWindow";
 import { VideoWindowProps } from "../../types/VideoWindowBaseProps";
@@ -11,85 +10,109 @@ import { VideoJS } from "../VideoJS";
 import { VideoWindowWrapper } from "./VideoWindowWrapper";
 import { attachDisableTextTracks } from "../../utils/attachDisableTextTracks";
 
+const START_AT = 12 * 60;
+
 interface MainVideoWindowProps extends VideoWindowProps {
   gridWindow: MainGridWindow;
+  onPlayingChange: (isPaused: boolean) => void;
+  onWindowAudioFocus: () => void;
+  isAudioFocused: boolean;
+  volume: number;
+  setVolume: (newVolume: number) => void;
   executeOnAll: (cb: (player: VideoJsPlayer) => void, callerId: string) => void;
 }
 
 export const MainVideoWindow = forwardRef<
   VideoJsPlayer | null,
   MainVideoWindowProps
->(({ gridWindow, executeOnAll }, forwardedRef) => {
-  const playerRef = useRef<VideoJsPlayer | null>(null);
-  const streamVideoState = useStreamVideo(gridWindow.url);
+>(
+  (
+    {
+      gridWindow,
+      executeOnAll,
+      onPlayingChange,
+      isPaused,
+      isAudioFocused,
+      onWindowAudioFocus,
+      volume,
+      setVolume,
+    },
+    forwardedRef,
+  ) => {
+    const playerRef = useRef<VideoJsPlayer | null>(null);
+    const streamVideoState = useStreamVideo(gridWindow.url);
 
-  const ref = (r: VideoJsPlayer | null) => {
-    setRef(forwardedRef, r);
-    playerRef.current = r;
-  };
+    const ref = (r: VideoJsPlayer | null) => {
+      setRef(forwardedRef, r);
+      playerRef.current = r;
+    };
 
-  const onReady = (player: VideoJsPlayer) => {
-    const callerId = gridWindow.id;
-    onVideoWindowReadyBase(player, executeOnAll, gridWindow.id);
+    const onReady = (player: VideoJsPlayer) => {
+      const callerId = gridWindow.id;
+      onVideoWindowReadyBase(player);
 
-    player.on("seeking", () => {
-      const currentTime = player.currentTime();
-      executeOnAll((p) => p.currentTime(currentTime), callerId);
-    });
+      player.currentTime(START_AT);
+      player.play();
 
-    player.on("pause", () => {
-      executeOnAll((p) => p.pause(), callerId);
-    });
+      player.on("seeking", () => {
+        const currentTime = player.currentTime();
+        executeOnAll((p) => p.currentTime(currentTime), callerId);
+      });
 
-    player.on("play", () => {
-      executeOnAll((p) => p.play(), callerId);
-    });
+      player.on("pause", () => {
+        onPlayingChange(true);
+      });
 
-    attachUseBestQuality(player);
-    attachDisableTextTracks(player);
+      player.on("play", () => {
+        onPlayingChange(false);
+      });
 
-    // player.volume(0);
-  };
+      player.on("volumechange", () => {
+        if (player.volume() === 0) {
+          return;
+        }
 
-  const onFocusAudio = () => {
-    playerRef.current?.muted(false);
+        setVolume(player.volume());
+        onWindowAudioFocus();
+      });
 
-    executeOnAll((player) => {
-      player.muted(true);
-    }, gridWindow.id);
-  };
+      attachUseBestQuality(player);
+      attachDisableTextTracks(player);
+    };
 
-  if (streamVideoState.state !== "done") {
-    return null;
-  }
+    if (streamVideoState.state !== "done") {
+      return null;
+    }
 
-  return (
-    <VideoWindowWrapper>
-      <VideoJS
-        url={streamVideoState.data}
-        options={ADDITIONAL_OPTIONS}
-        ref={ref}
-        onReady={onReady}
-      />
+    return (
+      <VideoWindowWrapper>
+        <VideoJS
+          url={streamVideoState.data}
+          options={ADDITIONAL_OPTIONS}
+          ref={ref}
+          onReady={onReady}
+          isPaused={isPaused}
+          volume={isAudioFocused ? volume : 0}
+        />
 
-      <div
-        className="video-window__available-drivers-container"
-        onMouseDown={(e) => e.stopPropagation()}
-      >
-        <button onClick={onFocusAudio}>Focus audio</button>
-      </div>
-    </VideoWindowWrapper>
-  );
-});
+        <div
+          className="video-window__available-drivers-container"
+          onMouseDown={(e) => e.stopPropagation()}
+        >
+          <button onClick={onWindowAudioFocus}>Focus audio</button>
+        </div>
+      </VideoWindowWrapper>
+    );
+  },
+);
 
 const ADDITIONAL_OPTIONS: VideoJsPlayerOptions = {
-  muted: true,
   controlBar: {
     playToggle: true,
     remainingTimeDisplay: true,
     progressControl: true,
     volumePanel: true,
     audioTrackButton: true,
-    fullscreenToggle: true,
+    fullscreenToggle: false,
   },
 };

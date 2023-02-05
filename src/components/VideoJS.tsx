@@ -8,11 +8,17 @@ interface VideoJSProps {
   url: string;
   options: VideoJsPlayerOptions;
   onReady: (player: VideoJsPlayer) => void;
+  isPaused: boolean;
+  volume?: number;
 }
 
 export const VideoJS = forwardRef<VideoJsPlayer | null, VideoJSProps>(
-  ({ url, options: overwrittenOptions, onReady }, ref) => {
+  (
+    { url, options: overwrittenOptions, onReady, isPaused, volume = 0 },
+    ref,
+  ) => {
     const placeholderRef = useRef<HTMLDivElement>(null);
+    const playerRef = useRef<VideoJsPlayer | null>(null);
 
     useEffect(() => {
       const placeholderEl = placeholderRef.current;
@@ -30,7 +36,7 @@ export const VideoJS = forwardRef<VideoJsPlayer | null, VideoJSProps>(
             type: "application/x-mpegURL",
           },
         ],
-        autoplay: true,
+        autoplay: !isPaused,
         controls: true,
         fill: true,
         userActions: {
@@ -53,8 +59,10 @@ export const VideoJS = forwardRef<VideoJsPlayer | null, VideoJSProps>(
       const player = videojs($videoElement, options, function (this) {
         onReady(this);
       });
+      player.volume(volume);
 
       setRef(ref, player);
+      playerRef.current = player;
 
       return () => {
         if (!player.isDisposed()) {
@@ -62,7 +70,19 @@ export const VideoJS = forwardRef<VideoJsPlayer | null, VideoJSProps>(
           setRef(ref, null);
         }
       };
-    }, [overwrittenOptions]);
+    }, [overwrittenOptions, url]);
+
+    useEffect(() => {
+      if (isPaused) {
+        playerRef.current?.pause();
+      } else {
+        playerRef.current?.play();
+      }
+    }, [isPaused]);
+
+    useEffect(() => {
+      playerRef.current?.volume(volume);
+    }, [volume]);
 
     return <div ref={placeholderRef} className="video-wrapper" />;
   },

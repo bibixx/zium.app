@@ -16,7 +16,7 @@ interface DataChannelVideoWindowProps extends VideoWindowProps {
 export const DataChannelVideoWindow = forwardRef<
   VideoJsPlayer | null,
   DataChannelVideoWindowProps
->(({ gridWindow, executeOnAll }, forwardedRef) => {
+>(({ gridWindow, isPaused }, forwardedRef) => {
   const playerRef = useRef<VideoJsPlayer | null>(null);
   const streamVideoState = useStreamVideo(gridWindow.url);
 
@@ -26,7 +26,7 @@ export const DataChannelVideoWindow = forwardRef<
   };
 
   const onReady = (player: VideoJsPlayer) => {
-    onVideoWindowReadyBase(player, executeOnAll, gridWindow.id);
+    onVideoWindowReadyBase(player);
 
     attachUseBestQuality(player);
   };
@@ -42,6 +42,7 @@ export const DataChannelVideoWindow = forwardRef<
         options={ADDITIONAL_OPTIONS}
         ref={ref}
         onReady={onReady}
+        isPaused={isPaused}
       />
     </VideoWindowWrapper>
   );

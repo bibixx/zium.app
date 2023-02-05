@@ -1,7 +1,7 @@
-import { forwardRef, useMemo, useRef } from "react";
+import { forwardRef, useRef } from "react";
 import { VideoJsPlayer, VideoJsPlayerOptions } from "video.js";
 import { useStreamVideo } from "../../hooks/useStreamVideo/useStreamVideo";
-import { DriverGridWindow, GridWindow } from "../../types/GridWindow";
+import { DriverGridWindow } from "../../types/GridWindow";
 import { VideoWindowProps } from "../../types/VideoWindowBaseProps";
 import { onVideoWindowReadyBase } from "../../utils/onVideoWindowReady";
 import { setRef } from "../../utils/setRef";
@@ -20,6 +20,9 @@ interface DriverVideoWindowProps extends VideoWindowProps {
   gridWindow: DriverGridWindow;
   availableDrivers: AllDriversInfo[];
   onDriverChange: (streamIdentifier: string) => void;
+  isAudioFocused: boolean;
+  onWindowAudioFocus: () => void;
+  volume: number;
 }
 
 export const DriverVideoWindow = forwardRef<
@@ -27,8 +30,16 @@ export const DriverVideoWindow = forwardRef<
   DriverVideoWindowProps
 >(
   (
-    { gridWindow, executeOnAll, availableDrivers, onDriverChange },
-    forwardedRef
+    {
+      gridWindow,
+      availableDrivers,
+      onDriverChange,
+      isPaused,
+      isAudioFocused,
+      onWindowAudioFocus,
+      volume,
+    },
+    forwardedRef,
   ) => {
     const playerRef = useRef<VideoJsPlayer | null>(null);
     const streamVideoState = useStreamVideo(gridWindow.url);
@@ -39,19 +50,11 @@ export const DriverVideoWindow = forwardRef<
     };
 
     const onReady = (player: VideoJsPlayer) => {
-      onVideoWindowReadyBase(player, executeOnAll, gridWindow.id);
+      onVideoWindowReadyBase(player);
     };
 
     const onChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
       onDriverChange(e.target.value);
-    };
-
-    const onFocusAudio = () => {
-      playerRef.current?.muted(false);
-
-      executeOnAll((player) => {
-        player.muted(true);
-      }, gridWindow.id);
     };
 
     if (streamVideoState.state === "loading") {
@@ -69,6 +72,8 @@ export const DriverVideoWindow = forwardRef<
           options={ADDITIONAL_OPTIONS}
           ref={ref}
           onReady={onReady}
+          isPaused={isPaused}
+          volume={isAudioFocused ? volume : 0}
         />
         <div
           className="video-window__driver-name"
@@ -93,14 +98,13 @@ export const DriverVideoWindow = forwardRef<
               </option>
             ))}
           </select>
-          <button onClick={onFocusAudio}>Focus audio</button>
+          <button onClick={onWindowAudioFocus}>Focus audio</button>
         </div>
       </VideoWindowWrapper>
     );
-  }
+  },
 );
 
 const ADDITIONAL_OPTIONS: VideoJsPlayerOptions = {
   controls: false,
-  muted: true,
 };

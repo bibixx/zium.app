@@ -109,13 +109,16 @@ body,
   position: absolute;
   top: 12px;
   left: 12px;
+  background: rgba(9, 10, 18, 0.9);
+  padding: 8px;
+  user-select: none;
+}
+
+.video-window__driver-name, .video-window__driver-name * {
   font-family: "Formula1", sans-serif;
   color: #fff;
   font-size: 16px;
   line-height: 1.1;
-  background: rgba(9, 10, 18, 0.9);
-  padding: 8px;
-  user-select: none;
 }
 
 .video-window__driver-name--bold {
