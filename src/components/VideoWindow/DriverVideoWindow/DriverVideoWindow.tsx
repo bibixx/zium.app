@@ -1,12 +1,13 @@
 import { forwardRef, useRef } from "react";
 import { VideoJsPlayer, VideoJsPlayerOptions } from "video.js";
-import { useStreamVideo } from "../../hooks/useStreamVideo/useStreamVideo";
-import { DriverGridWindow } from "../../types/GridWindow";
-import { VideoWindowProps } from "../../types/VideoWindowBaseProps";
-import { onVideoWindowReadyBase } from "../../utils/onVideoWindowReady";
-import { setRef } from "../../utils/setRef";
-import { VideoJS } from "../VideoJS/VideoJS";
-import { VideoWindowWrapper } from "./VideoWindowWrapper";
+import styles from "./DriverVideoWindow.module.css";
+import { useStreamVideo } from "../../../hooks/useStreamVideo/useStreamVideo";
+import { DriverGridWindow } from "../../../types/GridWindow";
+import { VideoWindowProps } from "../../../types/VideoWindowBaseProps";
+import { onVideoWindowReadyBase } from "../../../utils/onVideoWindowReady";
+import { setRef } from "../../../utils/setRef";
+import { VideoJS } from "../../VideoJS/VideoJS";
+import { VideoWindowWrapper } from "../VideoWindowWrapper/VideoWindowWrapper";
 
 interface AllDriversInfo {
   color: string;
@@ -25,20 +26,9 @@ interface DriverVideoWindowProps extends VideoWindowProps {
   volume: number;
 }
 
-export const DriverVideoWindow = forwardRef<
-  VideoJsPlayer | null,
-  DriverVideoWindowProps
->(
+export const DriverVideoWindow = forwardRef<VideoJsPlayer | null, DriverVideoWindowProps>(
   (
-    {
-      gridWindow,
-      availableDrivers,
-      onDriverChange,
-      isPaused,
-      isAudioFocused,
-      onWindowAudioFocus,
-      volume,
-    },
+    { gridWindow, availableDrivers, onDriverChange, isPaused, isAudioFocused, onWindowAudioFocus, volume },
     forwardedRef,
   ) => {
     const playerRef = useRef<VideoJsPlayer | null>(null);
@@ -75,22 +65,16 @@ export const DriverVideoWindow = forwardRef<
           isPaused={isPaused}
           volume={isAudioFocused ? volume : 0}
         />
-        <div
-          className="video-window__driver-name"
-          onMouseDown={(e) => e.stopPropagation()}
-        >
-          <div>{gridWindow.firstName}</div>
-          <div
-            className="video-window__driver-name--bold"
-            style={{ color: gridWindow.color }}
-          >
-            {gridWindow.lastName}
+        <div className={styles.driverName}>
+          <div className={styles.driverPhotoWrapper}>
+            <img src={`/images/avatars/2022/${gridWindow.streamIdentifier}.png`} alt="" />
+          </div>
+          <div className={styles.driverNameWrapper}>
+            <div>{gridWindow.firstName}</div>
+            <div className={styles.driverNameBold}>{gridWindow.lastName}</div>
           </div>
         </div>
-        <div
-          className="video-window__available-drivers-container"
-          onMouseDown={(e) => e.stopPropagation()}
-        >
+        <div className={styles.availableDriversContainer} onMouseDown={(e) => e.stopPropagation()}>
           <select value={gridWindow.streamIdentifier} onChange={onChange}>
             {availableDrivers.map((driver) => (
               <option value={driver.id} key={driver.id}>

@@ -1,0 +1,13 @@
+.videoWindow {
+  width: 100%;
+  height: 100%;
+  position: relative;
+
+  & video {
+    object-fit: cover;
+  }
+
+  & :global(.vjs-fullscreen) video {
+    object-fit: contain;
+  }
+}

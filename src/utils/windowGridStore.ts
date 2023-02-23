@@ -139,16 +139,16 @@ export const getInitialState = (): WindowGridState => {
       id: generateUID(),
       url: "",
     },
-    {
-      type: "driver-tracker",
-      id: generateUID(),
-      url: "",
-    },
-    {
-      type: "data-channel",
-      id: generateUID(),
-      url: "",
-    },
+    // {
+    //   type: "driver-tracker",
+    //   id: generateUID(),
+    //   url: "",
+    // },
+    // {
+    //   type: "data-channel",
+    //   id: generateUID(),
+    //   url: "",
+    // },
     {
       type: "driver",
       id: generateUID(),
@@ -159,37 +159,92 @@ export const getInitialState = (): WindowGridState => {
       color: "",
       streamIdentifier: "VER",
     },
-    {
-      type: "driver",
-      id: generateUID(),
-      firstName: "",
-      lastName: "",
-      url: "",
-      team: "",
-      color: "",
-      streamIdentifier: "LEC",
-    },
-    {
-      type: "driver",
-      id: generateUID(),
-      firstName: "",
-      lastName: "",
-      url: "",
-      team: "",
-      color: "",
-      streamIdentifier: "PER",
-    },
+    // {
+    //   type: "driver",
+    //   id: generateUID(),
+    //   firstName: "",
+    //   lastName: "",
+    //   url: "",
+    //   team: "",
+    //   color: "",
+    //   streamIdentifier: "LEC",
+    // },
+    // {
+    //   type: "driver",
+    //   id: generateUID(),
+    //   firstName: "",
+    //   lastName: "",
+    //   url: "",
+    //   team: "",
+    //   color: "",
+    //   streamIdentifier: "PER",
+    // },
+    // {
+    //   type: "driver",
+    //   id: generateUID(),
+    //   firstName: "",
+    //   lastName: "",
+    //   url: "",
+    //   team: "",
+    //   color: "",
+    //   streamIdentifier: "RIC",
+    // },
+    // {
+    //   type: "driver",
+    //   id: generateUID(),
+    //   firstName: "",
+    //   lastName: "",
+    //   url: "",
+    //   team: "",
+    //   color: "",
+    //   streamIdentifier: "NOR",
+    // },
+    // {
+    //   type: "driver",
+    //   id: generateUID(),
+    //   firstName: "",
+    //   lastName: "",
+    //   url: "",
+    //   team: "",
+    //   color: "",
+    //   streamIdentifier: "GAS",
+    // },
+    // {
+    //   type: "driver",
+    //   id: generateUID(),
+    //   firstName: "",
+    //   lastName: "",
+    //   url: "",
+    //   team: "",
+    //   color: "",
+    //   streamIdentifier: "ALO",
+    // },
   ];
 
   return {
-    layout: [
-      { width: 48, height: 30, x: 0, y: 0, id: windows[0].id, zIndex: 1 },
-      { width: 48, height: 30, x: 48, y: 0, id: windows[1].id, zIndex: 2 },
-      { width: 48, height: 30, x: 0, y: 30, id: windows[2].id, zIndex: 3 },
-      { width: 48, height: 30, x: 48, y: 30, id: windows[3].id, zIndex: 4 },
-      { width: 48, height: 30, x: 0, y: 60, id: windows[4].id, zIndex: 5 },
-      { width: 48, height: 30, x: 48, y: 60, id: windows[5].id, zIndex: 6 },
-    ],
+    layout: getInitialLayout(windows),
     windows,
   };
+};
+
+const getInitialLayout = (windows: GridWindow[]): GridLayout[] => {
+  const columns = Math.floor(Math.sqrt(windows.length));
+  const rows = Math.ceil(Math.sqrt(windows.length));
+
+  const columnWidth = 100 / columns;
+  const rowHeight = 100 / rows;
+
+  return windows.map((w, i): GridLayout => {
+    const column = i % columns;
+    const row = Math.floor(i / columns);
+
+    return {
+      id: w.id,
+      width: columnWidth,
+      height: rowHeight,
+      y: row * rowHeight,
+      x: column * columnWidth,
+      zIndex: i + 1,
+    };
+  });
 };

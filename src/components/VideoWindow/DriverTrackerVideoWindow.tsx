@@ -6,7 +6,7 @@ import { VideoWindowProps } from "../../types/VideoWindowBaseProps";
 import { onVideoWindowReadyBase } from "../../utils/onVideoWindowReady";
 import { setRef } from "../../utils/setRef";
 import { VideoJS } from "../VideoJS/VideoJS";
-import { VideoWindowWrapper } from "./VideoWindowWrapper";
+import { VideoWindowWrapper } from "./VideoWindowWrapper/VideoWindowWrapper";
 
 interface DriverTrackerVideoWindowProps extends VideoWindowProps {
   gridWindow: BaseGridWindow;

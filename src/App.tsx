@@ -8,6 +8,9 @@ import { useLoggedInState } from "./hooks/useLoggedInState";
 import { LogIn } from "./views/LogIn/LogIn";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Races } from "./views/Races/Races";
+import classNames from "classnames";
+import { HeightDebugger } from "./components/HeightDebugger/HeightDebugger";
+import { useDebug } from "./hooks/useDebug/useDebug";
 
 const WithCompanion = ({ children }: React.PropsWithChildren<unknown>) => {
   const companionState = useHasCompanion();
@@ -46,16 +49,21 @@ const WithLoggedIn = ({ children }: React.PropsWithChildren<unknown>) => {
 };
 
 export default function App() {
+  const isDebugMode = useDebug();
+
   return (
-    <WithCompanion>
-      <WithLoggedIn>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Races />} />
-            <Route path="/race/:raceId" element={<ViewerWithState />} />
-          </Routes>
-        </BrowserRouter>
-      </WithLoggedIn>
-    </WithCompanion>
+    <div className={classNames({ debug: isDebugMode })}>
+      {isDebugMode && <HeightDebugger />}
+      <WithCompanion>
+        <WithLoggedIn>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Races />} />
+              <Route path="/race/:raceId" element={<ViewerWithState />} />
+            </Routes>
+          </BrowserRouter>
+        </WithLoggedIn>
+      </WithCompanion>
+    </div>
   );
 }

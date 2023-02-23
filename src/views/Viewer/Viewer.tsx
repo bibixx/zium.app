@@ -3,7 +3,7 @@ import { GridWindow } from "../../types/GridWindow";
 import { getInitialState, windowGridReducer } from "../../utils/windowGridStore";
 import { MainVideoWindow } from "../../components/VideoWindow/MainVideoWindow";
 import { VideoJsPlayer } from "video.js";
-import { DriverVideoWindow } from "../../components/VideoWindow/DriverVideoWindow";
+import { DriverVideoWindow } from "../../components/VideoWindow/DriverVideoWindow/DriverVideoWindow";
 import { assertNever } from "../../utils/assertNever";
 import { DataChannelVideoWindow } from "../../components/VideoWindow/DataChannelVideoWindow";
 import { StreamsStateData } from "../../hooks/useVideoRaceDetails/useVideoRaceDetails.types";
@@ -14,10 +14,10 @@ import { useVideoRaceDetails } from "../../hooks/useVideoRaceDetails/useVideoRac
 import { useParams } from "react-router-dom";
 import styles from "./Viewer.module.css";
 import { RnDWindow } from "../../components/RnDWindow/RnDWindow";
-import { WithVariables } from "../../components/WithVariables/WithVariables";
 import { Dimensions } from "../../types/Dimensions";
 import { useVideoAudio } from "./hooks/useVideoAudio";
 import { useSyncVideos } from "./hooks/useSyncVideos";
+import { BackgroundDots } from "./BackgroundDots/BackgroundDots";
 
 interface ViewerProps {
   streams: StreamsStateData;
@@ -134,13 +134,8 @@ export const Viewer = ({ streams }: ViewerProps) => {
   useSyncVideos({ windows, windowVideojsRefMapRef });
 
   return (
-    <WithVariables
-      className={styles.backgroundWrapper}
-      variables={{
-        gridWidth: `${baseGrid[0]}px`,
-        gridHeight: `${baseGrid[1]}px`,
-      }}
-    >
+    <div className={styles.backgroundWrapper}>
+      <BackgroundDots baseGrid={baseGrid} />
       {layout.map((l) => {
         const gridWindow = windowsMap[l.id];
         const dimension: Dimensions = {
@@ -153,7 +148,6 @@ export const Viewer = ({ streams }: ViewerProps) => {
         return (
           <RnDWindow
             key={gridWindow.id}
-            baseGrid={baseGrid}
             grid={grid}
             dimensions={dimension}
             onChange={(dimensions: Dimensions) => {
@@ -162,11 +156,11 @@ export const Viewer = ({ streams }: ViewerProps) => {
             zIndex={l.zIndex}
             bringToFront={() => dispatch({ type: "bringToFront", id: l.id })}
           >
-            {/* {getLayoutChild(gridWindow)} */}
+            {getLayoutChild(gridWindow)}
           </RnDWindow>
         );
       })}
-    </WithVariables>
+    </div>
   );
 };
 

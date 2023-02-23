@@ -1,0 +1,23 @@
+.wrapper {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  background: black;
+  color: white;
+  z-index: 99999;
+  padding: 8px;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.allButtonsWrapper {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  gap: 4px;
+}
+
+.buttonsWrapper {
+  display: contents;
+}

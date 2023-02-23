@@ -7,7 +7,7 @@ import { onVideoWindowReadyBase } from "../../utils/onVideoWindowReady";
 import { setRef } from "../../utils/setRef";
 import { attachUseBestQuality } from "../../utils/attachUseBestQuality";
 import { VideoJS } from "../VideoJS/VideoJS";
-import { VideoWindowWrapper } from "./VideoWindowWrapper";
+import { VideoWindowWrapper } from "./VideoWindowWrapper/VideoWindowWrapper";
 
 interface DataChannelVideoWindowProps extends VideoWindowProps {
   gridWindow: BaseGridWindow;

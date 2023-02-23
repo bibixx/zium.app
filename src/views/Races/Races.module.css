@@ -1,0 +1,16 @@
+.races {
+  padding: 8px;
+}
+
+.races summary {
+  cursor: pointer;
+}
+
+.races ul {
+  margin: 0;
+}
+
+.races h2 {
+  margin: 0;
+  display: inline-block;
+}

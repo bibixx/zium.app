@@ -1,10 +1,10 @@
-import { ReactNode, useCallback, useEffect, useRef, useState } from "react";
+import { ReactNode, useCallback, useEffect, useMemo, useRef } from "react";
 import cn from "classnames";
 import { useWindowSize } from "../../hooks/useWindowSize";
 import { Dimensions } from "../../types/Dimensions";
-import { formatPercentToString, roundToNearest, sizePercentToPx, sizePxToPercent } from "./RnDWindow.utils";
+import { sizePercentToPx, sizePxToPercent } from "./RnDWindow.utils";
 import styles from "./RnDWindow.module.css";
-import { getStylesWithVariables } from "../WithVariables/WithVariables";
+import { WithVariables } from "../WithVariables/WithVariables";
 import { useDrag } from "./hooks/useDrag";
 import { useResize } from "./hooks/useResize";
 import { getTransform } from "./utils/getTransform";
@@ -12,17 +12,26 @@ import { Position, Size } from "./RnDWindow.types";
 
 interface RnDWindowProps {
   grid: [number, number] | undefined;
-  baseGrid: [number, number];
   children: ReactNode;
   dimensions: Dimensions;
   onChange: (dimensions: Dimensions) => void;
   zIndex: number;
   bringToFront: () => void;
 }
-export const RnDWindow = ({ dimensions, grid, baseGrid, children, onChange, zIndex, bringToFront }: RnDWindowProps) => {
+export const RnDWindow = ({ dimensions, grid, children, onChange, zIndex, bringToFront }: RnDWindowProps) => {
   const elementRef = useRef<HTMLDivElement>(null);
-  const [position, setPosition] = useState({ x: 20, y: 500 });
-  const [size, setSize] = useState({ width: 300, height: 200 });
+  const { height: windowHeight, width: windowWidth } = useWindowSize();
+  const position = useMemo(
+    () => ({ x: sizePercentToPx(dimensions.x, windowWidth), y: sizePercentToPx(dimensions.y, windowHeight) }),
+    [dimensions.x, dimensions.y, windowHeight, windowWidth],
+  );
+  const size = useMemo(
+    () => ({
+      width: sizePercentToPx(dimensions.width, windowWidth),
+      height: sizePercentToPx(dimensions.height, windowHeight),
+    }),
+    [dimensions.height, dimensions.width, windowHeight, windowWidth],
+  );
 
   useEffect(() => {
     const $element = elementRef.current;
@@ -35,27 +44,59 @@ export const RnDWindow = ({ dimensions, grid, baseGrid, children, onChange, zInd
     $element.style.transform = getTransform(position.x, position.y);
   }, [position, size]);
 
-  const onResizeEnd = useCallback((size: Size, position: Position) => {
-    setPosition(position);
-    setSize(size);
-  }, []);
+  const onResizeStart = useCallback(() => {
+    bringToFront();
+  }, [bringToFront]);
 
-  const onDragEnd = useCallback((position: Position) => {
-    setPosition(position);
-  }, []);
+  const onResizeEnd = useCallback(
+    (size: Size, position: Position) => {
+      onChange({
+        width: sizePxToPercent(size.width, windowWidth),
+        height: sizePxToPercent(size.height, windowHeight),
+        x: sizePxToPercent(position.x, windowWidth),
+        y: sizePxToPercent(position.y, windowHeight),
+      });
+    },
+    [onChange, windowHeight, windowWidth],
+  );
 
-  const { onMouseDown: onWrapperMouseDown, isDragging } = useDrag({ elementRef, onDragEnd });
-  const { onMouseDown: onMouseHandleDown } = useResize({ elementRef, onResizeEnd });
+  const onDragStart = useCallback(() => {
+    bringToFront();
+  }, [bringToFront]);
 
-  useEffect(() => {
-    console.log(position, size);
-  }, [position, size]);
+  const onDragEnd = useCallback(
+    (position: Position) => {
+      onChange({
+        width: sizePxToPercent(size.width, windowWidth),
+        height: sizePxToPercent(size.height, windowHeight),
+        x: sizePxToPercent(position.x, windowWidth),
+        y: sizePxToPercent(position.y, windowHeight),
+      });
+    },
+    [onChange, size.height, size.width, windowHeight, windowWidth],
+  );
+
+  const { onMouseDown: onWrapperMouseDown, isDragging } = useDrag({
+    elementRef,
+    onDragStart,
+    onDragEnd,
+    grid: grid ?? [1, 1],
+  });
+  const { onMouseDown: onMouseHandleDown } = useResize({
+    elementRef,
+    onResizeStart,
+    onResizeEnd,
+    grid: grid ?? [1, 1],
+  });
 
   return (
-    <div
+    <WithVariables
       ref={elementRef}
       className={cn(styles.rndWrapper, { [styles.isDragging]: isDragging })}
       onMouseDown={onWrapperMouseDown}
+      variables={{
+        zIndex: zIndex,
+      }}
     >
       <div className={styles.contents}>{children}</div>
       <div onMouseDown={onMouseHandleDown("n")} className={cn(styles.rndHandle, styles.rndHandleN)}></div>
@@ -66,6 +107,6 @@ export const RnDWindow = ({ dimensions, grid, baseGrid, children, onChange, zInd
       <div onMouseDown={onMouseHandleDown("ne")} className={cn(styles.rndHandle, styles.rndHandleNe)}></div>
       <div onMouseDown={onMouseHandleDown("sw")} className={cn(styles.rndHandle, styles.rndHandleSw)}></div>
       <div onMouseDown={onMouseHandleDown("se")} className={cn(styles.rndHandle, styles.rndHandleSe)}></div>
-    </div>
+    </WithVariables>
   );
 };

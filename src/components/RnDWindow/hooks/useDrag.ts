@@ -1,13 +1,18 @@
 import { MutableRefObject, useCallback, useEffect, useRef, useState } from "react";
-import { Position } from "../RnDWindow.types";
+import { boundTo } from "../../../utils/boundTo";
+import { Position, Size } from "../RnDWindow.types";
+import { roundToNearest } from "../RnDWindow.utils";
 import { getTransform } from "../utils/getTransform";
 
 interface UseDragArguments {
   elementRef: MutableRefObject<HTMLDivElement | null>;
+  onDragStart: () => void;
   onDragEnd: (position: Position) => void;
+  grid: [number, number];
 }
-export const useDrag = ({ elementRef, onDragEnd }: UseDragArguments) => {
+export const useDrag = ({ elementRef, onDragStart, onDragEnd, grid }: UseDragArguments) => {
   const hasPressedDownRef = useRef(false);
+  const initialSize = useRef<Size>({ width: 0, height: 0 });
   const cursorOffset = useRef<Position>({ x: 0, y: 0 });
   const currentPosition = useRef<Position>({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
@@ -36,11 +41,12 @@ export const useDrag = ({ elementRef, onDragEnd }: UseDragArguments) => {
       }
 
       let internalIsDragging = isDragging;
+      // Initialize dragging on first move event (to allow clicking)
       if (hasPressedDownRef.current && !isDragging) {
         setIsDragging(true);
         internalIsDragging = true;
 
-        const { top, left } = $element.getBoundingClientRect();
+        const { top, left, width, height } = $element.getBoundingClientRect();
         const mouseX = e.clientX;
         const mouseY = e.clientY;
 
@@ -51,6 +57,12 @@ export const useDrag = ({ elementRef, onDragEnd }: UseDragArguments) => {
           x: xOffset,
           y: yOffset,
         };
+        initialSize.current = {
+          width,
+          height,
+        };
+
+        onDragStart();
       }
 
       if (!internalIsDragging) {
@@ -60,14 +72,46 @@ export const useDrag = ({ elementRef, onDragEnd }: UseDragArguments) => {
       const { x: cursorOffsetX, y: cursorOffsetY } = cursorOffset.current;
       const mouseX = e.clientX;
       const mouseY = e.clientY;
+      const targetX = mouseX + cursorOffsetX;
+      const targetY = mouseY + cursorOffsetY;
 
-      const newX = mouseX + cursorOffsetX;
-      const newY = mouseY + cursorOffsetY;
+      const { width: currentWidth, height: currentHeight } = initialSize.current;
+      const [gridXStep, gridYStep] = grid;
+
+      // Horizontal movement
+      const nearestLeftGrid = boundTo(roundToNearest(targetX, gridXStep, "down"), 0, window.innerWidth - currentWidth);
+      const nearestRightGrid = boundTo(
+        roundToNearest(targetX + currentWidth, gridXStep, "down"),
+        currentWidth,
+        window.innerWidth,
+      );
+      const nearestLeftGridDelta = Math.abs(nearestLeftGrid - targetX);
+      const nearestRightGridDelta = Math.abs(nearestRightGrid - (targetX + currentWidth));
+
+      // prettier-ignore
+      const newX = nearestLeftGridDelta < nearestRightGridDelta
+        ? nearestLeftGrid
+        : nearestRightGrid - currentWidth;
+
+      // Vertical movement
+      const nearestTopGrid = boundTo(roundToNearest(targetY, gridYStep, "down"), 0, window.innerHeight - currentHeight);
+      const nearestBottomGrid = boundTo(
+        roundToNearest(targetY + currentHeight, gridYStep, "down"),
+        currentHeight,
+        window.innerHeight,
+      );
+      const nearestTopGridDelta = Math.abs(nearestTopGrid - targetY);
+      const nearestBottomGridDelta = Math.abs(nearestBottomGrid - (targetY + currentHeight));
+
+      // prettier-ignore
+      const newY = nearestTopGridDelta < nearestBottomGridDelta
+        ? nearestTopGrid
+        : nearestBottomGrid - currentHeight;
 
       $element.style.transform = getTransform(newX, newY);
       currentPosition.current = { x: newX, y: newY };
     },
-    [elementRef, isDragging],
+    [elementRef, grid, isDragging, onDragStart],
   );
 
   useEffect(() => {

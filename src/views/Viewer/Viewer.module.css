@@ -1,11 +1,14 @@
 .backgroundWrapper {
-  background: #000000;
   width: 100vw;
   height: 100vh;
   overflow: hidden;
   position: relative;
 
-  background-image: radial-gradient(rgba(218, 218, 253, 0.4) 1px, transparent 0);
-  background-size: var(--gridWidth) var(--gridHeight);
-  background-position: calc(var(--gridWidth) / 2) calc(var(--gridHeight) / 2);
+  background-color: #000000;
+  --dotColor: #242424;
+
+  :global(.debug) & {
+    background-color: #154415;
+    --dotColor: white;
+  }
 }

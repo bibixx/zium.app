@@ -2,39 +2,37 @@
   position: relative;
   width: 100%;
   height: 100%;
-  /* border-radius: 6px; */
+
+}
+
+.rndWrapper {
+  position: absolute;
+  z-index: var(--zIndex);
+  cursor: grab;
   overflow: hidden;
   background: #0f0f12;
+  border-radius: 8px;
 
   &::after {
     content: "";
     display: block;
 
+    position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     z-index: 1;
     box-shadow: inset 0 0 0 0px rgba(218, 218, 253, 0.3);
-    box-shadow: inset 0 0 0 3px rgba(218, 218, 253, 0.3);
     pointer-events: none;
     transition: 0.1s ease-in-out;
     transition-property: box-shadow;
+    border-radius: 8px;
   }
-  /*
+
   &:hover::after {
     box-shadow: inset 0 0 0 3px rgba(218, 218, 253, 0.3);
-  } */
-}
-
-.rndWrapper {
-  position: absolute;
-  width: 300px;
-  height: 200px;
-  z-index: var(--zIndex);
-  cursor: grab;
-
-  --handleSize: 5px;
+  }
 
   &.isDragging {
     cursor: grabbing;
@@ -44,6 +42,23 @@
 .rndHandle {
   position: absolute;
   user-select: none;
+  --handleSize: 5px;
+
+  :global(.debug) & {
+    &.rndHandleN,
+    &.rndHandleE,
+    &.rndHandleW,
+    &.rndHandleS {
+      background: red;
+    }
+
+    &.rndHandleNw,
+    &.rndHandleNe,
+    &.rndHandleSw,
+    &.rndHandleSe {
+      background: green;
+    }
+  }
 }
 
 .rndHandleN {
@@ -51,7 +66,6 @@
   top: 0;
   height: var(--handleSize);
   width: calc(100% - var(--handleSize) * 2);
-  background: red;
   cursor: ns-resize;
 }
 
@@ -60,7 +74,6 @@
   top: var(--handleSize);
   width: var(--handleSize);
   height: calc(100% - var(--handleSize) * 2);
-  background: red;
   cursor: ew-resize;
 }
 
@@ -69,7 +82,6 @@
   top: var(--handleSize);
   width: var(--handleSize);
   height: calc(100% - var(--handleSize) * 2);
-  background: red;
   cursor: ew-resize;
 }
 
@@ -78,7 +90,6 @@
   bottom: 0;
   height: var(--handleSize);
   width: calc(100% - var(--handleSize) * 2);
-  background: red;
   cursor: ns-resize;
 }
 
@@ -87,7 +98,6 @@
   left: 0;
   height: calc(var(--handleSize) * 2);
   width: calc(var(--handleSize) * 2);
-  background: green;
   cursor: nwse-resize;
 }
 
@@ -96,7 +106,6 @@
   right: 0;
   height: calc(var(--handleSize) * 2);
   width: calc(var(--handleSize) * 2);
-  background: green;
   cursor: nesw-resize;
 }
 
@@ -105,7 +114,6 @@
   left: 0;
   height: calc(var(--handleSize) * 2);
   width: calc(var(--handleSize) * 2);
-  background: green;
   cursor: nesw-resize;
 }
 
@@ -114,6 +122,5 @@
   right: 0;
   height: calc(var(--handleSize) * 2);
   width: calc(var(--handleSize) * 2);
-  background: green;
   cursor: nwse-resize;
 }

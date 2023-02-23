@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useWindowSize } from "../../../hooks/useWindowSize";
-import { usePressedModifiers } from "../../../components/RnDWindow/hooks/usePressedModifiers";
+import { usePressedModifiers } from "./usePressedModifiers";
 import {
   getWindowSizeGridXMultiplier,
   getWindowSizeGridYMultiplier,

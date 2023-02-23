@@ -1,13 +1,17 @@
 import { MutableRefObject, useCallback, useEffect, useRef, useState } from "react";
+import { boundTo } from "../../../utils/boundTo";
 import { Position, Size } from "../RnDWindow.types";
+import { roundToNearest } from "../RnDWindow.utils";
 import { getTransform } from "../utils/getTransform";
 
 type HandleSide = "n" | "s" | "e" | "w" | "nw" | "ne" | "sw" | "se";
 interface UseResize {
   elementRef: MutableRefObject<HTMLDivElement | null>;
+  onResizeStart: () => void;
   onResizeEnd: (size: Size, position: Position) => void;
+  grid: [number, number];
 }
-export const useResize = ({ elementRef, onResizeEnd }: UseResize) => {
+export const useResize = ({ elementRef, onResizeStart, onResizeEnd, grid }: UseResize) => {
   const [isResizing, setIsResizing] = useState(false);
   const handleSideRef = useRef<HandleSide | null>(null);
 
@@ -24,6 +28,7 @@ export const useResize = ({ elementRef, onResizeEnd }: UseResize) => {
       e.stopPropagation();
       handleSideRef.current = handleSide;
       setIsResizing(true);
+      onResizeStart();
 
       const $element = elementRef.current;
       if ($element == null) {
@@ -38,7 +43,7 @@ export const useResize = ({ elementRef, onResizeEnd }: UseResize) => {
       const mouseY = e.clientY;
       initialCursorPositionRef.current = { x: mouseX, y: mouseY };
     },
-    [elementRef],
+    [elementRef, onResizeStart],
   );
 
   const onMouseUp = useCallback(() => {
@@ -85,20 +90,55 @@ export const useResize = ({ elementRef, onResizeEnd }: UseResize) => {
       const x = initialX + xDelta;
       const y = initialY + yDelta;
 
-      $element.style.width = `${width}px`;
-      $element.style.height = `${height}px`;
-      $element.style.transform = getTransform(x, y);
+      const [gridXStep, gridYStep] = grid;
+
+      // Horizontal resizing
+      let left = boundTo(initialX, 0, window.innerWidth);
+      if (isAdjustingXPosition) {
+        const nearestLeftGrid = roundToNearest(x, gridXStep, "down");
+        left = boundTo(nearestLeftGrid, 0, window.innerWidth);
+      }
+
+      let right = boundTo(initialX + initialWidth, 0, window.innerWidth);
+      if (isXResizeEnabled && !isAdjustingXPosition) {
+        const nearestRightGrid = roundToNearest(x + width, gridXStep, "nearest");
+        right = boundTo(nearestRightGrid, 0, window.innerWidth);
+      }
+
+      const snappedWidth = right - left;
+      const snappedX = left;
+
+      // Vertical resizing
+      let top = boundTo(initialY, 0, window.innerHeight);
+      if (isAdjustingYPosition) {
+        const nearestTopGrid = roundToNearest(y, gridYStep, "down");
+        top = boundTo(nearestTopGrid, 0, window.innerHeight);
+      }
+
+      let bottom = boundTo(initialY + initialHeight, 0, window.innerHeight);
+      if (isYResizeEnabled && !isAdjustingYPosition) {
+        const nearestBottomGrid = roundToNearest(y + height, gridYStep, "nearest");
+        bottom = boundTo(nearestBottomGrid, 0, window.innerHeight);
+      }
+
+      const snappedHeight = bottom - top;
+      const snappedY = top;
+
+      // Apply values
+      $element.style.width = `${snappedWidth}px`;
+      $element.style.height = `${snappedHeight}px`;
+      $element.style.transform = getTransform(snappedX, snappedY);
 
       currentSizeRef.current = {
-        width,
-        height,
+        width: snappedWidth,
+        height: snappedHeight,
       };
       currentPositionRef.current = {
-        x,
-        y,
+        x: snappedX,
+        y: snappedY,
       };
     },
-    [elementRef, isResizing],
+    [elementRef, grid, isResizing],
   );
 
   useEffect(() => {

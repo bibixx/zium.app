@@ -1,0 +1,10 @@
+.backgroundDot {
+  position: absolute;
+  content: "";
+  display: block;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  box-shadow: var(--boxShadow);
+}
