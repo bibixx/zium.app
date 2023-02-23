@@ -2,10 +2,7 @@ import { StreamsStateData } from "../../hooks/useVideoRaceDetails/useVideoRaceDe
 import { GridWindow } from "../../types/GridWindow";
 import { assertNever } from "../../utils/assertNever";
 
-export const combineWindowsWithStreams = (
-  windows: GridWindow[],
-  streams: StreamsStateData,
-) => {
+export const combineWindowsWithStreams = (windows: GridWindow[], streams: StreamsStateData) => {
   return windows.map((w) => {
     if (w.type === "main") {
       return {

@@ -1,11 +1,6 @@
 import { useCallback, useMemo, useReducer, useRef, useState } from "react";
-import GridLayout from "react-grid-layout";
-import { useWindowSize } from "../../hooks/useWindowSize";
 import { GridWindow } from "../../types/GridWindow";
-import {
-  getInitialState,
-  windowGridReducer,
-} from "../../utils/windowGridStore";
+import { getInitialState, windowGridReducer } from "../../utils/windowGridStore";
 import { MainVideoWindow } from "../../components/VideoWindow/MainVideoWindow";
 import { VideoJsPlayer } from "video.js";
 import { DriverVideoWindow } from "../../components/VideoWindow/DriverVideoWindow";
@@ -13,49 +8,43 @@ import { assertNever } from "../../utils/assertNever";
 import { DataChannelVideoWindow } from "../../components/VideoWindow/DataChannelVideoWindow";
 import { StreamsStateData } from "../../hooks/useVideoRaceDetails/useVideoRaceDetails.types";
 import { combineWindowsWithStreams, getAvailableDrivers } from "./Viewer.utils";
-import { useVideoAudio, useSyncVideos } from "./Viewer.hooks";
+import { useGrid } from "./hooks/useGrid";
 import { DriverTrackerVideoWindow } from "../../components/VideoWindow/DriverTrackerVideoWindow";
 import { useVideoRaceDetails } from "../../hooks/useVideoRaceDetails/useVideoRaceDetails";
 import { useParams } from "react-router-dom";
-
-const COLUMNS = 100;
-const ROWS = 100;
+import styles from "./Viewer.module.css";
+import { RnDWindow } from "../../components/RnDWindow/RnDWindow";
+import { WithVariables } from "../../components/WithVariables/WithVariables";
+import { Dimensions } from "../../types/Dimensions";
+import { useVideoAudio } from "./hooks/useVideoAudio";
+import { useSyncVideos } from "./hooks/useSyncVideos";
 
 interface ViewerProps {
   streams: StreamsStateData;
 }
 
 export const Viewer = ({ streams }: ViewerProps) => {
-  const { width, height } = useWindowSize();
+  const { baseGrid, grid } = useGrid();
+  const [{ layout, windows }, dispatch] = useReducer(windowGridReducer, getInitialState());
+
   const [areVideosPaused, setAreVideosPaused] = useState(true);
+  const { audioFocusedWindow, onWindowAudioFocus, setVolume, volume } = useVideoAudio({
+    windows,
+  });
 
-  const [{ layout, windows }, dispatch] = useReducer(
-    windowGridReducer,
-    getInitialState(),
-  );
-
-  const { audioFocusedWindow, onWindowAudioFocus, setVolume, volume } =
-    useVideoAudio({
-      windows,
-    });
-
-  const windowsWithUrls = useMemo(
-    () => combineWindowsWithStreams(windows, streams),
-    [windows, streams],
-  );
-  const windowVideojsRefMapRef = useRef<Record<string, VideoJsPlayer | null>>(
-    {},
-  );
+  const windowsWithUrls = useMemo(() => combineWindowsWithStreams(windows, streams), [windows, streams]);
+  const windowVideojsRefMapRef = useRef<Record<string, VideoJsPlayer | null>>({});
 
   const windowsMap = useMemo((): Record<string, GridWindow> => {
     const entries = windowsWithUrls.map((w) => [w.id, w]);
     return Object.fromEntries(entries);
   }, [windowsWithUrls]);
 
-  const onLayoutChange = (layout: GridLayout.Layout[]) => {
+  const onLayoutChange = (dimensions: Dimensions, i: string) => {
     dispatch({
-      type: "updateLayout",
-      layout,
+      type: "updateDimension",
+      dimensions,
+      id: i,
     });
   };
 
@@ -74,10 +63,7 @@ export const Viewer = ({ streams }: ViewerProps) => {
     [windowsWithUrls],
   );
 
-  const availableDrivers = useMemo(
-    () => getAvailableDrivers(streams),
-    [streams],
-  );
+  const availableDrivers = useMemo(() => getAvailableDrivers(streams), [streams]);
 
   const getLayoutChild = useCallback(
     (gridWindow: GridWindow) => {
@@ -91,9 +77,7 @@ export const Viewer = ({ streams }: ViewerProps) => {
             gridWindow={gridWindow}
             ref={setRef}
             executeOnAll={executeOnAll}
-            onPlayingChange={(isPaused: boolean) =>
-              setAreVideosPaused(isPaused)
-            }
+            onPlayingChange={(isPaused: boolean) => setAreVideosPaused(isPaused)}
             isPaused={areVideosPaused}
             isAudioFocused={audioFocusedWindow === gridWindow.id}
             onWindowAudioFocus={() => onWindowAudioFocus(gridWindow.id)}
@@ -135,63 +119,54 @@ export const Viewer = ({ streams }: ViewerProps) => {
       }
 
       if (gridWindow.type === "driver-tracker") {
-        return (
-          <DriverTrackerVideoWindow
-            gridWindow={gridWindow}
-            ref={setRef}
-            isPaused={areVideosPaused}
-          />
-        );
+        return <DriverTrackerVideoWindow gridWindow={gridWindow} ref={setRef} isPaused={areVideosPaused} />;
       }
 
       if (gridWindow.type === "data-channel") {
-        return (
-          <DataChannelVideoWindow
-            gridWindow={gridWindow}
-            ref={setRef}
-            isPaused={areVideosPaused}
-          />
-        );
+        return <DataChannelVideoWindow gridWindow={gridWindow} ref={setRef} isPaused={areVideosPaused} />;
       }
 
       return assertNever(gridWindow);
     },
-    [
-      executeOnAll,
-      areVideosPaused,
-      audioFocusedWindow,
-      volume,
-      setVolume,
-      onWindowAudioFocus,
-      availableDrivers,
-    ],
+    [executeOnAll, areVideosPaused, audioFocusedWindow, volume, setVolume, onWindowAudioFocus, availableDrivers],
   );
 
   useSyncVideos({ windows, windowVideojsRefMapRef });
 
   return (
-    <div className="viewer-background">
-      <GridLayout
-        layout={layout}
-        cols={COLUMNS}
-        rowHeight={height / ROWS}
-        maxRows={ROWS}
-        width={width}
-        compactType={null}
-        preventCollision
-        margin={[0, 0]}
-        resizeHandles={["s", "e", "se"]}
-        onLayoutChange={onLayoutChange}
-        isBounded
-        autoSize={false}
-      >
-        {layout.map((l) => {
-          const gridWindow = windowsMap[l.i];
+    <WithVariables
+      className={styles.backgroundWrapper}
+      variables={{
+        gridWidth: `${baseGrid[0]}px`,
+        gridHeight: `${baseGrid[1]}px`,
+      }}
+    >
+      {layout.map((l) => {
+        const gridWindow = windowsMap[l.id];
+        const dimension: Dimensions = {
+          width: l.width,
+          height: l.height,
+          x: l.x,
+          y: l.y,
+        };
 
-          return <div key={gridWindow.id}>{getLayoutChild(gridWindow)}</div>;
-        })}
-      </GridLayout>
-    </div>
+        return (
+          <RnDWindow
+            key={gridWindow.id}
+            baseGrid={baseGrid}
+            grid={grid}
+            dimensions={dimension}
+            onChange={(dimensions: Dimensions) => {
+              onLayoutChange(dimensions, l.id);
+            }}
+            zIndex={l.zIndex}
+            bringToFront={() => dispatch({ type: "bringToFront", id: l.id })}
+          >
+            {getLayoutChild(gridWindow)}
+          </RnDWindow>
+        );
+      })}
+    </WithVariables>
   );
 };
 

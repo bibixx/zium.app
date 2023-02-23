@@ -6,7 +6,7 @@ import { VideoWindowProps } from "../../types/VideoWindowBaseProps";
 import { onVideoWindowReadyBase } from "../../utils/onVideoWindowReady";
 import { setRef } from "../../utils/setRef";
 import { attachUseBestQuality } from "../../utils/attachUseBestQuality";
-import { VideoJS } from "../VideoJS";
+import { VideoJS } from "../VideoJS/VideoJS";
 import { VideoWindowWrapper } from "./VideoWindowWrapper";
 
 interface DataChannelVideoWindowProps extends VideoWindowProps {

@@ -1,10 +1,6 @@
 import React from "react";
 import { ViewerWithState } from "./views/Viewer/Viewer";
 
-import "react-grid-layout/css/styles.css";
-import "react-resizable/css/styles.css";
-import "video.js/dist/video-js.css";
-import "./index.css";
 import { useHasCompanion } from "./hooks/useHasCompanion";
 import { NoCompanion } from "./views/NoCompanion/NoCompanion";
 import { assertNever } from "./utils/assertNever";

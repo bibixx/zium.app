@@ -6,7 +6,7 @@ import { VideoWindowProps } from "../../types/VideoWindowBaseProps";
 import { onVideoWindowReadyBase } from "../../utils/onVideoWindowReady";
 import { setRef } from "../../utils/setRef";
 import { attachUseBestQuality } from "../../utils/attachUseBestQuality";
-import { VideoJS } from "../VideoJS";
+import { VideoJS } from "../VideoJS/VideoJS";
 import { VideoWindowWrapper } from "./VideoWindowWrapper";
 import { attachDisableTextTracks } from "../../utils/attachDisableTextTracks";
 
@@ -22,21 +22,9 @@ interface MainVideoWindowProps extends VideoWindowProps {
   executeOnAll: (cb: (player: VideoJsPlayer) => void, callerId: string) => void;
 }
 
-export const MainVideoWindow = forwardRef<
-  VideoJsPlayer | null,
-  MainVideoWindowProps
->(
+export const MainVideoWindow = forwardRef<VideoJsPlayer | null, MainVideoWindowProps>(
   (
-    {
-      gridWindow,
-      executeOnAll,
-      onPlayingChange,
-      isPaused,
-      isAudioFocused,
-      onWindowAudioFocus,
-      volume,
-      setVolume,
-    },
+    { gridWindow, executeOnAll, onPlayingChange, isPaused, isAudioFocused, onWindowAudioFocus, volume, setVolume },
     forwardedRef,
   ) => {
     const playerRef = useRef<VideoJsPlayer | null>(null);
@@ -51,6 +39,7 @@ export const MainVideoWindow = forwardRef<
       const callerId = gridWindow.id;
       onVideoWindowReadyBase(player);
 
+      player.muted(true);
       player.currentTime(START_AT);
       player.play();
 
@@ -95,10 +84,7 @@ export const MainVideoWindow = forwardRef<
           volume={isAudioFocused ? volume : 0}
         />
 
-        <div
-          className="video-window__available-drivers-container"
-          onMouseDown={(e) => e.stopPropagation()}
-        >
+        <div className="video-window__available-drivers-container" onMouseDown={(e) => e.stopPropagation()}>
           <button onClick={onWindowAudioFocus}>Focus audio</button>
         </div>
       </VideoWindowWrapper>

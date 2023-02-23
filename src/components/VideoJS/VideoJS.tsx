@@ -2,7 +2,8 @@ import objectMerge from "object-merge";
 import { forwardRef, useEffect, useRef } from "react";
 import videojs, { VideoJsPlayer, VideoJsPlayerOptions } from "video.js";
 import "videojs-contrib-quality-levels";
-import { setRef } from "../utils/setRef";
+import styles from "./VideoJS.module.css";
+import { setRef } from "../../utils/setRef";
 
 interface VideoJSProps {
   url: string;
@@ -13,10 +14,7 @@ interface VideoJSProps {
 }
 
 export const VideoJS = forwardRef<VideoJsPlayer | null, VideoJSProps>(
-  (
-    { url, options: overwrittenOptions, onReady, isPaused, volume = 0 },
-    ref,
-  ) => {
+  ({ url, options: overwrittenOptions, onReady, isPaused, volume = 0 }, ref) => {
     const placeholderRef = useRef<HTMLDivElement>(null);
     const playerRef = useRef<VideoJsPlayer | null>(null);
 
@@ -84,6 +82,6 @@ export const VideoJS = forwardRef<VideoJsPlayer | null, VideoJSProps>(
       playerRef.current?.volume(volume);
     }, [volume]);
 
-    return <div ref={placeholderRef} className="video-wrapper" />;
+    return <div ref={placeholderRef} className={styles.videoWrapper} />;
   },
 );
