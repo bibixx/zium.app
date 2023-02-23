@@ -162,7 +162,7 @@ export const Viewer = ({ streams }: ViewerProps) => {
             zIndex={l.zIndex}
             bringToFront={() => dispatch({ type: "bringToFront", id: l.id })}
           >
-            {getLayoutChild(gridWindow)}
+            {/* {getLayoutChild(gridWindow)} */}
           </RnDWindow>
         );
       })}

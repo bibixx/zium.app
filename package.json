@@ -14,7 +14,6 @@
     "object-merge": "^2.5.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-rnd": "^10.4.1",
     "react-router-dom": "^6.8.0",
     "video.js": "^7.21.1",
     "videojs-contrib-quality-levels": "^3.0.0"
