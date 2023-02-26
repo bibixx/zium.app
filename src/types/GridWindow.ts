@@ -1,6 +1,5 @@
 export interface BaseGridWindow {
   id: string;
-  url: string;
 }
 
 export interface MainGridWindow extends BaseGridWindow {
@@ -17,15 +16,7 @@ export interface DataChannelGridWindow extends BaseGridWindow {
 
 export interface DriverGridWindow extends BaseGridWindow {
   type: "driver";
-  firstName: string;
-  lastName: string;
-  team: string;
-  color: string;
-  streamIdentifier: string;
+  driverId: string;
 }
 
-export type GridWindow =
-  | MainGridWindow
-  | DriverTrackerGridWindow
-  | DataChannelGridWindow
-  | DriverGridWindow;
+export type GridWindow = MainGridWindow | DriverTrackerGridWindow | DataChannelGridWindow | DriverGridWindow;

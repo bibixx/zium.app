@@ -11,7 +11,7 @@ interface GridLayout {
   zIndex: number;
 }
 
-interface WindowGridState {
+export interface WindowGridState {
   layout: GridLayout[];
   windows: GridWindow[];
 }
@@ -93,16 +93,11 @@ export const windowGridReducer = (prevState: WindowGridState, action: WindowGrid
           oldUpdatedVideo?.type === "driver" &&
           newWindow.type === "driver" &&
           w.type === "driver" &&
-          newWindow.streamIdentifier === w.streamIdentifier
+          newWindow.driverId === w.driverId
         ) {
           return {
-            color: oldUpdatedVideo.color,
-            firstName: oldUpdatedVideo.firstName,
-            lastName: oldUpdatedVideo.lastName,
-            streamIdentifier: oldUpdatedVideo.streamIdentifier,
-            team: oldUpdatedVideo.team,
+            driverId: oldUpdatedVideo.driverId,
             type: oldUpdatedVideo.type,
-            url: oldUpdatedVideo.url,
             id: w.id,
           };
         }
@@ -137,88 +132,35 @@ export const getInitialState = (): WindowGridState => {
     {
       type: "main",
       id: generateUID(),
-      url: "",
     },
     {
       type: "driver-tracker",
       id: generateUID(),
-      url: "",
     },
     {
       type: "data-channel",
       id: generateUID(),
-      url: "",
     },
     {
       type: "driver",
       id: generateUID(),
-      firstName: "",
-      lastName: "",
-      url: "",
-      team: "",
-      color: "",
-      streamIdentifier: "VER",
+      driverId: "VER",
     },
     {
       type: "driver",
       id: generateUID(),
-      firstName: "",
-      lastName: "",
-      url: "",
-      team: "",
-      color: "",
-      streamIdentifier: "LEC",
+      driverId: "LEC",
     },
     {
       type: "driver",
       id: generateUID(),
-      firstName: "",
-      lastName: "",
-      url: "",
-      team: "",
-      color: "",
-      streamIdentifier: "PER",
+      driverId: "PER",
     },
     {
       type: "driver",
       id: generateUID(),
-      firstName: "",
-      lastName: "",
-      url: "",
-      team: "",
-      color: "",
-      streamIdentifier: "RIC",
+      driverId: "RIC",
     },
-    // {
-    //   type: "driver",
-    //   id: generateUID(),
-    //   firstName: "",
-    //   lastName: "",
-    //   url: "",
-    //   team: "",
-    //   color: "",
-    //   streamIdentifier: "NOR",
-    // },
-    // {
-    //   type: "driver",
-    //   id: generateUID(),
-    //   firstName: "",
-    //   lastName: "",
-    //   url: "",
-    //   team: "",
-    //   color: "",
-    //   streamIdentifier: "GAS",
-    // },
-    // {
-    //   type: "driver",
-    //   id: generateUID(),
-    //   firstName: "",
-    //   lastName: "",
-    //   url: "",
-    //   team: "",
-    //   color: "",
-    //   streamIdentifier: "ALO",
-    // },
   ];
 
   return {

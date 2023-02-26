@@ -13,40 +13,39 @@ interface DataChannelVideoWindowProps extends VideoWindowProps {
   gridWindow: BaseGridWindow;
 }
 
-export const DataChannelVideoWindow = forwardRef<
-  VideoJsPlayer | null,
-  DataChannelVideoWindowProps
->(({ gridWindow, isPaused }, forwardedRef) => {
-  const playerRef = useRef<VideoJsPlayer | null>(null);
-  const streamVideoState = useStreamVideo(gridWindow.url);
+export const DataChannelVideoWindow = forwardRef<VideoJsPlayer | null, DataChannelVideoWindowProps>(
+  ({ isPaused, streamUrl }, forwardedRef) => {
+    const playerRef = useRef<VideoJsPlayer | null>(null);
+    const streamVideoState = useStreamVideo(streamUrl);
 
-  const ref = (r: VideoJsPlayer | null) => {
-    setRef(forwardedRef, r);
-    playerRef.current = r;
-  };
+    const ref = (r: VideoJsPlayer | null) => {
+      setRef(forwardedRef, r);
+      playerRef.current = r;
+    };
 
-  const onReady = (player: VideoJsPlayer) => {
-    onVideoWindowReadyBase(player);
+    const onReady = (player: VideoJsPlayer) => {
+      onVideoWindowReadyBase(player);
 
-    attachUseBestQuality(player);
-  };
+      attachUseBestQuality(player);
+    };
 
-  if (streamVideoState.state !== "done") {
-    return null;
-  }
+    if (streamVideoState.state !== "done") {
+      return null;
+    }
 
-  return (
-    <VideoWindowWrapper>
-      <VideoJS
-        url={streamVideoState.data}
-        options={ADDITIONAL_OPTIONS}
-        ref={ref}
-        onReady={onReady}
-        isPaused={isPaused}
-      />
-    </VideoWindowWrapper>
-  );
-});
+    return (
+      <VideoWindowWrapper>
+        <VideoJS
+          url={streamVideoState.data}
+          options={ADDITIONAL_OPTIONS}
+          ref={ref}
+          onReady={onReady}
+          isPaused={isPaused}
+        />
+      </VideoWindowWrapper>
+    );
+  },
+);
 
 const ADDITIONAL_OPTIONS: VideoJsPlayerOptions = {
   controls: false,

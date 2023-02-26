@@ -24,11 +24,21 @@ interface MainVideoWindowProps extends VideoWindowProps {
 
 export const MainVideoWindow = forwardRef<VideoJsPlayer | null, MainVideoWindowProps>(
   (
-    { gridWindow, executeOnAll, onPlayingChange, isPaused, isAudioFocused, onWindowAudioFocus, volume, setVolume },
+    {
+      gridWindow,
+      streamUrl,
+      executeOnAll,
+      onPlayingChange,
+      isPaused,
+      isAudioFocused,
+      onWindowAudioFocus,
+      volume,
+      setVolume,
+    },
     forwardedRef,
   ) => {
     const playerRef = useRef<VideoJsPlayer | null>(null);
-    const streamVideoState = useStreamVideo(gridWindow.url);
+    const streamVideoState = useStreamVideo(streamUrl);
 
     const ref = (r: VideoJsPlayer | null) => {
       setRef(forwardedRef, r);

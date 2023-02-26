@@ -8,18 +8,11 @@ import { onVideoWindowReadyBase } from "../../../utils/onVideoWindowReady";
 import { setRef } from "../../../utils/setRef";
 import { VideoJS } from "../../VideoJS/VideoJS";
 import { VideoWindowWrapper } from "../VideoWindowWrapper/VideoWindowWrapper";
-
-interface AllDriversInfo {
-  color: string;
-  firstName: string;
-  lastName: string;
-  team: string;
-  id: string;
-}
+import { DriverData } from "../../../views/Viewer/Viewer.utils";
 
 interface DriverVideoWindowProps extends VideoWindowProps {
   gridWindow: DriverGridWindow;
-  availableDrivers: AllDriversInfo[];
+  availableDrivers: DriverData[];
   onDriverChange: (streamIdentifier: string) => void;
   isAudioFocused: boolean;
   onWindowAudioFocus: () => void;
@@ -28,11 +21,12 @@ interface DriverVideoWindowProps extends VideoWindowProps {
 
 export const DriverVideoWindow = forwardRef<VideoJsPlayer | null, DriverVideoWindowProps>(
   (
-    { gridWindow, availableDrivers, onDriverChange, isPaused, isAudioFocused, onWindowAudioFocus, volume },
+    { gridWindow, streamUrl, availableDrivers, onDriverChange, isPaused, isAudioFocused, onWindowAudioFocus, volume },
     forwardedRef,
   ) => {
     const playerRef = useRef<VideoJsPlayer | null>(null);
-    const streamVideoState = useStreamVideo(gridWindow.url);
+    const streamVideoState = useStreamVideo(streamUrl);
+    const currentDriver = availableDrivers.find((driver) => driver.id === gridWindow.driverId);
 
     const ref = (r: VideoJsPlayer | null) => {
       setRef(forwardedRef, r);
@@ -67,15 +61,15 @@ export const DriverVideoWindow = forwardRef<VideoJsPlayer | null, DriverVideoWin
         />
         <div className={styles.driverName}>
           <div className={styles.driverPhotoWrapper}>
-            <img src={`/images/avatars/2022/${gridWindow.streamIdentifier}.png`} alt="" />
+            <img src={currentDriver?.imageUrl} alt="" />
           </div>
           <div className={styles.driverNameWrapper}>
-            <div>{gridWindow.firstName}</div>
-            <div className={styles.driverNameBold}>{gridWindow.lastName}</div>
+            <div>{currentDriver?.firstName}</div>
+            <div className={styles.driverNameBold}>{currentDriver?.lastName}</div>
           </div>
         </div>
         <div className={styles.availableDriversContainer} onMouseDown={(e) => e.stopPropagation()}>
-          <select value={gridWindow.streamIdentifier} onChange={onChange}>
+          <select value={currentDriver?.id} onChange={onChange}>
             {availableDrivers.map((driver) => (
               <option value={driver.id} key={driver.id}>
                 {driver.lastName} {driver.firstName}

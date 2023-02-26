@@ -7,7 +7,7 @@ import { DriverVideoWindow } from "../../components/VideoWindow/DriverVideoWindo
 import { assertNever } from "../../utils/assertNever";
 import { DataChannelVideoWindow } from "../../components/VideoWindow/DataChannelVideoWindow";
 import { StreamsStateData } from "../../hooks/useVideoRaceDetails/useVideoRaceDetails.types";
-import { combineWindowsWithStreams, getAvailableDrivers } from "./Viewer.utils";
+import { getWindowStreamMap, getAvailableDrivers } from "./Viewer.utils";
 import { useGrid } from "./hooks/useGrid";
 import { DriverTrackerVideoWindow } from "../../components/VideoWindow/DriverTrackerVideoWindow";
 import { useVideoRaceDetails } from "../../hooks/useVideoRaceDetails/useVideoRaceDetails";
@@ -21,9 +21,10 @@ import { BackgroundDots } from "./BackgroundDots/BackgroundDots";
 
 interface ViewerProps {
   streams: StreamsStateData;
+  season: number;
 }
 
-export const Viewer = ({ streams }: ViewerProps) => {
+export const Viewer = ({ streams, season }: ViewerProps) => {
   const { baseGrid, grid } = useGrid();
   const [{ layout, windows }, dispatch] = useReducer(windowGridReducer, getInitialState());
 
@@ -32,13 +33,13 @@ export const Viewer = ({ streams }: ViewerProps) => {
     windows,
   });
 
-  const windowsWithUrls = useMemo(() => combineWindowsWithStreams(windows, streams), [windows, streams]);
+  const windowStreamMap = useMemo(() => getWindowStreamMap(windows, streams), [windows, streams]);
   const windowVideojsRefMapRef = useRef<Record<string, VideoJsPlayer | null>>({});
 
   const windowsMap = useMemo((): Record<string, GridWindow> => {
-    const entries = windowsWithUrls.map((w) => [w.id, w]);
+    const entries = windows.map((w) => [w.id, w]);
     return Object.fromEntries(entries);
-  }, [windowsWithUrls]);
+  }, [windows]);
 
   const onLayoutChange = (dimensions: Dimensions, i: string) => {
     dispatch({
@@ -50,7 +51,7 @@ export const Viewer = ({ streams }: ViewerProps) => {
 
   const executeOnAll = useCallback(
     (cb: (player: VideoJsPlayer) => void, callerId: string) => {
-      windowsWithUrls.forEach((w) => {
+      windows.forEach((w) => {
         const player = windowVideojsRefMapRef.current[w.id];
 
         if (w.id === callerId || player == null) {
@@ -60,10 +61,10 @@ export const Viewer = ({ streams }: ViewerProps) => {
         cb(player);
       });
     },
-    [windowsWithUrls],
+    [windows],
   );
 
-  const availableDrivers = useMemo(() => getAvailableDrivers(streams), [streams]);
+  const availableDrivers = useMemo(() => getAvailableDrivers(streams, season), [season, streams]);
 
   const getLayoutChild = useCallback(
     (gridWindow: GridWindow) => {
@@ -83,6 +84,7 @@ export const Viewer = ({ streams }: ViewerProps) => {
             onWindowAudioFocus={() => onWindowAudioFocus(gridWindow.id)}
             volume={volume}
             setVolume={setVolume}
+            streamUrl={windowStreamMap[gridWindow.id]}
           />
         );
       }
@@ -94,12 +96,7 @@ export const Viewer = ({ streams }: ViewerProps) => {
             window: {
               type: "driver",
               id: gridWindow.id,
-              firstName: "",
-              lastName: "",
-              url: "",
-              team: "",
-              color: "",
-              streamIdentifier,
+              driverId: streamIdentifier,
             },
           });
         };
@@ -114,21 +111,45 @@ export const Viewer = ({ streams }: ViewerProps) => {
             isAudioFocused={audioFocusedWindow === gridWindow.id}
             onWindowAudioFocus={() => onWindowAudioFocus(gridWindow.id)}
             volume={volume}
+            streamUrl={windowStreamMap[gridWindow.id]}
           />
         );
       }
 
       if (gridWindow.type === "driver-tracker") {
-        return <DriverTrackerVideoWindow gridWindow={gridWindow} ref={setRef} isPaused={areVideosPaused} />;
+        return (
+          <DriverTrackerVideoWindow
+            gridWindow={gridWindow}
+            ref={setRef}
+            isPaused={areVideosPaused}
+            streamUrl={windowStreamMap[gridWindow.id]}
+          />
+        );
       }
 
       if (gridWindow.type === "data-channel") {
-        return <DataChannelVideoWindow gridWindow={gridWindow} ref={setRef} isPaused={areVideosPaused} />;
+        return (
+          <DataChannelVideoWindow
+            gridWindow={gridWindow}
+            ref={setRef}
+            isPaused={areVideosPaused}
+            streamUrl={windowStreamMap[gridWindow.id]}
+          />
+        );
       }
 
       return assertNever(gridWindow);
     },
-    [executeOnAll, areVideosPaused, audioFocusedWindow, volume, setVolume, onWindowAudioFocus, availableDrivers],
+    [
+      executeOnAll,
+      areVideosPaused,
+      audioFocusedWindow,
+      volume,
+      setVolume,
+      windowStreamMap,
+      onWindowAudioFocus,
+      availableDrivers,
+    ],
   );
 
   useSyncVideos({ windows, windowVideojsRefMapRef });
@@ -176,5 +197,5 @@ export const ViewerWithState = () => {
     return <div>Loading...</div>;
   }
 
-  return <Viewer streams={state.data} />;
+  return <Viewer streams={state.streams} season={state.season} />;
 };

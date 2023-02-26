@@ -1,5 +1,5 @@
 import { useWindowSize } from "../../hooks/useWindowSize";
-import { CURRENT_STORE_VERSION } from "../../utils/windowGridStore";
+import { CURRENT_STORE_VERSION, WindowGridState } from "../../utils/windowGridStore";
 import styles from "./HeightDebugger.module.css";
 
 export const HeightDebugger = () => {
@@ -67,7 +67,7 @@ export const HeightDebugger = () => {
   );
 };
 
-const layout219 = {
+const layout219: WindowGridState = {
   layout: [
     { width: 55.49967447916667, height: 76.49991461748868, x: 0, y: 0, id: "b1rfqr", zIndex: 6 },
     { width: 16.499837239583336, height: 23.5, x: 0, y: 76.5, id: "nlgk61", zIndex: 9 },
@@ -81,78 +81,43 @@ const layout219 = {
     { width: 20.999998728434242, height: 23.5, x: 34.50000127156576, y: 76.5, id: "u8dw0f", zIndex: 5 },
   ],
   windows: [
-    { type: "main", id: "b1rfqr", url: "" },
-    { type: "driver-tracker", id: "nlgk61", url: "" },
-    { type: "data-channel", id: "i1bglj", url: "" },
+    { type: "main", id: "b1rfqr" },
+    { type: "driver-tracker", id: "nlgk61" },
+    { type: "data-channel", id: "i1bglj" },
     {
       type: "driver",
       id: "jp4azy",
-      firstName: "",
-      lastName: "",
-      url: "",
-      team: "",
-      color: "",
-      streamIdentifier: "VER",
+      driverId: "VER",
     },
     {
       type: "driver",
       id: "3f7e9i",
-      firstName: "",
-      lastName: "",
-      url: "",
-      team: "",
-      color: "",
-      streamIdentifier: "PER",
+      driverId: "PER",
     },
     {
       type: "driver",
       id: "ral762",
-      firstName: "",
-      lastName: "",
-      url: "",
-      team: "",
-      color: "",
-      streamIdentifier: "HAM",
+      driverId: "HAM",
     },
     {
       type: "driver",
       id: "hp66b3",
-      firstName: "",
-      lastName: "",
-      url: "",
-      team: "",
-      color: "",
-      streamIdentifier: "LEC",
+      driverId: "LEC",
     },
     {
       type: "driver",
       id: "1ziihg",
-      firstName: "",
-      lastName: "",
-      url: "",
-      team: "",
-      color: "",
-      streamIdentifier: "SAI",
+      driverId: "SAI",
     },
     {
       type: "driver",
       id: "u8dw0e",
-      firstName: "",
-      lastName: "",
-      url: "",
-      team: "",
-      color: "",
-      streamIdentifier: "RUS",
+      driverId: "RUS",
     },
     {
       type: "driver",
       id: "u8dw0f",
-      firstName: "",
-      lastName: "",
-      url: "",
-      team: "",
-      color: "",
-      streamIdentifier: "MAG",
+      driverId: "MAG",
     },
   ],
 };

@@ -1,16 +1,10 @@
 import { useCallback, useEffect, useReducer } from "react";
 import { fetchVideoStream } from "./useStreamVideo.api";
-import {
-  StreamVideoState,
-  StreamVideoStateAction,
-} from "./useStreamVideo.types";
+import { StreamVideoState, StreamVideoStateAction } from "./useStreamVideo.types";
 
-export const useStreamVideo = (playbackUrl: string) => {
+export const useStreamVideo = (playbackUrl: string | null) => {
   const [streams, dispatch] = useReducer(
-    (
-      state: StreamVideoState,
-      action: StreamVideoStateAction,
-    ): StreamVideoState => {
+    (state: StreamVideoState, action: StreamVideoStateAction): StreamVideoState => {
       if (action.type === "load") {
         return { state: "loading" };
       }
@@ -30,6 +24,11 @@ export const useStreamVideo = (playbackUrl: string) => {
 
   const fetchData = useCallback(
     async (signal: AbortSignal) => {
+      if (playbackUrl === null) {
+        dispatch({ type: "error", error: "No playback url" });
+        return;
+      }
+
       dispatch({ type: "load" });
 
       try {

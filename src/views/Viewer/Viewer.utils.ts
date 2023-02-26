@@ -2,57 +2,55 @@ import { StreamsStateData } from "../../hooks/useVideoRaceDetails/useVideoRaceDe
 import { GridWindow } from "../../types/GridWindow";
 import { assertNever } from "../../utils/assertNever";
 
-export const combineWindowsWithStreams = (windows: GridWindow[], streams: StreamsStateData) => {
-  return windows.map((w) => {
-    if (w.type === "main") {
-      return {
-        ...w,
-        url: streams.defaultStream?.playbackUrl!,
-      };
-    }
-
-    if (w.type === "data-channel") {
-      return {
-        ...w,
-        url: streams.dataChannelStream?.playbackUrl!,
-      };
-    }
-
-    if (w.type === "driver-tracker") {
-      return {
-        ...w,
-        url: streams.driverTrackerStream?.playbackUrl!,
-      };
-    }
-
-    if (w.type === "driver") {
-      const driverStream = streams.driverStreams.find((stream) => {
-        return stream.title === w.streamIdentifier;
-      });
-
-      if (driverStream == null) {
-        return w;
+export const getWindowStreamMap = (windows: GridWindow[], streams: StreamsStateData) => {
+  return Object.fromEntries(
+    windows.map((w) => {
+      if (w.type === "main") {
+        return [w.id, streams.defaultStream?.playbackUrl ?? null];
       }
 
-      return {
-        ...w,
-        url: driverStream.playbackUrl,
-        color: driverStream.hex,
-        firstName: driverStream.driverFirstName,
-        lastName: driverStream.driverLastName,
-        team: driverStream.teamName,
-      };
-    }
+      if (w.type === "data-channel") {
+        return [w.id, streams.dataChannelStream?.playbackUrl ?? null];
+      }
 
-    return assertNever(w);
-  });
+      if (w.type === "driver-tracker") {
+        return [w.id, streams.driverTrackerStream?.playbackUrl ?? null];
+      }
+
+      if (w.type === "driver") {
+        const driverStream = streams.driverStreams.find((stream) => {
+          return stream.title === w.driverId;
+        });
+
+        if (driverStream == null) {
+          return [w.id, null];
+        }
+
+        return [w.id, driverStream.playbackUrl];
+      }
+
+      return assertNever(w);
+    }),
+  );
 };
 
-export const getAvailableDrivers = (streams: StreamsStateData) =>
-  streams.driverStreams.map((driverStream) => ({
-    color: driverStream.hex,
-    firstName: driverStream.driverFirstName,
-    lastName: driverStream.driverLastName,
-    team: driverStream.teamName,
-    id: driverStream.title,
-  }));
+export interface DriverData {
+  color: string;
+  firstName: string;
+  lastName: string;
+  team: string;
+  id: string;
+  imageUrl: string;
+}
+export const getAvailableDrivers = (streams: StreamsStateData, season: number) =>
+  streams.driverStreams.map((driverStream): DriverData => {
+    const id = driverStream.title;
+    return {
+      color: driverStream.hex,
+      firstName: driverStream.driverFirstName,
+      lastName: driverStream.driverLastName,
+      team: driverStream.teamName,
+      id,
+      imageUrl: `/images/avatars/${season}/${id}.png`,
+    };
+  });
