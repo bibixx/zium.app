@@ -2,9 +2,7 @@ import { useEffect, useState } from "react";
 import { getIsLoggedIn, listenOnTokenChange } from "../utils/extensionApi";
 
 export const useLoggedInState = () => {
-  const [state, setState] = useState<"loading" | "loggedIn" | "loggedOut">(
-    "loading",
-  );
+  const [state, setState] = useState<"loading" | "loggedIn" | "loggedOut">("loading");
 
   useEffect(() => {
     getIsLoggedIn().then((isLoggedIn) => {

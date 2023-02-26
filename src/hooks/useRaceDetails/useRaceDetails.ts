@@ -1,18 +1,12 @@
 import { useCallback, useEffect, useReducer, useRef } from "react";
 import { fetchRaceDetailsId } from "./useRaceDetails.api";
-import {
-  RaceDetailsState,
-  RaceDetailsStateAction,
-} from "./useRacesDetails.types";
+import { RaceDetailsState, RaceDetailsStateAction } from "./useRacesDetails.types";
 
 export const useRaceDetails = (racePageId: string) => {
   const abortControllerRef = useRef<AbortController | undefined>(undefined);
 
   const [racesDetailsState, dispatch] = useReducer(
-    (
-      state: RaceDetailsState,
-      action: RaceDetailsStateAction,
-    ): RaceDetailsState => {
+    (state: RaceDetailsState, action: RaceDetailsStateAction): RaceDetailsState => {
       if (action.type === "load") {
         return { state: "loading" };
       }
@@ -36,10 +30,7 @@ export const useRaceDetails = (racePageId: string) => {
     dispatch({ type: "load" });
 
     try {
-      const newDetails = await fetchRaceDetailsId(
-        racePageId,
-        abortController.signal,
-      );
+      const newDetails = await fetchRaceDetailsId(racePageId, abortController.signal);
 
       abortControllerRef.current = undefined;
       dispatch({ type: "done", data: newDetails });

@@ -21,9 +21,7 @@ export const RaceDetails = ({ title, id }: RaceDetailsProps) => {
     <details onToggle={onToggle}>
       <summary>{title}</summary>
       {racesDetailsState.state === "loading" && <div>Loading...</div>}
-      {racesDetailsState.state === "error" && (
-        <div>Error: {racesDetailsState.error.toString()}</div>
-      )}
+      {racesDetailsState.state === "error" && <div>Error: {racesDetailsState.error.toString()}</div>}
       {racesDetailsState.state === "done" &&
         (racesDetailsState.data.length ? (
           <ul>

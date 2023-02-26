@@ -34,7 +34,7 @@ interface UpdateWindowAction {
 
 type WindowGridActions = UpdateLayoutAction | UpdateWindowAction | BringToFrontAction;
 
-const CURRENT_STORE_VERSION = "2";
+export const CURRENT_STORE_VERSION = "2";
 export const windowGridReducer = (prevState: WindowGridState, action: WindowGridActions) => {
   const newState = structuredClone(prevState) as WindowGridState;
 
@@ -139,16 +139,16 @@ export const getInitialState = (): WindowGridState => {
       id: generateUID(),
       url: "",
     },
-    // {
-    //   type: "driver-tracker",
-    //   id: generateUID(),
-    //   url: "",
-    // },
-    // {
-    //   type: "data-channel",
-    //   id: generateUID(),
-    //   url: "",
-    // },
+    {
+      type: "driver-tracker",
+      id: generateUID(),
+      url: "",
+    },
+    {
+      type: "data-channel",
+      id: generateUID(),
+      url: "",
+    },
     {
       type: "driver",
       id: generateUID(),
@@ -159,36 +159,36 @@ export const getInitialState = (): WindowGridState => {
       color: "",
       streamIdentifier: "VER",
     },
-    // {
-    //   type: "driver",
-    //   id: generateUID(),
-    //   firstName: "",
-    //   lastName: "",
-    //   url: "",
-    //   team: "",
-    //   color: "",
-    //   streamIdentifier: "LEC",
-    // },
-    // {
-    //   type: "driver",
-    //   id: generateUID(),
-    //   firstName: "",
-    //   lastName: "",
-    //   url: "",
-    //   team: "",
-    //   color: "",
-    //   streamIdentifier: "PER",
-    // },
-    // {
-    //   type: "driver",
-    //   id: generateUID(),
-    //   firstName: "",
-    //   lastName: "",
-    //   url: "",
-    //   team: "",
-    //   color: "",
-    //   streamIdentifier: "RIC",
-    // },
+    {
+      type: "driver",
+      id: generateUID(),
+      firstName: "",
+      lastName: "",
+      url: "",
+      team: "",
+      color: "",
+      streamIdentifier: "LEC",
+    },
+    {
+      type: "driver",
+      id: generateUID(),
+      firstName: "",
+      lastName: "",
+      url: "",
+      team: "",
+      color: "",
+      streamIdentifier: "PER",
+    },
+    {
+      type: "driver",
+      id: generateUID(),
+      firstName: "",
+      lastName: "",
+      url: "",
+      team: "",
+      color: "",
+      streamIdentifier: "RIC",
+    },
     // {
     //   type: "driver",
     //   id: generateUID(),
