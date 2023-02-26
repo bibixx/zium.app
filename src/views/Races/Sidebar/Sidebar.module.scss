@@ -1,0 +1,26 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  margin-top: 64px;
+  gap: 8px;
+  position: sticky;
+  top: 32px;
+  width: 330px;
+  align-self: flex-start;
+}
+
+.element {
+  position: relative;
+}
+
+.carrot {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  left: -24px;
+  height: 52px;
+  width: 4px;
+  background: var(--color-background-accent-default);
+  border-radius: 0 var(--radii-xsmall) var(--radii-xsmall) 0;
+  pointer-events: none;
+}

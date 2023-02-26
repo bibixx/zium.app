@@ -3,7 +3,7 @@ import cn from "classnames";
 import { useWindowSize } from "../../hooks/useWindowSize";
 import { Dimensions } from "../../types/Dimensions";
 import { sizePercentToPx, sizePxToPercent } from "./RnDWindow.utils";
-import styles from "./RnDWindow.module.css";
+import styles from "./RnDWindow.module.scss";
 import { WithVariables } from "../WithVariables/WithVariables";
 import { useDrag } from "./hooks/useDrag";
 import { useResize } from "./hooks/useResize";

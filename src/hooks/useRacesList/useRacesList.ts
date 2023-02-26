@@ -2,7 +2,7 @@ import { useCallback, useEffect, useReducer } from "react";
 import { fetchRacesList } from "./useRacesList.api";
 import { RacesState, RacesStateAction } from "./useRacesList.types";
 
-export const useRacesList = (seasonId: string | null) => {
+export const useRacesList = (seasonId: string) => {
   const [racesState, dispatch] = useReducer(
     (state: RacesState, action: RacesStateAction): RacesState => {
       if (action.type === "load") {
@@ -19,7 +19,7 @@ export const useRacesList = (seasonId: string | null) => {
 
       return state;
     },
-    { state: "idle" },
+    { state: "loading" },
   );
 
   const fetchData = useCallback(

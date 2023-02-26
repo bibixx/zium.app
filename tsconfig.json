@@ -4,10 +4,14 @@
       {
         "name": "typescript-plugin-css-modules",
         "options": {
-          "classnameTransform": "camelCaseOnly"
+          "classnameTransform": "camelCaseOnly",
+          "additionalData": "@import \"@@\";\n",
         }
       }
     ],
+    "paths": {
+      "@@": ["./src/styles/mixins.scss"]
+    },
     "target": "ESNext",
     "useDefineForClassFields": true,
     "lib": ["DOM", "DOM.Iterable", "ESNext"],

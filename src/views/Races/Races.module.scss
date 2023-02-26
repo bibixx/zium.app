@@ -1,0 +1,27 @@
+.layout {
+  display: grid;
+  grid-template-columns: 330px 1fr;
+  padding: 24px;
+  padding-top: 0;
+  gap: 24px;
+}
+
+.races summary {
+  cursor: pointer;
+}
+
+.races ul {
+  margin: 0;
+}
+
+.heading {
+  @include typography(heading, 600, default);
+  color: var(--color-text-strong);
+  margin-bottom: 24px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(330px, auto));
+  gap: 24px;
+}

@@ -9,18 +9,55 @@ export const fetchRacesList = async (id: string, signal: AbortSignal): Promise<R
     .flatMap((c: any) => c.retrieveItems.resultObj.containers)
     .filter((c: any) => c?.metadata?.genres?.includes("RACE"));
 
-  const races = containers
+  const uniqueContainers = getUnique(containers);
+  const races = uniqueContainers
     .map((racePage: any) => {
       const racePageId = racePage.metadata.emfAttributes.PageID;
       const title = racePage.metadata.shortDescription;
+      const pictureUrl = racePage.metadata.pictureUrl;
+      const countryName = racePage.metadata.emfAttributes.Meeting_Country_Name;
+      const startDate = new Date(racePage.metadata.emfAttributes.Meeting_Start_Date);
+      const endDate = new Date(racePage.metadata.emfAttributes.Meeting_End_Date);
+      const roundNumber = +racePage.metadata.emfAttributes.Championship_Meeting_Ordinal;
+      const description = racePage.metadata.emfAttributes.Meeting_Official_Name;
+      const countryId = racePage.metadata.emfAttributes.MeetingCountryKey;
 
-      if (!title.toLowerCase().includes("grand prix")) {
+      if (!title.toLowerCase().includes("grand prix") || startDate.getTime() > Date.now()) {
         return null;
       }
 
-      return { id: racePageId, title };
+      return {
+        id: racePageId,
+        title,
+        pictureUrl,
+        countryName,
+        startDate,
+        endDate,
+        roundNumber,
+        description,
+        countryId,
+      };
     })
-    .filter((r: any) => r != null);
+    .filter(isNotNullable);
 
   return races;
+};
+
+const getUnique = <T extends { id: string }>(array: T[]) => {
+  const visitedIds: Record<string, boolean> = {};
+
+  return array.filter((el) => {
+    const found = visitedIds[el.id];
+
+    if (found) {
+      return false;
+    }
+
+    visitedIds[el.id] = true;
+    return true;
+  });
+};
+
+const isNotNullable = <T>(el: T | null | undefined): el is T => {
+  return el != null;
 };

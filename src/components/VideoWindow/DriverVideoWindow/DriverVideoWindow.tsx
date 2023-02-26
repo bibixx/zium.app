@@ -1,6 +1,6 @@
 import { forwardRef, useRef } from "react";
 import { VideoJsPlayer, VideoJsPlayerOptions } from "video.js";
-import styles from "./DriverVideoWindow.module.css";
+import styles from "./DriverVideoWindow.module.scss";
 import { useStreamVideo } from "../../../hooks/useStreamVideo/useStreamVideo";
 import { DriverGridWindow } from "../../../types/GridWindow";
 import { VideoWindowProps } from "../../../types/VideoWindowBaseProps";

@@ -12,7 +12,7 @@ import { useGrid } from "./hooks/useGrid";
 import { DriverTrackerVideoWindow } from "../../components/VideoWindow/DriverTrackerVideoWindow";
 import { useVideoRaceDetails } from "../../hooks/useVideoRaceDetails/useVideoRaceDetails";
 import { useParams } from "react-router-dom";
-import styles from "./Viewer.module.css";
+import styles from "./Viewer.module.scss";
 import { RnDWindow } from "../../components/RnDWindow/RnDWindow";
 import { Dimensions } from "../../types/Dimensions";
 import { useVideoAudio } from "./hooks/useVideoAudio";

@@ -21,7 +21,7 @@ export const useRaceDetails = (racePageId: string) => {
 
       return state;
     },
-    { state: "idle" },
+    { state: "loading" },
   );
 
   const fetchRaceEvents = useCallback(async () => {
@@ -41,8 +41,10 @@ export const useRaceDetails = (racePageId: string) => {
   }, [racePageId]);
 
   useEffect(() => {
-    abortControllerRef.current?.abort();
-  }, [racePageId]);
+    fetchRaceEvents();
+
+    return () => abortControllerRef.current?.abort();
+  }, [fetchRaceEvents, racePageId]);
 
   return {
     racesDetailsState,

@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import styles from "./VideoWindowWrapper.module.css";
+import styles from "./VideoWindowWrapper.module.scss";
 
 interface VideoWindowWrapperProps {
   children: ReactNode;

@@ -1,10 +1,11 @@
 export interface RaceDetailsData {
   title: string;
   id: string;
+  pictureUrl: string;
+  startDate: Date;
 }
 
 export type RaceDetailsState =
-  | { state: "idle" }
   | { state: "loading" }
   | { state: "error"; error: string }
   | { state: "done"; data: RaceDetailsData[] };

@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import styles from "./BackgroundDots.module.css";
+import styles from "./BackgroundDots.module.scss";
 import { WithVariables } from "../../../components/WithVariables/WithVariables";
 import { useWindowSize } from "../../../hooks/useWindowSize";
 import { calculateBoxShadow } from "./BackgroundDots.utils";

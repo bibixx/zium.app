@@ -2,7 +2,7 @@ import objectMerge from "object-merge";
 import { forwardRef, useEffect, useRef } from "react";
 import videojs, { VideoJsPlayer, VideoJsPlayerOptions } from "video.js";
 import "videojs-contrib-quality-levels";
-import styles from "./VideoJS.module.css";
+import styles from "./VideoJS.module.scss";
 import { setRef } from "../../utils/setRef";
 
 interface VideoJSProps {

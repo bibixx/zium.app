@@ -1,0 +1,72 @@
+.heroImage {
+  height: 160px;
+  width: 100%;
+  opacity: 0.5;
+  transition: var(--transition-fast);
+  transition-property: opacity;
+}
+
+.countryImage {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: var(--radii-rounded);
+}
+
+.contentWrapper {
+  padding: 24px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.headerTextContent {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.headerFirstLine {
+  @include typography(heading, 400, default);
+  color: var(--color-text-strong);
+}
+
+.headerSecondLine {
+  @include typography(label, 300);
+  font-weight: 500;
+  display: flex;
+  justify-content: space-between;
+  gap: 4px;
+
+  color: var(--color-text-default);
+}
+
+.headerRound {
+  color: var(--color-text-muted);
+}
+
+.content {
+  margin-top: 16px;
+  @include typography(text, 300, regular);
+}
+
+.wrapper {
+  width: 313px;
+  border-radius: var(--radii-medium);
+  overflow: hidden;
+  box-shadow: inset 0 0 0 1px transparent;
+  transition: var(--transition-fast);
+  transition-property: box-shadow, background;
+
+  &:hover {
+    box-shadow: inset 0 0 0 1px var(--color-border-muted-alpha);
+    background: var(--color-background-default-default);
+
+    .heroImage {
+      opacity: 1;
+    }
+  }
+}

@@ -1,6 +1,6 @@
 import { useWindowSize } from "../../hooks/useWindowSize";
 import { CURRENT_STORE_VERSION, WindowGridState } from "../../utils/windowGridStore";
-import styles from "./HeightDebugger.module.css";
+import styles from "./HeightDebugger.module.scss";
 
 export const HeightDebugger = () => {
   const { width, height } = useWindowSize();

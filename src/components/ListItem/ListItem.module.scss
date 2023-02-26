@@ -1,0 +1,29 @@
+.contentWrapper {
+  display: flex;
+  padding: 4px 8px;
+  gap: 8px;
+}
+
+.text {
+  @include typography(label, 300);
+  color: var(--color-text-default);
+  flex: 1;
+  transition: var(--transition-fast);
+  transition-property: color;
+  text-decoration: none;
+
+  &.isActive {
+    color: var(--color-text-strong);
+  }
+}
+
+.caption {
+  @include typography(text, 300, regular);
+  color: var(--color-text-muted);
+}
+
+.listItemWrapper {
+  &:hover:not(:active):not(:focus-visible) .text:not(.isActive) {
+    color: var(--color-text-strong);
+  }
+}

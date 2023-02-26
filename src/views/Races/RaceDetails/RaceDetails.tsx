@@ -1,39 +1,39 @@
 import { Link } from "react-router-dom";
+import { EventCard } from "../../../components/EventCard/EventCard";
 import { useRaceDetails } from "../../../hooks/useRaceDetails/useRaceDetails";
 
 interface RaceDetailsProps {
   id: string;
-  title: string;
 }
 
-export const RaceDetails = ({ title, id }: RaceDetailsProps) => {
-  const { fetchRaceEvents, racesDetailsState } = useRaceDetails(id);
+export const RaceDetails = ({ id }: RaceDetailsProps) => {
+  const { racesDetailsState } = useRaceDetails(id);
 
-  const onToggle = () => {
-    if (racesDetailsState.state !== "idle") {
-      return;
-    }
+  if (racesDetailsState.state === "loading") {
+    return <div>Loading...</div>;
+  }
+  if (racesDetailsState.state === "error") {
+    return <div>Error: {racesDetailsState.error.toString()}</div>;
+  }
 
-    fetchRaceEvents();
-  };
+  if (racesDetailsState.data.length === 0) {
+    <strong>No races found</strong>;
+  }
 
   return (
-    <details onToggle={onToggle}>
-      <summary>{title}</summary>
-      {racesDetailsState.state === "loading" && <div>Loading...</div>}
-      {racesDetailsState.state === "error" && <div>Error: {racesDetailsState.error.toString()}</div>}
-      {racesDetailsState.state === "done" &&
-        (racesDetailsState.data.length ? (
-          <ul>
-            {racesDetailsState.data.map((raceDetails) => (
-              <li key={raceDetails.id}>
-                <Link to={`/race/${raceDetails.id}`}>{raceDetails.title}</Link>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <strong>No races found</strong>
-        ))}
-    </details>
+    <>
+      {racesDetailsState.data.map((raceDetails) => (
+        <Link to={`/race/${raceDetails.id}`} key={raceDetails.id}>
+          <EventCard
+            pictureUrl={raceDetails.pictureUrl}
+            countryName={raceDetails.title}
+            displayDate={formatDate(raceDetails.startDate)}
+          />
+        </Link>
+      ))}
+    </>
   );
 };
+
+const formatDate = (date: Date) =>
+  new Intl.DateTimeFormat("en-US", { day: "numeric", month: "short", year: "numeric" }).format(date);

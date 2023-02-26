@@ -1,0 +1,20 @@
+body {
+  margin: 0;
+  background: var(--color-background-surface);
+  color: var(--color-text-default);
+}
+
+body,
+#root {
+  height: 100vh;
+}
+
+* {
+  font-family: var(--typography-font-families-body), sans-serif;
+  color: var(--color-text-default);
+  box-sizing: border-box;
+}
+
+a {
+  text-decoration: none;
+}

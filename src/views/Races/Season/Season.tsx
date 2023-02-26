@@ -1,34 +1,46 @@
-import { useState } from "react";
+import { Link } from "react-router-dom";
+import { EventCard } from "../../../components/EventCard/EventCard";
 import { useRacesList } from "../../../hooks/useRacesList/useRacesList";
-import { RaceDetails } from "../RaceDetails/RaceDetails";
 
 interface SeasonProps {
   seasonId: string;
-  title: string;
-  openByDefault?: boolean;
 }
 
-export const Season = ({ title, seasonId, openByDefault = false }: SeasonProps) => {
-  const [isOpen, setIsOpen] = useState(openByDefault);
-  const { racesState } = useRacesList(isOpen ? seasonId : null);
+export const Season = ({ seasonId }: SeasonProps) => {
+  const { racesState } = useRacesList(seasonId);
 
-  const onToggle = () => {
-    if (isOpen) {
-      return;
-    }
+  if (racesState.state === "loading") {
+    return <div>Loading...</div>;
+  }
 
-    setIsOpen(true);
-  };
+  if (racesState.state === "error") {
+    return <div>Error {racesState.error.toString()}</div>;
+  }
 
   return (
-    <details onToggle={onToggle} open={isOpen}>
-      <summary>
-        <h2>{title}</h2>
-      </summary>
-      {racesState.state === "loading" && <div>Loading...</div>}
-      {racesState.state === "error" && <div>Error {racesState.error.toString()}</div>}
-      {racesState.state === "done" &&
-        racesState.data.map(({ id, title }) => <RaceDetails key={id} id={id} title={title} />)}
-    </details>
+    <>
+      {racesState.data.map(
+        ({ id, pictureUrl, countryName, startDate, endDate, roundNumber, description, countryId }) => (
+          <Link to={`./${id}`} key={id}>
+            <EventCard
+              pictureUrl={pictureUrl}
+              countryName={countryName}
+              displayDate={formatDateRange(startDate, endDate)}
+              caption={`Round ${roundNumber}`}
+              description={toTitleCase(description).replace(/Prix /, "Prix ")}
+              countryId={countryId}
+            />
+          </Link>
+        ),
+      )}
+    </>
   );
 };
+
+const formatDateDayMonth = (date: Date) =>
+  new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short" }).format(date);
+const formatDateRange = (startDate: Date, endDate: Date) =>
+  `${formatDateDayMonth(startDate)}–${formatDateDayMonth(endDate)}`;
+
+const firstUpper = (text: string) => `${text.charAt(0).toUpperCase()}${text.slice(1).toLowerCase()}`;
+const toTitleCase = (text: string) => text.split(" ").map(firstUpper).join(" ");

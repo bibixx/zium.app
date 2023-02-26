@@ -13,10 +13,14 @@ export const fetchRaceDetailsId = async (raceId: string, signal: AbortSignal): P
 
   const raceEvents = replays.retrieveItems.resultObj.containers
     .filter((r: any) => ["RACE", "QUALIFYING", "PRACTICE"].includes(r.metadata.genres[0]))
-    .map((r: any) => ({
-      title: r.metadata.title,
-      id: r.metadata.contentId,
-    }));
+    .map((r: any) => {
+      return {
+        title: r.metadata.title,
+        id: r.metadata.contentId,
+        pictureUrl: r.metadata.pictureUrl,
+        startDate: new Date(r.metadata.emfAttributes.sessionStartDate),
+      };
+    });
 
   return raceEvents;
 };
