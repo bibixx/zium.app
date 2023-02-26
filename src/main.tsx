@@ -1,4 +1,5 @@
 import ReactDOM from "react-dom/client";
+import "./styles/variables.css";
 import "./index.css";
 import "video.js/dist/video-js.css";
 

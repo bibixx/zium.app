@@ -14,9 +14,9 @@ export const fetchRacesList = async (id: string, signal: AbortSignal): Promise<R
       const racePageId = racePage.metadata.emfAttributes.PageID;
       const title = racePage.metadata.shortDescription;
 
-      // if (!title.toLowerCase().includes("grand prix")) {
-      //   return null;
-      // }
+      if (!title.toLowerCase().includes("grand prix")) {
+        return null;
+      }
 
       return { id: racePageId, title };
     })

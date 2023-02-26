@@ -1,0 +1,14 @@
+{
+  "source": ["src/tokens/*.sd.json"],
+  "platforms": {
+    "css": {
+      "transformGroup": "css",
+      "files": [
+        {
+          "destination": "src/styles/variables.css",
+          "format": "css/variables"
+        }
+      ]
+    }
+  }
+}

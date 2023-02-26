@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "lint": "eslint src/**/*.{ts,tsx}"
+    "lint": "eslint src/**/*.{ts,tsx}",
+    "build-tokens": "token-transformer src/tokens/global.json src/tokens/global.sd.json && style-dictionary build --config tokens.config.json && rm -f src/tokens/*.sd.json"
   },
   "dependencies": {
     "classnames": "^2.3.2",
@@ -34,6 +35,8 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "postcss-nesting": "^11.2.1",
     "prettier": "^2.8.3",
+    "style-dictionary": "^3.7.2",
+    "token-transformer": "^0.0.30",
     "typescript": "^4.9.3",
     "typescript-plugin-css-modules": "^4.2.2",
     "vite": "^4.0.0"
