@@ -3,11 +3,12 @@ import { EventCard } from "../../../components/EventCard/EventCard";
 import { useRacesList } from "../../../hooks/useRacesList/useRacesList";
 
 interface SeasonProps {
+  seasonApiId: string;
   seasonId: string;
 }
 
-export const Season = ({ seasonId }: SeasonProps) => {
-  const { racesState } = useRacesList(seasonId);
+export const Season = ({ seasonApiId, seasonId }: SeasonProps) => {
+  const { racesState } = useRacesList(seasonApiId);
 
   if (racesState.state === "loading") {
     return <div>Loading...</div>;
@@ -21,7 +22,7 @@ export const Season = ({ seasonId }: SeasonProps) => {
     <>
       {racesState.data.map(
         ({ id, pictureUrl, countryName, startDate, endDate, roundNumber, description, countryId }) => (
-          <Link to={`./${id}`} key={id}>
+          <Link to={`/season/${seasonId}/${id}`} key={id}>
             <EventCard
               pictureUrl={pictureUrl}
               countryName={countryName}
