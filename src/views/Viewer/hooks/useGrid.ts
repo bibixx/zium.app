@@ -13,8 +13,8 @@ export const useGrid = () => {
   const { meta, shift } = usePressedModifiers();
 
   const baseGrid = useMemo(() => {
-    const xMultiplier = getWindowSizeGridXMultiplier(windowWidth);
-    const yMultiplier = getWindowSizeGridYMultiplier(windowHeight);
+    const xMultiplier = getWindowSizeGridXMultiplier(windowWidth) / 2;
+    const yMultiplier = getWindowSizeGridYMultiplier(windowHeight) / 2;
     const xGrid = percentToFraction(GRID_STEP) * windowWidth;
     const yGrid = percentToFraction(GRID_STEP) * windowHeight;
 
