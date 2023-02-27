@@ -38,7 +38,8 @@ export const fetchRacesList = async (id: string, signal: AbortSignal): Promise<R
         countryId,
       };
     })
-    .filter(isNotNullable);
+    .filter(isNotNullable)
+    .sort((a, b) => b.roundNumber - a.roundNumber);
 
   return races;
 };
