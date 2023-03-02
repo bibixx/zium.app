@@ -8,6 +8,7 @@
   transition-property: border, background;
   width: 100%;
   cursor: pointer;
+  user-select: none;
 
   &:not(.isActive) {
     background: transparent;
@@ -32,5 +33,9 @@
   &.isActive {
     border: 1px solid var(--color-border-muted-alpha);
     background: var(--color-background-default-alpha);
+  }
+
+  &.disabled {
+    pointer-events: none;
   }
 }

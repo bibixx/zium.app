@@ -107,6 +107,7 @@
   border: none;
   padding: 0;
   text-align: left;
+  user-select: none;
 
   @include inner-border(var(--color-border-muted-alpha)) {
     opacity: 0;

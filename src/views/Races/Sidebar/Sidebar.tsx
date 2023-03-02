@@ -67,6 +67,7 @@ const SidebarElement = ({ season, isComingSoon = false, isActive, onSidebarEleme
         as="a"
         href={`#season-${season}`}
         caption={isComingSoon ? "Coming soon" : undefined}
+        disabled={isComingSoon}
         isActive={isActive}
         onClick={onSidebarElementClick}
       >
