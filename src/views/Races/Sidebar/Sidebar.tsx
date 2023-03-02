@@ -61,11 +61,12 @@ interface SidebarElementProps {
   onSidebarElementClick: (e: React.MouseEvent<HTMLAnchorElement>) => void;
 }
 const SidebarElement = ({ season, isComingSoon = false, isActive, onSidebarElementClick }: SidebarElementProps) => {
+  const baseProps = !isComingSoon ? ({ as: "a", href: `#season-${season}` } as const) : ({ as: "div" } as const);
+
   return (
     <div className={styles.element}>
       <ListItem
-        as="a"
-        href={`#season-${season}`}
+        {...baseProps}
         caption={isComingSoon ? "Coming soon" : undefined}
         disabled={isComingSoon}
         isActive={isActive}

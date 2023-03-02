@@ -14,6 +14,7 @@ export const ListItemWrapper = withAs("button")<ListItemWrapperProps>(
     return (
       <Component
         className={cn(styles.wrapper, { [styles.isActive]: isActive, [styles.disabled]: disabled }, className)}
+        disabled={disabled}
         {...props}
       >
         {children}
