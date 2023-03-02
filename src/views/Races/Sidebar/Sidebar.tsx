@@ -1,40 +1,77 @@
 import styles from "./Sidebar.module.scss";
 import { ListItem } from "../../../components/ListItem/ListItem";
-import { NavLink } from "react-router-dom";
-import { COMING_SOON_SEASONS_DATA, DEFAULT_SEASON, SUPPORTED_SEASONS } from "../../../constants/seasons";
+import { SupportedSeasons, SUPPORTED_SEASONS } from "../../../constants/seasons";
+import { isSeasonComingSoon } from "../../../utils/SeasonUtils";
+import { WithVariables } from "../../../components/WithVariables/WithVariables";
+import { Header } from "../Header/Header";
 
-export const Sidebar = () => {
+interface SidebarProps {
+  visibleSeasonId: string;
+  overwriteVisibleSeason: (season: SupportedSeasons) => void;
+}
+export const Sidebar = ({ visibleSeasonId, overwriteVisibleSeason }: SidebarProps) => {
+  const visibleSeasonIndex = (SUPPORTED_SEASONS as readonly string[]).indexOf(visibleSeasonId);
+
+  const onSidebarElementClick = (season: SupportedSeasons) => (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (e.metaKey) {
+      return;
+    }
+
+    e.preventDefault();
+    const id = `season-${season}`;
+    const $scrollToElement = document.getElementById(id);
+    if ($scrollToElement == null) {
+      return;
+    }
+
+    overwriteVisibleSeason(season);
+    $scrollToElement.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
+
   return (
     <div className={styles.wrapper}>
-      {SUPPORTED_SEASONS.map((season) => {
-        const path = season === DEFAULT_SEASON ? "/" : `/season/${season}`;
-        const comingSoonData = COMING_SOON_SEASONS_DATA[season];
-        const isComingSoon = comingSoonData == null ? false : comingSoonData.getTime() > Date.now();
+      <Header />
+      <div className={styles.elementsWrapper}>
+        <WithVariables className={styles.carrot} variables={{ i: visibleSeasonIndex }} />
+        {SUPPORTED_SEASONS.map((season) => {
+          const isComingSoon = isSeasonComingSoon(season);
 
-        return <SidebarElement season={season} path={path} isComingSoon={isComingSoon} key={season} />;
-      })}
+          return (
+            <SidebarElement
+              season={season}
+              isComingSoon={isComingSoon}
+              key={season}
+              isActive={visibleSeasonId === season}
+              onSidebarElementClick={onSidebarElementClick(season)}
+            />
+          );
+        })}
+      </div>
     </div>
   );
 };
 
 interface SidebarElementProps {
   season: string;
-  path: string;
   isComingSoon?: boolean;
+  isActive: boolean;
+  onSidebarElementClick: (e: React.MouseEvent<HTMLAnchorElement>) => void;
 }
-const SidebarElement = ({ season, path, isComingSoon = false }: SidebarElementProps) => {
+const SidebarElement = ({ season, isComingSoon = false, isActive, onSidebarElementClick }: SidebarElementProps) => {
   return (
     <div className={styles.element}>
-      <NavLink to={path}>
-        {({ isActive }) => (
-          <>
-            {isActive && <div className={styles.carrot} />}
-            <ListItem caption={isComingSoon ? "Coming soon" : undefined} isActive={isActive}>
-              Season {season}
-            </ListItem>
-          </>
-        )}
-      </NavLink>
+      <ListItem
+        as="a"
+        href={`#season-${season}`}
+        caption={isComingSoon ? "Coming soon" : undefined}
+        isActive={isActive}
+        onClick={onSidebarElementClick}
+      >
+        <div>Season {season}</div>
+      </ListItem>
     </div>
   );
 };

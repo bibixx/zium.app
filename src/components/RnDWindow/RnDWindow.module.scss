@@ -2,7 +2,6 @@
   position: relative;
   width: 100%;
   height: 100%;
-
 }
 
 .rndWrapper {
@@ -11,7 +10,7 @@
   cursor: grab;
   overflow: hidden;
   background: #0f0f12;
-  border-radius: 8px;
+  border-radius: var(--radii-small);
 
   &::after {
     content: "";

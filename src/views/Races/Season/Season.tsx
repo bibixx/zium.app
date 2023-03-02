@@ -20,20 +20,21 @@ export const Season = ({ seasonApiId, seasonId }: SeasonProps) => {
 
   return (
     <>
-      {racesState.data.map(
-        ({ id, pictureUrl, countryName, startDate, endDate, roundNumber, description, countryId }) => (
-          <Link to={`/season/${seasonId}/${id}`} key={id}>
-            <EventCard
-              pictureUrl={pictureUrl}
-              countryName={countryName}
-              displayDate={formatDateRange(startDate, endDate)}
-              caption={`Round ${roundNumber}`}
-              description={toTitleCase(description).replace(/Prix /, "Prix ")}
-              countryId={countryId}
-            />
-          </Link>
-        ),
-      )}
+      {racesState.data
+        .filter(({ startDate }) => startDate.getTime() <= Date.now())
+        .map(({ id, pictureUrl, countryName, startDate, endDate, roundNumber, description, countryId }) => (
+          <EventCard
+            as={Link}
+            to={`/season/${seasonId}/${id}`}
+            key={id}
+            pictureUrl={pictureUrl}
+            countryName={countryName}
+            displayDate={formatDateRange(startDate, endDate)}
+            caption={`Round ${roundNumber}`}
+            description={toTitleCase(description).replace(/Prix /, "Prix ")}
+            countryId={countryId}
+          />
+        ))}
     </>
   );
 };

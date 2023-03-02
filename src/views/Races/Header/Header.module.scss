@@ -1,6 +1,11 @@
 .wrapper {
-  height: 96px;
-  padding: 0 40px;
   display: flex;
   align-items: center;
+  margin-bottom: 32px;
+  margin-left: 16px;
+  margin-top: 8px;
+}
+
+.headerImage {
+  height: 32px;
 }

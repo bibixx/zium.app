@@ -1,3 +1,5 @@
+import cn from "classnames";
+import { withAs } from "../../utils/withAs";
 import styles from "./EventCard.module.scss";
 
 interface EventCardProps {
@@ -8,40 +10,40 @@ interface EventCardProps {
   caption?: string;
   description?: string;
 }
-export const EventCard = ({
-  pictureUrl,
-  countryName,
-  countryId,
-  displayDate,
-  caption,
-  description,
-}: EventCardProps) => {
-  return (
-    <div className={styles.wrapper}>
-      <img
-        src={`https://f1tv.formula1.com/image-resizer/image/${pictureUrl}?w=313&h=160&q=HI&o=L`}
-        alt=""
-        className={styles.heroImage}
-      />
-      <main className={styles.contentWrapper}>
-        <div className={styles.header}>
-          {countryId && (
-            <img
-              className={styles.countryImage}
-              src={`https://ott-img.formula1.com/countries/${countryId}.png`}
-              alt=""
-            />
-          )}
-          <div className={styles.headerTextContent}>
-            <div className={styles.headerFirstLine}>{countryName}</div>
-            <div className={styles.headerSecondLine}>
-              <div>{displayDate}</div>
-              {caption && <div className={styles.headerRound}>{caption}</div>}
+export const EventCard = withAs("div")<EventCardProps>(
+  ({ as: Component, pictureUrl, countryName, countryId, displayDate, caption, description, ...props }) => {
+    return (
+      <Component className={styles.wrapper} {...props}>
+        <div className={styles.heroImageWrapper}>
+          <img
+            src={`https://f1tv.formula1.com/image-resizer/image/${pictureUrl}?w=400&h=195&q=HI&o=L`}
+            alt=""
+            className={styles.heroImage}
+          />
+          <div className={styles.heroImageOverlay} />
+        </div>
+        <main className={styles.contentWrapper}>
+          <div className={styles.header}>
+            {countryId && (
+              <div className={styles.countryImageWrapper}>
+                <img
+                  className={cn(styles.countryImage, `country-${countryId}`)}
+                  src={`https://ott-img.formula1.com/countries/${countryId}.png`}
+                  alt=""
+                />
+              </div>
+            )}
+            <div className={styles.headerTextContent}>
+              <div className={styles.headerFirstLine}>{countryName}</div>
+              <div className={styles.headerSecondLine}>
+                <div>{displayDate}</div>
+                {caption && <div className={styles.headerRound}>{caption}</div>}
+              </div>
             </div>
           </div>
-        </div>
-        {description && <div className={styles.content}>{description}</div>}
-      </main>
-    </div>
-  );
-};
+          {description && <div className={styles.content}>{description}</div>}
+        </main>
+      </Component>
+    );
+  },
+);

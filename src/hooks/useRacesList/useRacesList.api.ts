@@ -22,7 +22,7 @@ export const fetchRacesList = async (id: string, signal: AbortSignal): Promise<R
       const description = racePage.metadata.emfAttributes.Meeting_Official_Name;
       const countryId = racePage.metadata.emfAttributes.MeetingCountryKey;
 
-      if (!title.toLowerCase().includes("grand prix") || startDate.getTime() > Date.now()) {
+      if (!title.toLowerCase().includes("grand prix")) {
         return null;
       }
 

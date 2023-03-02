@@ -7,7 +7,7 @@ import { assertNever } from "./utils/assertNever";
 import { useLoggedInState } from "./hooks/useLoggedInState";
 import { LogIn } from "./views/LogIn/LogIn";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { RacesWithRedirect } from "./views/Races/Races";
+import { Races } from "./views/Races/Races";
 import classNames from "classnames";
 import { HeightDebugger } from "./components/HeightDebugger/HeightDebugger";
 import { useDebug } from "./hooks/useDebug/useDebug";
@@ -58,11 +58,7 @@ export default function App() {
         <WithLoggedIn>
           <BrowserRouter>
             <Routes>
-              <Route path="/" element={<RacesWithRedirect />} />
-              <Route path="/season/:seasonId">
-                <Route index element={<RacesWithRedirect />} />
-                <Route path=":eventId" element={<RacesWithRedirect />} />
-              </Route>
+              <Route path="/" element={<Races />} />
               <Route path="/race/:raceId" element={<ViewerWithState />} />
             </Routes>
           </BrowserRouter>

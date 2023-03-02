@@ -1,5 +1,4 @@
 .wrapper {
-  all: unset;
   display: block;
   position: relative;
   padding: 8px;
@@ -7,7 +6,7 @@
   border: 1px solid transparent;
   transition: var(--transition-fast);
   transition-property: border, background;
-  width: calc(100% - 16px);
+  width: 100%;
   cursor: pointer;
 
   &:not(.isActive) {
@@ -33,27 +32,5 @@
   &.isActive {
     border: 1px solid var(--color-border-muted-alpha);
     background: var(--color-background-default-alpha);
-  }
-
-  /* Focus ring */
-  outline-color: transparent;
-  outline-width: 2px;
-  outline-style: dotted;
-
-  &::after {
-    content: "";
-    display: block;
-    position: absolute;
-    inset: -4px;
-    border: 2px solid var(--color-border-accent);
-    pointer-events: none;
-    border-radius: var(--radii-medium);
-    visibility: hidden;
-  }
-
-  &:focus-visible {
-    &::after {
-      visibility: visible;
-    }
   }
 }

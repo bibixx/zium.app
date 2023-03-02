@@ -276,8 +276,8 @@
   --radii-rounded: 999px;
 
   --transition-function: cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-timing-fast: 100ms;
-  --transition-timing-medium: 150ms;
+  --transition-timing-fast: 150ms;
+  --transition-timing-medium: 200ms;
   --transition-timing-slow: 300ms;
 
   --transition-fast: var(--transition-function) var(--transition-timing-fast);

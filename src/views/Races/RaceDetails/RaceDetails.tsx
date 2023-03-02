@@ -23,13 +23,14 @@ export const RaceDetails = ({ id }: RaceDetailsProps) => {
   return (
     <>
       {racesDetailsState.data.map((raceDetails) => (
-        <Link to={`/race/${raceDetails.id}`} key={raceDetails.id}>
-          <EventCard
-            pictureUrl={raceDetails.pictureUrl}
-            countryName={raceDetails.title}
-            displayDate={formatDate(raceDetails.startDate)}
-          />
-        </Link>
+        <EventCard
+          key={raceDetails.id}
+          as={Link}
+          to={`/race/${raceDetails.id}`}
+          pictureUrl={raceDetails.pictureUrl}
+          countryName={raceDetails.title}
+          displayDate={formatDate(raceDetails.startDate)}
+        />
       ))}
     </>
   );

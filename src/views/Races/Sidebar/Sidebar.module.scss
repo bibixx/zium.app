@@ -1,26 +1,32 @@
 .wrapper {
   display: flex;
   flex-direction: column;
-  margin-top: 64px;
   gap: 8px;
   position: sticky;
   top: 32px;
   width: 330px;
   align-self: flex-start;
+  margin-top: 32px;
 }
 
 .element {
   position: relative;
 }
 
+.elementsWrapper {
+  position: relative;
+}
+
 .carrot {
   position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
+  top: 0;
+  transform: translateY(calc(-6px + var(--i) * 100%));
   left: -24px;
   height: 52px;
   width: 4px;
   background: var(--color-background-accent-default);
   border-radius: 0 var(--radii-xsmall) var(--radii-xsmall) 0;
   pointer-events: none;
+  transition: var(--transition-fast);
+  transition-property: transform;
 }
