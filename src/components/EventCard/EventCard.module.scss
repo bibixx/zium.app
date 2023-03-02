@@ -97,9 +97,16 @@
 }
 
 .wrapper {
+  display: flex;
+  flex-direction: column;
   border-radius: var(--radii-medium);
   transition: var(--transition-fast);
   transition-property: background;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  text-align: left;
 
   @include inner-border(var(--color-border-muted-alpha)) {
     opacity: 0;

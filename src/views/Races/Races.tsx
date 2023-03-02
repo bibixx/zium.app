@@ -45,7 +45,7 @@ export const Races = () => {
                   Season {seasonId}
                 </h2>
                 <div className={styles.grid}>
-                  <Season seasonApiId={seasonApiId} seasonId={seasonId} />
+                  <Season seasonApiId={seasonApiId} />
                 </div>
               </div>
             );

@@ -11,6 +11,7 @@ import { Races } from "./views/Races/Races";
 import classNames from "classnames";
 import { HeightDebugger } from "./components/HeightDebugger/HeightDebugger";
 import { useDebug } from "./hooks/useDebug/useDebug";
+import { SHEET_PORTAL_ID } from "./constants/portals";
 
 const WithCompanion = ({ children }: React.PropsWithChildren<unknown>) => {
   const companionState = useHasCompanion();
@@ -64,6 +65,7 @@ export default function App() {
           </BrowserRouter>
         </WithLoggedIn>
       </WithCompanion>
+      <div id={SHEET_PORTAL_ID} />
     </div>
   );
 }

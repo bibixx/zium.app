@@ -10,7 +10,7 @@ interface EventCardProps {
   caption?: string;
   description?: string;
 }
-export const EventCard = withAs("div")<EventCardProps>(
+export const EventCard = withAs("button")<EventCardProps>(
   ({ as: Component, pictureUrl, countryName, countryId, displayDate, caption, description, ...props }) => {
     return (
       <Component className={styles.wrapper} {...props}>

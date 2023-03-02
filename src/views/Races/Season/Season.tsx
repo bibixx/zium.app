@@ -1,14 +1,16 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
 import { EventCard } from "../../../components/EventCard/EventCard";
+import { Sheet } from "../../../components/Sheet/Sheet";
 import { useRacesList } from "../../../hooks/useRacesList/useRacesList";
+import { RaceDetails } from "../RaceDetails/RaceDetails";
 
 interface SeasonProps {
   seasonApiId: string;
-  seasonId: string;
 }
 
-export const Season = ({ seasonApiId, seasonId }: SeasonProps) => {
+export const Season = ({ seasonApiId }: SeasonProps) => {
   const { racesState } = useRacesList(seasonApiId);
+  const [selectedRaceEvent, setSelectedRaceEvent] = useState<string | null>(null);
 
   if (racesState.state === "loading") {
     return <div>Loading...</div>;
@@ -20,12 +22,13 @@ export const Season = ({ seasonApiId, seasonId }: SeasonProps) => {
 
   return (
     <>
+      <Sheet onClose={() => setSelectedRaceEvent(null)} isOpen={selectedRaceEvent != null}>
+        {selectedRaceEvent && <RaceDetails id={selectedRaceEvent} />}
+      </Sheet>
       {racesState.data
         .filter(({ startDate }) => startDate.getTime() <= Date.now())
         .map(({ id, pictureUrl, countryName, startDate, endDate, roundNumber, description, countryId }) => (
           <EventCard
-            as={Link}
-            to={`/season/${seasonId}/${id}`}
             key={id}
             pictureUrl={pictureUrl}
             countryName={countryName}
@@ -33,6 +36,7 @@ export const Season = ({ seasonApiId, seasonId }: SeasonProps) => {
             caption={`Round ${roundNumber}`}
             description={toTitleCase(description).replace(/Prix /, "Prix ")}
             countryId={countryId}
+            onClick={() => setSelectedRaceEvent(id)}
           />
         ))}
     </>

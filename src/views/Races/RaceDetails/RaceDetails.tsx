@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import styles from "./RaceDetails.module.scss";
 import { EventCard } from "../../../components/EventCard/EventCard";
 import { useRaceDetails } from "../../../hooks/useRaceDetails/useRaceDetails";
 
@@ -21,7 +22,7 @@ export const RaceDetails = ({ id }: RaceDetailsProps) => {
   }
 
   return (
-    <>
+    <div className={styles.grid}>
       {racesDetailsState.data.map((raceDetails) => (
         <EventCard
           key={raceDetails.id}
@@ -32,7 +33,7 @@ export const RaceDetails = ({ id }: RaceDetailsProps) => {
           displayDate={formatDate(raceDetails.startDate)}
         />
       ))}
-    </>
+    </div>
   );
 };
 
