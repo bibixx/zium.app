@@ -33,7 +33,8 @@ export const DriverTrackerVideoWindow = forwardRef<VideoJsPlayer | null, DriverT
     return (
       <VideoWindowWrapper>
         <VideoJS
-          url={streamVideoState.data}
+          url={streamVideoState.data.videoUrl}
+          laURL={streamVideoState.data.laURL}
           options={ADDITIONAL_OPTIONS}
           ref={ref}
           onReady={onReady}

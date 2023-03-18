@@ -1,7 +1,5 @@
 const getToken = async () => {
-  const cookies = Object.fromEntries(
-    document.cookie.split(";").map((c) => c.trim().split("="))
-  );
+  const cookies = Object.fromEntries(document.cookie.split(";").map((c) => c.trim().split("=")));
   const encodedLoginSession = cookies["login-session"];
 
   if (!encodedLoginSession) {

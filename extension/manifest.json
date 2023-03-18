@@ -16,7 +16,10 @@
   "host_permissions": [
     "http://localhost/",
     "https://*.formula1.com/",
-    "https://www.zium.app/"
+    "https://f1prodlive.akamaized.net/",
+    "https://www.zium.app/",
+    "https://f1-bibixx.vercel.app/",
+    "https://licensing.bitmovin.com/"
   ],
   "content_scripts": [
     {
@@ -24,13 +27,13 @@
       "js": ["content-script-f1.js"]
     },
     {
-      "matches": ["http://localhost/*", "https://www.zium.app/*"],
+      "matches": ["http://localhost/*", "https://www.zium.app/*", "https://f1-bibixx.vercel.app/*"],
       "js": ["content-script-zium.js"],
       "run_at": "document_start"
     }
   ],
   "externally_connectable": {
-    "matches": ["http://localhost/", "https://www.zium.app/"]
+    "matches": ["http://localhost/", "https://www.zium.app/", "https://f1-bibixx.vercel.app/*"]
   },
   "permissions": ["declarativeNetRequest", "storage", "tabs"],
   "manifest_version": 3

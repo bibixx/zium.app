@@ -1,11 +1,11 @@
 const removeRule = () =>
   chrome.declarativeNetRequest.updateDynamicRules({
-    removeRuleIds: [2],
+    removeRuleIds: [2, 3, 4],
   });
 
 const addRule = (token) =>
   chrome.declarativeNetRequest.updateDynamicRules({
-    removeRuleIds: [2],
+    removeRuleIds: [2, 3, 4],
     addRules: [
       {
         id: 2,
@@ -22,7 +22,36 @@ const addRule = (token) =>
         },
         condition: {
           urlFilter: "f1tv.formula1.com",
-          initiatorDomains: ["localhost", "www.zium.app"],
+          initiatorDomains: ["localhost", "www.zium.app", "f1-bibixx.vercel.app"],
+        },
+      },
+      {
+        id: 3,
+        priority: 1,
+        action: {
+          type: "modifyHeaders",
+          requestHeaders: [
+            {
+              value: token,
+              operation: "set",
+              header: "ascendontoken",
+            },
+          ],
+        },
+        condition: {
+          urlFilter: "f1prodlive.akamaized.net",
+          initiatorDomains: ["localhost", "www.zium.app", "f1-bibixx.vercel.app"],
+        },
+      },
+      {
+        id: 4,
+        priority: 1,
+        action: {
+          type: "block",
+        },
+        condition: {
+          urlFilter: "licensing.bitmovin.com",
+          initiatorDomains: ["localhost", "www.zium.app", "f1-bibixx.vercel.app"],
         },
       },
     ],
@@ -107,3 +136,11 @@ chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
 
   return true;
 });
+
+// https://licensing.bitmovin.com/licensing
+
+// {
+//   "status": "granted",
+//   "message": "There you go.",
+//   "analytics": "ca24a2e0-aa36-4e2b-baa8-f7540cf1fa79"
+// }

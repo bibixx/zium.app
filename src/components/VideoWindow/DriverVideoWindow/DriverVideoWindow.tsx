@@ -17,11 +17,22 @@ interface DriverVideoWindowProps extends VideoWindowProps {
   isAudioFocused: boolean;
   onWindowAudioFocus: () => void;
   volume: number;
+  onDelete: () => void;
 }
 
 export const DriverVideoWindow = forwardRef<VideoJsPlayer | null, DriverVideoWindowProps>(
   (
-    { gridWindow, streamUrl, availableDrivers, onDriverChange, isPaused, isAudioFocused, onWindowAudioFocus, volume },
+    {
+      gridWindow,
+      streamUrl,
+      availableDrivers,
+      onDriverChange,
+      isPaused,
+      isAudioFocused,
+      onWindowAudioFocus,
+      volume,
+      onDelete,
+    },
     forwardedRef,
   ) => {
     const playerRef = useRef<VideoJsPlayer | null>(null);
@@ -52,7 +63,8 @@ export const DriverVideoWindow = forwardRef<VideoJsPlayer | null, DriverVideoWin
     return (
       <VideoWindowWrapper>
         <VideoJS
-          url={streamVideoState.data}
+          url={streamVideoState.data.videoUrl}
+          laURL={streamVideoState.data.laURL}
           options={ADDITIONAL_OPTIONS}
           ref={ref}
           onReady={onReady}
@@ -77,6 +89,7 @@ export const DriverVideoWindow = forwardRef<VideoJsPlayer | null, DriverVideoWin
             ))}
           </select>
           <button onClick={onWindowAudioFocus}>Focus audio</button>
+          <button onClick={onDelete}>Delete</button>
         </div>
       </VideoWindowWrapper>
     );

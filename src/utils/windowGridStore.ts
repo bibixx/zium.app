@@ -32,7 +32,12 @@ interface UpdateWindowAction {
   window: GridWindow;
 }
 
-type WindowGridActions = UpdateLayoutAction | UpdateWindowAction | BringToFrontAction;
+interface DeleteWindowAction {
+  type: "deleteWindow";
+  windowId: string;
+}
+
+type WindowGridActions = UpdateLayoutAction | UpdateWindowAction | BringToFrontAction | DeleteWindowAction;
 
 export const CURRENT_STORE_VERSION = "2";
 export const windowGridReducer = (prevState: WindowGridState, action: WindowGridActions) => {
@@ -107,6 +112,12 @@ export const windowGridReducer = (prevState: WindowGridState, action: WindowGrid
 
       break;
     }
+    case "deleteWindow": {
+      newState.windows = newState.windows.filter((w) => w.id !== action.windowId);
+      newState.layout = newState.layout.filter((w) => w.id !== action.windowId);
+
+      break;
+    }
   }
 
   localStorage.setItem("store", JSON.stringify(newState));
@@ -144,23 +155,23 @@ export const getInitialState = (): WindowGridState => {
     {
       type: "driver",
       id: generateUID(),
-      driverId: "VER",
+      driverId: "ALO",
     },
     {
       type: "driver",
       id: generateUID(),
       driverId: "LEC",
     },
-    {
-      type: "driver",
-      id: generateUID(),
-      driverId: "PER",
-    },
-    {
-      type: "driver",
-      id: generateUID(),
-      driverId: "RIC",
-    },
+    // {
+    //   type: "driver",
+    //   id: generateUID(),
+    //   driverId: "PER",
+    // },
+    // {
+    //   type: "driver",
+    //   id: generateUID(),
+    //   driverId: "RIC",
+    // },
   ];
 
   return {
@@ -170,7 +181,7 @@ export const getInitialState = (): WindowGridState => {
 };
 
 const getInitialLayout = (windows: GridWindow[]): GridLayout[] => {
-  const columns = Math.floor(Math.sqrt(windows.length));
+  const columns = Math.ceil(Math.sqrt(windows.length));
   const rows = Math.ceil(Math.sqrt(windows.length));
 
   const columnWidth = 100 / columns;

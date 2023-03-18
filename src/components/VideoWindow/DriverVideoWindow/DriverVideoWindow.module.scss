@@ -7,7 +7,7 @@
   left: 8px;
   height: 64px;
   background: rgba(14, 14, 20, 0.17);
-  backdrop-filter: blur(10px) brightness(0.8);
+  // backdrop-filter: blur(10px) brightness(0.8);
   padding: 0 8px;
   border-radius: 8px;
   pointer-events: none;
@@ -17,7 +17,8 @@
   margin-right: 12px;
 }
 
-.driverName, .driverNameBold {
+.driverName,
+.driverNameBold {
   color: #fff;
   font-weight: 600;
   font-size: 14px;

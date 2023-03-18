@@ -48,7 +48,7 @@ window.addEventListener(
         break;
     }
   },
-  false
+  false,
 );
 
 chrome.storage.local.onChanged.addListener((changes) => {

@@ -49,6 +49,7 @@ export const Viewer = ({ streams, season }: ViewerProps) => {
     });
   };
 
+  // const executeOnAll = useCallback(() => undefined, []);
   const executeOnAll = useCallback(
     (cb: (player: VideoJsPlayer) => void, callerId: string) => {
       windows.forEach((w) => {
@@ -70,6 +71,13 @@ export const Viewer = ({ streams, season }: ViewerProps) => {
     (gridWindow: GridWindow) => {
       const setRef = (video: VideoJsPlayer | null) => {
         windowVideojsRefMapRef.current[gridWindow.id] = video;
+      };
+
+      const onDelete = () => {
+        dispatch({
+          type: "deleteWindow",
+          windowId: gridWindow.id,
+        });
       };
 
       if (gridWindow.type === "main") {
@@ -112,6 +120,7 @@ export const Viewer = ({ streams, season }: ViewerProps) => {
             onWindowAudioFocus={() => onWindowAudioFocus(gridWindow.id)}
             volume={volume}
             streamUrl={windowStreamMap[gridWindow.id]}
+            onDelete={onDelete}
           />
         );
       }
@@ -123,6 +132,7 @@ export const Viewer = ({ streams, season }: ViewerProps) => {
             ref={setRef}
             isPaused={areVideosPaused}
             streamUrl={windowStreamMap[gridWindow.id]}
+            onDelete={onDelete}
           />
         );
       }
@@ -134,6 +144,7 @@ export const Viewer = ({ streams, season }: ViewerProps) => {
             ref={setRef}
             isPaused={areVideosPaused}
             streamUrl={windowStreamMap[gridWindow.id]}
+            onDelete={onDelete}
           />
         );
       }
@@ -152,7 +163,7 @@ export const Viewer = ({ streams, season }: ViewerProps) => {
     ],
   );
 
-  useSyncVideos({ windows, windowVideojsRefMapRef });
+  // useSyncVideos({ windows, windowVideojsRefMapRef });
 
   return (
     <div className={styles.backgroundWrapper}>

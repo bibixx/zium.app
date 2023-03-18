@@ -1,5 +1,6 @@
 import { forwardRef, useRef } from "react";
 import { VideoJsPlayer, VideoJsPlayerOptions } from "video.js";
+import styles from "./MainVideoWindow.module.scss";
 import { useStreamVideo } from "../../hooks/useStreamVideo/useStreamVideo";
 import { MainGridWindow } from "../../types/GridWindow";
 import { VideoWindowProps } from "../../types/VideoWindowBaseProps";
@@ -10,7 +11,7 @@ import { VideoJS } from "../VideoJS/VideoJS";
 import { VideoWindowWrapper } from "./VideoWindowWrapper/VideoWindowWrapper";
 import { attachDisableTextTracks } from "../../utils/attachDisableTextTracks";
 
-const START_AT = 12 * 60;
+// const START_AT = 12 * 60;
 
 interface MainVideoWindowProps extends VideoWindowProps {
   gridWindow: MainGridWindow;
@@ -50,7 +51,7 @@ export const MainVideoWindow = forwardRef<VideoJsPlayer | null, MainVideoWindowP
       onVideoWindowReadyBase(player);
 
       player.muted(true);
-      player.currentTime(START_AT);
+      // player.currentTime(START_AT);
       player.play();
 
       player.on("seeking", () => {
@@ -75,7 +76,7 @@ export const MainVideoWindow = forwardRef<VideoJsPlayer | null, MainVideoWindowP
         onWindowAudioFocus();
       });
 
-      attachUseBestQuality(player);
+      // attachUseBestQuality(player);
       attachDisableTextTracks(player);
     };
 
@@ -86,7 +87,8 @@ export const MainVideoWindow = forwardRef<VideoJsPlayer | null, MainVideoWindowP
     return (
       <VideoWindowWrapper>
         <VideoJS
-          url={streamVideoState.data}
+          url={streamVideoState.data.videoUrl}
+          laURL={streamVideoState.data.laURL}
           options={ADDITIONAL_OPTIONS}
           ref={ref}
           onReady={onReady}
@@ -94,7 +96,7 @@ export const MainVideoWindow = forwardRef<VideoJsPlayer | null, MainVideoWindowP
           volume={isAudioFocused ? volume : 0}
         />
 
-        <div className="video-window__available-drivers-container" onMouseDown={(e) => e.stopPropagation()}>
+        <div className={styles.availableDriversContainer} onMouseDown={(e) => e.stopPropagation()}>
           <button onClick={onWindowAudioFocus}>Focus audio</button>
         </div>
       </VideoWindowWrapper>

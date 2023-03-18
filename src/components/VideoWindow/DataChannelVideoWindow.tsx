@@ -26,7 +26,7 @@ export const DataChannelVideoWindow = forwardRef<VideoJsPlayer | null, DataChann
     const onReady = (player: VideoJsPlayer) => {
       onVideoWindowReadyBase(player);
 
-      attachUseBestQuality(player);
+      // attachUseBestQuality(player);
     };
 
     if (streamVideoState.state !== "done") {
@@ -36,7 +36,8 @@ export const DataChannelVideoWindow = forwardRef<VideoJsPlayer | null, DataChann
     return (
       <VideoWindowWrapper>
         <VideoJS
-          url={streamVideoState.data}
+          url={streamVideoState.data.videoUrl}
+          laURL={streamVideoState.data.laURL}
           options={ADDITIONAL_OPTIONS}
           ref={ref}
           onReady={onReady}

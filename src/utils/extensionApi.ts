@@ -1,8 +1,6 @@
 const getResponse = <T>(type: string, timeout?: number) =>
   new Promise<T>((resolve, reject) => {
-    const onEvent = (
-      event: MessageEvent<{ type: string; source: string; data: T }>,
-    ) => {
+    const onEvent = (event: MessageEvent<{ type: string; source: string; data: T }>) => {
       if (event.source !== window) {
         return;
       }
@@ -25,8 +23,7 @@ const getResponse = <T>(type: string, timeout?: number) =>
     }
   });
 
-const sendMessage = <T>(type: string, data: T) =>
-  window.postMessage({ type, data, source: "page" }, "*");
+const sendMessage = <T>(type: string, data: T) => window.postMessage({ type, data, source: "page" }, "*");
 
 const makeRequest = async <T>(type: string, data?: T, timeout?: number) => {
   const responsePromise = getResponse<T>(type, timeout);
@@ -55,20 +52,13 @@ export const requestLogin = async () => {
   return logInSucceeded;
 };
 
-export const listenOnTokenChange = (
-  onChanged: (isLoggedIn: boolean) => void,
-) => {
-  const onEvent = (
-    event: MessageEvent<{ type: string; source: string; data: boolean }>,
-  ) => {
+export const listenOnTokenChange = (onChanged: (isLoggedIn: boolean) => void) => {
+  const onEvent = (event: MessageEvent<{ type: string; source: string; data: boolean }>) => {
     if (event.source !== window) {
       return;
     }
 
-    if (
-      event.data.type === "LOGGED_IN_CHANGED" &&
-      event.data.source === "extension"
-    ) {
+    if (event.data.type === "LOGGED_IN_CHANGED" && event.data.source === "extension") {
       onChanged(event.data.data);
     }
   };

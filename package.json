@@ -5,13 +5,16 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint src/**/*.{ts,tsx}",
     "build-tokens": "token-transformer src/tokens/global.json src/tokens/global.sd.json && style-dictionary build --config tokens.config.json && rm -f src/tokens/*.sd.json"
   },
   "dependencies": {
+    "bitmovin-player": "^8.109.0",
+    "bitmovin-player-ui": "^3.45.0",
     "classnames": "^2.3.2",
+    "dashjs": "^4.6.0",
     "focus-trap-react": "^10.1.0",
     "object-merge": "^2.5.1",
     "react": "^18.2.0",
@@ -19,6 +22,8 @@
     "react-router-dom": "^6.8.0",
     "react-transition-group": "^4.4.5",
     "video.js": "^7.21.1",
+    "videojs-contrib-dash": "^5.1.1",
+    "videojs-contrib-eme": "^3.11.1",
     "videojs-contrib-quality-levels": "^3.0.0"
   },
   "devDependencies": {

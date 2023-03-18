@@ -24,7 +24,35 @@
     },
     "condition": {
       "urlFilter": "f1tv.formula1.com",
-      "initiatorDomains": ["localhost", "zium.app", "f1-next-six.vercel.app"]
+      "initiatorDomains": ["localhost", "zium.app", "f1-bibixx.vercel.app"]
+    }
+  },
+  {
+    "id": 4,
+    "priority": 1,
+    "action": {
+      "type": "modifyHeaders",
+      "responseHeaders": [
+        {
+          "value": "*",
+          "operation": "set",
+          "header": "Access-Control-Allow-Origin"
+        },
+        {
+          "operation": "set",
+          "value": "PUT, GET, HEAD, POST, DELETE, OPTIONS",
+          "header": "Access-Control-Allow-Methods"
+        },
+        {
+          "value": "*",
+          "operation": "set",
+          "header": "Access-Control-Allow-Headers"
+        }
+      ]
+    },
+    "condition": {
+      "urlFilter": "f1prodlive.akamaized.net",
+      "initiatorDomains": ["localhost", "zium.app", "f1-bibixx.vercel.app"]
     }
   }
 ]
