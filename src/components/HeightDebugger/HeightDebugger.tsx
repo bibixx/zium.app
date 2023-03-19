@@ -1,5 +1,5 @@
 import { useWindowSize } from "../../hooks/useWindowSize";
-import { CURRENT_STORE_VERSION, WindowGridState } from "../../utils/windowGridStore";
+import { CURRENT_STORE_VERSION, WindowGridState } from "../../views/Viewer/hooks/useViewerState/useViewerState.utils";
 import styles from "./HeightDebugger.module.scss";
 
 export const HeightDebugger = () => {

@@ -1,0 +1,26 @@
+.closeButton {
+  @include inner-border(var(--color-border-muted-alpha), 1px);
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 44px;
+  height: 44px;
+  background: var(--color-border-default-inverted-alpha);
+  border-radius: var(--radii-rounded);
+  border: none;
+  cursor: pointer;
+  color: var(--color-text-default);
+  transition: var(--transition-fast);
+  transition-property: color;
+
+  * {
+    color: currentColor;
+  }
+
+  &:hover {
+    color: var(--color-text-strong);
+  }
+}

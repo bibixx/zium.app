@@ -9,6 +9,7 @@ interface ListItemProps {
   caption?: ReactNode;
   isActive?: boolean;
   disabled?: boolean;
+  innerRef?: (ref: HTMLElement | null) => void;
 }
 
 export const ListItem = withAs("button")<ListItemProps>(

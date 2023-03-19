@@ -7,7 +7,7 @@ interface UseFocusedVideoArguments {
 export const useVideoAudio = ({ windows }: UseFocusedVideoArguments) => {
   const mainWindow = useMemo(() => windows.find((w) => w.type === "main"), [windows]);
 
-  const [volume, setVolume] = useState(1);
+  const [volume, setVolume] = useState(100);
   const [wasOverwritten, setWasOverwritten] = useState(false);
   const [audioFocusedWindow, setFocusedWindow] = useState(mainWindow?.id ?? null);
 

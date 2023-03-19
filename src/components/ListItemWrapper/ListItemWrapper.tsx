@@ -8,13 +8,15 @@ interface ListItemWrapperProps {
   isActive?: boolean;
   disabled?: boolean;
   className?: string;
+  innerRef?: (ref: HTMLElement | null) => void;
 }
 export const ListItemWrapper = withAs("button")<ListItemWrapperProps>(
-  ({ as: Component, children, className, isActive = false, disabled, ...props }) => {
+  ({ as: Component, children, className, isActive = false, disabled, innerRef, ...props }) => {
     return (
       <Component
         className={cn(styles.wrapper, { [styles.isActive]: isActive, [styles.disabled]: disabled }, className)}
         disabled={disabled}
+        ref={innerRef}
         {...props}
       >
         {children}

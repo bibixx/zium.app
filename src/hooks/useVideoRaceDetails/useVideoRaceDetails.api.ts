@@ -7,5 +7,7 @@ export const fetchRaceStreams = async (raceId: string, signal: AbortSignal) => {
 
   const streams = body.resultObj.containers[0].metadata.additionalStreams as StreamDataDTO[];
   const season = body.resultObj.containers[0].metadata.season;
-  return { streams, season };
+  const isLive = body.resultObj.containers[0].metadata.contentSubtype === "LIVE";
+
+  return { streams, season, isLive };
 };

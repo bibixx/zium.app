@@ -17,7 +17,11 @@ export const useDrag = ({ elementRef, onDragStart, onDragEnd, grid }: UseDragArg
   const currentPosition = useRef<Position>({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
 
-  const onMouseDown = useCallback(() => {
+  const onMouseDown = useCallback((e: React.MouseEvent) => {
+    if (e.button !== 0) {
+      return;
+    }
+
     hasPressedDownRef.current = true;
   }, []);
 

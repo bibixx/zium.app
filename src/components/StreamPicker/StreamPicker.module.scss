@@ -1,0 +1,19 @@
+.sheet {
+  height: 100%;
+}
+
+.wrapper {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.inputWrapper {
+  flex: 0;
+  margin-bottom: 8px;
+}
+
+.streamsWrapper {
+  flex: 1;
+  overflow: auto;
+}

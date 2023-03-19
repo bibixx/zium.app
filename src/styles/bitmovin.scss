@@ -1,3 +1,36 @@
 .bmpui-ui-watermark {
   display: none;
 }
+
+.bmpui-ui-hugeplaybacktogglebutton {
+  display: none;
+}
+
+.bmpui-ui-controlbar {
+  cursor: default;
+}
+
+.bmpui-ui-subtitle-label {
+  background: rgba(0, 0, 0, 0.66) !important;
+  text-shadow: none !important;
+  font-weight: 600;
+
+  width: calc(100% - 32px) !important;
+  left: 16px !important;
+  bottom: 16px !important;
+}
+
+.bmpui-ui-seekbar .bmpui-seekbar .bmpui-seekbar-playbackposition-marker {
+  background-color: #e10600 !important;
+  border-color: #e10600 !important;
+}
+.bmpui-ui-seekbar .bmpui-seekbar .bmpui-seekbar-playbackposition,
+.bmpui-ui-volumeslider .bmpui-seekbar .bmpui-seekbar-playbackposition-marker,
+.bmpui-ui-volumeslider .bmpui-seekbar .bmpui-seekbar-playbackposition {
+  background-color: #e10600 !important;
+}
+
+.bitmovinplayer-container {
+  min-width: 0 !important;
+  min-height: 0 !important;
+}

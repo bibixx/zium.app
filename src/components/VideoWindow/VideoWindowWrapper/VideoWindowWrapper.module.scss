@@ -4,10 +4,27 @@
   position: relative;
 
   video {
-    object-fit: cover;
+    object-fit: cover !important;
+    width: 100%;
+    height: 100%;
   }
 
   & :global(.vjs-fullscreen) video {
     object-fit: contain;
+  }
+}
+
+.controlsWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-end;
+  position: absolute;
+  top: 12px;
+  right: 12px;
+
+  button,
+  select {
+    color: black;
   }
 }

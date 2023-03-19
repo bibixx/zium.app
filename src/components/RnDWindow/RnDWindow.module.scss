@@ -8,8 +8,8 @@
   position: absolute;
   z-index: var(--zIndex);
   cursor: grab;
-  // overflow: hidden;
-  background: #0f0f12;
+  overflow: hidden;
+  background: var(--color-background-default-default);
   border-radius: var(--radii-small);
 
   &::after {

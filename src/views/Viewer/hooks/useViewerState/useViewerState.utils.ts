@@ -1,6 +1,6 @@
-import { GridWindow } from "../types/GridWindow";
-import { Dimensions } from "../types/Dimensions";
-import { generateUID } from "./generateUID";
+import { GridWindow } from "../../../../types/GridWindow";
+import { Dimensions } from "../../../../types/Dimensions";
+import { generateUID } from "../../../../utils/generateUID";
 
 interface GridLayout {
   width: number;

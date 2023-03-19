@@ -25,6 +25,10 @@ export const useResize = ({ elementRef, onResizeStart, onResizeEnd, grid }: UseR
 
   const onMouseDown = useCallback(
     (handleSide: HandleSide) => (e: React.MouseEvent) => {
+      if (e.button !== 0) {
+        return;
+      }
+
       e.stopPropagation();
       handleSideRef.current = handleSide;
       setIsResizing(true);

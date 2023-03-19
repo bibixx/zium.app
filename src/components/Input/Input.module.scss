@@ -1,0 +1,69 @@
+.iconWrapper {
+  display: flex;
+  color: var(--color-text-muted);
+  transition: var(--transition-fast);
+  transition-property: color;
+
+  * {
+    color: currentColor;
+  }
+}
+
+.wrapper {
+  display: flex;
+  gap: 4px;
+  padding: 12px 12px;
+  border-radius: var(--radii-small);
+  background: var(--color-background-default-alpha);
+  overflow: hidden;
+  box-shadow: 0 0 0 2px transparent;
+  transition: var(--transition-fast);
+  transition-property: background, box-shadow;
+
+  @include inner-border(var(--color-border-muted-alpha), 1px) {
+    transition: var(--transition-fast);
+    transition-property: opacity;
+  }
+
+  &:not(:focus-within):hover {
+    background: var(--color-background-strong-alpha);
+    @include inner-border(var(--color-border-default-alpha), 1px) {
+      transition: var(--transition-fast);
+      transition-property: opacity;
+    }
+
+    .iconWrapper {
+      color: var(--color-text-strong);
+    }
+  }
+
+  &:focus-within {
+    box-shadow: 0 0 0 2px var(--color-border-accent);
+
+    .iconWrapper {
+      color: var(--color-text-strong);
+    }
+
+    &::after {
+      opacity: 0;
+    }
+  }
+}
+
+.input {
+  border: 0;
+  background: none;
+  color: var(--color-text-strong);
+  caret-color: var(--color-background-accent-default);
+  padding: 0 4px;
+
+  @include typography(text, 300, regular);
+
+  &:focus-visible {
+    outline: none;
+  }
+
+  &::placeholder {
+    color: var(--color-text-muted);
+  }
+}

@@ -1,13 +1,18 @@
+import { PlayerAPI, TimeMode } from "bitmovin-player";
 import { MutableRefObject, useEffect } from "react";
-import { VideoJsPlayer } from "video.js";
 import { GridWindow } from "../../../types/GridWindow";
 
 interface UseSyncVideosArguments {
   windows: GridWindow[];
-  windowVideojsRefMapRef: MutableRefObject<Record<string, VideoJsPlayer | null>>;
+  windowVideojsRefMapRef: MutableRefObject<Record<string, PlayerAPI | null>>;
+  isDisabled: boolean;
 }
-export const useSyncVideos = ({ windows, windowVideojsRefMapRef }: UseSyncVideosArguments) => {
+export const useSyncVideos = ({ windows, windowVideojsRefMapRef, isDisabled }: UseSyncVideosArguments) => {
   useEffect(() => {
+    if (isDisabled) {
+      return;
+    }
+
     const syncVideos = (forceSync = false) => {
       const mainWindow = windows.find((w) => w.type === "main");
 
@@ -17,7 +22,7 @@ export const useSyncVideos = ({ windows, windowVideojsRefMapRef }: UseSyncVideos
 
       const mainWindowPlayer = windowVideojsRefMapRef.current[mainWindow.id];
 
-      if (mainWindowPlayer == null || mainWindowPlayer.paused()) {
+      if (mainWindowPlayer == null) {
         return;
       }
 
@@ -32,13 +37,15 @@ export const useSyncVideos = ({ windows, windowVideojsRefMapRef }: UseSyncVideos
           return;
         }
 
-        const diff = Math.abs(player.currentTime() - mainWindowPlayer.currentTime());
+        const diff = Math.abs(
+          player.getCurrentTime(TimeMode.AbsoluteTime) - mainWindowPlayer.getCurrentTime(TimeMode.AbsoluteTime),
+        );
 
         if (diff < 3 && !forceSync) {
           return;
         }
 
-        player.currentTime(mainWindowPlayer.currentTime());
+        player.seek(mainWindowPlayer.getCurrentTime(TimeMode.AbsoluteTime));
       });
     };
 
@@ -57,5 +64,5 @@ export const useSyncVideos = ({ windows, windowVideojsRefMapRef }: UseSyncVideos
       window.clearInterval(interval);
       document.removeEventListener("visibilitychange", onVisibilityChange);
     };
-  }, [windowVideojsRefMapRef, windows]);
+  }, [isDisabled, windowVideojsRefMapRef, windows]);
 };

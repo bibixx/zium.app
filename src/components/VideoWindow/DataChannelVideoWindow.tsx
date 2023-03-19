@@ -1,29 +1,32 @@
 import { forwardRef, useRef } from "react";
-import { VideoJsPlayer, VideoJsPlayerOptions } from "video.js";
+import { PlayerAPI } from "bitmovin-player";
+import { XMarkIcon } from "@heroicons/react/20/solid";
 import { useStreamVideo } from "../../hooks/useStreamVideo/useStreamVideo";
 import { BaseGridWindow } from "../../types/GridWindow";
 import { VideoWindowProps } from "../../types/VideoWindowBaseProps";
 import { onVideoWindowReadyBase } from "../../utils/onVideoWindowReady";
 import { setRef } from "../../utils/setRef";
-import { attachUseBestQuality } from "../../utils/attachUseBestQuality";
-import { VideoJS } from "../VideoJS/VideoJS";
+// import { attachUseBestQuality } from "../../utils/attachUseBestQuality";
+import { AdditionalVideoJSOptions, VideoJS } from "../VideoJS/VideoJS";
 import { VideoWindowWrapper } from "./VideoWindowWrapper/VideoWindowWrapper";
+import styles from "./VideoWindow.module.scss";
 
 interface DataChannelVideoWindowProps extends VideoWindowProps {
   gridWindow: BaseGridWindow;
+  onDelete: () => void;
 }
 
-export const DataChannelVideoWindow = forwardRef<VideoJsPlayer | null, DataChannelVideoWindowProps>(
-  ({ isPaused, streamUrl }, forwardedRef) => {
-    const playerRef = useRef<VideoJsPlayer | null>(null);
+export const DataChannelVideoWindow = forwardRef<PlayerAPI | null, DataChannelVideoWindowProps>(
+  ({ isPaused, streamUrl, onDelete }, forwardedRef) => {
+    const playerRef = useRef<PlayerAPI | null>(null);
     const streamVideoState = useStreamVideo(streamUrl);
 
-    const ref = (r: VideoJsPlayer | null) => {
+    const ref = (r: PlayerAPI | null) => {
       setRef(forwardedRef, r);
       playerRef.current = r;
     };
 
-    const onReady = (player: VideoJsPlayer) => {
+    const onReady = (player: PlayerAPI) => {
       onVideoWindowReadyBase(player);
 
       // attachUseBestQuality(player);
@@ -36,19 +39,23 @@ export const DataChannelVideoWindow = forwardRef<VideoJsPlayer | null, DataChann
     return (
       <VideoWindowWrapper>
         <VideoJS
-          url={streamVideoState.data.videoUrl}
-          laURL={streamVideoState.data.laURL}
+          videoStreamInfo={streamVideoState.data}
           options={ADDITIONAL_OPTIONS}
           ref={ref}
           onReady={onReady}
           isPaused={isPaused}
         />
+        <button className={styles.closeButton} onClick={onDelete}>
+          <XMarkIcon width={20} height={20} fill="currentColor" />
+        </button>
       </VideoWindowWrapper>
     );
   },
 );
 
-const ADDITIONAL_OPTIONS: VideoJsPlayerOptions = {
-  controls: false,
-  muted: true,
+const ADDITIONAL_OPTIONS: AdditionalVideoJSOptions = {
+  ui: false,
+  playback: {
+    muted: true,
+  },
 };

@@ -9,12 +9,12 @@ export interface StreamsStateData {
 export type StreamsState =
   | { state: "loading" }
   | { state: "error"; error: string }
-  | { state: "done"; streams: StreamsStateData; season: number };
+  | { state: "done"; streams: StreamsStateData; season: number; isLive: boolean };
 
 export type StreamsStateAction =
   | { type: "load" }
   | { type: "error"; error: string }
-  | { type: "done"; streams: StreamsStateData; season: number };
+  | { type: "done"; streams: StreamsStateData; season: number; isLive: boolean };
 
 export interface StreamInfo {
   type: "main" | "driver-tracker" | "data-channel" | "other";

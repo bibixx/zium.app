@@ -1,32 +1,36 @@
 import { useCallback, useMemo, useReducer, useRef, useState } from "react";
-import { GridWindow } from "../../types/GridWindow";
-import { getInitialState, windowGridReducer } from "../../utils/windowGridStore";
-import { MainVideoWindow } from "../../components/VideoWindow/MainVideoWindow";
 import { VideoJsPlayer } from "video.js";
+import { useParams } from "react-router-dom";
+import { PlayerAPI } from "bitmovin-player";
+import { GridWindow } from "../../types/GridWindow";
+import { MainVideoWindow } from "../../components/VideoWindow/MainVideoWindow/MainVideoWindow";
 import { DriverVideoWindow } from "../../components/VideoWindow/DriverVideoWindow/DriverVideoWindow";
 import { assertNever } from "../../utils/assertNever";
 import { DataChannelVideoWindow } from "../../components/VideoWindow/DataChannelVideoWindow";
 import { StreamsStateData } from "../../hooks/useVideoRaceDetails/useVideoRaceDetails.types";
-import { getWindowStreamMap, getAvailableDrivers } from "./Viewer.utils";
-import { useGrid } from "./hooks/useGrid";
 import { DriverTrackerVideoWindow } from "../../components/VideoWindow/DriverTrackerVideoWindow";
 import { useVideoRaceDetails } from "../../hooks/useVideoRaceDetails/useVideoRaceDetails";
-import { useParams } from "react-router-dom";
-import styles from "./Viewer.module.scss";
 import { RnDWindow } from "../../components/RnDWindow/RnDWindow";
 import { Dimensions } from "../../types/Dimensions";
+import { StreamPickerProvider } from "../../hooks/useStreamPicker/useStreamPicker";
+import { StreamPicker } from "../../components/StreamPicker/StreamPicker";
+import { getWindowStreamMap, getAvailableDrivers } from "./Viewer.utils";
+import { useGrid } from "./hooks/useGrid";
+import styles from "./Viewer.module.scss";
 import { useVideoAudio } from "./hooks/useVideoAudio";
 import { useSyncVideos } from "./hooks/useSyncVideos";
 import { BackgroundDots } from "./BackgroundDots/BackgroundDots";
+import { useViewerState } from "./hooks/useViewerState/useViewerState";
 
 interface ViewerProps {
   streams: StreamsStateData;
   season: number;
+  isLive: boolean;
 }
 
-export const Viewer = ({ streams, season }: ViewerProps) => {
+export const Viewer = ({ streams, season, isLive }: ViewerProps) => {
   const { baseGrid, grid } = useGrid();
-  const [{ layout, windows }, dispatch] = useReducer(windowGridReducer, getInitialState());
+  const [{ layout, windows }, dispatch] = useViewerState();
 
   const [areVideosPaused, setAreVideosPaused] = useState(true);
   const { audioFocusedWindow, onWindowAudioFocus, setVolume, volume } = useVideoAudio({
@@ -34,7 +38,7 @@ export const Viewer = ({ streams, season }: ViewerProps) => {
   });
 
   const windowStreamMap = useMemo(() => getWindowStreamMap(windows, streams), [windows, streams]);
-  const windowVideojsRefMapRef = useRef<Record<string, VideoJsPlayer | null>>({});
+  const windowVideojsRefMapRef = useRef<Record<string, PlayerAPI | null>>({});
 
   const windowsMap = useMemo((): Record<string, GridWindow> => {
     const entries = windows.map((w) => [w.id, w]);
@@ -49,9 +53,8 @@ export const Viewer = ({ streams, season }: ViewerProps) => {
     });
   };
 
-  // const executeOnAll = useCallback(() => undefined, []);
   const executeOnAll = useCallback(
-    (cb: (player: VideoJsPlayer) => void, callerId: string) => {
+    (cb: (player: PlayerAPI) => void, callerId: string) => {
       windows.forEach((w) => {
         const player = windowVideojsRefMapRef.current[w.id];
 
@@ -69,7 +72,7 @@ export const Viewer = ({ streams, season }: ViewerProps) => {
 
   const getLayoutChild = useCallback(
     (gridWindow: GridWindow) => {
-      const setRef = (video: VideoJsPlayer | null) => {
+      const setRef = (video: PlayerAPI | null) => {
         windowVideojsRefMapRef.current[gridWindow.id] = video;
       };
 
@@ -152,6 +155,7 @@ export const Viewer = ({ streams, season }: ViewerProps) => {
       return assertNever(gridWindow);
     },
     [
+      dispatch,
       executeOnAll,
       areVideosPaused,
       audioFocusedWindow,
@@ -163,36 +167,39 @@ export const Viewer = ({ streams, season }: ViewerProps) => {
     ],
   );
 
-  // useSyncVideos({ windows, windowVideojsRefMapRef });
+  useSyncVideos({ windows, windowVideojsRefMapRef, isDisabled: isLive });
 
   return (
-    <div className={styles.backgroundWrapper}>
-      <BackgroundDots baseGrid={baseGrid} />
-      {layout.map((l) => {
-        const gridWindow = windowsMap[l.id];
-        const dimension: Dimensions = {
-          width: l.width,
-          height: l.height,
-          x: l.x,
-          y: l.y,
-        };
+    <StreamPickerProvider>
+      <div className={styles.backgroundWrapper}>
+        <BackgroundDots baseGrid={baseGrid} />
+        {layout.map((l) => {
+          const gridWindow = windowsMap[l.id];
+          const dimension: Dimensions = {
+            width: l.width,
+            height: l.height,
+            x: l.x,
+            y: l.y,
+          };
 
-        return (
-          <RnDWindow
-            key={gridWindow.id}
-            grid={grid}
-            dimensions={dimension}
-            onChange={(dimensions: Dimensions) => {
-              onLayoutChange(dimensions, l.id);
-            }}
-            zIndex={l.zIndex}
-            bringToFront={() => dispatch({ type: "bringToFront", id: l.id })}
-          >
-            {getLayoutChild(gridWindow)}
-          </RnDWindow>
-        );
-      })}
-    </div>
+          return (
+            <RnDWindow
+              key={gridWindow.id}
+              grid={grid}
+              dimensions={dimension}
+              onChange={(dimensions: Dimensions) => {
+                onLayoutChange(dimensions, l.id);
+              }}
+              zIndex={l.zIndex}
+              bringToFront={() => dispatch({ type: "bringToFront", id: l.id })}
+            >
+              {getLayoutChild(gridWindow)}
+            </RnDWindow>
+          );
+        })}
+        <StreamPicker availableDrivers={availableDrivers} />
+      </div>
+    </StreamPickerProvider>
   );
 };
 
@@ -208,5 +215,5 @@ export const ViewerWithState = () => {
     return <div>Loading...</div>;
   }
 
-  return <Viewer streams={state.streams} season={state.season} />;
+  return <Viewer streams={state.streams} season={state.season} isLive={state.isLive} />;
 };

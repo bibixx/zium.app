@@ -1,0 +1,35 @@
+.wrapper {
+  display: flex;
+  gap: 12px;
+  padding-right: 8px;
+  text-align: left;
+}
+
+.imageWrapper {
+  width: 48px;
+  height: 48px;
+  background: var(--color-background-muted-alpha);
+  border: 1px solid var(--color-border-muted-alpha);
+  border-radius: var(--radii-xsmall);
+  user-select: none;
+
+  & img {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.textWrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.topLabel {
+  @include typography(heading, 300, default);
+  color: var(--color-text-strong);
+}
+.label {
+  @include typography(heading, 300, display);
+  color: var(--color-text-strong);
+}

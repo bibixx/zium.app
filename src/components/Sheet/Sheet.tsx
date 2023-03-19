@@ -11,8 +11,11 @@ interface SheetProps {
   children: ReactNode;
   isOpen: boolean;
   onClose: () => void;
+  onClosed?: () => void;
+  initialFocus?: boolean;
+  wrapperClassName?: string;
 }
-export const Sheet = ({ children, onClose, isOpen }: SheetProps) => {
+export const Sheet = ({ children, onClose, onClosed, isOpen, wrapperClassName, initialFocus = false }: SheetProps) => {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const $portalContainer = useMemo(() => document.getElementById(SHEET_PORTAL_ID)!, []);
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -50,6 +53,7 @@ export const Sheet = ({ children, onClose, isOpen }: SheetProps) => {
         addEndListener={(done) => wrapperRef.current?.addEventListener("transitionend", done)}
         unmountOnExit
         mountOnEnter
+        onExited={onClosed}
         classNames={{
           enter: styles.wrapperEnter,
           enterActive: styles.wrapperEnterActive,
@@ -60,12 +64,12 @@ export const Sheet = ({ children, onClose, isOpen }: SheetProps) => {
         <FocusTrap
           focusTrapOptions={{
             allowOutsideClick: true,
-            initialFocus: false,
+            initialFocus: initialFocus ? undefined : false,
             escapeDeactivates: false,
           }}
         >
           <div className={cn(styles.wrapper)} ref={wrapperRef}>
-            <div>{children}</div>
+            <div className={wrapperClassName}>{children}</div>
             <button className={styles.closeButton} onClick={onClose}>
               Close
             </button>

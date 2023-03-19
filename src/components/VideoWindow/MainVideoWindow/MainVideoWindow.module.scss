@@ -1,34 +1,7 @@
-.driverName {
-  all: unset;
-  position: absolute;
-  top: 8px;
-  left: 8px;
-  height: 64px;
-  background: rgba(14, 14, 20, 0.5);
-  padding: 0 8px;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-.bitmovinWrapper {
-  :global(.bmpui-ui-settingstogglebutton),
-  :global(.bmpui-ui-fullscreentogglebutton),
-  :global(.bmpui-ui-volumetogglebutton) {
-    display: none;
-  }
-
-  :global(.bmpui-ui-volumeslider) {
-    &,
-    * {
-      pointer-events: none !important;
-    }
-  }
-}
-
 .focusAudioButton {
   @include inner-border(var(--color-border-muted-alpha), 1px);
   position: absolute;
-  bottom: 8px;
+  top: 8px;
   right: 8px;
   display: flex;
   justify-content: center;

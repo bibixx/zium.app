@@ -1,107 +1,85 @@
-import objectMerge from "object-merge";
 import { forwardRef, useEffect, useRef } from "react";
-import { VideoJsPlayer, VideoJsPlayerOptions } from "video.js";
-// import videojs, { VideoJsPlayer, VideoJsPlayerOptions } from "video.js";
-// import "dashjs";
-// import "videojs-contrib-eme";
-// import "videojs-contrib-quality-levels";
-// import "videojs-contrib-dash";
-import styles from "./VideoJS.module.scss";
+import objectMerge from "object-merge";
+import { UIFactory, UIManager } from "bitmovin-player-ui";
+import { UIConfig } from "bitmovin-player-ui/dist/js/framework/uiconfig";
+import "bitmovin-player-ui/dist/css/bitmovinplayer-ui.min.css";
+
+import { Player, PlayerAPI, PlayerConfig, PlayerEvent, SourceConfig } from "bitmovin-player";
 import { setRef } from "../../utils/setRef";
+import { VideoStreamInfo } from "../../hooks/useStreamVideo/useStreamVideo.api";
+import styles from "./VideoJS.module.scss";
+
+export interface VideoJSOptions extends PlayerConfig {
+  ui?: UIConfig | false;
+}
+
+export type AdditionalVideoJSOptions = Partial<VideoJSOptions>;
 
 interface VideoJSProps {
-  url: string;
-  laURL?: string;
-  options: VideoJsPlayerOptions;
-  onReady: (player: VideoJsPlayer) => void;
+  videoStreamInfo: VideoStreamInfo;
+  options: AdditionalVideoJSOptions;
+  onReady: (player: PlayerAPI) => void;
   isPaused: boolean;
   volume?: number;
 }
 
-export const VideoJS = forwardRef<VideoJsPlayer | null, VideoJSProps>(
-  ({ url, laURL, options: overwrittenOptions, onReady, isPaused, volume = 0 }, ref) => {
+export const VideoJS = forwardRef<PlayerAPI | null, VideoJSProps>(
+  ({ videoStreamInfo, options: overwrittenOptions, onReady, isPaused, volume = 0 }, ref) => {
     const placeholderRef = useRef<HTMLDivElement>(null);
-    const playerRef = useRef<VideoJsPlayer | null>(null);
+    const playerRef = useRef<PlayerAPI | null>(null);
+    const uiManagerRef = useRef<UIManager | null>(null);
 
     useEffect(() => {
-      const placeholderEl = placeholderRef.current;
-      if (placeholderEl == null) {
-        return;
+      async function run() {
+        const placeholderEl = placeholderRef.current;
+        if (placeholderEl == null) {
+          return;
+        }
+
+        const baseOptions: VideoJSOptions = {
+          key: "<PLAYER_LICENSE_KEY>",
+          playback: {
+            muted: false,
+            autoplay: true,
+          },
+          logs: {
+            bitmovin: false,
+          },
+          ui: {
+            playbackSpeedSelectionEnabled: false,
+          },
+        };
+        const options = objectMerge(baseOptions, overwrittenOptions) as PlayerConfig;
+        const player = new Player(placeholderEl, options);
+
+        if (options.ui !== false) {
+          uiManagerRef.current = UIFactory.buildDefaultUI(player, options.ui);
+        }
+
+        const sourceConfig = getSourceConfig(videoStreamInfo);
+
+        await player.load(sourceConfig);
+
+        player.on(PlayerEvent.Ready, () => onReady(player));
+
+        player.setVolume(volume);
+
+        playerRef.current = player;
+        setRef(ref, player);
       }
 
-      const $videoElement = document.createElement("video-js");
-      placeholderEl.appendChild($videoElement);
-
-      const baseOptions: VideoJsPlayerOptions = {
-        sources: !laURL
-          ? [
-              {
-                src: url,
-                type: "application/x-mpegURL",
-              },
-            ]
-          : [
-              {
-                src: url,
-                type: "application/dash+xml",
-                keySystems: {
-                  "com.widevine.alpha": {
-                    url: laURL,
-                    audioRobustness: "SW_SECURE_CRYPTO",
-                    videoRobustness: "SW_SECURE_DECODE",
-                  },
-                },
-              },
-            ],
-        liveui: true,
-        enableSourceset: true,
-        html5: {
-          vhs: {
-            overrideNative: true,
-            bufferBasedABR: false,
-            llhls: true,
-            exactManifestTimings: false,
-            leastPixelDiffSelector: false,
-            useNetworkInformationApi: false,
-            useDtsForTimestampOffset: false,
-          },
-        },
-        autoplay: !isPaused,
-        controls: true,
-        fill: true,
-        userActions: {
-          click: false,
-          doubleClick: false,
-        },
-        controlBar: {
-          fullscreenToggle: false,
-          pictureInPictureToggle: false,
-          audioTrackButton: false,
-          volumePanel: false,
-          durationDisplay: false,
-          currentTimeDisplay: false,
-          playToggle: false,
-          remainingTimeDisplay: false,
-          progressControl: false,
-        },
-      };
-      const options = objectMerge(baseOptions, overwrittenOptions);
-      const player = videojs($videoElement, options, function (this) {
-        onReady(this);
-      });
-      player.eme();
-      player.volume(volume);
-
-      setRef(ref, player);
-      playerRef.current = player;
+      run();
 
       return () => {
-        if (!player.isDisposed()) {
-          player.dispose();
-          setRef(ref, null);
-        }
+        playerRef.current?.destroy();
+        uiManagerRef.current?.release();
+        playerRef.current = null;
+        uiManagerRef.current = null;
+        setRef(ref, null);
       };
-    }, [overwrittenOptions, url]);
+
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [overwrittenOptions, videoStreamInfo]);
 
     useEffect(() => {
       if (isPaused) {
@@ -112,9 +90,26 @@ export const VideoJS = forwardRef<VideoJsPlayer | null, VideoJSProps>(
     }, [isPaused]);
 
     useEffect(() => {
-      playerRef.current?.volume(volume);
+      playerRef.current?.setVolume(volume);
     }, [volume]);
 
     return <div ref={placeholderRef} className={styles.videoWrapper} />;
   },
 );
+
+function getSourceConfig(videoStreamInfo: VideoStreamInfo): SourceConfig {
+  if (videoStreamInfo.streamType === "HLS") {
+    return {
+      hls: videoStreamInfo.videoUrl,
+    };
+  }
+
+  return {
+    dash: videoStreamInfo.videoUrl,
+    drm: {
+      widevine: {
+        LA_URL: videoStreamInfo.laURL,
+      },
+    },
+  };
+}

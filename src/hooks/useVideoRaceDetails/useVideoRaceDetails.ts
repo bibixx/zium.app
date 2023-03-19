@@ -15,7 +15,7 @@ export const useVideoRaceDetails = (raceId: string) => {
       }
 
       if (action.type === "done") {
-        return { state: "done", streams: action.streams, season: action.season };
+        return { state: "done", streams: action.streams, season: action.season, isLive: action.isLive };
       }
 
       return state;
@@ -28,10 +28,10 @@ export const useVideoRaceDetails = (raceId: string) => {
       dispatch({ type: "load" });
 
       try {
-        const { streams, season } = await fetchRaceStreams(raceId, signal);
+        const { streams, season, isLive } = await fetchRaceStreams(raceId, signal);
         const collectedStreams = collectStreams(streams);
 
-        dispatch({ type: "done", streams: collectedStreams, season });
+        dispatch({ type: "done", streams: collectedStreams, season, isLive });
       } catch (error) {
         dispatch({ type: "error", error: (error as Error).message });
       }
