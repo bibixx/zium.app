@@ -167,7 +167,7 @@ export const Viewer = ({ streams, season, isLive }: ViewerProps) => {
     ],
   );
 
-  useSyncVideos({ windows, windowVideojsRefMapRef, isDisabled: isLive });
+  // useSyncVideos({ windows, windowVideojsRefMapRef, isDisabled: isLive });
 
   return (
     <StreamPickerProvider>
