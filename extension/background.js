@@ -125,10 +125,10 @@ chrome.storage.local.onChanged.addListener((changes) => {
 });
 
 async function focusOrOpenZium() {
-  const [firstTab] = await chrome.tabs.query({ url: ["https://zium.app/*"] });
+  const [firstTab] = await chrome.tabs.query({ url: ["https://*.zium.app/"] });
   if (firstTab == null) {
     return chrome.tabs.create({
-      url: "https://zium.app",
+      url: "https://www.zium.app",
     });
   }
 
