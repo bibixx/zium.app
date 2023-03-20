@@ -1,5 +1,4 @@
-import { useCallback, useMemo, useReducer, useRef, useState } from "react";
-import { VideoJsPlayer } from "video.js";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { PlayerAPI } from "bitmovin-player";
 import { GridWindow } from "../../types/GridWindow";
@@ -167,7 +166,7 @@ export const Viewer = ({ streams, season, isLive }: ViewerProps) => {
     ],
   );
 
-  // useSyncVideos({ windows, windowVideojsRefMapRef, isDisabled: isLive });
+  useSyncVideos({ windows, windowVideojsRefMapRef, isDisabled: isLive });
 
   return (
     <StreamPickerProvider>
