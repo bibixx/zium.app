@@ -41,6 +41,7 @@ export const useResize = ({ elementRef, onResizeStart, onResizeEnd, grid }: UseR
 
       const { x, y, width, height } = $element.getBoundingClientRect();
       initialSizeRef.current = { width, height };
+      currentSizeRef.current = { width, height };
       initialPositionRef.current = { x, y };
 
       const mouseX = e.clientX;

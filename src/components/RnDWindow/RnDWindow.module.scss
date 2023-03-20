@@ -48,14 +48,14 @@
     &.rndHandleE,
     &.rndHandleW,
     &.rndHandleS {
-      background: red;
+      background: var(--color-text-accent);
     }
 
     &.rndHandleNw,
     &.rndHandleNe,
     &.rndHandleSw,
     &.rndHandleSe {
-      background: green;
+      background: var(--color-core-green-500);
     }
   }
 }
