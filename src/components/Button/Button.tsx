@@ -22,18 +22,23 @@ export const Button = withAs("button")<ButtonProps>(
     fluid = false,
     disabled = false,
     disabledState = false,
+    className,
     ...props
   }) => {
     return (
       <Component
-        className={cn(styles.button, {
-          [styles.primary]: variant === "Primary",
-          [styles.secondary]: variant === "Secondary",
-          [styles.secondaryInverted]: variant === "SecondaryInverted",
-          [styles.tertiary]: variant === "Tertiary",
-          [styles.disabled]: disabled || disabledState,
-          [styles.fluid]: fluid,
-        })}
+        className={cn(
+          styles.button,
+          {
+            [styles.primary]: variant === "Primary",
+            [styles.secondary]: variant === "Secondary",
+            [styles.secondaryInverted]: variant === "SecondaryInverted",
+            [styles.tertiary]: variant === "Tertiary",
+            [styles.disabled]: disabled || disabledState,
+            [styles.fluid]: fluid,
+          },
+          className,
+        )}
         {...props}
       >
         {IconLeft && (

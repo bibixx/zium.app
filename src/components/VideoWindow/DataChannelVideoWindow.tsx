@@ -8,6 +8,7 @@ import { onVideoWindowReadyBase } from "../../utils/onVideoWindowReady";
 import { setRef } from "../../utils/setRef";
 // import { attachUseBestQuality } from "../../utils/attachUseBestQuality";
 import { AdditionalVideoJSOptions, VideoJS } from "../VideoJS/VideoJS";
+import { Button } from "../Button/Button";
 import { VideoWindowWrapper } from "./VideoWindowWrapper/VideoWindowWrapper";
 import styles from "./VideoWindow.module.scss";
 
@@ -45,9 +46,9 @@ export const DataChannelVideoWindow = forwardRef<PlayerAPI | null, DataChannelVi
           onReady={onReady}
           isPaused={isPaused}
         />
-        <button className={styles.closeButton} onClick={onDelete}>
-          <XMarkIcon width={20} height={20} fill="currentColor" />
-        </button>
+        <div className={styles.closeButtonWrapper}>
+          <Button variant="SecondaryInverted" onClick={onDelete} iconLeft={XMarkIcon} />
+        </div>
       </VideoWindowWrapper>
     );
   },

@@ -1,31 +1,9 @@
-.focusAudioButton {
-  @include inner-border(var(--color-border-muted-alpha), 1px);
+.focusAudioButtonWrapper {
   position: absolute;
   top: 8px;
   right: 8px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 44px;
-  height: 44px;
-  background: var(--color-border-default-inverted-alpha);
-  border-radius: var(--radii-rounded);
-  border: none;
-  cursor: pointer;
-  box-shadow: 0 0 0 2px transparent;
-  color: var(--color-text-default);
-  transition: var(--transition-fast);
-  transition-property: box-shadow, color;
 
-  * {
-    color: currentColor;
-  }
-
-  &.isAudioFocused {
+  .isAudioFocused {
     box-shadow: 0 0 0 2px var(--color-border-accent);
-  }
-
-  &:hover {
-    color: var(--color-text-strong);
   }
 }

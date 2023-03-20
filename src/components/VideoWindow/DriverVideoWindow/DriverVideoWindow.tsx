@@ -13,6 +13,7 @@ import { DriverData } from "../../../views/Viewer/Viewer.utils";
 import { useStreamPicker } from "../../../hooks/useStreamPicker/useStreamPicker";
 import { VideoFeedContent } from "../../VideoFeedContent/VideoFeedContent";
 import closeButtonStyles from "../VideoWindow.module.scss";
+import { Button } from "../../Button/Button";
 import styles from "./DriverVideoWindow.module.scss";
 
 interface DriverVideoWindowProps extends VideoWindowProps {
@@ -21,6 +22,7 @@ interface DriverVideoWindowProps extends VideoWindowProps {
   onDriverChange: (streamIdentifier: string) => void;
   isAudioFocused: boolean;
   onWindowAudioFocus: () => void;
+  focusMainWindow: () => void;
   volume: number;
   onDelete: () => void;
 }
@@ -35,6 +37,7 @@ export const DriverVideoWindow = forwardRef<PlayerAPI | null, DriverVideoWindowP
       isPaused,
       isAudioFocused,
       onWindowAudioFocus,
+      focusMainWindow,
       volume,
       onDelete,
     },
@@ -49,12 +52,16 @@ export const DriverVideoWindow = forwardRef<PlayerAPI | null, DriverVideoWindowP
       playerRef.current = r;
     };
 
-    const onReady = (player: PlayerAPI) => {
-      onVideoWindowReadyBase(player);
+    const onAudioFocusClick = () => {
+      if (isAudioFocused) {
+        focusMainWindow();
+      } else {
+        onWindowAudioFocus();
+      }
     };
 
-    const onChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-      onDriverChange(e.target.value);
+    const onReady = (player: PlayerAPI) => {
+      onVideoWindowReadyBase(player);
     };
 
     if (streamVideoState.state === "loading") {
@@ -76,15 +83,17 @@ export const DriverVideoWindow = forwardRef<PlayerAPI | null, DriverVideoWindowP
           volume={isAudioFocused ? volume : 0}
         />
         <DriverPickerButton currentDriver={currentDriver} onDriverChange={onDriverChange} />
-        <button
-          className={cn(styles.focusAudioButton, { [styles.isAudioFocused]: isAudioFocused })}
-          onClick={onWindowAudioFocus}
-        >
-          <SpeakerWaveIcon width={20} height={20} fill="currentColor" />
-        </button>
-        <button className={closeButtonStyles.closeButton} onClick={onDelete}>
-          <XMarkIcon width={20} height={20} fill="currentColor" />
-        </button>
+        <div className={styles.focusAudioButtonWrapper}>
+          <Button
+            variant="SecondaryInverted"
+            className={cn({ [styles.isAudioFocused]: isAudioFocused })}
+            onClick={onAudioFocusClick}
+            iconLeft={SpeakerWaveIcon}
+          />
+        </div>
+        <div className={closeButtonStyles.closeButtonWrapper}>
+          <Button variant="SecondaryInverted" onClick={onDelete} iconLeft={XMarkIcon} />
+        </div>
       </VideoWindowWrapper>
     );
   },

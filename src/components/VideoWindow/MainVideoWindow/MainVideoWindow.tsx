@@ -11,6 +11,7 @@ import { setRef } from "../../../utils/setRef";
 // import { attachStartAt } from "../../../utils/attachStartAt";
 import { AdditionalVideoJSOptions, VideoJS } from "../../VideoJS/VideoJS";
 import { VideoWindowWrapper } from "../VideoWindowWrapper/VideoWindowWrapper";
+import { Button } from "../../Button/Button";
 import styles from "./MainVideoWindow.module.scss";
 
 interface MainVideoWindowProps extends VideoWindowProps {
@@ -99,12 +100,14 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
           isPaused={isPaused}
           volume={isAudioFocused ? volume : 0}
         />
-        <button
-          className={cn(styles.focusAudioButton, { [styles.isAudioFocused]: isAudioFocused })}
-          onClick={onWindowAudioFocus}
-        >
-          <SpeakerWaveIcon width={20} height={20} fill="currentColor" />
-        </button>
+        <div className={styles.focusAudioButtonWrapper}>
+          <Button
+            variant="SecondaryInverted"
+            className={cn({ [styles.isAudioFocused]: isAudioFocused })}
+            onClick={onWindowAudioFocus}
+            iconLeft={SpeakerWaveIcon}
+          />
+        </div>
       </VideoWindowWrapper>
     );
   },

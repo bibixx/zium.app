@@ -120,6 +120,13 @@ export const Viewer = ({ streams, season, isLive }: ViewerProps) => {
             isPaused={areVideosPaused}
             isAudioFocused={audioFocusedWindow === gridWindow.id}
             onWindowAudioFocus={() => onWindowAudioFocus(gridWindow.id)}
+            focusMainWindow={() => {
+              const mainWindow = windows.find((w) => w.type === "main");
+
+              if (mainWindow) {
+                onWindowAudioFocus(mainWindow.id);
+              }
+            }}
             volume={volume}
             streamUrl={windowStreamMap[gridWindow.id]}
             onDelete={onDelete}
@@ -163,6 +170,7 @@ export const Viewer = ({ streams, season, isLive }: ViewerProps) => {
       windowStreamMap,
       onWindowAudioFocus,
       availableDrivers,
+      windows,
     ],
   );
 
