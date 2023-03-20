@@ -1,0 +1,8 @@
+.text {
+  padding: 0 16px;
+  margin: 0;
+  @include typography(text, 200, regular);
+  text-align: center;
+  color: var(--color-text-muted);
+  margin-top: 8px;
+}

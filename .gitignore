@@ -25,4 +25,5 @@ dist-ssr
 .vercel
 
 extension/_metadata
+extension/*.zip
 src/tokens/*.sd.json

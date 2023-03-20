@@ -1,8 +1,8 @@
 import { useWindowSize } from "../../hooks/useWindowSize";
 import { CURRENT_STORE_VERSION, WindowGridState } from "../../views/Viewer/hooks/useViewerState/useViewerState.utils";
-import styles from "./HeightDebugger.module.scss";
+import styles from "./DebugWindow.module.scss";
 
-export const HeightDebugger = () => {
+export const DebugWindow = () => {
   const { width, height } = useWindowSize();
 
   const restore219Backup = () => {

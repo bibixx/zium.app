@@ -1,9 +1,9 @@
-import styles from "./Sidebar.module.scss";
 import { ListItem } from "../../../components/ListItem/ListItem";
 import { SupportedSeasons, SUPPORTED_SEASONS } from "../../../constants/seasons";
 import { isSeasonComingSoon } from "../../../utils/SeasonUtils";
 import { WithVariables } from "../../../components/WithVariables/WithVariables";
 import { Header } from "../Header/Header";
+import styles from "./Sidebar.module.scss";
 
 interface SidebarProps {
   visibleSeasonId: string;

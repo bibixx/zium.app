@@ -58,36 +58,41 @@ const addRule = (token) =>
   });
 
 const requestLogin = () =>
-  new Promise(async (resolve) => {
-    const tab = await chrome.tabs.create({
-      url: "https://account.formula1.com/#/en/login?redirect=https%3A%2F%2Fwww.formula1.com%2F",
-    });
+  // eslint-disable-next-line no-async-promise-executor
+  new Promise(async (resolve, reject) => {
+    try {
+      const tab = await chrome.tabs.create({
+        url: "https://account.formula1.com/#/en/login?redirect=https%3A%2F%2Fwww.formula1.com%2F",
+      });
 
-    const onTokenChanged = (token) => {
-      if (token == null) {
-        return;
-      }
+      const onTokenChanged = (token) => {
+        if (token == null) {
+          return;
+        }
 
-      chrome.tabs.remove(tab.id);
-      emitter.removeEventListener("TOKEN_CHANGED", onTokenChanged);
+        chrome.tabs.remove(tab.id);
+        emitter.removeEventListener("TOKEN_CHANGED", onTokenChanged);
 
-      resolve(true);
-    };
+        resolve(true);
+      };
 
-    const onTabClosed = (tabid) => {
-      if (tabid !== tab.id) {
-        return;
-      }
+      const onTabClosed = (tabid) => {
+        if (tabid !== tab.id) {
+          return;
+        }
 
-      chrome.tabs.onRemoved.removeListener(onTabClosed);
-      emitter.removeEventListener("TOKEN_CHANGED", onTokenChanged);
+        chrome.tabs.onRemoved.removeListener(onTabClosed);
+        emitter.removeEventListener("TOKEN_CHANGED", onTokenChanged);
 
-      resolve(false);
-    };
+        resolve(false);
+      };
 
-    chrome.tabs.onRemoved.addListener(onTabClosed);
+      chrome.tabs.onRemoved.addListener(onTabClosed);
 
-    emitter.addEventListener("TOKEN_CHANGED", onTokenChanged);
+      emitter.addEventListener("TOKEN_CHANGED", onTokenChanged);
+    } catch (error) {
+      reject(error);
+    }
   });
 
 class MyEmitter extends EventTarget {
@@ -119,6 +124,18 @@ chrome.storage.local.onChanged.addListener((changes) => {
   emitter.tokenChanged(token);
 });
 
+async function focusOrOpenZium() {
+  const [firstTab] = await chrome.tabs.query({ url: ["https://zium.app/*"] });
+  if (firstTab == null) {
+    return chrome.tabs.create({
+      url: "https://zium.app",
+    });
+  }
+
+  chrome.tabs.reload(firstTab.id);
+  chrome.tabs.update(firstTab.id, { active: true });
+}
+
 chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
   (async () => {
     if (msg.source !== "extension") {
@@ -128,7 +145,9 @@ chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
     const type = msg.type;
     switch (type) {
       case "REQUEST_LOGIN": {
-        sendResponse(await requestLogin());
+        const loginResponse = await requestLogin();
+        await focusOrOpenZium();
+        sendResponse(loginResponse);
         break;
       }
     }
@@ -137,10 +156,10 @@ chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
   return true;
 });
 
-// https://licensing.bitmovin.com/licensing
+chrome.runtime.onInstalled.addListener(async (details) => {
+  if (details.reason !== "install") {
+    return;
+  }
 
-// {
-//   "status": "granted",
-//   "message": "There you go.",
-//   "analytics": "ca24a2e0-aa36-4e2b-baa8-f7540cf1fa79"
-// }
+  focusOrOpenZium();
+});

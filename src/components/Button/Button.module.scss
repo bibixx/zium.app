@@ -1,0 +1,182 @@
+.button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: var(--radii-rounded);
+  gap: 4px;
+  padding: 12px;
+  text-decoration: none;
+  transition: var(--transition-fast);
+  transition-property: background, color;
+  border: 0;
+  @include typography(label, 300);
+
+  &:not(:disabled) {
+    cursor: pointer;
+  }
+
+  &::after {
+    transition: var(--transition-fast);
+    transition-property: box-shadow;
+  }
+
+  &.fluid {
+    width: 100%;
+  }
+
+  &.primary {
+    @include inner-border(var(--color-border-strong-alpha));
+    background: var(--color-background-accent-default);
+    color: var(--color-text-strong);
+
+    .iconWrapper {
+      color: var(--color-text-strong);
+    }
+
+    &:hover {
+      background: var(--color-background-accent-strong);
+      color: var(--color-text-strong);
+    }
+
+    &:active {
+      background: var(--color-background-accent-muted);
+      color: var(--color-text-strong);
+    }
+
+    &.disabled {
+      @include inner-border(transparent);
+      background: var(--color-background-muted-alpha);
+      color: var(--color-text-muted);
+
+      .iconWrapper {
+        color: var(--color-text-muted);
+      }
+    }
+  }
+
+  &.secondary {
+    @include inner-border(var(--color-border-muted-alpha));
+    background: var(--color-background-default-alpha);
+    color: var(--color-text-strong);
+
+    .iconWrapper {
+      color: var(--color-text-default);
+    }
+
+    &:hover {
+      background: var(--color-background-strong-alpha);
+      color: var(--color-text-strong);
+
+      .iconWrapper {
+        color: var(--color-text-strong);
+      }
+    }
+
+    &:active {
+      background: var(--color-background-muted-alpha);
+      color: var(--color-text-strong);
+
+      .iconWrapper {
+        color: var(--color-text-default);
+      }
+    }
+
+    &.disabled {
+      @include inner-border(transparent);
+      background: var(--color-background-muted-alpha);
+      color: var(--color-text-muted);
+
+      .iconWrapper {
+        color: var(--color-text-muted);
+      }
+    }
+  }
+
+  &.secondaryInverted {
+    @include inner-border(var(--color-border-muted-alpha));
+    background: var(--color-background-default-inverted-alpha);
+    color: var(--color-text-strong);
+
+    .iconWrapper {
+      color: var(--color-text-default);
+    }
+
+    &:hover {
+      background: var(--color-background-muted-inverted-alpha);
+      color: var(--color-text-strong);
+
+      .iconWrapper {
+        color: var(--color-text-strong);
+      }
+    }
+
+    &:active {
+      background: var(--color-background-strong-inverted-alpha);
+      color: var(--color-text-strong);
+
+      .iconWrapper {
+        color: var(--color-text-default);
+      }
+    }
+
+    &.disabled {
+      @include inner-border(transparent);
+      background: var(--color-background-muted-alpha);
+      color: var(--color-text-muted);
+
+      .iconWrapper {
+        color: var(--color-text-muted);
+      }
+    }
+  }
+
+  &.tertiary {
+    @include inner-border(transparent);
+    background: transparent;
+    color: var(--color-text-strong);
+
+    .iconWrapper {
+      color: var(--color-text-default);
+    }
+
+    &:hover {
+      @include inner-border(var(--color-border-default-alpha));
+      background: var(--color-background-strong-alpha);
+      color: var(--color-text-strong);
+
+      .iconWrapper {
+        color: var(--color-text-strong);
+      }
+    }
+
+    &:active {
+      @include inner-border(var(--color-border-muted-alpha));
+      background: var(--color-background-muted-alpha);
+      color: var(--color-text-strong);
+
+      .iconWrapper {
+        color: var(--color-text-default);
+      }
+    }
+
+    &.disabled {
+      @include inner-border(transparent);
+      background: var(--color-background-muted-alpha);
+      color: var(--color-text-muted);
+
+      .iconWrapper {
+        color: var(--color-text-muted);
+      }
+    }
+  }
+}
+
+.content {
+  padding: 0 4px;
+}
+
+.iconWrapper {
+  display: flex;
+  transition: var(--transition-fast);
+  transition-property: background, color;
+}

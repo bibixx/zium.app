@@ -18,7 +18,17 @@
     "plugin:react-hooks/recommended",
     "prettier"
   ],
-  "overrides": [],
+  "overrides": [
+    {
+      "files": ["extension/**/*"],
+      "globals": {
+        "chrome": "readonly"
+      },
+      "rules": {
+        "no-restricted-globals": ["off", "chrome"]
+      }
+    }
+  ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaVersion": "latest",
@@ -33,6 +43,7 @@
       {
         "groups": ["builtin", "external", "parent", "sibling", "index"]
       }
-    ]
+    ],
+    "no-restricted-globals": ["error", "chrome"]
   }
 }

@@ -1,4 +1,6 @@
 import React from "react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import classNames from "classnames";
 import { ViewerWithState } from "./views/Viewer/Viewer";
 
 import { useHasCompanion } from "./hooks/useHasCompanion";
@@ -6,10 +8,8 @@ import { NoCompanion } from "./views/NoCompanion/NoCompanion";
 import { assertNever } from "./utils/assertNever";
 import { useLoggedInState } from "./hooks/useLoggedInState";
 import { LogIn } from "./views/LogIn/LogIn";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Races } from "./views/Races/Races";
-import classNames from "classnames";
-import { HeightDebugger } from "./components/HeightDebugger/HeightDebugger";
+import { DebugWindow } from "./components/DebugWindow/DebugWindow";
 import { useDebug } from "./hooks/useDebug/useDebug";
 import { SHEET_PORTAL_ID } from "./constants/portals";
 
@@ -54,7 +54,7 @@ export default function App() {
 
   return (
     <div className={classNames({ debug: isDebugMode })}>
-      {isDebugMode && <HeightDebugger />}
+      {isDebugMode && <DebugWindow />}
       <WithCompanion>
         <WithLoggedIn>
           <BrowserRouter>

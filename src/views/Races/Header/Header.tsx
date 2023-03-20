@@ -1,10 +1,10 @@
+import { Logo } from "../../../components/Logo/Logo";
 import styles from "./Header.module.scss";
-import logoSrc from "../../../assets/logo.svg";
 
 export const Header = () => {
   return (
     <div className={styles.wrapper}>
-      <img src={logoSrc} alt="zium.app" className={styles.headerImage} draggable={false} />
+      <Logo height={32} width={88} color={"var(--color-text-strong)"} />
     </div>
   );
 };

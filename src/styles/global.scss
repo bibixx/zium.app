@@ -4,6 +4,11 @@ body {
   color: var(--color-text-default);
 }
 
+button,
+a {
+  color: var(--color-text-default);
+}
+
 body,
 #root {
   height: 100vh;
@@ -11,7 +16,6 @@ body,
 
 * {
   font-family: var(--typography-font-families-body), sans-serif;
-  color: var(--color-text-default);
   box-sizing: border-box;
 }
 

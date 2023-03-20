@@ -23,6 +23,8 @@
 }
 
 .listItemWrapper {
+  text-decoration: none;
+
   &:hover:not(:active):not(:focus-visible) .text:not(.isActive) {
     color: var(--color-text-strong);
   }
