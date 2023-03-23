@@ -24,6 +24,17 @@ export const useStreamVideo = (playbackUrl: string | null) => {
 
   const fetchData = useCallback(
     async (signal: AbortSignal) => {
+      if (playbackUrl === "__DEBUG__") {
+        dispatch({
+          type: "done",
+          data: {
+            streamType: "HLS",
+            videoUrl: "https://d3choykgz5a49y.cloudfront.net/out/v1/4812934ce97d42bba9dcaaa1181649c5/manifest.m3u8",
+          },
+        });
+        return;
+      }
+
       if (playbackUrl === null) {
         dispatch({ type: "error", error: "No playback url" });
         return;

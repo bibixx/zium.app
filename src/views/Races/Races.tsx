@@ -1,10 +1,10 @@
+import classNames from "classnames";
+import { useCallback, useMemo, useRef } from "react";
+import { SEASON_TO_F1_ID_MAP, SupportedSeasons, SUPPORTED_SEASONS } from "../../constants/seasons";
+import { isSeasonComingSoon } from "../../utils/SeasonUtils";
 import { Season } from "./Season/Season";
 import styles from "./Races.module.scss";
 import { Sidebar } from "./Sidebar/Sidebar";
-import classNames from "classnames";
-import { SEASON_TO_F1_ID_MAP, SupportedSeasons, SUPPORTED_SEASONS } from "../../constants/seasons";
-import { isSeasonComingSoon } from "../../utils/SeasonUtils";
-import { useCallback, useMemo, useRef } from "react";
 import { useFirstVisibleSeason } from "./Season/Season.hook";
 
 export const Races = () => {
