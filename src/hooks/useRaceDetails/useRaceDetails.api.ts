@@ -5,22 +5,43 @@ export const fetchRaceDetailsId = async (raceId: string, signal: AbortSignal): P
   const url = `/2.0/R/ENG/WEB_DASH/ALL/PAGE/${raceId}/F1_TV_Pro_Annual/14`;
   const body = await fetchJSON(url, undefined, signal);
 
-  const replays = body.resultObj.containers.find((c: any) => c.metadata.label?.includes("Replays"));
+  const replayEvents = getReplayEvents(body);
+  const scheduledEvents = getScheduledEvents(body);
 
-  if (replays === undefined) {
-    return [];
-  }
+  const raceEvents = [...replayEvents, ...scheduledEvents];
 
-  const raceEvents = replays.retrieveItems.resultObj.containers
+  const raceDetails = raceEvents
     .filter((r: any) => ["RACE", "QUALIFYING", "PRACTICE"].includes(r.metadata.genres[0]))
-    .map((r: any) => {
-      return {
-        title: r.metadata.title,
-        id: r.metadata.contentId,
-        pictureUrl: r.metadata.pictureUrl,
-        startDate: new Date(r.metadata.emfAttributes.sessionStartDate),
-      };
-    });
+    .map(mapEventToRaceDetailsData)
+    .sort((a, b) => a.startDate.getTime() - b.startDate.getTime());
 
-  return raceEvents;
+  return raceDetails;
+};
+
+const getReplayEvents = (body: any): RaceDetailsData[] => {
+  const replays = body.resultObj.containers
+    .filter((c: any) => c.metadata.label?.includes("Replays"))
+    .flatMap((c: any) => c.retrieveItems.resultObj.containers);
+
+  return replays ?? [];
+};
+
+const getScheduledEvents = (body: any): RaceDetailsData[] => {
+  const scheduled = body.resultObj.containers
+    .filter((c: any) => c.layout === "schedule")
+    .flatMap((c: any) => c.retrieveItems.resultObj.containers);
+
+  const f1Scheduled = scheduled.find((s: any) => s.eventName === "FORMULA 1");
+
+  return f1Scheduled?.events ?? [];
+};
+
+const mapEventToRaceDetailsData = (event: any): RaceDetailsData => {
+  return {
+    title: event.metadata.titleBrief,
+    id: event.metadata.contentId,
+    pictureUrl: event.metadata.pictureUrl,
+    startDate: new Date(event.metadata.emfAttributes.sessionStartDate),
+    isLive: event.metadata.contentSubtype === "LIVE_EVENT" && event.metadata.emfAttributes.state === "Live",
+  };
 };

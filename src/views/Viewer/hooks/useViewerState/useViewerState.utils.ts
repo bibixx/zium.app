@@ -1,6 +1,7 @@
 import { GridWindow } from "../../../../types/GridWindow";
 import { Dimensions } from "../../../../types/Dimensions";
 import { generateUID } from "../../../../utils/generateUID";
+import { clone } from "../../../../utils/clone";
 
 interface GridLayout {
   width: number;
@@ -41,7 +42,7 @@ type WindowGridActions = UpdateLayoutAction | UpdateWindowAction | BringToFrontA
 
 export const CURRENT_STORE_VERSION = "2";
 export const windowGridReducer = (prevState: WindowGridState, action: WindowGridActions) => {
-  const newState = structuredClone(prevState) as WindowGridState;
+  const newState = clone(prevState);
 
   switch (action.type) {
     case "bringToFront": {
@@ -87,28 +88,33 @@ export const windowGridReducer = (prevState: WindowGridState, action: WindowGrid
     case "updateWindow": {
       const newWindow = action.window;
 
-      const oldUpdatedVideo = newState.windows.find((w) => w.id === newWindow.id);
+      const indexOfReplacedWindow = prevState.windows.findIndex((w) => w.id === newWindow.id);
+      const replacedWindow = prevState.windows[indexOfReplacedWindow];
 
-      newState.windows = newState.windows.map((w) => {
-        if (w.id === newWindow.id) {
-          return newWindow;
+      if (newWindow.type !== "driver" || replacedWindow.type !== "driver") {
+        newState.windows.splice(indexOfReplacedWindow, 1, newWindow);
+        break;
+      }
+
+      const oldWindowOfNewDriverIndex = prevState.windows.findIndex((w) => {
+        if (w.type !== "driver" || newWindow.type !== "driver") {
+          return false;
         }
 
-        if (
-          oldUpdatedVideo?.type === "driver" &&
-          newWindow.type === "driver" &&
-          w.type === "driver" &&
-          newWindow.driverId === w.driverId
-        ) {
-          return {
-            driverId: oldUpdatedVideo.driverId,
-            type: oldUpdatedVideo.type,
-            id: w.id,
-          };
-        }
-
-        return w;
+        return w.driverId === newWindow.driverId;
       });
+      const oldWindowOfNewDriver = prevState.windows[oldWindowOfNewDriverIndex];
+
+      if (oldWindowOfNewDriver === undefined) {
+        newState.windows.splice(indexOfReplacedWindow, 1, newWindow);
+        break;
+      }
+
+      const replacedWindowLayoutIndex = prevState.layout.findIndex((l) => l.id === replacedWindow.id);
+      const oldLayoutOfNewDriverIndex = prevState.layout.findIndex((l) => l.id === oldWindowOfNewDriver.id);
+
+      newState.layout[replacedWindowLayoutIndex].id = oldWindowOfNewDriver.id;
+      newState.layout[oldLayoutOfNewDriverIndex].id = replacedWindow.id;
 
       break;
     }

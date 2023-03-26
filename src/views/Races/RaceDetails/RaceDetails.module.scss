@@ -1,5 +1,13 @@
 .grid {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+}
+
+.raceDetailsListItem {
+  &:hover,
+  &:focus-visible {
+    .raceDetailsListItemRightIconWrapper {
+      opacity: 1;
+    }
+  }
 }

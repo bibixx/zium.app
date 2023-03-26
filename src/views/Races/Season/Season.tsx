@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { isSameDay } from "date-fns";
+import { useMemo, useState } from "react";
 import { EventCard } from "../../../components/EventCard/EventCard";
 import { Sheet } from "../../../components/Sheet/Sheet";
 import { useRacesList } from "../../../hooks/useRacesList/useRacesList";
+import { clone } from "../../../utils/clone";
 import { RaceDetails } from "../RaceDetails/RaceDetails";
 
 interface SeasonProps {
@@ -11,6 +13,22 @@ interface SeasonProps {
 export const Season = ({ seasonApiId }: SeasonProps) => {
   const { racesState } = useRacesList(seasonApiId);
   const [selectedRaceEvent, setSelectedRaceEvent] = useState<string | null>(null);
+
+  const racesList = useMemo(() => {
+    if (racesState.state !== "done") {
+      return [];
+    }
+
+    const sortedRaces = clone(racesState.data).sort((a, b) => b.startDate.getTime() - a.startDate.getTime());
+    const latestFinishedRaceIndex = sortedRaces.findIndex((r) => r.startDate.getTime() <= Date.now());
+    const latestFinishedRace = sortedRaces[latestFinishedRaceIndex];
+
+    if (isSameDay(latestFinishedRace?.startDate, new Date())) {
+      return racesState.data.slice(latestFinishedRaceIndex);
+    }
+
+    return racesState.data.slice(Math.max(0, latestFinishedRaceIndex - 1));
+  }, [racesState]);
 
   if (racesState.state === "loading") {
     return <div>Loading...</div>;
@@ -25,9 +43,16 @@ export const Season = ({ seasonApiId }: SeasonProps) => {
       <Sheet onClose={() => setSelectedRaceEvent(null)} isOpen={selectedRaceEvent != null}>
         {selectedRaceEvent && <RaceDetails id={selectedRaceEvent} />}
       </Sheet>
-      {racesState.data
-        .filter(({ startDate }) => startDate.getTime() <= Date.now())
-        .map(({ id, pictureUrl, countryName, startDate, endDate, roundNumber, description, countryId }) => (
+      {racesList.map(({ id, pictureUrl, countryName, startDate, endDate, roundNumber, description, countryId }) => {
+        const onClick = () => {
+          // if (startDate.getTime() > Date.now()) {
+          //   return;
+          // }
+
+          setSelectedRaceEvent(id);
+        };
+
+        return (
           <EventCard
             key={id}
             pictureUrl={pictureUrl}
@@ -36,9 +61,10 @@ export const Season = ({ seasonApiId }: SeasonProps) => {
             caption={`Round ${roundNumber}`}
             description={toTitleCase(description).replace(/Prix /, "Prix ")}
             countryId={countryId}
-            onClick={() => setSelectedRaceEvent(id)}
+            onClick={onClick}
           />
-        ))}
+        );
+      })}
     </>
   );
 };

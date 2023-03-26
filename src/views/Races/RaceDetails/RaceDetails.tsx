@@ -1,7 +1,9 @@
+import { addDays, formatDistanceStrict, isBefore, isSameDay } from "date-fns";
 import { Link } from "react-router-dom";
-import styles from "./RaceDetails.module.scss";
-import { EventCard } from "../../../components/EventCard/EventCard";
+import { ListItem } from "../../../components/ListItem/ListItem";
 import { useRaceDetails } from "../../../hooks/useRaceDetails/useRaceDetails";
+import { EventSession } from "./EventSession/EventSession";
+import styles from "./RaceDetails.module.scss";
 
 interface RaceDetailsProps {
   id: string;
@@ -24,17 +26,31 @@ export const RaceDetails = ({ id }: RaceDetailsProps) => {
   return (
     <div className={styles.grid}>
       {racesDetailsState.data.map((raceDetails) => (
-        <EventCard
-          key={raceDetails.id}
-          as={Link}
-          to={`/race/${raceDetails.id}`}
-          pictureUrl={raceDetails.pictureUrl}
-          countryName={raceDetails.title}
-          displayDate={formatDate(raceDetails.startDate)}
-        />
+        <ListItem className={styles.raceDetailsListItem} key={raceDetails.id} as={Link} to={`/race/${raceDetails.id}`}>
+          <EventSession
+            title={raceDetails.title}
+            subtitle={formatDateRelative(raceDetails.startDate)}
+            rightIconWrapperClassName={styles.raceDetailsListItemRightIconWrapper}
+            isLive={raceDetails.isLive}
+          />
+        </ListItem>
       ))}
     </div>
   );
+};
+
+const formatDateRelative = (date: Date) => {
+  const today = new Date();
+  if (isBefore(date, today)) {
+    return formatDate(date);
+  }
+
+  const tomorrow = addDays(today, 1);
+  if (isSameDay(date, tomorrow)) {
+    return "Starts tomorrow";
+  }
+
+  return "Starts in " + formatDistanceStrict(today, date, { addSuffix: false, roundingMethod: "ceil" });
 };
 
 const formatDate = (date: Date) =>

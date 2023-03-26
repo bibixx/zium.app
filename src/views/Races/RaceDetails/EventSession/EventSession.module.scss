@@ -1,0 +1,48 @@
+.wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.textWrapper {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.title {
+  @include typography(heading, 300, display);
+  color: var(--color-text-strong);
+}
+
+.subtitle {
+  @include typography(text, 200, regular);
+  color: var(--color-text-default);
+
+  &.isLive {
+    @include typography(text, 200, strong);
+    color: var(--color-text-accent);
+  }
+}
+
+.leftIconWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 48px;
+  width: 48px;
+  background: var(--color-background-muted-alpha);
+  color: var(--color-text-default);
+  border-radius: var(--radii-xsmall);
+
+  @include inner-border(var(--color-border-muted-alpha), 1px);
+}
+
+.rightIconWrapper {
+  color: var(--color-text-default);
+  opacity: 0;
+  transition: var(--transition-fast);
+  transition-property: opacity;
+}

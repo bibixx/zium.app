@@ -11,6 +11,7 @@
   transition: var(--transition-fast);
   transition-property: color;
   text-decoration: none;
+  line-height: 20px;
 
   &.isActive {
     color: var(--color-text-strong);

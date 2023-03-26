@@ -1,7 +1,6 @@
 .wrapper {
   display: flex;
   flex-direction: column;
-  gap: 8px;
   position: sticky;
   top: 32px;
   width: 330px;
@@ -14,6 +13,9 @@
 }
 
 .elementsWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
   position: relative;
 }
 

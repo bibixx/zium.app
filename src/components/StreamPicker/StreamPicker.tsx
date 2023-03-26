@@ -72,7 +72,6 @@ export const StreamPicker = ({ availableDrivers }: StreamPickerProps) => {
 
       if (isEnter) {
         const selectedDriver = filteredDrivers[fakeSelection];
-        console.log(fakeSelection, filteredDrivers);
 
         if (selectedDriver) {
           onChoice(selectedDriver.id);

@@ -3,6 +3,7 @@ export interface RaceDetailsData {
   id: string;
   pictureUrl: string;
   startDate: Date;
+  isLive: boolean;
 }
 
 export type RaceDetailsState =
