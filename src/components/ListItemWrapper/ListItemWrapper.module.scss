@@ -4,6 +4,7 @@
   display: block;
   position: relative;
   padding: 8px;
+  border: none;
   border-radius: var(--radii-small);
   transition: var(--transition-fast);
   transition-property: box-shadow, background;

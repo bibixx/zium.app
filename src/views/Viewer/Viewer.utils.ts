@@ -1,4 +1,5 @@
-import { StreamsStateData } from "../../hooks/useVideoRaceDetails/useVideoRaceDetails.types";
+import { LATEST_SEASON } from "../../constants/seasons";
+import { DriverStreamInfo, StreamsStateData } from "../../hooks/useVideoRaceDetails/useVideoRaceDetails.types";
 import { GridWindow } from "../../types/GridWindow";
 import { assertNever } from "../../utils/assertNever";
 
@@ -40,7 +41,7 @@ export interface DriverData {
   lastName: string;
   team: string;
   id: string;
-  imageUrl: string;
+  imageUrls: string[];
 }
 export const getAvailableDrivers = (streams: StreamsStateData, season: number) =>
   streams.driverStreams.map((driverStream): DriverData => {
@@ -51,6 +52,28 @@ export const getAvailableDrivers = (streams: StreamsStateData, season: number) =
       lastName: driverStream.driverLastName,
       team: driverStream.teamName,
       id,
-      imageUrl: `/images/avatars/${season}/${id}.png`,
+      imageUrls:
+        season === +LATEST_SEASON
+          ? [getDriverUrl(driverStream, true), `/images/avatars/${season}/f${id}.png`, `/images/avatars/default.png`]
+          : [`/images/avatars/${season}/${id}.png`, getDriverUrl(driverStream, true), `/images/avatars/default.png`],
     };
   });
+
+const getDriverUrl = (driverStream: DriverStreamInfo, useFallback: boolean) => {
+  const driverIdFirstNamePart = driverStream.driverFirstName.replace(" ", "").slice(0, 3).toUpperCase();
+  const driverIdLastNamePart = driverStream.driverLastName.replace(" ", "").slice(0, 3).toUpperCase();
+  const driverIdNumberPart = "01";
+  const driverId = [driverIdFirstNamePart, driverIdLastNamePart, driverIdNumberPart].join("");
+
+  const parts = [
+    "https://media.formula1.com",
+    useFallback ? "d_driver_fallback_image.png" : "d_driver_image.png",
+    "content/dam/fom-website/drivers",
+    driverId[0],
+    `${driverId}_${driverStream.driverFirstName}_${driverStream.driverLastName}`,
+    `${driverId.toLowerCase()}.png.transform`,
+    "2col/image.png",
+  ];
+
+  return parts.join("/");
+};

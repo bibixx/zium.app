@@ -137,7 +137,7 @@ const DriverPickerButton = ({ currentDriver, onDriverChange }: DriverPickerButto
       <VideoFeedContent
         label={currentDriver.lastName}
         topLabel={currentDriver.firstName}
-        imageSrc={currentDriver.imageUrl}
+        srcList={currentDriver.imageUrls}
       />
     </button>
   );

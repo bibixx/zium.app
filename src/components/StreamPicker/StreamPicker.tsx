@@ -120,7 +120,7 @@ export const StreamPicker = ({ availableDrivers }: StreamPickerProps) => {
                 listItemsRefs.current[i] = ref;
               }}
             >
-              <VideoFeedContent label={driver.lastName} topLabel={driver.firstName} imageSrc={driver.imageUrl} />
+              <VideoFeedContent label={driver.lastName} topLabel={driver.firstName} srcList={driver.imageUrls} />
             </ListItem>
           ))}
         </div>
