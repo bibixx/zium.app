@@ -1,7 +1,3 @@
-.bmpui-ui-watermark {
-  display: none;
-}
-
 .bmpui-ui-hugeplaybacktogglebutton {
   display: none;
 }
@@ -33,4 +29,12 @@
 .bitmovinplayer-container {
   min-width: 0 !important;
   min-height: 0 !important;
+}
+
+.bmpui-ui-uicontainer {
+  overflow: visible !important;
+}
+
+.bmpui-ui-settings-panel {
+  z-index: 999999;
 }

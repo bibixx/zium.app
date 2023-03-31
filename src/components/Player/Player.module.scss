@@ -1,0 +1,14 @@
+.wrapper {
+  @include inner-border(var(--color-border-muted-default), 1px);
+
+  overflow: visible;
+  position: absolute;
+  height: 96px;
+  padding: 24px;
+  bottom: 12px;
+  left: 12px;
+  right: 12px;
+  background: var(--color-background-muted-default);
+  z-index: 9999;
+  border-radius: var(--radii-medium);
+}

@@ -13,6 +13,7 @@ import { RnDWindow } from "../../components/RnDWindow/RnDWindow";
 import { Dimensions } from "../../types/Dimensions";
 import { StreamPickerProvider } from "../../hooks/useStreamPicker/useStreamPicker";
 import { StreamPicker } from "../../components/StreamPicker/StreamPicker";
+import { Player } from "../../components/Player/Player";
 import { getWindowStreamMap, getAvailableDrivers } from "./Viewer.utils";
 import { useGrid } from "./hooks/useGrid";
 import styles from "./Viewer.module.scss";
@@ -38,6 +39,7 @@ export const Viewer = ({ streams, season, isLive }: ViewerProps) => {
 
   const windowStreamMap = useMemo(() => getWindowStreamMap(windows, streams), [windows, streams]);
   const windowVideojsRefMapRef = useRef<Record<string, PlayerAPI | null>>({});
+  const [mainVideoPlayer, setMainVideoPlayer] = useState<PlayerAPI | null>(null);
 
   const windowsMap = useMemo((): Record<string, GridWindow> => {
     const entries = windows.map((w) => [w.id, w]);
@@ -95,6 +97,7 @@ export const Viewer = ({ streams, season, isLive }: ViewerProps) => {
             volume={volume}
             setVolume={setVolume}
             streamUrl={windowStreamMap[gridWindow.id]}
+            onLoaded={setMainVideoPlayer}
           />
         );
       }
@@ -205,6 +208,7 @@ export const Viewer = ({ streams, season, isLive }: ViewerProps) => {
           );
         })}
         <StreamPicker availableDrivers={availableDrivers} />
+        <Player player={mainVideoPlayer} />
       </div>
     </StreamPickerProvider>
   );

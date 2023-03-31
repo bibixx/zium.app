@@ -22,6 +22,7 @@ interface MainVideoWindowProps extends VideoWindowProps {
   volume: number;
   setVolume: (newVolume: number) => void;
   executeOnAll: (cb: (player: PlayerAPI) => void, callerId: string) => void;
+  onLoaded: (player: PlayerAPI) => void;
 }
 
 export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps>(
@@ -36,6 +37,7 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
       onWindowAudioFocus,
       volume,
       setVolume,
+      onLoaded,
     },
     forwardedRef,
   ) => {
@@ -50,6 +52,7 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
     const onReady = (player: PlayerAPI) => {
       const callerId = gridWindow.id;
       onVideoWindowReadyBase(player);
+      onLoaded(player);
 
       // player.mute();
       // attachStartAt(player);
@@ -114,6 +117,7 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
 );
 
 const ADDITIONAL_OPTIONS: AdditionalVideoJSOptions = {
+  ui: false,
   // controlBar: {
   //   playToggle: true,
   //   remainingTimeDisplay: true,
