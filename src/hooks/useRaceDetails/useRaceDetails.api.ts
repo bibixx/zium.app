@@ -1,4 +1,5 @@
 import { fetchJSON } from "../../utils/api";
+import { uniqueById } from "../../utils/uniqueById";
 import { RaceDetailsData } from "./useRacesDetails.types";
 
 export const fetchRaceDetailsId = async (raceId: string, signal: AbortSignal): Promise<RaceDetailsData[]> => {
@@ -8,7 +9,7 @@ export const fetchRaceDetailsId = async (raceId: string, signal: AbortSignal): P
   const replayEvents = getReplayEvents(body);
   const scheduledEvents = getScheduledEvents(body);
 
-  const raceEvents = [...replayEvents, ...scheduledEvents];
+  const raceEvents = uniqueById([...scheduledEvents, ...replayEvents]);
 
   const raceDetails = raceEvents
     .filter((r: any) => ["RACE", "QUALIFYING", "PRACTICE"].includes(r.metadata.genres[0]))

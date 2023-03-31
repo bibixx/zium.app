@@ -1,4 +1,5 @@
 import { fetchJSON } from "../../utils/api";
+import { uniqueById } from "../../utils/uniqueById";
 import { RaceData } from "./useRacesList.types";
 
 export const fetchRacesList = async (id: string, signal: AbortSignal): Promise<RaceData[]> => {
@@ -9,7 +10,7 @@ export const fetchRacesList = async (id: string, signal: AbortSignal): Promise<R
     .flatMap((c: any) => c.retrieveItems.resultObj.containers)
     .filter((c: any) => c?.metadata?.genres?.includes("RACE"));
 
-  const uniqueContainers = getUnique(containers);
+  const uniqueContainers = uniqueById(containers);
   const races = uniqueContainers
     .map((racePage: any) => {
       const racePageId = racePage.metadata.emfAttributes.PageID;
@@ -42,21 +43,6 @@ export const fetchRacesList = async (id: string, signal: AbortSignal): Promise<R
     .sort((a, b) => b.roundNumber - a.roundNumber);
 
   return races;
-};
-
-const getUnique = <T extends { id: string }>(array: T[]) => {
-  const visitedIds: Record<string, boolean> = {};
-
-  return array.filter((el) => {
-    const found = visitedIds[el.id];
-
-    if (found) {
-      return false;
-    }
-
-    visitedIds[el.id] = true;
-    return true;
-  });
 };
 
 const isNotNullable = <T>(el: T | null | undefined): el is T => {

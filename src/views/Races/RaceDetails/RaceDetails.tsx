@@ -1,4 +1,4 @@
-import { addDays, formatDistanceStrict, isBefore, isSameDay } from "date-fns";
+import { addDays, differenceInHours, formatDistanceStrict, isBefore, isSameDay, subHours } from "date-fns";
 import { Link } from "react-router-dom";
 import { ListItem } from "../../../components/ListItem/ListItem";
 import { useRaceDetails } from "../../../hooks/useRaceDetails/useRaceDetails";
@@ -40,17 +40,19 @@ export const RaceDetails = ({ id }: RaceDetailsProps) => {
 };
 
 const formatDateRelative = (date: Date) => {
-  const today = new Date();
-  if (isBefore(date, today)) {
+  const now = subHours(new Date(), 2);
+  if (isBefore(date, now)) {
     return formatDate(date);
   }
 
-  const tomorrow = addDays(today, 1);
-  if (isSameDay(date, tomorrow)) {
+  const hoursDiff = differenceInHours(date, now, { roundingMethod: "ceil" });
+
+  const tomorrow = addDays(now, 1);
+  if (isSameDay(date, tomorrow) && hoursDiff > 12) {
     return "Starts tomorrow";
   }
 
-  return "Starts in " + formatDistanceStrict(today, date, { addSuffix: false, roundingMethod: "ceil" });
+  return "Starts in " + formatDistanceStrict(now, date, { addSuffix: false, roundingMethod: "ceil" });
 };
 
 const formatDate = (date: Date) =>
