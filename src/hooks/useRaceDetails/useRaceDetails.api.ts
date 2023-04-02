@@ -11,8 +11,12 @@ export const fetchRaceDetailsId = async (raceId: string, signal: AbortSignal): P
 
   const raceEvents = uniqueById([...scheduledEvents, ...replayEvents]);
 
+  console.log(raceEvents, scheduledEvents);
+
   const raceDetails = raceEvents
-    .filter((r: any) => ["RACE", "QUALIFYING", "PRACTICE"].includes(r.metadata.genres[0]))
+    .filter((r: any) =>
+      ["race", "qualifying", "practice", "sprint qualifying"].includes(r.metadata.genres[0]?.toLowerCase()),
+    )
     .map(mapEventToRaceDetailsData)
     .sort((a, b) => a.startDate.getTime() - b.startDate.getTime());
 
