@@ -14,7 +14,7 @@ export const useViewerUIVisibilityState = (): ViewerUIVisibilityContextState => 
   useEffect(() => {
     let timeout = -1;
 
-    const onMouseMove = () => {
+    const onAction = () => {
       if (!isUIVisibleRef.current) {
         setIsUIVisible(true);
       }
@@ -26,12 +26,16 @@ export const useViewerUIVisibilityState = (): ViewerUIVisibilityContextState => 
       }, UI_VISIBILITY_TIMEOUT);
     };
 
-    document.addEventListener("mousemove", onMouseMove);
-    onMouseMove();
+    document.addEventListener("mousemove", onAction, { capture: true, passive: true });
+    document.addEventListener("keydown", onAction, { capture: true, passive: true });
+    document.addEventListener("keyup", onAction, { capture: true, passive: true });
+    onAction();
 
     return () => {
       clearTimeout(timeout);
-      document.removeEventListener("mousemove", onMouseMove);
+      document.removeEventListener("mousemove", onAction);
+      document.removeEventListener("keydown", onAction);
+      document.removeEventListener("keyup", onAction);
     };
   }, [isUIVisibleRef, setIsUIVisible]);
 

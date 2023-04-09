@@ -53,16 +53,22 @@ import {
   Watermark,
 } from "bitmovin-player-ui";
 import { UIConfig } from "bitmovin-player-ui/dist/js/framework/uiconfig";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
+import { Key } from "ts-key-enum";
+import { useScopedHotkeys } from "../../../hooks/useScopedHotkeys/useScopedHotkeys";
 import { useStateWithRef } from "../../../hooks/useStateWithRef/useStateWithRef";
 import { Button } from "../../Button/Button";
 import { ArrowLeft30Icon, ArrowRight30Icon } from "../../CustomIcons/CustomIcons";
+import { Spinner } from "../../Spinner/Spinner";
 import styles from "./PlayerControls.module.scss";
 
 interface PlayerControlsProps {
   player: PlayerAPI | null;
   toggleCollapse: () => void;
 }
+
+const OVERLAY_TIMEOUT_DELAY = 100;
 
 export const PlayerControls = ({ player, toggleCollapse }: PlayerControlsProps) => {
   const wrapperRef = useRef<HTMLDivElement | null>(null);
@@ -73,20 +79,24 @@ export const PlayerControls = ({ player, toggleCollapse }: PlayerControlsProps) 
       return;
     }
 
-    const mainSettingsPanelPage = new SettingsPanelPage({
-      components: [
-        new SettingsPanelItem(i18n.getLocalizer("settings.video.quality"), new VideoQualitySelectBox()),
-        new SettingsPanelItem(i18n.getLocalizer("speed"), new PlaybackSpeedSelectBox()),
-        new SettingsPanelItem(i18n.getLocalizer("settings.audio.quality"), new AudioQualitySelectBox()),
-      ],
-    });
+    // const mainSettingsPanelPage = new SettingsPanelPage({
+    //   components: [
+    //     new SettingsPanelItem(i18n.getLocalizer("settings.video.quality"), new VideoQualitySelectBox()),
+    //   ],
+    // });
 
-    const settingsPanel = new SettingsPanel({
-      components: [mainSettingsPanelPage],
-      hidden: true,
-    });
+    // const settingsPanel = new SettingsPanel({
+    //   components: [mainSettingsPanelPage],
+    //   hidden: true,
+    // });
 
-    const seekBar = new SeekBar({ label: new SeekBarLabel() });
+    const seekBar = new SeekBar({
+      label: new SeekBarLabel(),
+      keyStepIncrements: {
+        leftRight: 50,
+        upDown: 50,
+      },
+    });
 
     const controlBar = new ControlBar({
       components: [
@@ -117,7 +127,6 @@ export const PlayerControls = ({ player, toggleCollapse }: PlayerControlsProps) 
         //     new VolumeSlider(),
         //     new Spacer(),
         //     new SettingsToggleButton({ settingsPanel: settingsPanel }),
-        //     new FullscreenToggleButton(),
         //   ],
         //   cssClasses: ["controlbar-bottom"],
         // }),
@@ -126,7 +135,7 @@ export const PlayerControls = ({ player, toggleCollapse }: PlayerControlsProps) 
 
     const myUi = new UIContainer({
       components: [controlBar],
-      // components: [new BufferingOverlay(), controlBar],
+      // components: [new BufferingOverlay({ showDelayMs: 0 }), controlBar],
       hideDelay: -1,
     });
 
@@ -155,6 +164,7 @@ interface PlaybackButtonsProps {
 }
 const PlaybackButtons = ({ player }: PlaybackButtonsProps) => {
   const [isPlaying, isPlayingRef, setIsPlaying] = useStateWithRef(player?.isPlaying() ?? false);
+  const [isLoading, setIsLoading] = useState(false);
   const [hasStartedSeeking, setHasStartedSeeking] = useState(false);
   const [isSeeking, setIsSeeking] = useState(false);
   const [wasPlayingBeforeSeekStart, setWasPlayingBeforeSeekStart] = useState(false);
@@ -189,6 +199,36 @@ const PlaybackButtons = ({ player }: PlaybackButtonsProps) => {
     player.on(PlayerEvent.Seeked, () => setIsSeeking(false));
   }, [isPlayingRef, player, setIsPlaying, setIsSeeking]);
 
+  useEffect(() => {
+    if (player == null) {
+      return;
+    }
+
+    let overlayTimeout = -1;
+    const showOverlay = () => {
+      clearTimeout(overlayTimeout);
+      overlayTimeout = setTimeout(() => {
+        setIsLoading(true);
+      }, OVERLAY_TIMEOUT_DELAY);
+    };
+    const hideOverlay = () => {
+      clearTimeout(overlayTimeout);
+      setIsLoading(false);
+    };
+    player.on(PlayerEvent.StallStarted, showOverlay);
+    player.on(PlayerEvent.StallEnded, hideOverlay);
+    player.on(PlayerEvent.Play, showOverlay);
+    player.on(PlayerEvent.Playing, hideOverlay);
+    player.on(PlayerEvent.Paused, hideOverlay);
+    player.on(PlayerEvent.Seek, showOverlay);
+    player.on(PlayerEvent.Seeked, hideOverlay);
+    player.on(PlayerEvent.TimeShift, showOverlay);
+    player.on(PlayerEvent.TimeShifted, hideOverlay);
+    player.on(PlayerEvent.SourceUnloaded, hideOverlay);
+
+    return () => clearTimeout(overlayTimeout);
+  }, [player]);
+
   const onPlayClick = () => {
     if (player == null) {
       return;
@@ -209,11 +249,23 @@ const PlaybackButtons = ({ player }: PlaybackButtonsProps) => {
     player?.seek(player.getCurrentTime() - 30);
   };
 
-  const displayedIsPlaying = isSeeking || hasStartedSeeking ? wasPlayingBeforeSeekStart : isPlaying;
+  useHotkeys("space", onPlayClick);
+  useHotkeys(Key.ArrowLeft, onSkipBackwards);
+  useHotkeys(Key.ArrowRight, onSkipAhead);
+
+  const PlayPauseIcon = useMemo(() => {
+    if (isLoading) {
+      return Spinner;
+    }
+
+    const displayedIsPlaying = isSeeking || hasStartedSeeking ? wasPlayingBeforeSeekStart : isPlaying;
+    return displayedIsPlaying ? PauseIcon : PlayIcon;
+  }, [hasStartedSeeking, isLoading, isPlaying, isSeeking, wasPlayingBeforeSeekStart]);
+
   return (
     <div className={styles.buttonsWrapper}>
       <Button iconLeft={ArrowLeft30Icon} variant="Tertiary" onClick={onSkipBackwards} />
-      <Button iconLeft={displayedIsPlaying ? PauseIcon : PlayIcon} variant="Secondary" onClick={onPlayClick} />
+      <Button iconLeft={PlayPauseIcon} variant="Secondary" onClick={onPlayClick} />
       <Button iconLeft={ArrowRight30Icon} variant="Tertiary" onClick={onSkipAhead} />
     </div>
   );
