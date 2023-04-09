@@ -1,0 +1,51 @@
+// Manifest.json
+{
+  "host_permissions": [
+    "http://localhost/",
+    "https://*.formula1.com/",
+    "https://f1prodlive.akamaized.net/",
+    "https://www.zium.app/",
+    "https://f1-bibixx.vercel.app/",
+    "https://licensing.bitmovin.com/"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://*.formula1.com/*"]
+    },
+    {
+      "matches": ["http://localhost/*", "https://www.zium.app/*", "https://f1-bibixx.vercel.app/*"]
+    }
+  ],
+  "externally_connectable": {
+    "matches": ["http://localhost/", "https://www.zium.app/", "https://f1-bibixx.vercel.app/*"]
+  }
+}
+
+// rules.json
+{
+  "condition": {
+    "urlFilter": "f1tv.formula1.com",
+    "initiatorDomains": ["localhost", "zium.app", "f1-bibixx.vercel.app"]
+  },
+  "condition": {
+    "urlFilter": "f1prodlive.akamaized.net",
+    "initiatorDomains": ["localhost", "zium.app", "f1-bibixx.vercel.app"]
+  }
+}
+
+// background.js
+{
+  "condition": {
+    "urlFilter": "f1tv.formula1.com",
+    "initiatorDomains": ["localhost", "www.zium.app", "f1-bibixx.vercel.app"],
+  },
+  "condition": {
+    "urlFilter": "f1prodlive.akamaized.net",
+    "initiatorDomains": ["localhost", "www.zium.app", "f1-bibixx.vercel.app"],
+  },
+  "condition": {
+    "urlFilter": "licensing.bitmovin.com",
+    "initiatorDomains": ["localhost", "www.zium.app", "f1-bibixx.vercel.app"],
+  },
+}
+// + focusOrOpenZium

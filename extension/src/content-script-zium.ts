@@ -1,6 +1,7 @@
 const { version } = chrome.runtime.getManifest();
 
-const sendMessageToPage = (type, data) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const sendMessageToPage = (type: any, data: any) => {
   window.postMessage({ type, data, source: "extension" }, "*");
 };
 
@@ -34,7 +35,8 @@ window.addEventListener(
       return;
     }
 
-    const returnMessage = (data) => sendMessageToPage(type, data);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const returnMessage = (data: any) => sendMessageToPage(type, data);
 
     switch (type) {
       case "VERSION":
@@ -59,3 +61,5 @@ chrome.storage.local.onChanged.addListener((changes) => {
   const token = changes.token.newValue;
   sendMessageToPage("LOGGED_IN_CHANGED", token != null);
 });
+
+export {};

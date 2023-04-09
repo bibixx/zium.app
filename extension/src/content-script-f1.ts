@@ -27,3 +27,5 @@ const getToken = async () => {
     await chrome.storage.local.set({ token });
   }
 })();
+
+export {};

@@ -1,9 +1,13 @@
+import { EventEmitter } from "./utils/EventEmitter";
+
+const { RuleActionType, HeaderOperation } = chrome.declarativeNetRequest;
+
 const removeRule = () =>
   chrome.declarativeNetRequest.updateDynamicRules({
     removeRuleIds: [2, 3, 4],
   });
 
-const addRule = (token) =>
+const addRule = (token: string) =>
   chrome.declarativeNetRequest.updateDynamicRules({
     removeRuleIds: [2, 3, 4],
     addRules: [
@@ -11,11 +15,11 @@ const addRule = (token) =>
         id: 2,
         priority: 1,
         action: {
-          type: "modifyHeaders",
+          type: RuleActionType.MODIFY_HEADERS,
           requestHeaders: [
             {
               value: token,
-              operation: "set",
+              operation: HeaderOperation.SET,
               header: "ascendontoken",
             },
           ],
@@ -29,11 +33,11 @@ const addRule = (token) =>
         id: 3,
         priority: 1,
         action: {
-          type: "modifyHeaders",
+          type: RuleActionType.MODIFY_HEADERS,
           requestHeaders: [
             {
               value: token,
-              operation: "set",
+              operation: HeaderOperation.SET,
               header: "ascendontoken",
             },
           ],
@@ -47,7 +51,7 @@ const addRule = (token) =>
         id: 4,
         priority: 1,
         action: {
-          type: "block",
+          type: RuleActionType.BLOCK,
         },
         condition: {
           urlFilter: "licensing.bitmovin.com",
@@ -65,18 +69,21 @@ const requestLogin = () =>
         url: "https://account.formula1.com/#/en/login?redirect=https%3A%2F%2Fwww.formula1.com%2F",
       });
 
-      const onTokenChanged = (token) => {
+      const onTokenChanged = (token: string) => {
         if (token == null) {
           return;
         }
 
-        chrome.tabs.remove(tab.id);
+        if (tab.id !== undefined) {
+          chrome.tabs.remove(tab.id);
+        }
+
         emitter.removeEventListener("TOKEN_CHANGED", onTokenChanged);
 
         resolve(true);
       };
 
-      const onTabClosed = (tabid) => {
+      const onTabClosed = (tabid: number) => {
         if (tabid !== tab.id) {
           return;
         }
@@ -95,15 +102,11 @@ const requestLogin = () =>
     }
   });
 
-class MyEmitter extends EventTarget {
-  emit(type, data) {
-    const event = new Event(type);
-    event.data = data;
-
-    this.dispatchEvent(event);
-  }
-
-  tokenChanged(token) {
+interface MyEmitterHandlers {
+  TOKEN_CHANGED: (token: string) => void;
+}
+class MyEmitter extends EventEmitter<MyEmitterHandlers> {
+  tokenChanged(token: string) {
     this.emit("TOKEN_CHANGED", token);
   }
 }
@@ -126,17 +129,18 @@ chrome.storage.local.onChanged.addListener((changes) => {
 
 async function focusOrOpenZium() {
   const [firstTab] = await chrome.tabs.query({ url: ["https://*.zium.app/"] });
-  if (firstTab == null) {
-    return chrome.tabs.create({
+  if (firstTab?.id == null) {
+    await chrome.tabs.create({
       url: "https://www.zium.app",
     });
+    return;
   }
 
   chrome.tabs.reload(firstTab.id);
   chrome.tabs.update(firstTab.id, { active: true });
 }
 
-chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
+chrome.runtime.onMessage.addListener(function (msg, _sender, sendResponse) {
   (async () => {
     if (msg.source !== "extension") {
       return;
@@ -163,3 +167,5 @@ chrome.runtime.onInstalled.addListener(async (details) => {
 
   focusOrOpenZium();
 });
+
+export {};
