@@ -1,4 +1,11 @@
-import { ArrowDownIcon, ArrowsPointingOutIcon, PauseIcon, PlayIcon, SpeakerWaveIcon } from "@heroicons/react/20/solid";
+import {
+  ArrowDownIcon,
+  ArrowsPointingInIcon,
+  ArrowsPointingOutIcon,
+  PauseIcon,
+  PlayIcon,
+  SpeakerWaveIcon,
+} from "@heroicons/react/20/solid";
 import { PlayerAPI, PlayerEvent, UserInteractionEvent } from "bitmovin-player";
 import {
   AdClickOverlay,
@@ -217,10 +224,32 @@ interface OptionsButtonsProps {
   toggleCollapse: () => void;
 }
 const OptionsButtons = ({ toggleCollapse }: OptionsButtonsProps) => {
+  const [isFullScreen, setIsFullScreen] = useState(document.fullscreenElement != null);
+  useEffect(() => {
+    const onFullScreenChange = () => {
+      setIsFullScreen(document.fullscreenElement != null);
+    };
+
+    document.addEventListener("fullscreenchange", onFullScreenChange);
+    () => document.removeEventListener("fullscreenchange", onFullScreenChange);
+  }, []);
+
+  const toggleFullScreen = () => {
+    if (document.fullscreenElement) {
+      document.exitFullscreen();
+    } else {
+      document.documentElement.requestFullscreen();
+    }
+  };
+
   return (
     <div className={styles.buttonsWrapper}>
       <Button iconLeft={SpeakerWaveIcon} variant="Tertiary" />
-      <Button iconLeft={ArrowsPointingOutIcon} variant="Tertiary" />
+      <Button
+        iconLeft={isFullScreen ? ArrowsPointingInIcon : ArrowsPointingOutIcon}
+        variant="Tertiary"
+        onClick={toggleFullScreen}
+      />
       <Button iconLeft={ArrowDownIcon} variant="Tertiary" onClick={toggleCollapse} />
     </div>
   );

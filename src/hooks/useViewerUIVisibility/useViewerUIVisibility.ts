@@ -27,6 +27,7 @@ export const useViewerUIVisibilityState = (): ViewerUIVisibilityContextState => 
     };
 
     document.addEventListener("mousemove", onMouseMove);
+    onMouseMove();
 
     return () => {
       clearTimeout(timeout);
