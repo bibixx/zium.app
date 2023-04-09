@@ -9,13 +9,19 @@ interface ListItemProps {
   caption?: ReactNode;
   isActive?: boolean;
   disabled?: boolean;
-  innerRef?: (ref: HTMLElement | null) => void;
 }
 
 export const ListItem = withAs("button")<ListItemProps>(
-  ({ as, children, caption, isActive = false, disabled, ...props }) => {
+  ({ as, children, caption, isActive = false, disabled, ...props }, ref) => {
     return (
-      <ListItemWrapper className={styles.listItemWrapper} isActive={isActive} as={as} disabled={disabled} {...props}>
+      <ListItemWrapper
+        className={styles.listItemWrapper}
+        isActive={isActive}
+        as={as}
+        disabled={disabled}
+        ref={ref}
+        {...props}
+      >
         <div className={cn(styles.contentWrapper)}>
           <div className={cn(styles.text, { [styles.isActive]: isActive })}>{children}</div>
           {caption && <div className={styles.caption}>{caption}</div>}

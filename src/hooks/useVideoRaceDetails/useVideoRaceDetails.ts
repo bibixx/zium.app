@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useReducer } from "react";
 import { fetchRaceStreams } from "./useVideoRaceDetails.api";
-import { StreamsState, StreamsStateAction } from "./useVideoRaceDetails.types";
+import { RaceInfo, StreamsState, StreamsStateAction } from "./useVideoRaceDetails.types";
 import { collectStreams } from "./useVideoRaceDetails.utils";
 
 export const useVideoRaceDetails = (raceId: string): StreamsState => {
@@ -15,7 +15,13 @@ export const useVideoRaceDetails = (raceId: string): StreamsState => {
       }
 
       if (action.type === "done") {
-        return { state: "done", streams: action.streams, season: action.season, isLive: action.isLive };
+        return {
+          state: "done",
+          streams: action.streams,
+          season: action.season,
+          isLive: action.isLive,
+          raceInfo: action.raceInfo,
+        };
       }
 
       return state;
@@ -28,10 +34,15 @@ export const useVideoRaceDetails = (raceId: string): StreamsState => {
       dispatch({ type: "load" });
 
       try {
-        const { streams, season, isLive } = await fetchRaceStreams(raceId, signal);
+        const { streams, season, isLive, countryId, countryName, title } = await fetchRaceStreams(raceId, signal);
         const collectedStreams = collectStreams(streams);
+        const raceInfo: RaceInfo = {
+          countryId,
+          countryName,
+          title,
+        };
 
-        dispatch({ type: "done", streams: collectedStreams, season, isLive });
+        dispatch({ type: "done", streams: collectedStreams, season, isLive, raceInfo });
       } catch (error) {
         dispatch({ type: "error", error: (error as Error).message });
       }

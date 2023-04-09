@@ -8,6 +8,9 @@ export const fetchRaceStreams = async (raceId: string, signal: AbortSignal) => {
   const streams = body.resultObj.containers[0].metadata.additionalStreams as StreamDataDTO[];
   const season = body.resultObj.containers[0].metadata.season;
   const isLive = body.resultObj.containers[0].metadata.contentSubtype === "LIVE";
+  const countryName = body.resultObj.containers[0].metadata.emfAttributes.Meeting_Country_Name;
+  const countryId = body.resultObj.containers[0].metadata.emfAttributes.MeetingCountryKey;
+  const title = body.resultObj.containers[0].metadata.shortDescription;
 
-  return { streams, season, isLive };
+  return { streams, season, isLive, countryName, countryId, title };
 };

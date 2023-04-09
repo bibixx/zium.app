@@ -1,4 +1,5 @@
-import { addDays, differenceInHours, formatDistanceStrict, isBefore, isSameDay, subHours } from "date-fns";
+import { addDays, differenceInHours, formatDistanceStrict, isBefore, isFuture, isSameDay, subHours } from "date-fns";
+import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { ListItem } from "../../../components/ListItem/ListItem";
 import { useRaceDetails } from "../../../hooks/useRaceDetails/useRaceDetails";
@@ -11,6 +12,13 @@ interface RaceDetailsProps {
 
 export const RaceDetails = ({ id }: RaceDetailsProps) => {
   const { racesDetailsState } = useRaceDetails(id);
+  const firstListItemRef = useRef<HTMLAnchorElement | null>(null);
+
+  useEffect(() => {
+    if (racesDetailsState.state === "done") {
+      firstListItemRef.current?.focus();
+    }
+  }, [racesDetailsState]);
 
   if (racesDetailsState.state === "loading") {
     return <div>Loading...</div>;
@@ -25,16 +33,28 @@ export const RaceDetails = ({ id }: RaceDetailsProps) => {
 
   return (
     <div className={styles.grid}>
-      {racesDetailsState.data.map((raceDetails) => (
-        <ListItem className={styles.raceDetailsListItem} key={raceDetails.id} as={Link} to={`/race/${raceDetails.id}`}>
-          <EventSession
-            title={raceDetails.title}
-            subtitle={formatDateRelative(raceDetails.startDate)}
-            rightIconWrapperClassName={styles.raceDetailsListItemRightIconWrapper}
-            isLive={raceDetails.isLive}
-          />
-        </ListItem>
-      ))}
+      {racesDetailsState.data.map((raceDetails, i) => {
+        const isDisabled = !raceDetails.isLive && isFuture(raceDetails.startDate);
+        const props = isDisabled ? ({ as: "div" } as const) : ({ as: Link, to: `/race/${raceDetails.id}` } as const);
+
+        return (
+          <ListItem<"div" | typeof Link>
+            className={styles.raceDetailsListItem}
+            disabled={isDisabled}
+            key={raceDetails.id}
+            ref={i === 0 ? firstListItemRef : undefined}
+            {...props}
+          >
+            <EventSession
+              title={raceDetails.title}
+              subtitle={formatDateRelative(raceDetails.startDate)}
+              rightIconWrapperClassName={styles.raceDetailsListItemRightIconWrapper}
+              isLive={raceDetails.isLive}
+              disabled={isDisabled}
+            />
+          </ListItem>
+        );
+      })}
     </div>
   );
 };

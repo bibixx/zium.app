@@ -3,7 +3,6 @@ import { ReactNode, useEffect, useMemo, useRef } from "react";
 import { createPortal } from "react-dom";
 import { CSSTransition } from "react-transition-group";
 import FocusTrap from "focus-trap-react";
-
 import { SHEET_PORTAL_ID } from "../../constants/portals";
 import styles from "./Sheet.module.scss";
 
@@ -16,10 +15,13 @@ interface SheetProps {
   wrapperClassName?: string;
 }
 export const Sheet = ({ children, onClose, onClosed, isOpen, wrapperClassName, initialFocus = false }: SheetProps) => {
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const $portalContainer = useMemo(() => document.getElementById(SHEET_PORTAL_ID)!, []);
+  const $portalContainer = useMemo(() => document.getElementById(SHEET_PORTAL_ID), []);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const backdropRef = useRef<HTMLDivElement>(null);
+
+  if ($portalContainer == null) {
+    throw new Error("$portalContainer not defined");
+  }
 
   useEffect(() => {
     if (isOpen) {

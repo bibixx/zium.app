@@ -1,6 +1,7 @@
 import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import classNames from "classnames";
+import { HotkeysProvider } from "react-hotkeys-hook";
 import { ViewerWithState } from "./views/Viewer/Viewer";
 
 import { useHasCompanion } from "./hooks/useHasCompanion";
@@ -12,6 +13,7 @@ import { Races } from "./views/Races/Races";
 import { DebugWindow } from "./components/DebugWindow/DebugWindow";
 import { useDebug } from "./hooks/useDebug/useDebug";
 import { SHEET_PORTAL_ID } from "./constants/portals";
+import { DEFAULT_SCOPE } from "./hooks/useScopedHotkeys/useScopedHotkeys";
 
 const WithCompanion = ({ children }: React.PropsWithChildren<unknown>) => {
   const companionState = useHasCompanion();
@@ -53,19 +55,22 @@ export default function App() {
   const isDebugMode = useDebug();
 
   return (
-    <div className={classNames({ debug: isDebugMode })}>
-      {isDebugMode && <DebugWindow />}
-      <WithCompanion>
-        <WithLoggedIn>
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Races />} />
-              <Route path="/race/:raceId" element={<ViewerWithState />} />
-            </Routes>
-          </BrowserRouter>
-        </WithLoggedIn>
-      </WithCompanion>
-      <div id={SHEET_PORTAL_ID} />
-    </div>
+    <HotkeysProvider initiallyActiveScopes={[DEFAULT_SCOPE]}>
+      <div className={classNames({ debug: isDebugMode })}>
+        {isDebugMode && <DebugWindow />}
+
+        <WithCompanion>
+          <WithLoggedIn>
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<Races />} />
+                <Route path="/race/:raceId" element={<ViewerWithState />} />
+              </Routes>
+            </BrowserRouter>
+          </WithLoggedIn>
+        </WithCompanion>
+        <div id={SHEET_PORTAL_ID} />
+      </div>
+    </HotkeysProvider>
   );
 }

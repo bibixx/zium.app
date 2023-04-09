@@ -6,15 +6,21 @@ export interface StreamsStateData {
   otherStreams: StreamInfo[];
 }
 
+export interface RaceInfo {
+  countryName: string;
+  countryId: string;
+  title: string;
+}
+
 export type StreamsState =
   | { state: "loading" }
   | { state: "error"; error: string }
-  | { state: "done"; streams: StreamsStateData; season: number; isLive: boolean };
+  | { state: "done"; streams: StreamsStateData; season: number; isLive: boolean; raceInfo: RaceInfo };
 
 export type StreamsStateAction =
   | { type: "load" }
   | { type: "error"; error: string }
-  | { type: "done"; streams: StreamsStateData; season: number; isLive: boolean };
+  | { type: "done"; streams: StreamsStateData; season: number; isLive: boolean; raceInfo: RaceInfo };
 
 export interface StreamInfo {
   type: "main" | "driver-tracker" | "data-channel" | "other";

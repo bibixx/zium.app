@@ -1,14 +1,58 @@
 .wrapper {
   @include inner-border(var(--color-border-muted-default), 1px);
+  --translate-x: calc(-50% - 12px);
+  --translate-y: 0px;
 
+  display: flex;
   overflow: visible;
   position: absolute;
+  max-width: 1424px;
+  width: calc(100% - 24px);
+  margin: 12px;
   height: 96px;
-  padding: 24px;
-  bottom: 12px;
-  left: 12px;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(var(--translate-x)) translateY(var(--translate-y));
   right: 12px;
   background: var(--color-background-muted-default);
   z-index: 9999;
   border-radius: var(--radii-medium);
+  transition: var(--transition-medium);
+  transition-property: transform;
+
+  &.isCollapsed {
+    --translate-y: 100%;
+
+    &:hover {
+      --translate-y: calc(100% - 16px);
+    }
+  }
+}
+
+.collapsedClickArea {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  cursor: pointer;
+}
+
+.section {
+  padding: 24px;
+  box-shadow: inset -1px 0 0 0 var(--color-border-muted-default);
+
+  &:last-child {
+    box-shadow: none;
+  }
+
+  &.middle {
+    flex: 1;
+  }
+}
+
+.buttonsWrapper {
+  display: flex;
+  gap: 8px;
 }

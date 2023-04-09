@@ -1,5 +1,5 @@
-import cn from "classnames";
 import { withAs } from "../../utils/withAs";
+import { CountryImage } from "../CountryImage/CountryImage";
 import styles from "./EventCard.module.scss";
 
 interface EventCardProps {
@@ -11,9 +11,9 @@ interface EventCardProps {
   description?: string;
 }
 export const EventCard = withAs("button")<EventCardProps>(
-  ({ as: Component, pictureUrl, countryName, countryId, displayDate, caption, description, ...props }) => {
+  ({ as: Component, pictureUrl, countryName, countryId, displayDate, caption, description, ...props }, ref) => {
     return (
-      <Component className={styles.wrapper} {...props}>
+      <Component className={styles.wrapper} {...props} ref={ref}>
         <div className={styles.heroImageWrapper}>
           <img
             src={`https://f1tv.formula1.com/image-resizer/image/${pictureUrl}?w=400&h=195&q=HI&o=L`}
@@ -24,15 +24,7 @@ export const EventCard = withAs("button")<EventCardProps>(
         </div>
         <main className={styles.contentWrapper}>
           <div className={styles.header}>
-            {countryId && (
-              <div className={styles.countryImageWrapper}>
-                <img
-                  className={cn(styles.countryImage, `country-${countryId}`)}
-                  src={`https://ott-img.formula1.com/countries/${countryId}.png`}
-                  alt=""
-                />
-              </div>
-            )}
+            {countryId && <CountryImage countryId={countryId} width={40} height={40} />}
             <div className={styles.headerTextContent}>
               <div className={styles.headerFirstLine}>{countryName}</div>
               <div className={styles.headerSecondLine}>

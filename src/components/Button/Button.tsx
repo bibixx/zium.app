@@ -13,18 +13,21 @@ interface ButtonProps {
 }
 
 export const Button = withAs("button")<ButtonProps>(
-  ({
-    as: Component,
-    children,
-    variant = "Primary",
-    iconLeft: IconLeft,
-    iconRight: IconRight,
-    fluid = false,
-    disabled = false,
-    disabledState = false,
-    className,
-    ...props
-  }) => {
+  (
+    {
+      as: Component,
+      children,
+      variant = "Primary",
+      iconLeft: IconLeft,
+      iconRight: IconRight,
+      fluid = false,
+      disabled = false,
+      disabledState = false,
+      className,
+      ...props
+    },
+    ref,
+  ) => {
     return (
       <Component
         className={cn(
@@ -39,6 +42,7 @@ export const Button = withAs("button")<ButtonProps>(
           },
           className,
         )}
+        ref={ref}
         {...props}
       >
         {IconLeft && (

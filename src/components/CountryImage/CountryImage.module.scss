@@ -1,0 +1,16 @@
+.countryImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+
+  &:global(.country-4),
+  &:global(.country-21) {
+    transform: scale(1.05);
+  }
+}
+
+.countryImageWrapper {
+  border-radius: var(--radii-rounded);
+
+  @include inner-border(var(--color-border-muted-alpha));
+}

@@ -2887,6 +2887,11 @@ react-dom@^18.2.0:
     loose-envify "^1.1.0"
     scheduler "^0.23.0"
 
+react-hotkeys-hook@^4.3.8:
+  version "4.3.8"
+  resolved "https://registry.yarnpkg.com/react-hotkeys-hook/-/react-hotkeys-hook-4.3.8.tgz#75fa18e7edb393c2d308a59378932c6badf94b80"
+  integrity sha512-RmrIQ3M259c84MnYVEAQsmHkD6s7XUgLG0rW6S7qjt1Lh7q+SPIz5b6obVU8OJw1Utsj1mUCj6twtBPaK/ytww==
+
 react-image@^4.1.0:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/react-image/-/react-image-4.1.0.tgz#92f2d4a809a178b3bf69acd7bad7da7aa5e7364c"
@@ -3284,6 +3289,11 @@ token-transformer@^0.0.30:
   integrity sha512-rTmH6U7u4StOjf3DOQocgZUclgs8JkaWSkJ9XB0fPW86rQVug3vSsvhWYd0vCMhmXlbadtzgjDQUy6zN8CjypA==
   dependencies:
     yargs "^17.4.1"
+
+ts-key-enum@^2.0.12:
+  version "2.0.12"
+  resolved "https://registry.yarnpkg.com/ts-key-enum/-/ts-key-enum-2.0.12.tgz#4f7f35eb041fa5847f8f9ed8c38beaaa047a33ba"
+  integrity sha512-Ety4IvKMaeG34AyXMp5r11XiVZNDRL+XWxXbVVJjLvq2vxKRttEANBE7Za1bxCAZRdH2/sZT6jFyyTWxXz28hw==
 
 tsconfig-paths@^3.14.1:
   version "3.14.2"

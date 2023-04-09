@@ -6,7 +6,7 @@ import { MainVideoWindow } from "../../components/VideoWindow/MainVideoWindow/Ma
 import { DriverVideoWindow } from "../../components/VideoWindow/DriverVideoWindow/DriverVideoWindow";
 import { assertNever } from "../../utils/assertNever";
 import { DataChannelVideoWindow } from "../../components/VideoWindow/DataChannelVideoWindow";
-import { StreamsStateData } from "../../hooks/useVideoRaceDetails/useVideoRaceDetails.types";
+import { RaceInfo, StreamsStateData } from "../../hooks/useVideoRaceDetails/useVideoRaceDetails.types";
 import { DriverTrackerVideoWindow } from "../../components/VideoWindow/DriverTrackerVideoWindow";
 import { useVideoRaceDetails } from "../../hooks/useVideoRaceDetails/useVideoRaceDetails";
 import { RnDWindow } from "../../components/RnDWindow/RnDWindow";
@@ -26,9 +26,10 @@ interface ViewerProps {
   streams: StreamsStateData;
   season: number;
   isLive: boolean;
+  raceInfo: RaceInfo;
 }
 
-export const Viewer = ({ streams, season, isLive }: ViewerProps) => {
+export const Viewer = ({ streams, season, isLive, raceInfo }: ViewerProps) => {
   const { baseGrid, grid } = useGrid();
   const [{ layout, windows }, dispatch] = useViewerState();
 
@@ -208,7 +209,7 @@ export const Viewer = ({ streams, season, isLive }: ViewerProps) => {
           );
         })}
         <StreamPicker availableDrivers={availableDrivers} />
-        <Player player={mainVideoPlayer} />
+        <Player player={mainVideoPlayer} raceInfo={raceInfo} />
       </div>
     </StreamPickerProvider>
   );
@@ -226,5 +227,5 @@ export const ViewerWithState = () => {
     return <div>Loading...</div>;
   }
 
-  return <Viewer streams={state.streams} season={state.season} isLive={state.isLive} />;
+  return <Viewer streams={state.streams} season={state.season} isLive={state.isLive} raceInfo={state.raceInfo} />;
 };

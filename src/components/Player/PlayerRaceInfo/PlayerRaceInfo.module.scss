@@ -1,0 +1,19 @@
+.eventTitle {
+  @include typography(text, 300, regular);
+  color: var(--color-text-default);
+  white-space: nowrap;
+}
+
+.countryName {
+  @include typography(heading, 400, default);
+  color: var(--color-text-strong);
+  white-space: nowrap;
+}
+
+.wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 100%;
+  user-select: none;
+}

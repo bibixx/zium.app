@@ -1,11 +1,13 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
+import { Key } from "ts-key-enum";
 import { useStreamPicker } from "../../hooks/useStreamPicker/useStreamPicker";
 import { DriverData } from "../../views/Viewer/Viewer.utils";
 import { Input } from "../Input/Input";
 import { ListItem } from "../ListItem/ListItem";
 import { Sheet } from "../Sheet/Sheet";
 import { VideoFeedContent } from "../VideoFeedContent/VideoFeedContent";
+import { useHotkeysScope, useScopedHotkeys } from "../../hooks/useScopedHotkeys/useScopedHotkeys";
 import styles from "./StreamPicker.module.scss";
 
 interface StreamPickerProps {
@@ -38,55 +40,34 @@ export const StreamPicker = ({ availableDrivers }: StreamPickerProps) => {
     setFakeSelection(0);
   };
 
-  useEffect(() => {
-    if (!state.isOpen) {
-      return;
+  const scopes = useHotkeysScope();
+  useScopedHotkeys(Key.Escape, onCancel, [onCancel], {
+    enabled: state.isOpen,
+    scopes,
+    enableOnFormTags: true,
+  });
+  const onArrowDown = useCallback(() => {
+    setFakeSelection((fs) => loopSelection(fs + 1, filteredDrivers.length - 1));
+  }, [filteredDrivers.length]);
+  useScopedHotkeys(Key.ArrowDown, onArrowDown, [onArrowDown], {
+    enabled: state.isOpen,
+    scopes,
+    enableOnFormTags: true,
+  });
+  const onArrowUp = useCallback(() => {
+    setFakeSelection((fs) => loopSelection(fs - 1, filteredDrivers.length - 1));
+  }, [filteredDrivers.length]);
+  useScopedHotkeys(Key.ArrowUp, onArrowUp, [onArrowUp], { enabled: state.isOpen, scopes, enableOnFormTags: true });
+  const onEnter = useCallback(() => {
+    const selectedDriver = filteredDrivers[fakeSelection];
+
+    if (selectedDriver) {
+      onChoice(selectedDriver.id);
     }
 
-    const onKeyDown = (e: KeyboardEvent) => {
-      const isArrowUp = e.key === "ArrowUp";
-      const isArrowDown = e.key === "ArrowDown";
-      const isEscape = e.key === "Escape";
-      const isEnter = e.key === "Enter";
-
-      if (!isArrowDown && !isArrowUp && !isEscape && !isEnter) {
-        return;
-      }
-
-      e.preventDefault();
-
-      if (isEscape) {
-        onCancel();
-        return;
-      }
-
-      if (isArrowDown) {
-        setFakeSelection((fs) => loopSelection(fs + 1, filteredDrivers.length - 1));
-        return;
-      }
-
-      if (isArrowUp) {
-        setFakeSelection((fs) => loopSelection(fs - 1, filteredDrivers.length - 1));
-        return;
-      }
-
-      if (isEnter) {
-        const selectedDriver = filteredDrivers[fakeSelection];
-
-        if (selectedDriver) {
-          onChoice(selectedDriver.id);
-        }
-
-        return;
-      }
-    };
-
-    document.addEventListener("keydown", onKeyDown);
-
-    return () => {
-      return document.removeEventListener("keydown", onKeyDown);
-    };
-  }, [fakeSelection, filteredDrivers, onCancel, onChoice, state.isOpen]);
+    return;
+  }, [fakeSelection, filteredDrivers, onChoice]);
+  useScopedHotkeys(Key.Enter, onEnter, [onEnter], { enabled: state.isOpen, scopes, enableOnFormTags: true });
 
   useEffect(() => {
     listItemsRefs.current[fakeSelection]?.scrollIntoView({ block: "nearest" });
@@ -116,7 +97,7 @@ export const StreamPicker = ({ availableDrivers }: StreamPickerProps) => {
               onClick={() => onChoice(driver.id)}
               isActive={fakeSelection === i}
               onMouseEnter={() => setFakeSelection(i)}
-              innerRef={(ref) => {
+              ref={(ref) => {
                 listItemsRefs.current[i] = ref;
               }}
             >
