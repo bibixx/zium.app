@@ -1,6 +1,8 @@
-import { useCallback, useMemo, useRef, useState } from "react";
+import { memo, useCallback, useMemo, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { PlayerAPI } from "bitmovin-player";
+import deepEqual from "fast-deep-equal/es6";
+import cn from "classnames";
 import { GridWindow } from "../../types/GridWindow";
 import { MainVideoWindow } from "../../components/VideoWindow/MainVideoWindow/MainVideoWindow";
 import { DriverVideoWindow } from "../../components/VideoWindow/DriverVideoWindow/DriverVideoWindow";
@@ -14,6 +16,11 @@ import { Dimensions } from "../../types/Dimensions";
 import { StreamPickerProvider } from "../../hooks/useStreamPicker/useStreamPicker";
 import { StreamPicker } from "../../components/StreamPicker/StreamPicker";
 import { Player } from "../../components/Player/Player";
+import {
+  GLOBAL_UI_VISIBILITY_CLASS_NAME,
+  useViewerUIVisibilityState,
+  ViewerUIVisibilityContext,
+} from "../../hooks/useViewerUIVisibility/useViewerUIVisibility";
 import { getWindowStreamMap, getAvailableDrivers } from "./Viewer.utils";
 import { useGrid } from "./hooks/useGrid";
 import styles from "./Viewer.module.scss";
@@ -29,7 +36,7 @@ interface ViewerProps {
   raceInfo: RaceInfo;
 }
 
-export const Viewer = ({ streams, season, isLive, raceInfo }: ViewerProps) => {
+export const Viewer = memo(({ streams, season, isLive, raceInfo }: ViewerProps) => {
   const { baseGrid, grid } = useGrid();
   const [{ layout, windows }, dispatch] = useViewerState();
 
@@ -213,11 +220,12 @@ export const Viewer = ({ streams, season, isLive, raceInfo }: ViewerProps) => {
       </div>
     </StreamPickerProvider>
   );
-};
+}, deepEqual);
 
 export const ViewerWithState = () => {
   const { raceId } = useParams();
   const state = useVideoRaceDetails(raceId as string);
+  const viewerUIVisibilityState = useViewerUIVisibilityState();
 
   if (state.state === "error") {
     return <div>Error occurred</div>;
@@ -227,5 +235,13 @@ export const ViewerWithState = () => {
     return <div>Loading...</div>;
   }
 
-  return <Viewer streams={state.streams} season={state.season} isLive={state.isLive} raceInfo={state.raceInfo} />;
+  return (
+    <ViewerUIVisibilityContext.Provider value={viewerUIVisibilityState}>
+      <div
+        className={cn(styles.cursorWrapper, { [GLOBAL_UI_VISIBILITY_CLASS_NAME]: viewerUIVisibilityState.isUIVisible })}
+      >
+        <Viewer streams={state.streams} season={state.season} isLive={state.isLive} raceInfo={state.raceInfo} />
+      </div>
+    </ViewerUIVisibilityContext.Provider>
+  );
 };

@@ -1,12 +1,15 @@
 import { Squares2X2Icon, SquaresPlusIcon } from "@heroicons/react/20/solid";
 import { PlayerAPI } from "bitmovin-player";
 import classNames from "classnames";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { RaceInfo } from "../../hooks/useVideoRaceDetails/useVideoRaceDetails.types";
 import { Button } from "../Button/Button";
+import { useViewerUIVisibility } from "../../hooks/useViewerUIVisibility/useViewerUIVisibility";
 import { PlayerControls } from "./PlayerControls/PlayerControls";
 import styles from "./Player.module.scss";
 import { PlayerRaceInfo } from "./PlayerRaceInfo/PlayerRaceInfo";
+
+const PLAYER_COLLAPSED_CLOSED_TIMEOUT = 2_000;
 
 interface PlayerProps {
   player: PlayerAPI | null;
@@ -14,9 +17,22 @@ interface PlayerProps {
 }
 export const Player = ({ player, raceInfo }: PlayerProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const { isUIVisible } = useViewerUIVisibility();
+  const timeoutRef = useRef(-1);
+
+  useEffect(() => {
+    if (isUIVisible) {
+      clearTimeout(timeoutRef.current);
+    } else {
+      timeoutRef.current = setTimeout(() => {
+        setIsCollapsed(false);
+      }, PLAYER_COLLAPSED_CLOSED_TIMEOUT);
+    }
+  }, [isUIVisible]);
 
   return (
-    <div className={classNames(styles.wrapper, { [styles.isCollapsed]: isCollapsed })}>
+    <div className={classNames(styles.wrapper, { [styles.isCollapsed]: isCollapsed, [styles.isVisible]: isUIVisible })}>
+      {isCollapsed && <div className={styles.collapsedClickArea} onClick={() => setIsCollapsed(false)} />}
       <div className={styles.section}>
         <PlayerRaceInfo raceInfo={raceInfo} />
       </div>
@@ -31,7 +47,6 @@ export const Player = ({ player, raceInfo }: PlayerProps) => {
           </Button>
         </div>
       </div>
-      {isCollapsed && <div className={styles.collapsedClickArea} onClick={() => setIsCollapsed(false)} />}
     </div>
   );
 };

@@ -17,8 +17,8 @@
   background: var(--color-background-muted-default);
   z-index: 9999;
   border-radius: var(--radii-medium);
-  transition: var(--transition-medium);
-  transition-property: transform;
+  transition: var(--transition-medium) transform, var(--transition-slow) opacity;
+  opacity: 0;
 
   &.isCollapsed {
     --translate-y: 100%;
@@ -26,6 +26,10 @@
     &:hover {
       --translate-y: calc(100% - 16px);
     }
+  }
+
+  &.isVisible {
+    opacity: 1;
   }
 }
 
