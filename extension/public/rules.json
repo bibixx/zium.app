@@ -24,7 +24,7 @@
     },
     "condition": {
       "urlFilter": "f1tv.formula1.com",
-      "initiatorDomains": ["localhost", "zium.app", "f1-bibixx.vercel.app"]
+      "initiatorDomains": ["__FROM_ENV__"]
     }
   },
   {
@@ -52,7 +52,7 @@
     },
     "condition": {
       "urlFilter": "f1prodlive.akamaized.net",
-      "initiatorDomains": ["localhost", "zium.app", "f1-bibixx.vercel.app"]
+      "initiatorDomains": ["__FROM_ENV__"]
     }
   }
 ]

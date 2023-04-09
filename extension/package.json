@@ -4,14 +4,17 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite build --watch --mode=development",
     "build": "vite build",
     "preview": "vite preview"
   },
   "devDependencies": {
     "@types/chrome": "^0.0.228",
+    "@types/node": "^18.15.11",
     "typescript": "^4.9.3",
-    "vite": "^4.2.0"
+    "vite": "^4.2.0",
+    "vite-plugin-generate-file": "^0.0.4",
+    "zip-a-folder": "^1.1.5"
   },
   "dependencies": {
     "eventemitter2": "^6.4.9"

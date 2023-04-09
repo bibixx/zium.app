@@ -13,28 +13,17 @@
   "background": {
     "service_worker": "background.js"
   },
-  "host_permissions": [
-    "http://localhost/",
-    "https://*.formula1.com/",
-    "https://f1prodlive.akamaized.net/",
-    "https://www.zium.app/",
-    "https://f1-bibixx.vercel.app/",
-    "https://licensing.bitmovin.com/"
-  ],
+  "host_permissions": ["__FROM_ENV__"],
   "content_scripts": [
     {
-      "matches": ["https://*.formula1.com/*"],
-      "js": ["content-script-f1.js"]
-    },
-    {
-      "matches": ["http://localhost/*", "https://www.zium.app/*", "https://f1-bibixx.vercel.app/*"],
+      "matches": ["__FROM_ENV__"],
       "js": ["content-script-zium.js"],
       "run_at": "document_start"
     }
   ],
   "externally_connectable": {
-    "matches": ["http://localhost/", "https://www.zium.app/", "https://f1-bibixx.vercel.app/*"]
+    "matches": ["__FROM_ENV__"]
   },
-  "permissions": ["declarativeNetRequest", "storage", "tabs"],
+  "permissions": ["declarativeNetRequest", "storage", "tabs", "cookies"],
   "manifest_version": 3
 }

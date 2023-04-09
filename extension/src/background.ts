@@ -1,14 +1,24 @@
 import { EventEmitter } from "./utils/EventEmitter";
+import { parseLoginSession } from "./utils/parseLoginSession";
 
 const { RuleActionType, HeaderOperation } = chrome.declarativeNetRequest;
+const TOKEN_STORE_KEY = "token";
+
+interface BackgroundEmitterHandlers {
+  TOKEN_CHANGED: (token: string | null) => void;
+}
+const backgroundEmitter = new EventEmitter<BackgroundEmitterHandlers>();
 
 const removeRule = () =>
   chrome.declarativeNetRequest.updateDynamicRules({
     removeRuleIds: [2, 3, 4],
   });
 
-const addRule = (token: string) =>
-  chrome.declarativeNetRequest.updateDynamicRules({
+const addRule = (token: string) => {
+  const appDomains = import.meta.env.VITE_APP_DOMAINS.split(",").map((d: string) => d.trim());
+  const initiatorDomains = appDomains.map((domain) => domain.replace(/^\*\./, ""));
+
+  return chrome.declarativeNetRequest.updateDynamicRules({
     removeRuleIds: [2, 3, 4],
     addRules: [
       {
@@ -26,7 +36,7 @@ const addRule = (token: string) =>
         },
         condition: {
           urlFilter: "f1tv.formula1.com",
-          initiatorDomains: ["localhost", "www.zium.app", "f1-bibixx.vercel.app"],
+          initiatorDomains,
         },
       },
       {
@@ -44,7 +54,7 @@ const addRule = (token: string) =>
         },
         condition: {
           urlFilter: "f1prodlive.akamaized.net",
-          initiatorDomains: ["localhost", "www.zium.app", "f1-bibixx.vercel.app"],
+          initiatorDomains,
         },
       },
       {
@@ -55,11 +65,12 @@ const addRule = (token: string) =>
         },
         condition: {
           urlFilter: "licensing.bitmovin.com",
-          initiatorDomains: ["localhost", "www.zium.app", "f1-bibixx.vercel.app"],
+          initiatorDomains,
         },
       },
     ],
   });
+};
 
 const requestLogin = () =>
   // eslint-disable-next-line no-async-promise-executor
@@ -69,8 +80,8 @@ const requestLogin = () =>
         url: "https://account.formula1.com/#/en/login?redirect=https%3A%2F%2Fwww.formula1.com%2F",
       });
 
-      const onTokenChanged = (token: string) => {
-        if (token == null) {
+      const onTokenChanged = (token: string | null) => {
+        if (token === null) {
           return;
         }
 
@@ -78,7 +89,7 @@ const requestLogin = () =>
           chrome.tabs.remove(tab.id);
         }
 
-        emitter.removeEventListener("TOKEN_CHANGED", onTokenChanged);
+        backgroundEmitter.removeEventListener("TOKEN_CHANGED", onTokenChanged);
 
         resolve(true);
       };
@@ -89,43 +100,18 @@ const requestLogin = () =>
         }
 
         chrome.tabs.onRemoved.removeListener(onTabClosed);
-        emitter.removeEventListener("TOKEN_CHANGED", onTokenChanged);
+        backgroundEmitter.removeEventListener("TOKEN_CHANGED", onTokenChanged);
 
         resolve(false);
       };
 
       chrome.tabs.onRemoved.addListener(onTabClosed);
 
-      emitter.addEventListener("TOKEN_CHANGED", onTokenChanged);
+      backgroundEmitter.addEventListener("TOKEN_CHANGED", onTokenChanged);
     } catch (error) {
       reject(error);
     }
   });
-
-interface MyEmitterHandlers {
-  TOKEN_CHANGED: (token: string) => void;
-}
-class MyEmitter extends EventEmitter<MyEmitterHandlers> {
-  tokenChanged(token: string) {
-    this.emit("TOKEN_CHANGED", token);
-  }
-}
-const emitter = new MyEmitter();
-
-chrome.storage.local.onChanged.addListener((changes) => {
-  if (!("token" in changes)) {
-    return;
-  }
-
-  const token = changes.token.newValue;
-  if (token == null) {
-    removeRule();
-  } else {
-    addRule(token);
-  }
-
-  emitter.tokenChanged(token);
-});
 
 async function focusOrOpenZium() {
   const [firstTab] = await chrome.tabs.query({ url: ["https://*.zium.app/"] });
@@ -138,6 +124,29 @@ async function focusOrOpenZium() {
 
   chrome.tabs.reload(firstTab.id);
   chrome.tabs.update(firstTab.id, { active: true });
+}
+
+async function updateToken(token: string | null) {
+  await chrome.storage.local.set({ [TOKEN_STORE_KEY]: token });
+
+  if (token === null) {
+    removeRule();
+  } else {
+    addRule(token);
+  }
+
+  backgroundEmitter.emit("TOKEN_CHANGED", token);
+}
+
+async function checkForCookieOnInstall() {
+  const cookie = await chrome.cookies.get({ url: "https://formula1.com", name: "login-session" });
+  if (cookie === null) {
+    return;
+  }
+
+  const encodedLoginSession = cookie.value;
+  const subscriptionToken = parseLoginSession(encodedLoginSession);
+  await updateToken(subscriptionToken);
 }
 
 chrome.runtime.onMessage.addListener(function (msg, _sender, sendResponse) {
@@ -161,11 +170,28 @@ chrome.runtime.onMessage.addListener(function (msg, _sender, sendResponse) {
 });
 
 chrome.runtime.onInstalled.addListener(async (details) => {
+  checkForCookieOnInstall();
+
   if (details.reason !== "install") {
     return;
   }
 
   focusOrOpenZium();
+});
+
+chrome.cookies.onChanged.addListener((changeInfo) => {
+  if (changeInfo.cookie.name !== "login-session") {
+    return;
+  }
+
+  if (changeInfo.removed) {
+    chrome.storage.local.remove(TOKEN_STORE_KEY);
+    return;
+  }
+
+  const encodedLoginSession = changeInfo.cookie.value;
+  const subscriptionToken = parseLoginSession(encodedLoginSession);
+  updateToken(subscriptionToken);
 });
 
 export {};

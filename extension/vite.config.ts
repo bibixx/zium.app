@@ -1,12 +1,12 @@
 import { defineConfig } from "vite";
+import { JsonPlugin, ZipPlugin } from "./vite.plugins";
 
 // https://vitejs.dev/config/
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   build: {
     rollupOptions: {
       input: {
         background: "./src/background.ts",
-        "content-script-f1": "./src/content-script-f1.ts",
         "content-script-zium": "./src/content-script-zium.ts",
       },
       output: {
@@ -15,4 +15,5 @@ export default defineConfig({
     },
     minify: false,
   },
-});
+  plugins: [new JsonPlugin(), mode !== "development" && new ZipPlugin()],
+}));
