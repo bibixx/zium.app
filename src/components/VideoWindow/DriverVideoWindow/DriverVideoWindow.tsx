@@ -118,13 +118,18 @@ const DriverPickerButton = ({ currentDriver, onDriverChange }: DriverPickerButto
   }
 
   const onClick = async () => {
-    const chosenDriver = await requestStream("drivers", [currentDriver.id]);
+    const chosenDriverData = await requestStream("drivers", [currentDriver.id]);
 
-    if (chosenDriver == null) {
+    if (chosenDriverData == null) {
       return;
     }
 
-    onDriverChange(chosenDriver);
+    const [chosenDriverId, chosenType] = chosenDriverData;
+    if (chosenType !== "driver") {
+      return;
+    }
+
+    onDriverChange(chosenDriverId);
   };
 
   return (
