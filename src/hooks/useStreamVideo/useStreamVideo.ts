@@ -29,7 +29,7 @@ export const useStreamVideo = (playbackUrl: string | null) => {
           type: "done",
           data: {
             streamType: "HLS",
-            videoUrl: "https://d3choykgz5a49y.cloudfront.net/out/v1/4812934ce97d42bba9dcaaa1181649c5/manifest.m3u8",
+            videoUrl: "https://cph-msl.akamaized.net/hls/live/2000341/test/master.m3u8",
           },
         });
         return;

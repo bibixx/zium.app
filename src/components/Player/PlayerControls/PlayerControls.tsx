@@ -106,7 +106,7 @@ export const PlayerControls = ({ player, toggleCollapse }: PlayerControlsProps) 
             new PlaybackTimeLabel({
               timeLabelMode: PlaybackTimeLabelMode.CurrentTime,
               cssClasses: ["current-time"],
-              hideInLivePlayback: true,
+              // hideInLivePlayback: true,
             }),
             new Spacer(),
             new PlaybackTimeLabel({

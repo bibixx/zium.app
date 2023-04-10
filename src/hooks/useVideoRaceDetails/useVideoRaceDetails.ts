@@ -64,7 +64,7 @@ export const useVideoRaceDetails = (raceId: string): StreamsState => {
   return streams;
 };
 
-const debugLiveStreams = {
+const debugLiveStreams: StreamsState & { state: "done" } = {
   state: "done",
   streams: {
     defaultStream: {
@@ -382,4 +382,9 @@ const debugLiveStreams = {
   },
   season: 2023,
   isLive: false,
-} as StreamsState & { state: "done" };
+  raceInfo: {
+    countryId: "1",
+    countryName: "Debug",
+    title: "Debug",
+  },
+};
