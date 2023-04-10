@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 import { Key } from "ts-key-enum";
 import { ChartBarIcon, MapIcon, TvIcon } from "@heroicons/react/24/outline";
-import { useStreamPicker } from "../../hooks/useStreamPicker/useStreamPicker";
+import { StreamPickerDataState, useStreamPicker } from "../../hooks/useStreamPicker/useStreamPicker";
 import { DriverData } from "../../views/Viewer/Viewer.utils";
 import { Input } from "../Input/Input";
 import { ListItem } from "../ListItem/ListItem";
@@ -21,6 +21,7 @@ interface StreamPickerProps {
 }
 export const StreamPicker = ({ availableDrivers, globalFeeds }: StreamPickerProps) => {
   const { state, onCancel, onChoice } = useStreamPicker();
+  const { data: laggedState, reset: resetLaggedState } = useLaggedBehinedStreamPickerDataState(state);
   const [searchText, setSearchText] = useState("");
   const [fakeSelection, setFakeSelection] = useState<number>(0);
   const listItemsRefs = useRef<(HTMLElement | null)[]>([]);
@@ -44,8 +45,8 @@ export const StreamPicker = ({ availableDrivers, globalFeeds }: StreamPickerProp
 
     const allEntries = [...globalEntries, ...driverEntries];
 
-    const hiddenEntries = state.isOpen ? state.hiddenEntries : [];
-    const pickerType = state.isOpen ? state.pickerType : "all";
+    const hiddenEntries = laggedState.isOpen ? laggedState.hiddenEntries : [];
+    const pickerType = laggedState.isOpen ? laggedState.pickerType : "all";
 
     const filteredEntires = allEntries.filter((entry) => {
       if (pickerType === "drivers" && entry.type !== "driver") {
@@ -76,11 +77,12 @@ export const StreamPicker = ({ availableDrivers, globalFeeds }: StreamPickerProp
     });
 
     return filteredEntires;
-  }, [availableDrivers, globalFeeds, searchText, state]);
+  }, [availableDrivers, globalFeeds, searchText, laggedState]);
 
   const onClosed = () => {
     setSearchText("");
     setFakeSelection(0);
+    resetLaggedState();
   };
 
   // TODO: Sort out the scope
@@ -210,4 +212,19 @@ const getIconForStreamInfo = (streamInfo: StreamInfo) => {
   }
 
   return assertNever(streamInfo.type);
+};
+
+const useLaggedBehinedStreamPickerDataState = (streamPickerDataState: StreamPickerDataState) => {
+  const [laggedBehindState, setLaggedBehindState] = useState(streamPickerDataState);
+  useEffect(() => {
+    if (streamPickerDataState.isOpen) {
+      setLaggedBehindState(streamPickerDataState);
+    }
+  }, [streamPickerDataState]);
+
+  const reset = () => setLaggedBehindState(streamPickerDataState);
+
+  const data = streamPickerDataState.isOpen ? streamPickerDataState : laggedBehindState;
+
+  return { data, reset };
 };

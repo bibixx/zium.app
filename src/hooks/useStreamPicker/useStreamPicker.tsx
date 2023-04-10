@@ -3,7 +3,7 @@ import { createContext, ReactNode, useContext, useState } from "react";
 type PickerType = "all" | "drivers";
 export type ChosenValueType = "driver" | "global";
 
-type StreamPickerDataState =
+export type StreamPickerDataState =
   | {
       isOpen: false;
     }
