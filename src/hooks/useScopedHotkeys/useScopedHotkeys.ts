@@ -43,7 +43,7 @@ export function useScopedHotkeys(
       return [dependencies, { scopes: DEFAULT_SCOPE }];
     }
 
-    const clonedOptions = structuredClone(options);
+    const clonedOptions = { ...options };
     const scopes = clonedOptions.scopes;
 
     if (scopes == null) {

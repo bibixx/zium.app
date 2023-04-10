@@ -54,8 +54,7 @@ import {
 } from "bitmovin-player-ui";
 
 import { UIConfig } from "bitmovin-player-ui/dist/js/framework/uiconfig";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { useHotkeys } from "react-hotkeys-hook";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Key } from "ts-key-enum";
 import { useScopedHotkeys } from "../../../hooks/useScopedHotkeys/useScopedHotkeys";
 import { useStateWithRef } from "../../../hooks/useStateWithRef/useStateWithRef";
@@ -249,7 +248,6 @@ const PlaybackButtons = ({ player }: PlaybackButtonsProps) => {
     player?.seek(player.getCurrentTime() - 30);
   };
 
-  useScopedHotkeys("space", onPlayClick);
   useScopedHotkeys(Key.ArrowLeft, onSkipBackwards);
   useScopedHotkeys(Key.ArrowRight, onSkipAhead);
 
