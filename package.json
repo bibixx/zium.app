@@ -57,5 +57,9 @@
     "typescript-plugin-css-modules": "^4.2.2",
     "vite": "^4.0.0",
     "vite-plugin-svgr": "^2.4.0"
+  },
+  "packageManager": "yarn@3.5.0",
+  "resolutions": {
+    "bitmovin-player-ui@^3.45.0": "patch:bitmovin-player-ui@npm%3A3.45.0#./.yarn/patches/bitmovin-player-ui-npm-3.45.0-1a60e945c6.patch"
   }
 }

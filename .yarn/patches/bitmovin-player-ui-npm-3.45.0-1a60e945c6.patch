@@ -1,0 +1,46 @@
+diff --git a/dist/js/framework/components/seekbar.js b/dist/js/framework/components/seekbar.js
+index 590059db867e22193934765d47df9a7832a54c68..593412529d2222c9b57fba944f7dd2b151726781 100644
+--- a/dist/js/framework/components/seekbar.js
++++ b/dist/js/framework/components/seekbar.js
+@@ -273,7 +273,6 @@ var SeekBar = /** @class */ (function (_super) {
+                 // Pause playback while seeking
+                 if (isPlaying) {
+                     // use a different issuer here, as play/pause on seek is not "really" triggerd by the user
+-                    player.pause('ui-seek');
+                 }
+             }
+         });
+@@ -736,28 +735,22 @@ var SeekBar = /** @class */ (function (_super) {
+      * @param percent a number between 0 and 100
+      */
+     SeekBar.prototype.setPosition = function (element, percent) {
+-        var scale = percent / 100;
++        var size = percent;
+         // When the scale is exactly 1 or very near 1 (and the browser internally rounds it to 1), browsers seem to render
+         // the elements differently and the height gets slightly off, leading to mismatching heights when e.g. the buffer
+         // level bar has a width of 1 and the playback position bar has a width < 1. A jittering buffer level around 1
+         // leads to an even worse flickering effect.
+         // Various changes in CSS styling and DOM hierarchy did not solve the issue so the workaround is to avoid a scale
+         // of exactly 1.
+-        if (scale >= 0.99999 && scale <= 1.00001) {
+-            scale = 0.99999;
++        if (size >= 99.999 && size <= 100.001) {
++            size = 99.999;
+         }
+         var style = this.config.vertical ?
+-            // -ms-transform required for IE9
+-            // -webkit-transform required for Android 4.4 WebView
+             {
+-                'transform': 'scaleY(' + scale + ')',
+-                '-ms-transform': 'scaleY(' + scale + ')',
+-                '-webkit-transform': 'scaleY(' + scale + ')',
++                height: `${size}%`
+             } :
+             {
+-                'transform': 'scaleX(' + scale + ')',
+-                '-ms-transform': 'scaleX(' + scale + ')',
+-                '-webkit-transform': 'scaleX(' + scale + ')',
++                width: `${size}%`
+             };
+         element.css(style);
+     };

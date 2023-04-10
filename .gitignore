@@ -27,3 +27,11 @@ dist-ssr
 extension/_metadata
 extension/*.zip
 src/tokens/*.sd.json
+
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions

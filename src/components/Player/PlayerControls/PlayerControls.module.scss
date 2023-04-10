@@ -99,8 +99,9 @@
       .bmpui-seekbar-seekposition,
       .bmpui-seekbar-playbackposition {
         height: 4px;
+        min-width: 4px;
         margin: 0;
-        border-radius: 99999999999999999999px;
+        border-radius: var(--radii-rounded);
       }
 
       .bmpui-seekbar-backdrop {

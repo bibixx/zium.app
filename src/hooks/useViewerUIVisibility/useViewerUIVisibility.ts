@@ -9,6 +9,7 @@ interface ViewerUIVisibilityContextState {
   isUIVisible: boolean;
 }
 export const useViewerUIVisibilityState = (): ViewerUIVisibilityContextState => {
+  // TODO: Don't hide if video paused
   const [isUIVisible, isUIVisibleRef, setIsUIVisible] = useStateWithRef(true);
 
   useEffect(() => {

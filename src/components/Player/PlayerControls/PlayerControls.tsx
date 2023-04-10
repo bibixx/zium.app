@@ -52,6 +52,7 @@ import {
   VRToggleButton,
   Watermark,
 } from "bitmovin-player-ui";
+
 import { UIConfig } from "bitmovin-player-ui/dist/js/framework/uiconfig";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
