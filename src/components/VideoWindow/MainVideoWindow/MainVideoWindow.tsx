@@ -36,7 +36,6 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
       isAudioFocused,
       onWindowAudioFocus,
       volume,
-      setVolume,
       onLoaded,
     },
     forwardedRef,
@@ -56,7 +55,6 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
 
       // player.mute();
       // attachStartAt(player);
-      player.play();
 
       // player.on(PlayerEvent.Seek, () => {
       //   onPlayingChange(true);
@@ -75,18 +73,6 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
       player.on(PlayerEvent.Play, () => {
         onPlayingChange(false);
       });
-
-      player.on(PlayerEvent.VolumeChanged, () => {
-        const newVolume = player.getVolume();
-        if (newVolume === 0) {
-          return;
-        }
-
-        setVolume(newVolume);
-        onWindowAudioFocus();
-      });
-
-      // attachUseBestQuality(player);
     };
 
     if (streamVideoState.state !== "done") {
@@ -119,6 +105,10 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
 const ADDITIONAL_OPTIONS: AdditionalVideoJSOptions = {
   ui: false,
   noBufferUI: true,
+  playback: {
+    // muted: true,
+    autoplay: true,
+  },
   // controlBar: {
   //   playToggle: true,
   //   remainingTimeDisplay: true,

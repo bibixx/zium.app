@@ -41,7 +41,7 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo }: ViewerProps) 
   const [{ layout, windows }, dispatch] = useViewerState();
 
   const [areVideosPaused, setAreVideosPaused] = useState(true);
-  const { audioFocusedWindow, onWindowAudioFocus, setVolume, volume } = useVideoAudio({
+  const { audioFocusedWindow, onWindowAudioFocus, setVolume, volume, setIsMuted, isMuted } = useVideoAudio({
     windows,
   });
 
@@ -216,7 +216,14 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo }: ViewerProps) 
           );
         })}
         <StreamPicker availableDrivers={availableDrivers} />
-        <Player player={mainVideoPlayer} raceInfo={raceInfo} />
+        <Player
+          player={mainVideoPlayer}
+          raceInfo={raceInfo}
+          setVolume={setVolume}
+          volume={volume}
+          isMuted={isMuted}
+          setIsMuted={setIsMuted}
+        />
       </div>
     </StreamPickerProvider>
   );

@@ -15,8 +15,12 @@ const PLAYER_COLLAPSED_CLOSED_TIMEOUT = 2_000;
 interface PlayerProps {
   player: PlayerAPI | null;
   raceInfo: RaceInfo;
+  volume: number;
+  setVolume: (newVolume: number) => void;
+  isMuted: boolean;
+  setIsMuted: (newIsMuted: boolean) => void;
 }
-export const Player = ({ player, raceInfo }: PlayerProps) => {
+export const Player = ({ player, raceInfo, setVolume, volume, isMuted, setIsMuted }: PlayerProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const { isUIVisible } = useViewerUIVisibility();
   const timeoutRef = useRef(-1);
@@ -46,7 +50,14 @@ export const Player = ({ player, raceInfo }: PlayerProps) => {
           <PlayerRaceInfo raceInfo={raceInfo} />
         </div>
         <div className={classNames(styles.section, styles.middle)}>
-          <PlayerControls player={player} toggleCollapse={() => setIsCollapsed(!isCollapsed)} />
+          <PlayerControls
+            player={player}
+            toggleCollapse={() => setIsCollapsed(!isCollapsed)}
+            setVolume={setVolume}
+            volume={volume}
+            isMuted={isMuted}
+            setIsMuted={setIsMuted}
+          />
         </div>
         <div className={styles.section}>
           <div className={styles.buttonsWrapper}>

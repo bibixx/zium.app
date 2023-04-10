@@ -21,11 +21,12 @@ interface VideoJSProps {
   options: AdditionalVideoJSOptions;
   onReady: (player: PlayerAPI) => void;
   isPaused: boolean;
+  isMuted?: boolean;
   volume?: number;
 }
 
 export const VideoJS = forwardRef<PlayerAPI | null, VideoJSProps>(
-  ({ videoStreamInfo, options: overwrittenOptions, onReady, isPaused, volume = 0 }, ref) => {
+  ({ videoStreamInfo, options: overwrittenOptions, onReady, isPaused, volume = 0, isMuted = false }, ref) => {
     const placeholderRef = useRef<HTMLDivElement>(null);
     const playerRef = useRef<PlayerAPI | null>(null);
     const uiManagerRef = useRef<UIManager | null>(null);
@@ -72,6 +73,12 @@ export const VideoJS = forwardRef<PlayerAPI | null, VideoJSProps>(
 
         player.setVolume(volume);
 
+        if (isMuted) {
+          playerRef.current?.mute();
+        } else {
+          playerRef.current?.unmute();
+        }
+
         playerRef.current = player;
         setRef(ref, player);
       }
@@ -100,6 +107,14 @@ export const VideoJS = forwardRef<PlayerAPI | null, VideoJSProps>(
     useEffect(() => {
       playerRef.current?.setVolume(volume);
     }, [volume]);
+
+    useEffect(() => {
+      if (isMuted) {
+        playerRef.current?.mute();
+      } else {
+        playerRef.current?.unmute();
+      }
+    }, [isMuted]);
 
     return <div ref={placeholderRef} className={styles.videoWrapper} />;
   },

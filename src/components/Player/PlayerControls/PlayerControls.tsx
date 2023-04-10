@@ -5,6 +5,7 @@ import {
   PauseIcon,
   PlayIcon,
   SpeakerWaveIcon,
+  SpeakerXMarkIcon,
 } from "@heroicons/react/20/solid";
 import { PlayerAPI, PlayerEvent, UserInteractionEvent } from "bitmovin-player";
 import {
@@ -54,7 +55,7 @@ import {
 } from "bitmovin-player-ui";
 
 import { UIConfig } from "bitmovin-player-ui/dist/js/framework/uiconfig";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Key } from "ts-key-enum";
 import { useScopedHotkeys } from "../../../hooks/useScopedHotkeys/useScopedHotkeys";
 import { useStateWithRef } from "../../../hooks/useStateWithRef/useStateWithRef";
@@ -66,11 +67,22 @@ import styles from "./PlayerControls.module.scss";
 interface PlayerControlsProps {
   player: PlayerAPI | null;
   toggleCollapse: () => void;
+  volume: number;
+  setVolume: (newVolume: number) => void;
+  isMuted: boolean;
+  setIsMuted: (newIsMuted: boolean) => void;
 }
 
 const OVERLAY_TIMEOUT_DELAY = 100;
 
-export const PlayerControls = ({ player, toggleCollapse }: PlayerControlsProps) => {
+export const PlayerControls = ({
+  player,
+  toggleCollapse,
+  setVolume,
+  volume,
+  isMuted,
+  setIsMuted,
+}: PlayerControlsProps) => {
   const wrapperRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -122,12 +134,7 @@ export const PlayerControls = ({ player, toggleCollapse }: PlayerControlsProps) 
           cssClasses: ["controlbar-bottom"],
         }),
         // new Container({
-        //   components: [
-        //     new VolumeToggleButton(),
-        //     new VolumeSlider(),
-        //     new Spacer(),
-        //     new SettingsToggleButton({ settingsPanel: settingsPanel }),
-        //   ],
+        //   components: [new VolumeToggleButton(), new VolumeSlider({ vertical: true })],
         //   cssClasses: ["controlbar-bottom"],
         // }),
       ],
@@ -153,7 +160,14 @@ export const PlayerControls = ({ player, toggleCollapse }: PlayerControlsProps) 
     <div className={styles.wrapper}>
       <PlaybackButtons player={player} />
       <div className={styles.bitmovinWrapper} ref={wrapperRef} />
-      <OptionsButtons player={player} toggleCollapse={toggleCollapse} />
+      <OptionsButtons
+        player={player}
+        toggleCollapse={toggleCollapse}
+        setVolume={setVolume}
+        volume={volume}
+        isMuted={isMuted}
+        setIsMuted={setIsMuted}
+      />
     </div>
   );
 };
@@ -272,8 +286,12 @@ const PlaybackButtons = ({ player }: PlaybackButtonsProps) => {
 interface OptionsButtonsProps {
   player: PlayerAPI | null;
   toggleCollapse: () => void;
+  volume: number;
+  setVolume: (newVolume: number) => void;
+  isMuted: boolean;
+  setIsMuted: (newIsMuted: boolean) => void;
 }
-const OptionsButtons = ({ toggleCollapse }: OptionsButtonsProps) => {
+const OptionsButtons = ({ toggleCollapse, volume, isMuted, setIsMuted }: OptionsButtonsProps) => {
   const [isFullScreen, setIsFullScreen] = useState(document.fullscreenElement != null);
   useEffect(() => {
     const onFullScreenChange = () => {
@@ -294,7 +312,11 @@ const OptionsButtons = ({ toggleCollapse }: OptionsButtonsProps) => {
 
   return (
     <div className={styles.buttonsWrapper}>
-      <Button iconLeft={SpeakerWaveIcon} variant="Tertiary" />
+      <Button
+        iconLeft={isMuted ? SpeakerXMarkIcon : SpeakerWaveIcon}
+        variant="Tertiary"
+        onClick={() => setIsMuted(!isMuted)}
+      />
       <Button
         iconLeft={isFullScreen ? ArrowsPointingInIcon : ArrowsPointingOutIcon}
         variant="Tertiary"
