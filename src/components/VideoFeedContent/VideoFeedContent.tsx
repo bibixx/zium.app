@@ -4,25 +4,40 @@ import styles from "./VideoFeedContent.module.scss";
 
 interface VideoFeedContentProps {
   label: ReactNode;
-  srcList: string[];
+  srcList?: string[];
+  icon?: (props: React.SVGProps<SVGSVGElement>) => JSX.Element | null;
   topLabel?: ReactNode;
 }
 
-export const VideoFeedContent = ({ label, srcList, topLabel }: VideoFeedContentProps) => {
-  const { src } = useImage({
-    srcList,
-    useSuspense: false,
-  });
-
+export const VideoFeedContent = ({ label, srcList, icon: Icon, topLabel }: VideoFeedContentProps) => {
   return (
     <div className={styles.wrapper}>
-      <div className={styles.imageWrapper}>
-        <img src={src} alt="" draggable={false} />
-      </div>
+      {srcList && (
+        <div className={styles.imageWrapper}>
+          <Img srcList={srcList} />
+        </div>
+      )}
+      {Icon && (
+        <div className={styles.imageWrapper}>
+          <Icon height={24} width={24} />
+        </div>
+      )}
       <div className={styles.textWrapper}>
         {topLabel && <div className={styles.topLabel}>{topLabel}</div>}
         <div className={styles.label}>{label}</div>
       </div>
     </div>
   );
+};
+
+interface ImgProps {
+  srcList: string[];
+}
+const Img = ({ srcList }: ImgProps) => {
+  const { src } = useImage({
+    srcList,
+    useSuspense: false,
+  });
+
+  return <img src={src} alt="" draggable={false} />;
 };

@@ -1,6 +1,7 @@
 import { createContext, ReactNode, useContext, useState } from "react";
 
 type PickerType = "all" | "drivers";
+export type ChosenValueType = "driver" | "global";
 
 type StreamPickerDataState =
   | {
@@ -8,16 +9,16 @@ type StreamPickerDataState =
     }
   | {
       isOpen: true;
-      requestModeResolveFunction?: (value: string | null) => void;
+      requestModeResolveFunction?: (value: [string, ChosenValueType] | null) => void;
       allowDnD: boolean;
       pickerType: PickerType;
       hiddenEntries: string[];
     };
 
 interface StreamPickerContextType {
-  requestStream: (pickerType?: PickerType, hiddenEntries?: string[]) => Promise<string | null>;
+  requestStream: (pickerType?: PickerType, hiddenEntries?: string[]) => Promise<[string, ChosenValueType] | null>;
   onCancel: () => void;
-  onChoice: (chosenValue: string) => void;
+  onChoice: (chosenValue: string, elementType: ChosenValueType) => void;
   state: StreamPickerDataState;
 }
 export const StreamPickerContext = createContext<StreamPickerContextType | null>(null);
@@ -35,7 +36,7 @@ const useStreamPickerData = (): StreamPickerContextType => {
   const [state, setState] = useState<StreamPickerDataState>({ isOpen: false });
 
   const requestStream = (pickerType: PickerType = "all", hiddenEntries: string[] = []) =>
-    new Promise<string | null>((resolve) => {
+    new Promise<[string, ChosenValueType] | null>((resolve) => {
       setState({
         isOpen: true,
         allowDnD: false,
@@ -51,9 +52,9 @@ const useStreamPickerData = (): StreamPickerContextType => {
     });
   };
 
-  const onChoice = (chosenValue: string) => {
+  const onChoice = (chosenValue: string, elementType: ChosenValueType) => {
     if (state.isOpen && state.requestModeResolveFunction != null) {
-      state.requestModeResolveFunction(chosenValue);
+      state.requestModeResolveFunction([chosenValue, elementType]);
       onClose();
       return;
     }

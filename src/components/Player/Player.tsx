@@ -1,14 +1,15 @@
-import { Squares2X2Icon, SquaresPlusIcon } from "@heroicons/react/20/solid";
 import { PlayerAPI } from "bitmovin-player";
 import classNames from "classnames";
 import { useEffect, useRef, useState } from "react";
 import FocusTrap from "focus-trap-react";
 import { RaceInfo } from "../../hooks/useVideoRaceDetails/useVideoRaceDetails.types";
-import { Button } from "../Button/Button";
 import { useViewerUIVisibility } from "../../hooks/useViewerUIVisibility/useViewerUIVisibility";
+import { GridWindow } from "../../types/GridWindow";
+import { Dimensions } from "../../types/Dimensions";
 import { PlayerControls } from "./PlayerControls/PlayerControls";
 import styles from "./Player.module.scss";
 import { PlayerRaceInfo } from "./PlayerRaceInfo/PlayerRaceInfo";
+import { LayoutButtons } from "./LayoutButtons/LayoutButtons";
 
 const PLAYER_COLLAPSED_CLOSED_TIMEOUT = 2_000;
 
@@ -19,8 +20,19 @@ interface PlayerProps {
   setVolume: (newVolume: number) => void;
   isMuted: boolean;
   setIsMuted: (newIsMuted: boolean) => void;
+  usedWindows: string[];
+  createWindow: (newWindow: GridWindow, dimensions: Dimensions) => void;
 }
-export const Player = ({ player, raceInfo, setVolume, volume, isMuted, setIsMuted }: PlayerProps) => {
+export const Player = ({
+  player,
+  raceInfo,
+  setVolume,
+  volume,
+  isMuted,
+  setIsMuted,
+  usedWindows,
+  createWindow,
+}: PlayerProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const { isUIVisible } = useViewerUIVisibility();
   const timeoutRef = useRef(-1);
@@ -60,12 +72,7 @@ export const Player = ({ player, raceInfo, setVolume, volume, isMuted, setIsMute
           />
         </div>
         <div className={styles.section}>
-          <div className={styles.buttonsWrapper}>
-            <Button iconLeft={Squares2X2Icon} variant="Tertiary" />
-            <Button iconLeft={SquaresPlusIcon} variant="Secondary">
-              Add video
-            </Button>
-          </div>
+          <LayoutButtons usedWindows={usedWindows} createWindow={createWindow} />
         </div>
       </div>
     </FocusTrap>

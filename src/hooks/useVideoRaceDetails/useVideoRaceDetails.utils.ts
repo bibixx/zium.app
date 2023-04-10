@@ -1,17 +1,13 @@
-import {
-  DriverStreamInfo,
-  StreamDataDTO,
-  StreamInfo,
-} from "./useVideoRaceDetails.types";
+import { DriverStreamInfo, StreamDataDTO, StreamInfo } from "./useVideoRaceDetails.types";
 
 const getStreamPrettyName = (name: string) => {
   switch (name) {
     case "F1 LIVE":
       return "F1 Live";
     case "TRACKER":
-      return "Driver Tracker";
+      return "Tracker";
     case "DATA":
-      return "Data Channel";
+      return "Data";
     case "INTERNATIONAL":
       return "International";
     case "PIT LANE":

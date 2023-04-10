@@ -1,5 +1,6 @@
 import { fetchJSON } from "../../utils/api";
 import { uniqueById } from "../../utils/uniqueById";
+import { isNotNullable } from "../../utils/usNotNullable";
 import { RaceData } from "./useRacesList.types";
 
 export const fetchRacesList = async (id: string, signal: AbortSignal): Promise<RaceData[]> => {
@@ -43,8 +44,4 @@ export const fetchRacesList = async (id: string, signal: AbortSignal): Promise<R
     .sort((a, b) => b.roundNumber - a.roundNumber);
 
   return races;
-};
-
-const isNotNullable = <T>(el: T | null | undefined): el is T => {
-  return el != null;
 };

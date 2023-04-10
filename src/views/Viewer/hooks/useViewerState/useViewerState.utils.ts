@@ -33,12 +33,23 @@ interface UpdateWindowAction {
   window: GridWindow;
 }
 
+interface CreateWindowAction {
+  type: "createWindow";
+  window: GridWindow;
+  dimensions: Dimensions;
+}
+
 interface DeleteWindowAction {
   type: "deleteWindow";
   windowId: string;
 }
 
-type WindowGridActions = UpdateLayoutAction | UpdateWindowAction | BringToFrontAction | DeleteWindowAction;
+type WindowGridActions =
+  | UpdateLayoutAction
+  | UpdateWindowAction
+  | BringToFrontAction
+  | DeleteWindowAction
+  | CreateWindowAction;
 
 export const CURRENT_STORE_VERSION = "2";
 export const windowGridReducer = (prevState: WindowGridState, action: WindowGridActions) => {
@@ -115,6 +126,23 @@ export const windowGridReducer = (prevState: WindowGridState, action: WindowGrid
 
       newState.layout[replacedWindowLayoutIndex].id = oldWindowOfNewDriver.id;
       newState.layout[oldLayoutOfNewDriverIndex].id = replacedWindow.id;
+
+      break;
+    }
+    case "createWindow": {
+      const newWindow = action.window;
+      const id = generateUID();
+      newWindow.id = id;
+
+      const layout: GridLayout = {
+        id,
+        ...action.dimensions,
+        zIndex: 1,
+      };
+
+      newState.windows.push(newWindow);
+      newState.layout.push(layout);
+      newState.layout = windowGridReducer(newState, { type: "bringToFront", id }).layout;
 
       break;
     }

@@ -62,6 +62,14 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo }: ViewerProps) 
     });
   };
 
+  const createWindow = (newWindow: GridWindow, dimensions: Dimensions) => {
+    dispatch({
+      type: "createWindow",
+      window: newWindow,
+      dimensions,
+    });
+  };
+
   const executeOnAll = useCallback(
     (cb: (player: PlayerAPI) => void, callerId: string) => {
       windows.forEach((w) => {
@@ -78,6 +86,17 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo }: ViewerProps) 
   );
 
   const availableDrivers = useMemo(() => getAvailableDrivers(streams, season), [season, streams]);
+  const usedWindows = useMemo(
+    () =>
+      windows.map((w) => {
+        if (w.type === "driver") {
+          return w.driverId;
+        }
+
+        return w.type;
+      }),
+    [windows],
+  );
 
   const getLayoutChild = useCallback(
     (gridWindow: GridWindow) => {
@@ -215,7 +234,10 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo }: ViewerProps) 
             </RnDWindow>
           );
         })}
-        <StreamPicker availableDrivers={availableDrivers} />
+        <StreamPicker
+          availableDrivers={availableDrivers}
+          globalFeeds={[streams.defaultStream, streams.driverTrackerStream, streams.dataChannelStream]}
+        />
         <Player
           player={mainVideoPlayer}
           raceInfo={raceInfo}
@@ -223,6 +245,8 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo }: ViewerProps) 
           volume={volume}
           isMuted={isMuted}
           setIsMuted={setIsMuted}
+          usedWindows={usedWindows}
+          createWindow={createWindow}
         />
       </div>
     </StreamPickerProvider>
