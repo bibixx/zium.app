@@ -1,6 +1,6 @@
 import { forwardRef, useRef } from "react";
 import { PlayerAPI } from "bitmovin-player";
-import { SpeakerWaveIcon, XMarkIcon } from "@heroicons/react/20/solid";
+import { ExclamationCircleIcon, SpeakerWaveIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import cn from "classnames";
 import { useStreamVideo } from "../../../hooks/useStreamVideo/useStreamVideo";
 import { DriverGridWindow } from "../../../types/GridWindow";
@@ -69,7 +69,19 @@ export const DriverVideoWindow = forwardRef<PlayerAPI | null, DriverVideoWindowP
     }
 
     if (streamVideoState.state === "error") {
-      return <div style={{ color: "white" }}>{streamVideoState.error}</div>;
+      return (
+        <VideoWindowWrapper className={styles.bitmovinWrapper}>
+          <div className={styles.errorContent}>
+            <div className={styles.errorIconContainer}>
+              <ExclamationCircleIcon height={36} width={36} />
+            </div>
+            <div>{streamVideoState.error}</div>
+          </div>
+          <div className={closeButtonStyles.closeButtonWrapper}>
+            <Button variant="SecondaryInverted" onClick={onDelete} iconLeft={XMarkIcon} />
+          </div>
+        </VideoWindowWrapper>
+      );
     }
 
     return (
