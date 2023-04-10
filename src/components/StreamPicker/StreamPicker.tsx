@@ -40,6 +40,7 @@ export const StreamPicker = ({ availableDrivers }: StreamPickerProps) => {
     setFakeSelection(0);
   };
 
+  // TODO: Sort out the scope
   const scopes = useHotkeysScope();
   useScopedHotkeys(Key.Escape, onCancel, [onCancel], {
     enabled: state.isOpen,

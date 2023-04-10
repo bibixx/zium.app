@@ -118,6 +118,7 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
 
 const ADDITIONAL_OPTIONS: AdditionalVideoJSOptions = {
   ui: false,
+  noBufferUI: true,
   // controlBar: {
   //   playToggle: true,
   //   remainingTimeDisplay: true,

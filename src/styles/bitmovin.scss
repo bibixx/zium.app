@@ -1,40 +1,7 @@
-.bmpui-ui-hugeplaybacktogglebutton {
-  display: none;
+.bmpui-ui-buffering-overlay {
+  background-color: rgb(57 8 14 / 70%) !important;
 }
 
-.bmpui-ui-controlbar {
-  cursor: default;
-}
-
-.bmpui-ui-subtitle-label {
-  background: rgba(0, 0, 0, 0.66) !important;
-  text-shadow: none !important;
-  font-weight: 600;
-
-  width: calc(100% - 32px) !important;
-  left: 16px !important;
-  bottom: 16px !important;
-}
-
-.bmpui-ui-seekbar .bmpui-seekbar .bmpui-seekbar-playbackposition-marker {
-  background-color: var(--color-text-accent) !important;
-  border-color: var(--color-text-accent) !important;
-}
-.bmpui-ui-seekbar .bmpui-seekbar .bmpui-seekbar-playbackposition,
-.bmpui-ui-volumeslider .bmpui-seekbar .bmpui-seekbar-playbackposition-marker,
-.bmpui-ui-volumeslider .bmpui-seekbar .bmpui-seekbar-playbackposition {
-  background-color: var(--color-text-accent) !important;
-}
-
-.bitmovinplayer-container {
-  min-width: 0 !important;
-  min-height: 0 !important;
-}
-
-.bmpui-ui-uicontainer {
-  overflow: visible !important;
-}
-
-.bmpui-ui-settings-panel {
-  z-index: 999999;
+.bmpui-ui-buffering-overlay-indicator {
+  background: url("data:image/svg+xml;charset=utf-8,%3Csvg version='1.1' id='Layer_1' xmlns='http://www.w3.org/2000/svg' x='0' y='0' viewBox='0 0 32 32' xml:space='preserve' height='100%25' width='100%25'%3E%3Cstyle%3E.st1{fill-rule:evenodd;clip-rule:evenodd;fill:%23E10600}%3C/style%3E%3Cpath class='st1' d='M8 8h16v16H8z' id='Rectangle_3_copy_3' style='opacity:.302'/%3E%3Cpath class='st1' d='M23 7H9c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2zm0 16H9V9h14v14z' id='Rectangle_2_copy_13'/%3E%3C/svg%3E") !important;
 }

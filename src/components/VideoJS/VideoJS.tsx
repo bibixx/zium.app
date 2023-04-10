@@ -1,6 +1,6 @@
 import { forwardRef, useEffect, useRef } from "react";
 import objectMerge from "object-merge";
-import { UIFactory, UIManager } from "bitmovin-player-ui";
+import { BufferingOverlay, UIContainer, UIFactory, UIManager } from "bitmovin-player-ui";
 import { UIConfig } from "bitmovin-player-ui/dist/js/framework/uiconfig";
 import "bitmovin-player-ui/dist/css/bitmovinplayer-ui.min.css";
 
@@ -11,6 +11,7 @@ import styles from "./VideoJS.module.scss";
 
 export interface VideoJSOptions extends PlayerConfig {
   ui?: UIConfig | false;
+  noBufferUI?: boolean;
 }
 
 export type AdditionalVideoJSOptions = Partial<VideoJSOptions>;
@@ -49,11 +50,18 @@ export const VideoJS = forwardRef<PlayerAPI | null, VideoJSProps>(
             playbackSpeedSelectionEnabled: false,
           },
         };
-        const options = objectMerge(baseOptions, overwrittenOptions) as PlayerConfig;
+        const options = objectMerge(baseOptions, overwrittenOptions) as VideoJSOptions;
         const player = new Player(placeholderEl, options);
 
         if (options.ui !== false) {
           uiManagerRef.current = UIFactory.buildDefaultUI(player, options.ui);
+        } else if (!options.noBufferUI) {
+          const myUi = new UIContainer({
+            components: [new BufferingOverlay({ showDelayMs: 10 })],
+            hideDelay: -1,
+          });
+
+          uiManagerRef.current = new UIManager(player, myUi);
         }
 
         const sourceConfig = getSourceConfig(videoStreamInfo);

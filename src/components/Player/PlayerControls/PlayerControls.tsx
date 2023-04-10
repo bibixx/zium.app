@@ -135,7 +135,6 @@ export const PlayerControls = ({ player, toggleCollapse }: PlayerControlsProps) 
 
     const myUi = new UIContainer({
       components: [controlBar],
-      // components: [new BufferingOverlay({ showDelayMs: 0 }), controlBar],
       hideDelay: -1,
     });
 
@@ -249,9 +248,9 @@ const PlaybackButtons = ({ player }: PlaybackButtonsProps) => {
     player?.seek(player.getCurrentTime() - 30);
   };
 
-  useHotkeys("space", onPlayClick);
-  useHotkeys(Key.ArrowLeft, onSkipBackwards);
-  useHotkeys(Key.ArrowRight, onSkipAhead);
+  useScopedHotkeys("space", onPlayClick);
+  useScopedHotkeys(Key.ArrowLeft, onSkipBackwards);
+  useScopedHotkeys(Key.ArrowRight, onSkipAhead);
 
   const PlayPauseIcon = useMemo(() => {
     if (isLoading) {

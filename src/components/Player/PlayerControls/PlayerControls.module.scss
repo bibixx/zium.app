@@ -64,7 +64,14 @@
 
       .bmpui-ui-seekbar {
         height: 4px;
+        border-radius: var(--radii-xsmall);
 
+        &:focus-visible {
+          outline: 2px solid var(--color-border-accent);
+          box-shadow: none;
+        }
+
+        &:focus-visible,
         &:hover {
           .bmpui-seekbar-playbackposition-marker {
             opacity: 1;
