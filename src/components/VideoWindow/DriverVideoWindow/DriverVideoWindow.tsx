@@ -145,12 +145,7 @@ const DriverPickerButton = ({ currentDriver, onDriverChange }: DriverPickerButto
   };
 
   return (
-    <button
-      className={styles.driverName}
-      onClick={onClick}
-      onMouseUp={(e) => e.stopPropagation()}
-      onMouseDown={(e) => e.stopPropagation()}
-    >
+    <button className={styles.driverName} onClick={onClick}>
       <VideoFeedContent
         label={currentDriver.lastName}
         topLabel={currentDriver.firstName}
