@@ -13,65 +13,53 @@
       },
       "fontSizes": {
         "100": {
-          "value": "10",
+          "value": "10px",
           "type": "fontSizes"
         },
         "200": {
-          "value": "12",
+          "value": "12px",
           "type": "fontSizes"
         },
         "300": {
-          "value": "14",
+          "value": "14px",
           "type": "fontSizes"
         },
         "400": {
-          "value": "18",
+          "value": "18px",
           "type": "fontSizes"
         },
         "500": {
-          "value": "24",
+          "value": "24px",
           "type": "fontSizes"
         },
         "600": {
-          "value": "36",
+          "value": "36px",
           "type": "fontSizes"
         },
         "700": {
-          "value": "48",
+          "value": "48px",
           "type": "fontSizes"
         },
         "800": {
-          "value": "64",
+          "value": "64px",
           "type": "fontSizes"
         },
         "900": {
-          "value": "96",
+          "value": "96px",
           "type": "fontSizes"
         }
       },
       "fontWeights": {
         "normal": {
-          "value": "Medium",
-          "type": "fontWeights"
-        },
-        "f1Normal": {
-          "value": "Display-Regular",
+          "value": "500",
           "type": "fontWeights"
         },
         "medium": {
-          "value": "Semibold",
+          "value": "600",
           "type": "fontWeights"
         },
         "bold": {
-          "value": "Bold",
-          "type": "fontWeights"
-        },
-        "f1Bold": {
-          "value": "Display-Bold",
-          "type": "fontWeights"
-        },
-        "f1Black": {
-          "value": "Display-Black",
+          "value": "700",
           "type": "fontWeights"
         }
       },
@@ -154,7 +142,7 @@
             }
           },
           "200": {
-            "regualr": {
+            "regular": {
               "fontFamily": {
                 "value": "{typography.fontFamilies.body}",
                 "type": "fontFamilies"
@@ -1118,7 +1106,7 @@
           "type": "color"
         },
         "accent": {
-          "value": "{color.core.red.500}",
+          "value": "{color.core.red.600}",
           "type": "color"
         }
       },
@@ -1271,24 +1259,49 @@
     },
     "radii": {
       "xsmall": {
-        "value": "4",
+        "value": "4px",
         "type": "borderRadius"
       },
       "small": {
-        "value": "8",
+        "value": "8px",
         "type": "borderRadius"
       },
       "medium": {
-        "value": "12",
+        "value": "12px",
         "type": "borderRadius"
       },
       "large": {
-        "value": "16",
+        "value": "16px",
         "type": "borderRadius"
       },
       "rounded": {
-        "value": "999",
+        "value": "999px",
         "type": "borderRadius"
+      }
+    },
+    "motion": {
+      "timing": {
+        "fast": {
+          "value": "150ms",
+          "type": "duration"
+        },
+        "medium": {
+          "value": "200ms",
+          "type": "duration"
+        },
+        "slow": {
+          "value": "300ms",
+          "type": "duration"
+        }
+      },
+      "function": {
+        "value": [
+          0.4,
+          0,
+          0.2,
+          1
+        ],
+        "type": "cubicBezier"
       }
     }
   }

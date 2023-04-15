@@ -1,0 +1,7 @@
+:root {
+  --transition-function: cubic-bezier(var(--motion-function));
+
+  --transition-fast: var(--transition-function) var(--motion-timing-fast);
+  --transition-medium: var(--transition-function) var(--motion-timing-medium);
+  --transition-slow: var(--transition-function) var(--motion-timing-slow);
+}

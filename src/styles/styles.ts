@@ -1,4 +1,5 @@
 import "./generalSans.scss";
-import "./variables.css";
+import "./tokens.scss";
+import "./variables.scss";
 import "./global.scss";
 import "./bitmovin.scss";
