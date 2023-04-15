@@ -37,7 +37,7 @@
 */
 
 @font-face {
-  font-family: 'GeneralSans';
+  font-family: 'General Sans';
   src: url('/fonts/GeneralSans/GeneralSans-Variable.woff2') format('woff2'),
        url('/fonts/GeneralSans/GeneralSans-Variable.woff') format('woff'),
        url('/fonts/GeneralSans/GeneralSans-Variable.ttf') format('truetype');
@@ -59,7 +59,7 @@
 */
 
 @font-face {
-  font-family: 'GeneralSans';
+  font-family: 'General Sans';
   src: url('/fonts/GeneralSans/GeneralSans-VariableItalic.woff2') format('woff2'),
        url('/fonts/GeneralSans/GeneralSans-VariableItalic.woff') format('woff'),
        url('/fonts/GeneralSans/GeneralSans-VariableItalic.ttf') format('truetype');
@@ -70,7 +70,7 @@
 
 
 @font-face {
-  font-family: 'GeneralSans';
+  font-family: 'General Sans';
   src: url('/fonts/GeneralSans/GeneralSans-Extralight.woff2') format('woff2'),
        url('/fonts/GeneralSans/GeneralSans-Extralight.woff') format('woff'),
        url('/fonts/GeneralSans/GeneralSans-Extralight.ttf') format('truetype');
@@ -81,7 +81,7 @@
 
 
 @font-face {
-  font-family: 'GeneralSans';
+  font-family: 'General Sans';
   src: url('/fonts/GeneralSans/GeneralSans-ExtralightItalic.woff2') format('woff2'),
        url('/fonts/GeneralSans/GeneralSans-ExtralightItalic.woff') format('woff'),
        url('/fonts/GeneralSans/GeneralSans-ExtralightItalic.ttf') format('truetype');
@@ -92,7 +92,7 @@
 
 
 @font-face {
-  font-family: 'GeneralSans';
+  font-family: 'General Sans';
   src: url('/fonts/GeneralSans/GeneralSans-Light.woff2') format('woff2'),
        url('/fonts/GeneralSans/GeneralSans-Light.woff') format('woff'),
        url('/fonts/GeneralSans/GeneralSans-Light.ttf') format('truetype');
@@ -103,7 +103,7 @@
 
 
 @font-face {
-  font-family: 'GeneralSans';
+  font-family: 'General Sans';
   src: url('/fonts/GeneralSans/GeneralSans-LightItalic.woff2') format('woff2'),
        url('/fonts/GeneralSans/GeneralSans-LightItalic.woff') format('woff'),
        url('/fonts/GeneralSans/GeneralSans-LightItalic.ttf') format('truetype');
@@ -114,7 +114,7 @@
 
 
 @font-face {
-  font-family: 'GeneralSans';
+  font-family: 'General Sans';
   src: url('/fonts/GeneralSans/GeneralSans-Regular.woff2') format('woff2'),
        url('/fonts/GeneralSans/GeneralSans-Regular.woff') format('woff'),
        url('/fonts/GeneralSans/GeneralSans-Regular.ttf') format('truetype');
@@ -125,7 +125,7 @@
 
 
 @font-face {
-  font-family: 'GeneralSans';
+  font-family: 'General Sans';
   src: url('/fonts/GeneralSans/GeneralSans-Italic.woff2') format('woff2'),
        url('/fonts/GeneralSans/GeneralSans-Italic.woff') format('woff'),
        url('/fonts/GeneralSans/GeneralSans-Italic.ttf') format('truetype');
@@ -136,7 +136,7 @@
 
 
 @font-face {
-  font-family: 'GeneralSans';
+  font-family: 'General Sans';
   src: url('/fonts/GeneralSans/GeneralSans-Medium.woff2') format('woff2'),
        url('/fonts/GeneralSans/GeneralSans-Medium.woff') format('woff'),
        url('/fonts/GeneralSans/GeneralSans-Medium.ttf') format('truetype');
@@ -147,7 +147,7 @@
 
 
 @font-face {
-  font-family: 'GeneralSans';
+  font-family: 'General Sans';
   src: url('/fonts/GeneralSans/GeneralSans-MediumItalic.woff2') format('woff2'),
        url('/fonts/GeneralSans/GeneralSans-MediumItalic.woff') format('woff'),
        url('/fonts/GeneralSans/GeneralSans-MediumItalic.ttf') format('truetype');
@@ -158,7 +158,7 @@
 
 
 @font-face {
-  font-family: 'GeneralSans';
+  font-family: 'General Sans';
   src: url('/fonts/GeneralSans/GeneralSans-Semibold.woff2') format('woff2'),
        url('/fonts/GeneralSans/GeneralSans-Semibold.woff') format('woff'),
        url('/fonts/GeneralSans/GeneralSans-Semibold.ttf') format('truetype');
@@ -169,7 +169,7 @@
 
 
 @font-face {
-  font-family: 'GeneralSans';
+  font-family: 'General Sans';
   src: url('/fonts/GeneralSans/GeneralSans-SemiboldItalic.woff2') format('woff2'),
        url('/fonts/GeneralSans/GeneralSans-SemiboldItalic.woff') format('woff'),
        url('/fonts/GeneralSans/GeneralSans-SemiboldItalic.ttf') format('truetype');
@@ -180,7 +180,7 @@
 
 
 @font-face {
-  font-family: 'GeneralSans';
+  font-family: 'General Sans';
   src: url('/fonts/GeneralSans/GeneralSans-Bold.woff2') format('woff2'),
        url('/fonts/GeneralSans/GeneralSans-Bold.woff') format('woff'),
        url('/fonts/GeneralSans/GeneralSans-Bold.ttf') format('truetype');
@@ -191,7 +191,7 @@
 
 
 @font-face {
-  font-family: 'GeneralSans';
+  font-family: 'General Sans';
   src: url('/fonts/GeneralSans/GeneralSans-BoldItalic.woff2') format('woff2'),
        url('/fonts/GeneralSans/GeneralSans-BoldItalic.woff') format('woff'),
        url('/fonts/GeneralSans/GeneralSans-BoldItalic.ttf') format('truetype');
