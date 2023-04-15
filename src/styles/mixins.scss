@@ -5,7 +5,7 @@
     $prefix: #{$prefix}-#{$weight};
   }
 
-  font-family: var(--typography-text-styles-#{$prefix}-font-family);
+  font-family: var(--typography-text-styles-#{$prefix}-font-family), -apple-system, BlinkMacSystemFont, sans-serif;
   font-weight: var(--typography-text-styles-#{$prefix}-font-weight);
   line-height: var(--typography-text-styles-#{$prefix}-line-height);
   font-size: calc(1px * var(--typography-text-styles-#{$prefix}-font-size));

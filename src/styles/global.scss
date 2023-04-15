@@ -2,6 +2,7 @@ body {
   margin: 0;
   background: var(--color-background-surface);
   color: var(--color-text-default);
+  @include typography(text, 300, regular);
 }
 
 button,
@@ -15,7 +16,6 @@ body,
 }
 
 * {
-  font-family: var(--typography-font-families-body), sans-serif;
   box-sizing: border-box;
 }
 
