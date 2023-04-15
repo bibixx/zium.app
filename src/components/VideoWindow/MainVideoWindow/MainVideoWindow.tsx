@@ -73,6 +73,9 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
       player.on(PlayerEvent.Play, () => {
         onPlayingChange(false);
       });
+
+      // Used to bypass Chrome's inability to autoplay non-muted video
+      player.unmute();
     };
 
     if (streamVideoState.state !== "done") {
@@ -106,7 +109,7 @@ const ADDITIONAL_OPTIONS: AdditionalVideoJSOptions = {
   ui: false,
   noBufferUI: true,
   playback: {
-    // muted: true,
+    muted: true,
     autoplay: true,
   },
   // controlBar: {
