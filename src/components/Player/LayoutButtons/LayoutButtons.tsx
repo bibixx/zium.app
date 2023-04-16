@@ -13,7 +13,7 @@ interface LayoutButtonsProps {
 export const LayoutButtons = ({ usedWindows, createWindow }: LayoutButtonsProps) => {
   const { requestStream } = useStreamPicker();
 
-  const onClick = async () => {
+  const onAddClick = async () => {
     const chosenData = await requestStream("all", usedWindows);
     if (chosenData == null) {
       return;
@@ -46,7 +46,7 @@ export const LayoutButtons = ({ usedWindows, createWindow }: LayoutButtonsProps)
   return (
     <div className={styles.buttonsWrapper}>
       <Button iconLeft={Squares2X2Icon} variant="Tertiary" />
-      <Button iconLeft={SquaresPlusIcon} variant="Secondary" onClick={onClick}>
+      <Button iconLeft={SquaresPlusIcon} variant="Secondary" onClick={onAddClick}>
         Add video
       </Button>
     </div>

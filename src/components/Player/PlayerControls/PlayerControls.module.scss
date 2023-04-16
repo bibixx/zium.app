@@ -11,29 +11,29 @@
   position: relative;
 
   :global {
-    .bmpui-controlbar-bottom {
-      position: relative;
+    .bmpui-ui-controlbar > .bmpui-container-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
 
+    .bmpui-controlbar-bottom {
       @include slider();
     }
 
     .bmpui-controlbar-top {
-      display: flex;
-      width: 100%;
-
-      .bmpui-container-wrapper {
-        margin: 0;
-        width: 100%;
+      & > .bmpui-container-wrapper {
+        display: flex;
+        justify-content: space-between;
       }
 
       .bmpui-ui-playbacktimelabel {
-        margin: 0;
+        height: 20px;
         @include typography(text, 300, regular);
-      }
 
-      .bmpui-ui-spacer {
-        margin: 0;
-        flex: 1;
+        &.bmpui-hidden {
+          display: none;
+        }
       }
 
       .bmpui-current-time {
@@ -43,8 +43,66 @@
       .bmpui-total-time {
         color: var(--color-text-muted);
       }
+
+      .bmpui-ui-playbacktimelabel-live {
+        display: flex;
+        gap: 8px;
+
+        &:not(.bmpui-ui-playbacktimelabel-live-edge) {
+          cursor: pointer;
+
+          &::before {
+            background: var(--color-text-muted);
+          }
+        }
+
+        &::before {
+          content: "";
+          display: block;
+          -webkit-mask-image: url(../../../assets/signal.svg);
+          mask-image: url(../../../assets/signal.svg);
+          background: var(--color-text-accent);
+          width: 20px;
+          height: 20px;
+        }
+      }
     }
   }
+
+  // .bmpui-controlbar-bottom {
+  //   position: relative;
+
+  //   @include slider();
+  // }
+
+  // .bmpui-controlbar-top {
+  //   display: flex;
+  //   width: 100%;
+
+  //   .bmpui-container-wrapper {
+  //     margin: 0;
+  //     width: 100%;
+  //   }
+
+  //   .bmpui-ui-playbacktimelabel {
+  //     margin: 0;
+  //     @include typography(text, 300, regular);
+  //   }
+
+  //   .bmpui-ui-spacer {
+  //     margin: 0;
+  //     flex: 1;
+  //   }
+
+  //   .bmpui-current-time {
+  //     color: var(--color-text-strong);
+  //   }
+
+  //   .bmpui-total-time {
+  //     color: var(--color-text-muted);
+  //   }
+  // }
+  // }
 
   // :global {
   //   .bmpui-ui-controlbar {

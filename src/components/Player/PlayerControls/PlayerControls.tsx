@@ -7,7 +7,6 @@ import {
   PlaybackTimeLabelMode,
   SeekBar,
   SeekBarLabel,
-  Spacer,
   UIContainer,
   UIManager,
 } from "bitmovin-player-ui";
@@ -63,9 +62,8 @@ export const PlayerControls = ({
             new PlaybackTimeLabel({
               timeLabelMode: PlaybackTimeLabelMode.CurrentTime,
               cssClasses: ["current-time"],
-              // hideInLivePlayback: true,
+              tabIndex: 0,
             }),
-            new Spacer(),
             new PlaybackTimeLabel({
               timeLabelMode: PlaybackTimeLabelMode.TotalTime,
               cssClasses: ["total-time"],
