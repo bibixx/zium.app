@@ -11,7 +11,7 @@
   border: 0;
   @include typography(label, 300);
 
-  &:not(:disabled) {
+  &:not(.disabled) {
     cursor: pointer;
   }
 

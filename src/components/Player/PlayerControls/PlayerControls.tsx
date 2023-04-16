@@ -50,8 +50,8 @@ export const PlayerControls = ({
     const seekBar = new SeekBar({
       label: new SeekBarLabel(),
       keyStepIncrements: {
-        leftRight: 50,
-        upDown: 50,
+        leftRight: 30,
+        upDown: 30,
       },
     });
 
@@ -62,7 +62,6 @@ export const PlayerControls = ({
             new PlaybackTimeLabel({
               timeLabelMode: PlaybackTimeLabelMode.CurrentTime,
               cssClasses: ["current-time"],
-              tabIndex: 0,
             }),
             new PlaybackTimeLabel({
               timeLabelMode: PlaybackTimeLabelMode.TotalTime,
@@ -117,6 +116,7 @@ interface PlaybackButtonsProps {
 const PlaybackButtons = ({ player }: PlaybackButtonsProps) => {
   const [isPlaying, isPlayingRef, setIsPlaying] = useStateWithRef(player?.isPlaying() ?? false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isOnLiveEdge, setIsOnLiveEdge] = useState(player?.isLive());
   const [hasStartedSeeking, setHasStartedSeeking] = useState(false);
   const [isSeeking, setIsSeeking] = useState(false);
   const [wasPlayingBeforeSeekStart, setWasPlayingBeforeSeekStart] = useState(false);
@@ -181,6 +181,31 @@ const PlaybackButtons = ({ player }: PlaybackButtonsProps) => {
     return () => clearTimeout(overlayTimeout);
   }, [player]);
 
+  useEffect(() => {
+    if (player == null) {
+      return;
+    }
+
+    if (!player.isLive()) {
+      return;
+    }
+
+    const updateLiveTimeshiftState = () => {
+      const isTimeshifted = player.getTimeShift() < 0;
+      const isTimeshiftAvailable = player.getMaxTimeShift() < 0;
+      const isOnLiveEdge = !isTimeshifted && (!player.isPaused() || !isTimeshiftAvailable);
+      setIsOnLiveEdge(isOnLiveEdge);
+    };
+
+    updateLiveTimeshiftState();
+    player.on(PlayerEvent.TimeShift, updateLiveTimeshiftState);
+    player.on(PlayerEvent.TimeShifted, updateLiveTimeshiftState);
+    player.on(PlayerEvent.Playing, updateLiveTimeshiftState);
+    player.on(PlayerEvent.Paused, updateLiveTimeshiftState);
+    player.on(PlayerEvent.StallStarted, updateLiveTimeshiftState);
+    player.on(PlayerEvent.StallEnded, updateLiveTimeshiftState);
+  }, [player]);
+
   const onPlayClick = () => {
     if (player == null) {
       return;
@@ -214,7 +239,7 @@ const PlaybackButtons = ({ player }: PlaybackButtonsProps) => {
     <div className={styles.buttonsWrapper}>
       <Button iconLeft={ArrowLeft30Icon} variant="Tertiary" onClick={onSkipBackwards} />
       <Button iconLeft={PlayPauseIcon} variant="Secondary" onClick={onPlayClick} />
-      <Button iconLeft={ArrowRight30Icon} variant="Tertiary" onClick={onSkipAhead} />
+      <Button iconLeft={ArrowRight30Icon} variant="Tertiary" onClick={onSkipAhead} disabled={isOnLiveEdge} />
     </div>
   );
 };

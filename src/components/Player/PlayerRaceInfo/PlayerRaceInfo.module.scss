@@ -13,7 +13,14 @@
 .wrapper {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
   height: 100%;
   user-select: none;
+}
+
+.countryContent {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 100%;
 }
