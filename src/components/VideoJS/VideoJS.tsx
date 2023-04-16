@@ -2,7 +2,7 @@ import { forwardRef, useEffect, useRef } from "react";
 import objectMerge from "object-merge";
 import { BufferingOverlay, UIContainer, UIFactory, UIManager } from "bitmovin-player-ui";
 import { UIConfig } from "bitmovin-player-ui/dist/js/framework/uiconfig";
-import "bitmovin-player-ui/dist/css/bitmovinplayer-ui.min.css";
+// import "bitmovin-player-ui/dist/css/bitmovinplayer-ui.min.css";
 
 import { Player, PlayerAPI, PlayerConfig, PlayerEvent, SourceConfig } from "bitmovin-player";
 import { setRef } from "../../utils/setRef";

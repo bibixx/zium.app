@@ -1,67 +1,24 @@
-import {
-  ArrowDownIcon,
-  ArrowsPointingInIcon,
-  ArrowsPointingOutIcon,
-  PauseIcon,
-  PlayIcon,
-  SpeakerWaveIcon,
-  SpeakerXMarkIcon,
-} from "@heroicons/react/20/solid";
+import { PauseIcon, PlayIcon } from "@heroicons/react/20/solid";
 import { PlayerAPI, PlayerEvent, UserInteractionEvent } from "bitmovin-player";
 import {
-  AdClickOverlay,
-  AdMessageLabel,
-  AdSkipButton,
-  AirPlayToggleButton,
-  AudioQualitySelectBox,
-  AudioTrackSelectBox,
-  BufferingOverlay,
-  CastStatusOverlay,
-  CastToggleButton,
   Container,
   ControlBar,
-  ErrorMessageOverlay,
-  FullscreenToggleButton,
-  i18n,
-  Label,
-  PictureInPictureToggleButton,
-  PlaybackSpeedSelectBox,
   PlaybackTimeLabel,
   PlaybackTimeLabelMode,
-  PlaybackToggleButton,
-  PlaybackToggleOverlay,
-  PlayerUtils,
-  RecommendationOverlay,
   SeekBar,
   SeekBarLabel,
-  SettingsPanel,
-  SettingsPanelItem,
-  SettingsPanelPage,
-  SettingsPanelPageOpenButton,
-  SettingsToggleButton,
   Spacer,
-  SubtitleOverlay,
-  SubtitleSelectBox,
-  SubtitleSettingsLabel,
-  SubtitleSettingsPanelPage,
-  TitleBar,
   UIContainer,
   UIManager,
-  VideoQualitySelectBox,
-  VolumeSlider,
-  VolumeToggleButton,
-  VRToggleButton,
-  Watermark,
 } from "bitmovin-player-ui";
 
 import { UIConfig } from "bitmovin-player-ui/dist/js/framework/uiconfig";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Key } from "ts-key-enum";
-import { useScopedHotkeys } from "../../../hooks/useScopedHotkeys/useScopedHotkeys";
 import { useStateWithRef } from "../../../hooks/useStateWithRef/useStateWithRef";
 import { Button } from "../../Button/Button";
 import { ArrowLeft30Icon, ArrowRight30Icon } from "../../CustomIcons/CustomIcons";
 import { Spinner } from "../../Spinner/Spinner";
+import { OptionsButtons } from "./OptionsButtons/OptionsButtons";
 import styles from "./PlayerControls.module.scss";
 
 interface PlayerControlsProps {
@@ -91,17 +48,6 @@ export const PlayerControls = ({
       return;
     }
 
-    // const mainSettingsPanelPage = new SettingsPanelPage({
-    //   components: [
-    //     new SettingsPanelItem(i18n.getLocalizer("settings.video.quality"), new VideoQualitySelectBox()),
-    //   ],
-    // });
-
-    // const settingsPanel = new SettingsPanel({
-    //   components: [mainSettingsPanelPage],
-    //   hidden: true,
-    // });
-
     const seekBar = new SeekBar({
       label: new SeekBarLabel(),
       keyStepIncrements: {
@@ -112,7 +58,6 @@ export const PlayerControls = ({
 
     const controlBar = new ControlBar({
       components: [
-        // settingsPanel,
         new Container({
           components: [
             new PlaybackTimeLabel({
@@ -133,10 +78,6 @@ export const PlayerControls = ({
           components: [seekBar],
           cssClasses: ["controlbar-bottom"],
         }),
-        // new Container({
-        //   components: [new VolumeToggleButton(), new VolumeSlider({ vertical: true })],
-        //   cssClasses: ["controlbar-bottom"],
-        // }),
       ],
     });
 
@@ -262,9 +203,6 @@ const PlaybackButtons = ({ player }: PlaybackButtonsProps) => {
     player?.seek(player.getCurrentTime() - 30);
   };
 
-  useScopedHotkeys(Key.ArrowLeft, onSkipBackwards);
-  useScopedHotkeys(Key.ArrowRight, onSkipAhead);
-
   const PlayPauseIcon = useMemo(() => {
     if (isLoading) {
       return Spinner;
@@ -279,50 +217,6 @@ const PlaybackButtons = ({ player }: PlaybackButtonsProps) => {
       <Button iconLeft={ArrowLeft30Icon} variant="Tertiary" onClick={onSkipBackwards} />
       <Button iconLeft={PlayPauseIcon} variant="Secondary" onClick={onPlayClick} />
       <Button iconLeft={ArrowRight30Icon} variant="Tertiary" onClick={onSkipAhead} />
-    </div>
-  );
-};
-
-interface OptionsButtonsProps {
-  player: PlayerAPI | null;
-  toggleCollapse: () => void;
-  volume: number;
-  setVolume: (newVolume: number) => void;
-  isMuted: boolean;
-  setIsMuted: (newIsMuted: boolean) => void;
-}
-const OptionsButtons = ({ toggleCollapse, volume, isMuted, setIsMuted }: OptionsButtonsProps) => {
-  const [isFullScreen, setIsFullScreen] = useState(document.fullscreenElement != null);
-  useEffect(() => {
-    const onFullScreenChange = () => {
-      setIsFullScreen(document.fullscreenElement != null);
-    };
-
-    document.addEventListener("fullscreenchange", onFullScreenChange);
-    () => document.removeEventListener("fullscreenchange", onFullScreenChange);
-  }, []);
-
-  const toggleFullScreen = () => {
-    if (document.fullscreenElement) {
-      document.exitFullscreen();
-    } else {
-      document.documentElement.requestFullscreen();
-    }
-  };
-
-  return (
-    <div className={styles.buttonsWrapper}>
-      <Button
-        iconLeft={isMuted ? SpeakerXMarkIcon : SpeakerWaveIcon}
-        variant="Tertiary"
-        onClick={() => setIsMuted(!isMuted)}
-      />
-      <Button
-        iconLeft={isFullScreen ? ArrowsPointingInIcon : ArrowsPointingOutIcon}
-        variant="Tertiary"
-        onClick={toggleFullScreen}
-      />
-      <Button iconLeft={ArrowDownIcon} variant="Tertiary" onClick={toggleCollapse} />
     </div>
   );
 };

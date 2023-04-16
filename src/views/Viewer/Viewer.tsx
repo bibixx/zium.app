@@ -40,10 +40,11 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo }: ViewerProps) 
   const { baseGrid, grid } = useGrid();
   const [{ layout, windows }, dispatch] = useViewerState();
 
-  const [areVideosPaused, setAreVideosPaused] = useState(true);
-  const { audioFocusedWindow, onWindowAudioFocus, setVolume, volume, setIsMuted, isMuted } = useVideoAudio({
-    windows,
-  });
+  const [areVideosPaused, setAreVideosPaused] = useState(false);
+  const { audioFocusedWindow, onWindowAudioFocus, setVolume, volume, internalVolume, setIsMuted, isMuted } =
+    useVideoAudio({
+      windows,
+    });
 
   const windowStreamMap = useMemo(() => getWindowStreamMap(windows, streams), [windows, streams]);
   const windowVideojsRefMapRef = useRef<Record<string, PlayerAPI | null>>({});
@@ -242,7 +243,7 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo }: ViewerProps) 
           player={mainVideoPlayer}
           raceInfo={raceInfo}
           setVolume={setVolume}
-          volume={volume}
+          volume={internalVolume}
           isMuted={isMuted}
           setIsMuted={setIsMuted}
           usedWindows={usedWindows}

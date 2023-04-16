@@ -32,6 +32,7 @@ export const useVideoAudio = ({ windows }: UseFocusedVideoArguments) => {
     onWindowAudioFocus,
     audioFocusedWindow,
     volume: outputVolume,
+    internalVolume: volume,
     setVolume,
     isMuted,
     setIsMuted,

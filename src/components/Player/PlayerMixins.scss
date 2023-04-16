@@ -1,0 +1,173 @@
+@mixin slider-hover {
+  :global {
+    .bmpui-seekbar-playbackposition-marker {
+      opacity: 1;
+    }
+
+    .bmpui-seekbar-playbackposition {
+      background: var(--color-border-accent);
+    }
+  }
+}
+
+@mixin slider {
+  :global {
+    .bmpui-ui-uicontainer {
+      overflow: visible;
+      position: static;
+      height: auto;
+      user-select: none;
+      pointer-events: none;
+      width: 100%;
+
+      * {
+        pointer-events: auto;
+      }
+    }
+
+    .bmpui-ui-volumeslider,
+    .bmpui-ui-seekbar {
+      position: relative;
+      width: 100%;
+      height: 4px;
+      cursor: pointer;
+      border-radius: var(--radii-xsmall);
+    }
+
+    .bmpui-seekbar {
+      height: 4px;
+      border-radius: var(--radii-xsmall);
+
+      &:focus-visible {
+        outline: 2px solid var(--color-border-accent);
+        box-shadow: none;
+      }
+
+      &:focus-visible,
+      &:hover {
+        @include slider-hover();
+      }
+
+      &::before {
+        content: "";
+        position: absolute;
+        display: block;
+        width: 100%;
+        top: -12px;
+        bottom: -12px;
+      }
+    }
+
+    .bmpui-seekbar-markers {
+      display: none;
+    }
+
+    .bmpui-ui-seekbar-label > .bmpui-container-wrapper {
+      margin-left: -50%;
+      margin-right: 50%;
+      position: relative;
+    }
+
+    .bmpui-seekbar-backdrop,
+    .bmpui-seekbar-bufferlevel,
+    .bmpui-seekbar-seekposition,
+    .bmpui-seekbar-playbackposition,
+    .bmpui-seekbar-playbackposition-marker {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: auto;
+      top: 0;
+    }
+
+    .bmpui-seekbar-backdrop,
+    .bmpui-seekbar-bufferlevel,
+    .bmpui-seekbar-seekposition,
+    .bmpui-seekbar-playbackposition {
+      height: 4px;
+      width: 100%;
+      min-width: 4px;
+      border-radius: var(--radii-rounded);
+      margin: 0;
+    }
+
+    .bmpui-seekbar-backdrop {
+      background: var(--color-background-strong-default);
+    }
+
+    .bmpui-seekbar-playbackposition {
+      background: var(--color-border-strong-inverted-default);
+      transition: var(--transition-fast);
+      transition-property: background;
+    }
+
+    .bmpui-seekbar-seekposition {
+      background: var(--color-core-neutral-lighten-400);
+    }
+
+    .bmpui-seekbar-bufferlevel {
+      background: var(--color-core-neutral-lighten-400);
+    }
+
+    .bmpui-seekbar-playbackposition-marker {
+      bottom: 0;
+      width: 16px;
+      height: 16px;
+      left: -8px;
+      margin: auto;
+      border: none;
+      background: var(--color-core-white);
+      border-radius: var(--radii-rounded);
+      opacity: 0;
+      transition: var(--transition-fast);
+      transition-property: opacity;
+      box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    }
+
+    .bmpui-ui-seekbar-label {
+      transition: var(--transition-slow);
+      transition-property: opacity, visibility;
+      opacity: 1;
+      visibility: visible;
+      position: absolute;
+      bottom: 100%;
+      left: 0;
+      margin-bottom: 1em;
+      z-index: 2;
+
+      &.bmpui-hidden {
+        visibility: hidden;
+        opacity: 0;
+      }
+
+      .bmpui-seekbar-label-inner {
+        border-bottom: 0;
+
+        &::after {
+          display: none;
+        }
+      }
+
+      .bmpui-seekbar-label-metadata {
+        bottom: 0;
+        position: absolute;
+        width: 100%;
+
+        padding: 8px 12px;
+        border-radius: var(--radii-rounded);
+        background: var(--color-background-default-default);
+        @include inner-border(var(--color-border-default-default));
+        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+        color: var(--color-text-strong);
+
+        .bmpui-seekbar-label-title {
+          display: none;
+        }
+
+        .bmpui-seekbar-label-time {
+          @include typography(text, 300, regular);
+        }
+      }
+    }
+  }
+}
