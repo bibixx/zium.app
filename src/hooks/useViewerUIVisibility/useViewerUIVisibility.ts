@@ -40,7 +40,7 @@ export const useViewerUIVisibilityState = (): ViewerUIVisibilityContextState => 
     };
   }, [isUIVisibleRef, setIsUIVisible]);
 
-  return { isUIVisible: true };
+  return { isUIVisible };
 };
 
 export const ViewerUIVisibilityContext = createContext<ViewerUIVisibilityContextState | null>(null);
