@@ -1,4 +1,14 @@
-import { DriverStreamInfo, StreamDataDTO, StreamInfo } from "./useVideoRaceDetails.types";
+import {
+  BaseStreamInfo,
+  DriverStreamInfo,
+  F1PlaybackOffsetsApiResponse,
+  F1PlaybackOffsetsData,
+  MultiViewerPlaybackOffsetsData,
+  MultiViewerSyncOffsetsResponse,
+  StreamDataDTO,
+  StreamInfo,
+  StreamInfoWithDriver,
+} from "./useVideoRaceDetails.types";
 
 const getStreamPrettyName = (name: string) => {
   switch (name) {
@@ -17,17 +27,21 @@ const getStreamPrettyName = (name: string) => {
   }
 };
 
-const getType = (stream: any): StreamInfo["type"] => {
-  if (stream.identifier === "PRES") {
+const mapStreamIdentifierToType = (identifier: string): StreamInfoWithDriver["type"] => {
+  if (identifier === "PRES") {
     return "main";
   }
 
-  if (stream.identifier === "TRACKER") {
+  if (identifier === "TRACKER") {
     return "driver-tracker";
   }
 
-  if (stream.identifier === "DATA") {
+  if (identifier === "DATA") {
     return "data-channel";
+  }
+
+  if (identifier === "OBC") {
+    return "driver";
   }
 
   return "other";
@@ -41,30 +55,39 @@ export const collectStreams = (streams: StreamDataDTO[]) => {
   const otherStreams: StreamInfo[] = [];
 
   for (const stream of streams) {
-    const baseStreamInfo: StreamInfo = {
-      type: getType(stream),
+    const streamType = mapStreamIdentifierToType(stream.identifier);
+    const baseStreamInfo: BaseStreamInfo = {
       channelId: stream.channelId,
       playbackUrl: stream.playbackUrl,
       title: getStreamPrettyName(stream.title),
       identifier: stream.identifier,
     };
 
-    if (baseStreamInfo.type === "main") {
-      defaultStream = baseStreamInfo;
+    if (streamType === "main") {
+      defaultStream = {
+        type: streamType,
+        ...baseStreamInfo,
+      };
       continue;
     }
 
-    if (baseStreamInfo.type === "data-channel") {
-      dataChannelStream = baseStreamInfo;
+    if (streamType === "data-channel") {
+      dataChannelStream = {
+        type: streamType,
+        ...baseStreamInfo,
+      };
       continue;
     }
 
-    if (baseStreamInfo.type === "driver-tracker") {
-      driverTrackerStream = baseStreamInfo;
+    if (streamType === "driver-tracker") {
+      driverTrackerStream = {
+        type: streamType,
+        ...baseStreamInfo,
+      };
       continue;
     }
 
-    if (stream.type === "obc") {
+    if (streamType === "driver") {
       const driverStreamInfo: DriverStreamInfo = {
         ...baseStreamInfo,
         type: "driver",
@@ -82,7 +105,10 @@ export const collectStreams = (streams: StreamDataDTO[]) => {
       continue;
     }
 
-    otherStreams.push(baseStreamInfo);
+    otherStreams.push({
+      type: "other",
+      ...baseStreamInfo,
+    });
   }
 
   return {
@@ -92,4 +118,75 @@ export const collectStreams = (streams: StreamDataDTO[]) => {
     driverTrackerStream,
     dataChannelStream,
   };
+};
+
+export const createF1OffsetsMap = (playbackOffsets: F1PlaybackOffsetsApiResponse[]): F1PlaybackOffsetsData => {
+  const data: F1PlaybackOffsetsData = {};
+
+  for (const offset of playbackOffsets) {
+    const key = mapStreamIdentifierToType(offset.channelToAdjust);
+    const value = offset.delaySeconds;
+    const baseChannel = offset.channels.find((channel) => channel !== offset.channelToAdjust);
+
+    if (baseChannel === undefined) {
+      continue;
+    }
+
+    const baseChannelType = mapStreamIdentifierToType(baseChannel);
+    const otherValues: Record<StreamInfoWithDriver["type"], number | undefined> = data[key] ?? {};
+    otherValues[baseChannelType] = value;
+
+    data[key] = otherValues;
+  }
+
+  return data;
+};
+
+const mapStreamPrettyNameToIdentifier = (name: string): StreamInfo["type"] => {
+  switch (name) {
+    case "F1 LIVE":
+      return "main";
+    case "TRACKER":
+      return "driver-tracker";
+    case "DATA":
+      return "data-channel";
+    // case "INTERNATIONAL":
+    //   return "INTERNATIONAL";
+    default:
+      return "other";
+  }
+};
+
+export const createMultiViewerOffsetsMap = (
+  playbackOffsets: MultiViewerSyncOffsetsResponse[],
+): MultiViewerPlaybackOffsetsData[] => {
+  const data: MultiViewerPlaybackOffsetsData[] = [];
+
+  for (const offset of playbackOffsets) {
+    const value = offset.playbackData.currentTime;
+
+    if (offset.driverData !== undefined) {
+      const driverId = offset.streamData.title;
+
+      data.push({
+        type: "driver",
+        driverId,
+        time: value,
+      });
+      continue;
+    }
+
+    const type = mapStreamPrettyNameToIdentifier(offset.streamData.title);
+
+    if (type === undefined) {
+      continue;
+    }
+
+    data.push({
+      type,
+      time: value,
+    });
+  }
+
+  return data;
 };

@@ -42,8 +42,8 @@ export const PlayerControls = ({ player, setVolume, volume, isMuted, setIsMuted 
     const seekBar = new SeekBar({
       label: new SeekBarLabel(),
       keyStepIncrements: {
-        leftRight: 30,
-        upDown: 30,
+        leftRight: 5,
+        upDown: 5,
       },
     });
 

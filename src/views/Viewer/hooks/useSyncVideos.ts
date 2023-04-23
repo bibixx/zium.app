@@ -1,20 +1,19 @@
 import { PlayerAPI, TimeMode } from "bitmovin-player";
 import { MutableRefObject, useEffect } from "react";
+import { PlaybackOffsets } from "../../../hooks/useVideoRaceDetails/useVideoRaceDetails.types";
 import { GridWindow } from "../../../types/GridWindow";
 
 interface UseSyncVideosArguments {
   windows: GridWindow[];
   windowVideojsRefMapRef: MutableRefObject<Record<string, PlayerAPI | null>>;
-  isDisabled: boolean;
+  isLive: boolean;
+  playbackOffsets: PlaybackOffsets;
 }
-export const useSyncVideos = ({ windows, windowVideojsRefMapRef, isDisabled }: UseSyncVideosArguments) => {
+export const useSyncVideos = ({ windows, windowVideojsRefMapRef, isLive, playbackOffsets }: UseSyncVideosArguments) => {
   useEffect(() => {
-    if (isDisabled) {
-      return;
-    }
-
     const syncVideos = (forceSync = false) => {
       const mainWindow = windows.find((w) => w.type === "main");
+      const baseTime = getBaseTime(playbackOffsets);
 
       if (mainWindow == null) {
         return;
@@ -37,15 +36,19 @@ export const useSyncVideos = ({ windows, windowVideojsRefMapRef, isDisabled }: U
           return;
         }
 
-        const diff = Math.abs(
-          player.getCurrentTime(TimeMode.AbsoluteTime) - mainWindowPlayer.getCurrentTime(TimeMode.AbsoluteTime),
-        );
+        const offset = getOffset(playbackOffsets, baseTime, w, mainWindow);
+        const targetTime = mainWindowPlayer.getCurrentTime(TimeMode.AbsoluteTime) - offset;
+        const diff = Math.abs(player.getCurrentTime(TimeMode.AbsoluteTime) - targetTime);
 
-        if (diff < 3 && !forceSync) {
+        if (diff < 1 && !forceSync) {
           return;
         }
 
-        player.seek(mainWindowPlayer.getCurrentTime(TimeMode.AbsoluteTime));
+        if (isLive) {
+          player.timeShift(-diff);
+        } else {
+          player.seek(targetTime);
+        }
       });
     };
 
@@ -64,5 +67,41 @@ export const useSyncVideos = ({ windows, windowVideojsRefMapRef, isDisabled }: U
       window.clearInterval(interval);
       document.removeEventListener("visibilitychange", onVisibilityChange);
     };
-  }, [isDisabled, windowVideojsRefMapRef, windows]);
+  }, [isLive, playbackOffsets, windowVideojsRefMapRef, windows]);
+};
+
+const getOffset = (
+  playbackOffsets: PlaybackOffsets,
+  baseTime: number | undefined,
+  w: GridWindow,
+  mainWindow: GridWindow,
+): number => {
+  // TODO: Figure out MultiViewer non-driver streams
+  if (playbackOffsets.multiViewer === undefined || w.type !== "driver") {
+    return playbackOffsets.f1[w.type]?.[mainWindow.type] ?? 0;
+  }
+
+  if (baseTime === undefined) {
+    return 0;
+  }
+
+  const playbackOffset = playbackOffsets.multiViewer.find(
+    (offset) => offset.type === "driver" && offset.driverId === w.driverId,
+  );
+
+  const playbackOffsetTime = playbackOffset?.time;
+
+  if (playbackOffsetTime === undefined) {
+    return 0;
+  }
+
+  return baseTime - playbackOffsetTime;
+};
+
+const getBaseTime = (playbackOffsets: PlaybackOffsets): number | undefined => {
+  if (playbackOffsets.multiViewer === undefined) {
+    return undefined;
+  }
+
+  return playbackOffsets.multiViewer.find(({ type }) => type === "main")?.time;
 };

@@ -15,22 +15,39 @@ export interface RaceInfo {
 export type StreamsState =
   | { state: "loading" }
   | { state: "error"; error: string }
-  | { state: "done"; streams: StreamsStateData; season: number; isLive: boolean; raceInfo: RaceInfo };
+  | {
+      state: "done";
+      streams: StreamsStateData;
+      season: number;
+      isLive: boolean;
+      raceInfo: RaceInfo;
+      playbackOffsets: PlaybackOffsets;
+    };
 
 export type StreamsStateAction =
   | { type: "load" }
   | { type: "error"; error: string }
-  | { type: "done"; streams: StreamsStateData; season: number; isLive: boolean; raceInfo: RaceInfo };
+  | {
+      type: "done";
+      streams: StreamsStateData;
+      season: number;
+      isLive: boolean;
+      raceInfo: RaceInfo;
+      playbackOffsets: PlaybackOffsets;
+    };
 
-export interface StreamInfo {
-  type: "main" | "driver-tracker" | "data-channel" | "other";
+export interface BaseStreamInfo {
   channelId: number;
   playbackUrl: string;
   title: string;
   identifier: string;
 }
 
-export interface DriverStreamInfo extends Omit<StreamInfo, "type"> {
+export interface StreamInfo extends BaseStreamInfo {
+  type: "main" | "driver-tracker" | "data-channel" | "other";
+}
+
+export interface DriverStreamInfo extends BaseStreamInfo {
   type: "driver";
   racingNumber: number;
   title: string;
@@ -41,6 +58,8 @@ export interface DriverStreamInfo extends Omit<StreamInfo, "type"> {
   constructorName: string;
   hex: string;
 }
+
+export type StreamInfoWithDriver = StreamInfo | DriverStreamInfo;
 
 export interface StreamDataDTO {
   racingNumber: number;
@@ -58,4 +77,53 @@ export interface StreamDataDTO {
   driverLastName: string;
   constructorName: string;
   hex: string;
+}
+
+export interface F1PlaybackOffsetsApiResponse {
+  channels: [string, string];
+  channelToAdjust: string;
+  delaySeconds: number;
+}
+
+export type F1PlaybackOffsetsData = Partial<Record<StreamInfoWithDriver["type"], Record<string, number | undefined>>>;
+
+export interface MultiViewerSyncOffsetsResponse {
+  diff: 0;
+  playbackData: {
+    currentTime: number;
+    paused: boolean;
+    startTimestamp: string;
+    ts: number;
+  };
+  streamData: {
+    channelId: number;
+    contentId: string;
+    meetingKey: string;
+    sessionKey: string;
+    title: string;
+    type: string;
+  };
+  driverData?: {
+    driverNumber: number;
+    firstName: string;
+    lastName: string;
+    teamName: string;
+    tla: string;
+  };
+}
+
+export type MultiViewerPlaybackOffsetsData =
+  | {
+      type: StreamInfo["type"];
+      time: number;
+    }
+  | {
+      type: DriverStreamInfo["type"];
+      time: number;
+      driverId: string;
+    };
+
+export interface PlaybackOffsets {
+  f1: F1PlaybackOffsetsData;
+  multiViewer: MultiViewerPlaybackOffsetsData[] | undefined;
 }

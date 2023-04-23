@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useReducer } from "react";
-import { fetchRaceStreams } from "./useVideoRaceDetails.api";
+import { fetchMultiViewerOffsets, fetchRaceStreams } from "./useVideoRaceDetails.api";
 import { RaceInfo, StreamsState, StreamsStateAction } from "./useVideoRaceDetails.types";
-import { collectStreams } from "./useVideoRaceDetails.utils";
+import { collectStreams, createF1OffsetsMap, createMultiViewerOffsetsMap } from "./useVideoRaceDetails.utils";
 
 export const useVideoRaceDetails = (raceId: string): StreamsState => {
   const [streams, dispatch] = useReducer(
@@ -21,6 +21,7 @@ export const useVideoRaceDetails = (raceId: string): StreamsState => {
           season: action.season,
           isLive: action.isLive,
           raceInfo: action.raceInfo,
+          playbackOffsets: action.playbackOffsets,
         };
       }
 
@@ -34,16 +35,44 @@ export const useVideoRaceDetails = (raceId: string): StreamsState => {
       dispatch({ type: "load" });
 
       try {
-        const { streams, season, isLive, countryId, countryName, title } = await fetchRaceStreams(raceId, signal);
+        const {
+          streams,
+          season,
+          isLive,
+          countryId,
+          countryName,
+          title,
+          playbackOffsets,
+          meetingKey,
+          meetingSessionKey,
+        } = await fetchRaceStreams(raceId, signal);
+
+        const multiViewerOffsets = await fetchMultiViewerOffsets(meetingKey, meetingSessionKey, signal);
+        const mappedMultiViewerOffsets =
+          multiViewerOffsets !== undefined ? createMultiViewerOffsetsMap(multiViewerOffsets) : undefined;
+
         const collectedStreams = collectStreams(streams);
         const raceInfo: RaceInfo = {
           countryId,
           countryName,
           title,
         };
+        const mappedF1PlaybackOffsets = createF1OffsetsMap(playbackOffsets);
 
-        dispatch({ type: "done", streams: collectedStreams, season, isLive, raceInfo });
+        dispatch({
+          type: "done",
+          streams: collectedStreams,
+          season,
+          isLive,
+          raceInfo,
+          playbackOffsets: {
+            f1: mappedF1PlaybackOffsets,
+            multiViewer: mappedMultiViewerOffsets,
+          },
+        });
       } catch (error) {
+        console.error(error);
+
         dispatch({ type: "error", error: (error as Error).message });
       }
     },
@@ -381,10 +410,14 @@ const debugLiveStreams: StreamsState & { state: "done" } = {
     },
   },
   season: 2023,
-  isLive: false,
+  isLive: true,
   raceInfo: {
     countryId: "1",
     countryName: "Debug",
     title: "Debug",
+  },
+  playbackOffsets: {
+    f1: {},
+    multiViewer: undefined,
   },
 };

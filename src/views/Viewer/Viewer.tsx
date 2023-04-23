@@ -8,7 +8,7 @@ import { MainVideoWindow } from "../../components/VideoWindow/MainVideoWindow/Ma
 import { DriverVideoWindow } from "../../components/VideoWindow/DriverVideoWindow/DriverVideoWindow";
 import { assertNever } from "../../utils/assertNever";
 import { DataChannelVideoWindow } from "../../components/VideoWindow/DataChannelVideoWindow";
-import { RaceInfo, StreamsStateData } from "../../hooks/useVideoRaceDetails/useVideoRaceDetails.types";
+import { PlaybackOffsets, RaceInfo, StreamsStateData } from "../../hooks/useVideoRaceDetails/useVideoRaceDetails.types";
 import { DriverTrackerVideoWindow } from "../../components/VideoWindow/DriverTrackerVideoWindow";
 import { useVideoRaceDetails } from "../../hooks/useVideoRaceDetails/useVideoRaceDetails";
 import { RnDWindow } from "../../components/RnDWindow/RnDWindow";
@@ -35,9 +35,10 @@ interface ViewerProps {
   season: number;
   isLive: boolean;
   raceInfo: RaceInfo;
+  playbackOffsets: PlaybackOffsets;
 }
 
-export const Viewer = memo(({ streams, season, isLive, raceInfo }: ViewerProps) => {
+export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets }: ViewerProps) => {
   const { baseGrid, grid } = useGrid();
   const [{ layout, windows }, dispatch] = useViewerState();
 
@@ -206,7 +207,7 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo }: ViewerProps) 
     ],
   );
 
-  useSyncVideos({ windows, windowVideojsRefMapRef, isDisabled: isLive });
+  useSyncVideos({ windows, windowVideojsRefMapRef, isLive, playbackOffsets });
   useGlobalShortcuts(mainVideoPlayer);
 
   return (
@@ -274,7 +275,13 @@ export const ViewerWithState = () => {
       <div
         className={cn(styles.cursorWrapper, { [GLOBAL_UI_VISIBILITY_CLASS_NAME]: viewerUIVisibilityState.isUIVisible })}
       >
-        <Viewer streams={state.streams} season={state.season} isLive={state.isLive} raceInfo={state.raceInfo} />
+        <Viewer
+          streams={state.streams}
+          season={state.season}
+          isLive={state.isLive}
+          raceInfo={state.raceInfo}
+          playbackOffsets={state.playbackOffsets}
+        />
       </div>
     </ViewerUIVisibilityContext.Provider>
   );

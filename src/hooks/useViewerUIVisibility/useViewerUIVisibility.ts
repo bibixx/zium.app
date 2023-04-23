@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect } from "react";
 import { useStateWithRef } from "../useStateWithRef/useStateWithRef";
 
-const UI_VISIBILITY_TIMEOUT = 5_000;
+const UI_VISIBILITY_TIMEOUT = 1_000;
 
 export const GLOBAL_UI_VISIBILITY_CLASS_NAME = "uiVisible";
 
