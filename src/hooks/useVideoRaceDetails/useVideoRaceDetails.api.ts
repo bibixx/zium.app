@@ -28,9 +28,7 @@ export const fetchMultiViewerOffsets = async (meetingKey: string, meetingSession
     const url = `https://api.multiviewer.dev/api/v1/meetings/${meetingKey}/sessions/${meetingSessionKey}`;
     const body = await fetch(url, { signal }).then((res) => res.json());
 
-    console.log("fetchMultiViewerOffsets", body);
-
-    return body?.sync_offsets?.sync_offsets as MultiViewerSyncOffsetsResponse[] | undefined;
+    return (body?.sync_offsets?.sync_offsets ?? null) as MultiViewerSyncOffsetsResponse[] | null;
   } catch (error) {
     console.error("fetchMultiViewerOffsets", error);
 
