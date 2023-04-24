@@ -8,7 +8,10 @@ import {
 import { PlayerAPI, UIConfig } from "bitmovin-player";
 import { UIContainer, UIManager, SeekBarLabel } from "bitmovin-player-ui";
 import classNames from "classnames";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { Key } from "ts-key-enum";
+import { useHotkeysStack } from "../../../../hooks/useHotkeysStack/useHotkeysStack";
+import { useScopedHotkeys } from "../../../../hooks/useScopedHotkeys/useScopedHotkeys";
 import { Button } from "../../../Button/Button";
 import { CustomVolumeSlider } from "./CustomVolumeSlider";
 import styles from "./OptionsButtons.module.scss";
@@ -120,6 +123,16 @@ const VolumeButton = ({ player, volume, setVolume, isMuted, setIsMuted }: Volume
   useEffect(() => {
     volumeSliderRef.current?.setPlaybackPosition(volume);
   }, [volume]);
+
+  const onDecreaseVolume = useCallback(() => {
+    setVolume(volume - 1);
+  }, [setVolume, volume]);
+  const onIncreaseVolume = useCallback(() => {
+    setVolume(volume + 1);
+  }, [setVolume, volume]);
+  const scope = useHotkeysStack(isFocusWithin, false, "VolumeButton");
+  useScopedHotkeys(Key.ArrowLeft, scope, onDecreaseVolume);
+  useScopedHotkeys(Key.ArrowRight, scope, onIncreaseVolume);
 
   return (
     <div
