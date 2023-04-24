@@ -22,7 +22,6 @@ import styles from "./PlayerControls.module.scss";
 
 interface PlayerControlsProps {
   player: PlayerAPI | null;
-  toggleCollapse: () => void;
   volume: number;
   setVolume: (newVolume: number) => void;
   isMuted: boolean;
@@ -31,14 +30,7 @@ interface PlayerControlsProps {
 
 const OVERLAY_TIMEOUT_DELAY = 100;
 
-export const PlayerControls = ({
-  player,
-  toggleCollapse,
-  setVolume,
-  volume,
-  isMuted,
-  setIsMuted,
-}: PlayerControlsProps) => {
+export const PlayerControls = ({ player, setVolume, volume, isMuted, setIsMuted }: PlayerControlsProps) => {
   const wrapperRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -98,14 +90,7 @@ export const PlayerControls = ({
     <div className={styles.wrapper}>
       <PlaybackButtons player={player} />
       <div className={styles.bitmovinWrapper} ref={wrapperRef} />
-      <OptionsButtons
-        player={player}
-        toggleCollapse={toggleCollapse}
-        setVolume={setVolume}
-        volume={volume}
-        isMuted={isMuted}
-        setIsMuted={setIsMuted}
-      />
+      <OptionsButtons player={player} setVolume={setVolume} volume={volume} isMuted={isMuted} setIsMuted={setIsMuted} />
     </div>
   );
 };

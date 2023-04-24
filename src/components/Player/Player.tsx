@@ -1,17 +1,22 @@
 import { PlayerAPI } from "bitmovin-player";
 import classNames from "classnames";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import FocusTrap from "focus-trap-react";
 import { RaceInfo } from "../../hooks/useVideoRaceDetails/useVideoRaceDetails.types";
 import { useViewerUIVisibility } from "../../hooks/useViewerUIVisibility/useViewerUIVisibility";
 import { GridWindow } from "../../types/GridWindow";
 import { Dimensions } from "../../types/Dimensions";
+import { DoubleEllipsisIcon } from "../CustomIcons/CustomIcons";
 import { PlayerControls } from "./PlayerControls/PlayerControls";
 import styles from "./Player.module.scss";
 import { PlayerRaceInfo } from "./PlayerRaceInfo/PlayerRaceInfo";
 import { LayoutButtons } from "./LayoutButtons/LayoutButtons";
-
-const PLAYER_COLLAPSED_CLOSED_TIMEOUT = 2_000;
+import { usePlayerDrag } from "./hooks/usePlayerDrag";
+import {
+  PLAYER_COLLAPSED_CLOSED_TIMEOUT,
+  PLAYER_COLLAPSED_ZONE_WHEN_COLLAPSED,
+  PLAYER_COLLAPSED_ZONE_WHEN_OPEN,
+} from "./Player.constants";
 
 interface PlayerProps {
   player: PlayerAPI | null;
@@ -37,6 +42,7 @@ export const Player = ({
   const wrapperRef = useRef<HTMLDivElement>(null);
   const { isUIVisible } = useViewerUIVisibility();
   const timeoutRef = useRef(-1);
+  const [isSpringing, setIsSpringing] = useState(false);
 
   useEffect(() => {
     if (isUIVisible) {
@@ -52,36 +58,82 @@ export const Player = ({
     }
   }, [isUIVisible]);
 
+  const onDragEnd = useCallback((shouldBeCollapsed: boolean) => {
+    setIsSpringing(true);
+    setIsCollapsed(shouldBeCollapsed);
+  }, []);
+
+  const onClick = useCallback(() => {
+    setIsCollapsed((oldIsCollapsed) => !oldIsCollapsed);
+  }, []);
+
+  const { isDragging, onMouseDown } = usePlayerDrag({
+    elementRef: wrapperRef,
+    onClick,
+    onDragEnd,
+    playerCollapsedZone: isCollapsed ? PLAYER_COLLAPSED_ZONE_WHEN_COLLAPSED : PLAYER_COLLAPSED_ZONE_WHEN_OPEN,
+  });
+
   return (
-    <FocusTrap
-      focusTrapOptions={{
-        allowOutsideClick: true,
-        clickOutsideDeactivates: false,
-        initialFocus: false,
-      }}
-    >
-      <div
-        className={classNames(styles.wrapper, { [styles.isCollapsed]: isCollapsed, [styles.isVisible]: isUIVisible })}
-        ref={wrapperRef}
+    <>
+      {isDragging && <div className={styles.grabbingWrapper} />}
+      <FocusTrap
+        focusTrapOptions={{
+          allowOutsideClick: true,
+          clickOutsideDeactivates: false,
+          initialFocus: false,
+        }}
       >
-        {isCollapsed && <div className={styles.collapsedClickArea} onClick={() => setIsCollapsed(false)} />}
-        <div className={styles.section}>
-          <PlayerRaceInfo raceInfo={raceInfo} />
+        <div
+          className={classNames(styles.wrapper, {
+            [styles.isCollapsed]: isCollapsed,
+            [styles.isVisible]: isUIVisible,
+            [styles.wrapperIsDragging]: isDragging,
+            [styles.isSpringing]: isSpringing,
+          })}
+          ref={wrapperRef}
+          onTransitionEnd={(e) => {
+            if (e.propertyName === "transform" && isSpringing) {
+              setIsSpringing(false);
+            }
+          }}
+        >
+          <div className={styles.dragHandlePlaceholder} />
+          <button
+            className={classNames(styles.dragHandle, { [styles.dragHandleIsDragging]: isDragging })}
+            onMouseDown={onMouseDown}
+            onClick={(e) => {
+              const isClickByKeyboard = e.detail === 0;
+              if (isClickByKeyboard) {
+                onClick();
+              }
+            }}
+          >
+            <DoubleEllipsisIcon width={20} height={20} />
+          </button>
+
+          <div
+            className={styles.content}
+            ref={(node) => (!isCollapsed ? node?.removeAttribute("inert") : node?.setAttribute("inert", ""))}
+          >
+            <div className={styles.section}>
+              <PlayerRaceInfo raceInfo={raceInfo} />
+            </div>
+            <div className={classNames(styles.section, styles.middle)}>
+              <PlayerControls
+                player={player}
+                setVolume={setVolume}
+                volume={volume}
+                isMuted={isMuted}
+                setIsMuted={setIsMuted}
+              />
+            </div>
+            <div className={styles.section}>
+              <LayoutButtons usedWindows={usedWindows} createWindow={createWindow} />
+            </div>
+          </div>
         </div>
-        <div className={classNames(styles.section, styles.middle)}>
-          <PlayerControls
-            player={player}
-            toggleCollapse={() => setIsCollapsed(!isCollapsed)}
-            setVolume={setVolume}
-            volume={volume}
-            isMuted={isMuted}
-            setIsMuted={setIsMuted}
-          />
-        </div>
-        <div className={styles.section}>
-          <LayoutButtons usedWindows={usedWindows} createWindow={createWindow} />
-        </div>
-      </div>
-    </FocusTrap>
+      </FocusTrap>
+    </>
   );
 };

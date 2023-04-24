@@ -4,7 +4,7 @@
   right: 16px;
   background: black;
   color: white;
-  z-index: 99999;
+  z-index: var(--z-index-debug-window);
   padding: 8px;
   border-radius: 6px;
   display: flex;

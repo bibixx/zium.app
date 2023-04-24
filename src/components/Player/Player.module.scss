@@ -1,31 +1,67 @@
-.wrapper {
-  @include inner-border(var(--color-border-muted-default), 1px);
-  --translate-x: calc(-50% - 12px);
-  --translate-y: 0px;
-
+.dragHandle {
   display: flex;
+  appearance: none;
+  border: none;
+  @include inner-border(var(--color-border-default-default));
+
+  position: absolute;
+  top: 0;
+  left: 50%;
+  padding: 2px 24px 8px;
+  transform: translateX(-50%) translateY(0);
+  z-index: 2;
+
+  background-color: var(--color-background-default-default);
+  border-top-right-radius: var(--radii-small);
+  border-top-left-radius: var(--radii-small);
+  transition: var(--transition-fast);
+  transition-property: background-color, transform;
+  cursor: grab;
+  color: var(--color-core-neutral-600);
+
+  &.dragHandleIsDragging {
+    cursor: grabbing;
+  }
+}
+
+.dragHandlePlaceholder {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  height: 24px;
+  width: 68px;
+  transform: translateX(-50%) translateY(-100%);
+  z-index: 1;
+  cursor: grab;
+}
+
+.wrapper {
+  --translate-x: calc(-50% - 12px);
+  --translate-y: calc(100vh - 100% - 12px);
+
   overflow: visible;
   position: absolute;
   max-width: 1424px;
   width: calc(100% - 24px);
-  margin: 12px;
+  margin: 0 12px;
   height: 96px;
   left: 50%;
-  bottom: 0;
   transform: translateX(var(--translate-x)) translateY(var(--translate-y));
   right: 12px;
-  background: var(--color-background-muted-default);
-  z-index: 9999;
-  border-radius: var(--radii-medium);
+  z-index: var(--z-index-player);
   transition: var(--transition-medium) transform, var(--transition-slow) opacity;
   opacity: 0;
 
-  &.isCollapsed {
-    --translate-y: 100%;
+  &.wrapperIsDragging {
+    transition: 0s transform, var(--transition-slow) opacity;
+  }
 
-    &:hover {
-      --translate-y: calc(100% - 16px);
-    }
+  &.isSpringing {
+    transition: cubic-bezier(0, 0.405, 0, 1.285) var(--motion-timing-slow) transform, var(--transition-slow) opacity;
+  }
+
+  &.isCollapsed {
+    --translate-y: calc(100vh - 12px);
   }
 
   &.isVisible {
@@ -33,14 +69,14 @@
   }
 }
 
-.collapsedClickArea {
-  position: absolute;
-  top: 0;
-  left: 0;
+.content {
+  display: flex;
+  @include inner-border(var(--color-border-muted-default), 1px);
+  background: var(--color-background-muted-default);
+  border-radius: var(--radii-medium);
   width: 100%;
   height: 100%;
-  z-index: 1;
-  cursor: pointer;
+  z-index: 3;
 }
 
 .section {
@@ -59,4 +95,29 @@
 .buttonsWrapper {
   display: flex;
   gap: 8px;
+}
+
+.grabbingWrapper {
+  z-index: var(--z-index-player-grabbing-container);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  cursor: grabbing;
+}
+
+.wrapper.isCollapsed .dragHandle,
+.wrapper:hover .dragHandle {
+  transform: translateX(-50%) translateY(calc(-100% + 6px));
+}
+
+.dragHandlePlaceholder:hover ~ .dragHandle,
+.wrapper:hover .dragHandle:hover,
+.wrapper.isCollapsed .dragHandle:hover,
+.wrapper.wrapperIsDragging .dragHandle,
+.dragHandle:focus-visible,
+.dragHandle:hover {
+  transform: translateX(-50%) translateY(calc(-100%));
+  background-color: var(--color-background-strong-default);
 }

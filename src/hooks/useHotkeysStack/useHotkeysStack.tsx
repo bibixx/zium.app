@@ -75,8 +75,6 @@ export const HotkeysStackWithinHotkeysProvider = ({ children }: HotkeysStackWith
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [disableScope, enableScope, hotkeysStackData.stackWithPropagation]);
 
-  console.log({ enabledScopes, stackWithPropagation: hotkeysStackData.stackWithPropagation });
-
   return <HotkeysStackContext.Provider value={hotkeysStackData}>{children}</HotkeysStackContext.Provider>;
 };
 

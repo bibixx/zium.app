@@ -8,7 +8,7 @@
   background: var(--color-background-muted-default);
   box-shadow: inset 0 0 0 1px var(--color-border-muted-default);
   border-radius: var(--radii-large);
-  z-index: 9999;
+  z-index: var(--z-index-sheet);
   overflow: auto;
 
   &.wrapperEnter {
@@ -36,7 +36,7 @@
 
 .backdrop {
   position: fixed;
-  z-index: 9999;
+  z-index: var(--z-index-sheet-backdrop);
   inset: 0;
   background: #010106;
   cursor: pointer;

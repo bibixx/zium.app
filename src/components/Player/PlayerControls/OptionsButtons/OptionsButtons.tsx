@@ -3,7 +3,6 @@ import {
   SpeakerWaveIcon,
   ArrowsPointingInIcon,
   ArrowsPointingOutIcon,
-  ArrowDownIcon,
 } from "@heroicons/react/20/solid";
 import { PlayerAPI, UIConfig } from "bitmovin-player";
 import { UIContainer, UIManager, SeekBarLabel } from "bitmovin-player-ui";
@@ -18,20 +17,12 @@ import styles from "./OptionsButtons.module.scss";
 
 interface OptionsButtonsProps {
   player: PlayerAPI | null;
-  toggleCollapse: () => void;
   volume: number;
   setVolume: (newVolume: number) => void;
   isMuted: boolean;
   setIsMuted: (newIsMuted: boolean) => void;
 }
-export const OptionsButtons = ({
-  player,
-  toggleCollapse,
-  volume,
-  setVolume,
-  isMuted,
-  setIsMuted,
-}: OptionsButtonsProps) => {
+export const OptionsButtons = ({ player, volume, setVolume, isMuted, setIsMuted }: OptionsButtonsProps) => {
   const [isFullScreen, setIsFullScreen] = useState(document.fullscreenElement != null);
   useEffect(() => {
     const onFullScreenChange = () => {
@@ -58,7 +49,6 @@ export const OptionsButtons = ({
         variant="Tertiary"
         onClick={toggleFullScreen}
       />
-      <Button iconLeft={ArrowDownIcon} variant="Tertiary" onClick={toggleCollapse} />
     </div>
   );
 };

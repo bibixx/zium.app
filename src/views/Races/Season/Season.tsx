@@ -18,7 +18,7 @@ export const Season = ({ seasonApiId }: SeasonProps) => {
 
   const onSheetClose = useCallback(() => setSelectedRaceEvent(null), []);
   const scope = useHotkeysStack(selectedRaceEvent != null, false);
-  useScopedHotkeys("esc", onSheetClose, [onSheetClose], { scopes: scope });
+  useScopedHotkeys("esc", scope, onSheetClose);
 
   const racesList = useMemo(() => {
     if (racesState.state !== "done") {

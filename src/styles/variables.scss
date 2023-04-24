@@ -5,3 +5,15 @@
   --transition-medium: var(--transition-function) var(--motion-timing-medium);
   --transition-slow: var(--transition-function) var(--motion-timing-slow);
 }
+
+:root {
+  --z-index-player: 1001;
+  --z-index-player-grabbing-container: 1000;
+
+  --z-index-sheet-backdrop: 2000;
+  --z-index-sheet: 2001;
+
+  --z-index-hide-cursor-wrapper: 3000;
+
+  --z-index-debug-window: 99999;
+}
