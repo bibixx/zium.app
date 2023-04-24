@@ -95,7 +95,7 @@ export const usePlayerDrag = ({
         smoothedTargetY = topEdge - diffFromTopEdge / TOP_SPRING_CONSTANT;
       }
 
-      const bottomEdge = windowHeight - PLAYER_MARGIN;
+      const bottomEdge = windowHeight;
       if (targetY >= bottomEdge) {
         const diffBottomTopEdge = targetY - bottomEdge;
         smoothedTargetY = bottomEdge + diffBottomTopEdge / BOTTOM_SPRING_CONSTANT;

@@ -61,7 +61,7 @@
   }
 
   &.isCollapsed {
-    --translate-y: calc(100vh - 12px);
+    --translate-y: calc(100vh);
   }
 
   &.isVisible {
