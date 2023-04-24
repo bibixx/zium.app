@@ -72,6 +72,7 @@
 .content {
   display: flex;
   @include inner-border(var(--color-border-muted-default), 1px);
+  overflow: visible;
   background: var(--color-background-muted-default);
   border-radius: var(--radii-medium);
   width: 100%;
