@@ -34,6 +34,7 @@ export const Player = ({
   createWindow,
 }: PlayerProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const wrapperRef = useRef<HTMLDivElement>(null);
   const { isUIVisible } = useViewerUIVisibility();
   const timeoutRef = useRef(-1);
 
@@ -41,6 +42,10 @@ export const Player = ({
     if (isUIVisible) {
       clearTimeout(timeoutRef.current);
     } else {
+      if (wrapperRef.current?.contains(document.activeElement) && document.activeElement instanceof HTMLElement) {
+        document.activeElement?.blur();
+      }
+
       timeoutRef.current = setTimeout(() => {
         setIsCollapsed(false);
       }, PLAYER_COLLAPSED_CLOSED_TIMEOUT);
@@ -51,11 +56,13 @@ export const Player = ({
     <FocusTrap
       focusTrapOptions={{
         allowOutsideClick: true,
+        clickOutsideDeactivates: false,
         initialFocus: false,
       }}
     >
       <div
         className={classNames(styles.wrapper, { [styles.isCollapsed]: isCollapsed, [styles.isVisible]: isUIVisible })}
+        ref={wrapperRef}
       >
         {isCollapsed && <div className={styles.collapsedClickArea} onClick={() => setIsCollapsed(false)} />}
         <div className={styles.section}>

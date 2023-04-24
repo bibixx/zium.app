@@ -12,7 +12,7 @@ import {
 } from "bitmovin-player-ui";
 
 import { UIConfig } from "bitmovin-player-ui/dist/js/framework/uiconfig";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useStateWithRef } from "../../../hooks/useStateWithRef/useStateWithRef";
 import { Button } from "../../Button/Button";
 import { ArrowLeft30Icon, ArrowRight30Icon } from "../../CustomIcons/CustomIcons";
@@ -206,7 +206,7 @@ const PlaybackButtons = ({ player }: PlaybackButtonsProps) => {
     player.on(PlayerEvent.StallEnded, updateLiveTimeshiftState);
   }, [player]);
 
-  const onPlayClick = () => {
+  const onPlayClick = useCallback(() => {
     if (player == null) {
       return;
     }
@@ -216,15 +216,15 @@ const PlaybackButtons = ({ player }: PlaybackButtonsProps) => {
     } else {
       player.play("ui");
     }
-  };
+  }, [player]);
 
-  const onSkipAhead = () => {
+  const onSkipAhead = useCallback(() => {
     player?.seek(player.getCurrentTime() + 30);
-  };
+  }, [player]);
 
-  const onSkipBackwards = () => {
+  const onSkipBackwards = useCallback(() => {
     player?.seek(player.getCurrentTime() - 30);
-  };
+  }, [player]);
 
   const PlayPauseIcon = useMemo(() => {
     if (isLoading) {

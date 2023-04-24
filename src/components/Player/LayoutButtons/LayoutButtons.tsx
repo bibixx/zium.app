@@ -1,4 +1,6 @@
 import { Squares2X2Icon, SquaresPlusIcon } from "@heroicons/react/20/solid";
+import { useHotkeysStack } from "../../../hooks/useHotkeysStack/useHotkeysStack";
+import { useScopedHotkeys } from "../../../hooks/useScopedHotkeys/useScopedHotkeys";
 import { ChosenValueType, useStreamPicker } from "../../../hooks/useStreamPicker/useStreamPicker";
 import { Dimensions } from "../../../types/Dimensions";
 import { GridWindow } from "../../../types/GridWindow";
@@ -42,6 +44,9 @@ export const LayoutButtons = ({ usedWindows, createWindow }: LayoutButtonsProps)
 
     createWindow(newWindow, dimensions);
   };
+
+  const scope = useHotkeysStack(true, true, "LayoutButtons");
+  useScopedHotkeys("shift+n", scope, onAddClick);
 
   return (
     <div className={styles.buttonsWrapper}>

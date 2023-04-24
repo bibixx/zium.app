@@ -28,6 +28,7 @@ import { useVideoAudio } from "./hooks/useVideoAudio";
 import { useSyncVideos } from "./hooks/useSyncVideos";
 import { BackgroundDots } from "./BackgroundDots/BackgroundDots";
 import { useViewerState } from "./hooks/useViewerState/useViewerState";
+import { useGlobalShortcuts } from "./hooks/useGlobalShortcuts";
 
 interface ViewerProps {
   streams: StreamsStateData;
@@ -206,6 +207,7 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo }: ViewerProps) 
   );
 
   useSyncVideos({ windows, windowVideojsRefMapRef, isDisabled: isLive });
+  useGlobalShortcuts(mainVideoPlayer);
 
   return (
     <StreamPickerProvider>

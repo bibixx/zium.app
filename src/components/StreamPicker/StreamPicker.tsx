@@ -8,10 +8,11 @@ import { Input } from "../Input/Input";
 import { ListItem } from "../ListItem/ListItem";
 import { Sheet } from "../Sheet/Sheet";
 import { VideoFeedContent } from "../VideoFeedContent/VideoFeedContent";
-import { useHotkeysScope, useScopedHotkeys } from "../../hooks/useScopedHotkeys/useScopedHotkeys";
+import { useScopedHotkeys } from "../../hooks/useScopedHotkeys/useScopedHotkeys";
 import { assertNever } from "../../utils/assertNever";
 import { StreamInfo } from "../../hooks/useVideoRaceDetails/useVideoRaceDetails.types";
 import { isNotNullable } from "../../utils/usNotNullable";
+import { useHotkeysStack } from "../../hooks/useHotkeysStack/useHotkeysStack";
 import styles from "./StreamPicker.module.scss";
 import { StreamPickerEntry } from "./StreamPicker.types";
 
@@ -85,25 +86,12 @@ export const StreamPicker = ({ availableDrivers, globalFeeds }: StreamPickerProp
     resetLaggedState();
   };
 
-  // TODO: Sort out the scope
-  const scopes = useHotkeysScope();
-  useScopedHotkeys(Key.Escape, onCancel, [onCancel], {
-    enabled: state.isOpen,
-    scopes,
-    enableOnFormTags: true,
-  });
   const onArrowDown = useCallback(() => {
     setFakeSelection((fs) => loopSelection(fs + 1, streamPickerEntries.length - 1));
   }, [streamPickerEntries.length]);
-  useScopedHotkeys(Key.ArrowDown, onArrowDown, [onArrowDown], {
-    enabled: state.isOpen,
-    scopes,
-    enableOnFormTags: true,
-  });
   const onArrowUp = useCallback(() => {
     setFakeSelection((fs) => loopSelection(fs - 1, streamPickerEntries.length - 1));
   }, [streamPickerEntries.length]);
-  useScopedHotkeys(Key.ArrowUp, onArrowUp, [onArrowUp], { enabled: state.isOpen, scopes, enableOnFormTags: true });
   const onEnter = useCallback(() => {
     const selectedEntry = streamPickerEntries[fakeSelection];
 
@@ -113,7 +101,13 @@ export const StreamPicker = ({ availableDrivers, globalFeeds }: StreamPickerProp
 
     return;
   }, [fakeSelection, streamPickerEntries, onChoice]);
-  useScopedHotkeys(Key.Enter, onEnter, [onEnter], { enabled: state.isOpen, scopes, enableOnFormTags: true });
+
+  const scope = useHotkeysStack(state.isOpen, false);
+  const commonOptions = { enableOnFormTags: true };
+  useScopedHotkeys(Key.Escape, scope, onCancel, commonOptions);
+  useScopedHotkeys(Key.ArrowDown, scope, onArrowDown, commonOptions);
+  useScopedHotkeys(Key.ArrowUp, scope, onArrowUp, commonOptions);
+  useScopedHotkeys(Key.Enter, scope, onEnter, commonOptions);
 
   useEffect(() => {
     listItemsRefs.current[fakeSelection]?.scrollIntoView({ block: "nearest" });

@@ -2,8 +2,9 @@ import { isSameDay } from "date-fns";
 import { useCallback, useMemo, useState } from "react";
 import { EventCard } from "../../../components/EventCard/EventCard";
 import { Sheet } from "../../../components/Sheet/Sheet";
+import { useHotkeysStack } from "../../../hooks/useHotkeysStack/useHotkeysStack";
 import { useRacesList } from "../../../hooks/useRacesList/useRacesList";
-import { useHotkeysScope, useScopedHotkeys } from "../../../hooks/useScopedHotkeys/useScopedHotkeys";
+import { useScopedHotkeys } from "../../../hooks/useScopedHotkeys/useScopedHotkeys";
 import { clone } from "../../../utils/clone";
 import { RaceDetails } from "../RaceDetails/RaceDetails";
 
@@ -16,8 +17,8 @@ export const Season = ({ seasonApiId }: SeasonProps) => {
   const [selectedRaceEvent, setSelectedRaceEvent] = useState<string | null>(null);
 
   const onSheetClose = useCallback(() => setSelectedRaceEvent(null), []);
-  const scopes = useHotkeysScope();
-  useScopedHotkeys("esc", onSheetClose, [onSheetClose], { enabled: selectedRaceEvent != null, scopes });
+  const scope = useHotkeysStack(selectedRaceEvent != null, false);
+  useScopedHotkeys("esc", onSheetClose, [onSheetClose], { scopes: scope });
 
   const racesList = useMemo(() => {
     if (racesState.state !== "done") {
