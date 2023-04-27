@@ -6,6 +6,8 @@ import { useHotkeysStack } from "../../../hooks/useHotkeysStack/useHotkeysStack"
 import { useRacesList } from "../../../hooks/useRacesList/useRacesList";
 import { useScopedHotkeys } from "../../../hooks/useScopedHotkeys/useScopedHotkeys";
 import { clone } from "../../../utils/clone";
+import { formatDateRange } from "../../../utils/date";
+import { toTitleCase } from "../../../utils/text";
 import { RaceDetails } from "../RaceDetails/RaceDetails";
 
 interface SeasonProps {
@@ -70,11 +72,3 @@ export const Season = ({ seasonApiId }: SeasonProps) => {
     </>
   );
 };
-
-const formatDateDayMonth = (date: Date) =>
-  new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short" }).format(date);
-const formatDateRange = (startDate: Date, endDate: Date) =>
-  `${formatDateDayMonth(startDate)}–${formatDateDayMonth(endDate)}`;
-
-const firstUpper = (text: string) => `${text.charAt(0).toUpperCase()}${text.slice(1).toLowerCase()}`;
-const toTitleCase = (text: string) => text.split(" ").map(firstUpper).join(" ");

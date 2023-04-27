@@ -1,0 +1,12 @@
+.wrapper {
+  display: inline-flex;
+  padding: 8px;
+  padding-right: 12px;
+  gap: 8px;
+  background: var(--color-background-muted-inverted-alpha);
+  color: var(--color-text-strong);
+  border-radius: var(--radii-rounded);
+  user-select: none;
+  @include inner-border(var(--color-border-default-alpha));
+  @include typography(text, 300, regular);
+}

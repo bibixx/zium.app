@@ -1,0 +1,127 @@
+.wrapper {
+  margin-top: 64px;
+  display: flex;
+  width: 100%;
+  height: 436px;
+  border-radius: var(--radii-large);
+  background: var(--color-background-muted-default);
+  user-select: none;
+
+  @include inner-border(var(--color-border-muted-alpha)) {
+    z-index: 4;
+  }
+  overflow: visible;
+}
+
+.shadow {
+  position: absolute;
+  height: 100%;
+  left: 25%;
+  top: 0;
+  width: calc(100% / 3);
+  background: linear-gradient(
+    90deg,
+    #0f0f12 0%,
+    rgba(15, 15, 18, 0.991353) 6.67%,
+    rgba(15, 15, 18, 0.96449) 13.33%,
+    rgba(15, 15, 18, 0.91834) 20%,
+    rgba(15, 15, 18, 0.852589) 26.67%,
+    rgba(15, 15, 18, 0.768225) 33.33%,
+    rgba(15, 15, 18, 0.668116) 40%,
+    rgba(15, 15, 18, 0.557309) 46.67%,
+    rgba(15, 15, 18, 0.442691) 53.33%,
+    rgba(15, 15, 18, 0.331884) 60%,
+    rgba(15, 15, 18, 0.231775) 66.67%,
+    rgba(15, 15, 18, 0.147411) 73.33%,
+    rgba(15, 15, 18, 0.0816599) 80%,
+    rgba(15, 15, 18, 0.03551) 86.67%,
+    rgba(15, 15, 18, 0.0086472) 93.33%,
+    rgba(15, 15, 18, 0) 100%
+  );
+  z-index: 2;
+}
+
+.contentBackground {
+  position: absolute;
+  height: 100%;
+  left: 0;
+  top: 0;
+  width: 25%;
+  background: #0f0f12;
+  z-index: 2;
+  border-top-left-radius: var(--radii-large);
+  border-bottom-left-radius: var(--radii-large);
+}
+
+.image {
+  position: absolute;
+  width: 75%;
+  height: 100%;
+  right: 0;
+  top: 0;
+  object-fit: cover;
+  z-index: 1;
+  border-top-right-radius: var(--radii-large);
+  border-bottom-right-radius: var(--radii-large);
+}
+
+.imageBlur {
+  position: absolute;
+  width: 75%;
+  height: 87%;
+  right: 0;
+  top: 0;
+  object-fit: cover;
+  z-index: 0;
+  opacity: 0.75;
+  border-radius: 24px;
+  filter: blur(144px);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  z-index: 3;
+  padding: 32px;
+  height: 100%;
+}
+
+.bottomContent {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 32px;
+  width: 344px;
+}
+
+.raceDataWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.raceTitle {
+  @include typography(heading, 500, default);
+  color: var(--color-text-strong);
+}
+
+.raceCountryWrapper {
+  display: flex;
+  gap: 12px;
+}
+
+.raceCountryTextWrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.raceCountry {
+  @include typography(heading, 400, default);
+  color: var(--color-text-strong);
+}
+
+.raceRound {
+  @include typography(text, 300, regular);
+  color: var(--color-text-default);
+}
