@@ -86,12 +86,22 @@ export const StreamPicker = ({ availableDrivers, globalFeeds }: StreamPickerProp
     resetLaggedState();
   };
 
+  const scrollListItemIntoView = useCallback((fs: number) => {
+    listItemsRefs.current[fs]?.scrollIntoView({ block: "nearest" });
+  }, []);
+
   const onArrowDown = useCallback(() => {
-    setFakeSelection((fs) => loopSelection(fs + 1, streamPickerEntries.length - 1));
-  }, [streamPickerEntries.length]);
+    const newFakeSelection = loopSelection(fakeSelection + 1, streamPickerEntries.length - 1);
+    setFakeSelection(newFakeSelection);
+    scrollListItemIntoView(newFakeSelection);
+  }, [fakeSelection, scrollListItemIntoView, streamPickerEntries.length]);
+
   const onArrowUp = useCallback(() => {
-    setFakeSelection((fs) => loopSelection(fs - 1, streamPickerEntries.length - 1));
-  }, [streamPickerEntries.length]);
+    const newFakeSelection = loopSelection(fakeSelection - 1, streamPickerEntries.length - 1);
+    setFakeSelection(newFakeSelection);
+    scrollListItemIntoView(newFakeSelection);
+  }, [fakeSelection, scrollListItemIntoView, streamPickerEntries.length]);
+
   const onEnter = useCallback(() => {
     const selectedEntry = streamPickerEntries[fakeSelection];
 
@@ -109,10 +119,6 @@ export const StreamPicker = ({ availableDrivers, globalFeeds }: StreamPickerProp
   useScopedHotkeys(Key.ArrowUp, scope, onArrowUp, commonOptions);
   useScopedHotkeys(Key.Enter, scope, onEnter, commonOptions);
 
-  useEffect(() => {
-    listItemsRefs.current[fakeSelection]?.scrollIntoView({ block: "nearest" });
-  }, [fakeSelection]);
-
   return (
     <Sheet isOpen={state.isOpen} onClose={onCancel} initialFocus onClosed={onClosed} wrapperClassName={styles.sheet}>
       <div className={styles.wrapper}>
@@ -124,6 +130,7 @@ export const StreamPicker = ({ availableDrivers, globalFeeds }: StreamPickerProp
             onChange={(e) => {
               setSearchText(e.target.value);
               setFakeSelection(0);
+              scrollListItemIntoView(0);
             }}
             value={searchText}
           />
