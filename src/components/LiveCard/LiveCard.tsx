@@ -14,7 +14,7 @@ export const LiveCard = ({ raceDetails }: LiveCardProps) => {
   const pictureUrl = `https://f1tv.formula1.com/image-resizer/image/${raceDetails.pictureUrl}?w=1500&h=900&q=HI&o=L`;
   const countryName = raceDetails.countryName;
   const caption = `Round ${raceDetails.roundNumber}`;
-  const description = toTitleCase(raceDetails.description).replace(" - ", "\xa0-\xa0");
+  const description = toTitleCase(raceDetails.description).replace(" - ", "\xa0\u2014\xa0");
   const countryId = raceDetails.countryId;
   const contentId = raceDetails.contentId;
 
