@@ -52,9 +52,12 @@ export const useSyncVideos = ({ windows, windowVideojsRefMapRef, isLive, playbac
       });
     };
 
-    const interval = window.setInterval(() => {
-      syncVideos();
-    }, 100);
+    const interval = window.setInterval(
+      () => {
+        syncVideos();
+      },
+      isLive ? 5_000 : 100,
+    );
 
     const onVisibilityChange = () => {
       if (!document.hidden) {
