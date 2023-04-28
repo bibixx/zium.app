@@ -12,11 +12,7 @@ import styles from "./Player.module.scss";
 import { PlayerRaceInfo } from "./PlayerRaceInfo/PlayerRaceInfo";
 import { LayoutButtons } from "./LayoutButtons/LayoutButtons";
 import { usePlayerDrag } from "./hooks/usePlayerDrag";
-import {
-  PLAYER_COLLAPSED_CLOSED_TIMEOUT,
-  PLAYER_COLLAPSED_ZONE_WHEN_COLLAPSED,
-  PLAYER_COLLAPSED_ZONE_WHEN_OPEN,
-} from "./Player.constants";
+import { PLAYER_COLLAPSED_ZONE_WHEN_COLLAPSED, PLAYER_COLLAPSED_ZONE_WHEN_OPEN } from "./Player.constants";
 
 interface PlayerProps {
   player: PlayerAPI | null;
@@ -51,10 +47,6 @@ export const Player = ({
       if (wrapperRef.current?.contains(document.activeElement) && document.activeElement instanceof HTMLElement) {
         document.activeElement?.blur();
       }
-
-      timeoutRef.current = setTimeout(() => {
-        setIsCollapsed(false);
-      }, PLAYER_COLLAPSED_CLOSED_TIMEOUT);
     }
   }, [isUIVisible]);
 
