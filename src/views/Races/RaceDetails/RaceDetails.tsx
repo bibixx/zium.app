@@ -61,7 +61,7 @@ export const RaceDetails = ({ id }: RaceDetailsProps) => {
 };
 
 const formatDateRelative = (date: Date) => {
-  const now = subHours(new Date(), 2);
+  const now = new Date();
   if (isBefore(date, now)) {
     return formatDate(date);
   }
