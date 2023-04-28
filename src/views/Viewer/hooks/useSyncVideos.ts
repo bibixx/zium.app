@@ -37,6 +37,17 @@ export const useSyncVideos = ({ windows, windowVideojsRefMapRef, isLive, playbac
         }
 
         const offset = getOffset(playbackOffsets, baseTime, w, mainWindow);
+        if (isLive) {
+          const diff = Math.abs(player.getTimeShift() - -offset);
+
+          if (diff < 1 && !forceSync) {
+            return;
+          }
+
+          player.timeShift(-offset);
+          return;
+        }
+
         const targetTime = mainWindowPlayer.getCurrentTime(TimeMode.AbsoluteTime) - offset;
         const diff = Math.abs(player.getCurrentTime(TimeMode.AbsoluteTime) - targetTime);
 
@@ -44,11 +55,7 @@ export const useSyncVideos = ({ windows, windowVideojsRefMapRef, isLive, playbac
           return;
         }
 
-        if (isLive) {
-          player.timeShift(-diff);
-        } else {
-          player.seek(targetTime);
-        }
+        player.seek(targetTime);
       });
     };
 
