@@ -1,7 +1,6 @@
 import { PlayerAPI } from "bitmovin-player";
 import { i18n, UIInstanceManager } from "bitmovin-player-ui";
 import { SeekBar, SeekBarConfig } from "bitmovin-player-ui/dist/js/framework/components/seekbar";
-import { VolumeController, VolumeSettingChangedArgs } from "bitmovin-player-ui/dist/js/framework/volumecontroller";
 
 /**
  * Configuration interface for the {@link VolumeSlider} component.
@@ -37,8 +36,6 @@ export class CustomVolumeSlider extends SeekBar {
   configure(player: PlayerAPI, uimanager: UIInstanceManager): void {
     super.configure(player, uimanager, false);
 
-    const volumeController = uimanager.getConfig().volumeController;
-    volumeController.onChanged.subscribe(this.onVolumeControllerChanged);
     this.onSeeked.subscribe(this.internalOnSeeked);
     this.onSeekPreview.subscribeRateLimited(this.internalOnSeekPreview, 50);
   }
@@ -53,11 +50,6 @@ export class CustomVolumeSlider extends SeekBar {
     if (args.scrubbing) {
       this.setVolume(args.position);
     }
-  };
-
-  private onVolumeControllerChanged = (volumeController: VolumeController, args: VolumeSettingChangedArgs) => {
-    this.setVolume(args.volume);
-    this.setPlaybackPosition(args.volume);
   };
 
   public release(): void {
