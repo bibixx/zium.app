@@ -10,9 +10,9 @@ export const fetchLiveEvent = async (signal: AbortSignal): Promise<LiveRaceData 
 
   const uniqueContainers = uniqueById(containers);
 
-  const liveContainer = uniqueContainers.find(
-    (racePage: any) => racePage?.genres?.includes("RACE") && racePage.metadata.contentSubtype === "LIVE",
-  ) as any | undefined;
+  const liveContainer = uniqueContainers.find((racePage: any) => racePage.metadata.contentSubtype === "LIVE") as
+    | any
+    | undefined;
 
   if (liveContainer == null) {
     return null;
@@ -24,14 +24,10 @@ export const fetchLiveEvent = async (signal: AbortSignal): Promise<LiveRaceData 
   const countryName = liveContainer.metadata.emfAttributes.Meeting_Country_Name;
   const startDate = new Date(liveContainer.metadata.emfAttributes.Meeting_Start_Date);
   const endDate = new Date(liveContainer.metadata.emfAttributes.Meeting_End_Date);
-  const roundNumber = +liveContainer.metadata.emfAttributes.Championship_Meeting_Ordinal;
-  const description = liveContainer.metadata.emfAttributes.Meeting_Official_Name;
+  const roundNumber = +liveContainer.metadata.emfAttributes.Meeting_Number;
+  const description = liveContainer.metadata.emfAttributes.Global_Title;
   const countryId = liveContainer.metadata.emfAttributes.MeetingCountryKey;
   const contentId = liveContainer.metadata.contentId;
-
-  if (!title.toLowerCase().includes("grand prix")) {
-    return null;
-  }
 
   return {
     id: racePageId,
