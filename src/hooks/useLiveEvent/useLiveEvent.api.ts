@@ -1,3 +1,4 @@
+import { RACE_GENRES } from "../../constants/races";
 import { fetchJSON } from "../../utils/api";
 import { uniqueById } from "../../utils/uniqueById";
 import { LiveRaceData } from "./useLiveEvent.types";
@@ -10,9 +11,10 @@ export const fetchLiveEvent = async (signal: AbortSignal): Promise<LiveRaceData 
 
   const uniqueContainers = uniqueById(containers);
 
-  const liveContainer = uniqueContainers.find((racePage: any) => racePage.metadata.contentSubtype === "LIVE") as
-    | any
-    | undefined;
+  const liveContainer = uniqueContainers.find(
+    (racePage: any) =>
+      racePage.metadata.contentSubtype === "LIVE" && RACE_GENRES.includes(racePage.metadata.genres[0]?.toLowerCase()),
+  ) as any | undefined;
 
   if (liveContainer == null) {
     return null;
