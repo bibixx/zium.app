@@ -57,7 +57,6 @@ type WindowGridActions =
   | CreateWindowAction
   | LoadLayoutAction;
 
-export const CURRENT_STORE_VERSION = "2";
 export const windowGridReducer = (prevState: WindowGridState, action: WindowGridActions) => {
   const newState = clone(prevState);
 
@@ -166,25 +165,10 @@ export const windowGridReducer = (prevState: WindowGridState, action: WindowGrid
     }
   }
 
-  localStorage.setItem("store", JSON.stringify(newState));
-  localStorage.setItem("storeVersion", CURRENT_STORE_VERSION);
-
   return newState;
 };
 
 export const getInitialState = (): WindowGridState => {
-  const layoutFromStorage = localStorage.getItem("store") as string | null;
-  const storeVersion = localStorage.getItem("storeVersion") as string | null;
-
-  if (layoutFromStorage != null && storeVersion === CURRENT_STORE_VERSION) {
-    return JSON.parse(layoutFromStorage);
-  }
-
-  if (storeVersion !== CURRENT_STORE_VERSION) {
-    localStorage.removeItem("store");
-    localStorage.removeItem("storeVersion");
-  }
-
   const windows: GridWindow[] = [
     {
       type: "main",

@@ -27,7 +27,11 @@ export const LayoutDialogs = ({ state }: LayoutDialogsProps) => {
   const dialogContent = useMemo(() => {
     if (laggedState.type === "delete") {
       return (
-        <DeleteDialog layoutName={laggedState.layoutName} onCancel={laggedState.onCancel} onConfirm={() => undefined} />
+        <DeleteDialog
+          layoutName={laggedState.layoutName}
+          onCancel={laggedState.onCancel}
+          onConfirm={laggedState.onDelete}
+        />
       );
     }
 
@@ -39,9 +43,11 @@ export const LayoutDialogs = ({ state }: LayoutDialogsProps) => {
       return (
         <NameDialog
           initialLayoutName={laggedState.initialLayoutName}
-          title="Save layout"
-          onCancel={() => undefined}
-          onSave={() => undefined}
+          title={`Save layout...`}
+          onCancel={laggedState.onCancel}
+          onSave={laggedState.onSave}
+          onSaveText="Save"
+          bannedNames={laggedState.bannedNames}
         />
       );
     }
@@ -52,7 +58,9 @@ export const LayoutDialogs = ({ state }: LayoutDialogsProps) => {
           initialLayoutName={laggedState.initialLayoutName}
           title="Rename layout"
           onCancel={laggedState.onCancel}
-          onSave={() => undefined}
+          onSave={laggedState.onRename}
+          onSaveText="Rename"
+          bannedNames={laggedState.bannedNames}
         />
       );
     }
@@ -73,7 +81,7 @@ export const LayoutDialogs = ({ state }: LayoutDialogsProps) => {
   }, [laggedState]);
 
   const scope = useHotkeysStack(isOpen, false);
-  useScopedHotkeys(Key.Escape, scope, onClose);
+  useScopedHotkeys(Key.Escape, scope, onClose, { enableOnFormTags: true });
 
   return (
     <Dialog isOpen={isOpen} onClose={onClose} onClosed={() => resetLaggedState()} width={400}>
@@ -135,12 +143,23 @@ const LoadDialog = ({ layoutName, onCancel, onConfirm }: LoadDialogProps) => {
 interface NameDialogProps {
   initialLayoutName: string;
   title: string;
+  onSaveText: string;
+  bannedNames: string[];
   onCancel: () => void;
   onSave: (name: string) => void;
 }
-const NameDialog = ({ initialLayoutName, title, onCancel, onSave }: NameDialogProps) => {
+const NameDialog = ({ initialLayoutName, title, onSaveText, onCancel, onSave, bannedNames }: NameDialogProps) => {
   const [newNameValue, setNewNameValue] = useState(initialLayoutName);
   const inputRef = useRef<HTMLInputElement>(null);
+  const isDisabled = newNameValue.trim() === "" || bannedNames.includes(newNameValue.trim());
+
+  const internalOnSave = () => {
+    if (isDisabled) {
+      return;
+    }
+
+    onSave(newNameValue.trim());
+  };
 
   useEffect(() => {
     const timeout = window.setTimeout(() => {
@@ -155,7 +174,7 @@ const NameDialog = ({ initialLayoutName, title, onCancel, onSave }: NameDialogPr
       as="form"
       onSubmit={(e) => {
         e.preventDefault();
-        onSave(newNameValue);
+        internalOnSave();
       }}
     >
       <DialogContentCustom title={title}>
@@ -171,8 +190,8 @@ const NameDialog = ({ initialLayoutName, title, onCancel, onSave }: NameDialogPr
         <Button fluid variant="Secondary" onClick={onCancel} type="button">
           Cancel
         </Button>
-        <Button fluid variant="Primary" disabled={newNameValue.trim() === ""} type="submit">
-          Save
+        <Button fluid variant="Primary" disabled={isDisabled} type="submit">
+          {onSaveText}
         </Button>
       </DialogContentButtonFooter>
     </DialogContent>

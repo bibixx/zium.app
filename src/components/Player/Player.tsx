@@ -7,6 +7,7 @@ import { useViewerUIVisibility } from "../../hooks/useViewerUIVisibility/useView
 import { GridWindow } from "../../types/GridWindow";
 import { Dimensions } from "../../types/Dimensions";
 import { DoubleEllipsisIcon } from "../CustomIcons/CustomIcons";
+import { WindowGridState } from "../../views/Viewer/hooks/useViewerState/useViewerState.utils";
 import { PlayerControls } from "./PlayerControls/PlayerControls";
 import styles from "./Player.module.scss";
 import { PlayerRaceInfo } from "./PlayerRaceInfo/PlayerRaceInfo";
@@ -23,6 +24,8 @@ interface PlayerProps {
   setIsMuted: (newIsMuted: boolean) => void;
   usedWindows: string[];
   createWindow: (newWindow: GridWindow, dimensions: Dimensions) => void;
+  loadLayout: (layout: WindowGridState) => void;
+  viewerState: WindowGridState;
 }
 export const Player = ({
   player,
@@ -33,6 +36,8 @@ export const Player = ({
   setIsMuted,
   usedWindows,
   createWindow,
+  loadLayout,
+  viewerState,
 }: PlayerProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -121,7 +126,12 @@ export const Player = ({
               />
             </div>
             <div className={styles.section}>
-              <LayoutButtons usedWindows={usedWindows} createWindow={createWindow} />
+              <LayoutButtons
+                usedWindows={usedWindows}
+                createWindow={createWindow}
+                loadLayout={loadLayout}
+                viewerState={viewerState}
+              />
             </div>
           </div>
         </div>

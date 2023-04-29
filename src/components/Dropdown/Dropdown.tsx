@@ -24,7 +24,7 @@ export interface DropdownSectionElement {
 
 export interface DropdownSection {
   id: string;
-  options: DropdownSectionElement[];
+  options: (DropdownSectionElement | false)[];
 }
 
 interface DropdownChildrenProps {
@@ -32,7 +32,7 @@ interface DropdownChildrenProps {
   isOpen: boolean;
   toggleOpen: () => void;
 }
-type BaseOptions = DropdownSection[] | DropdownSectionElement[];
+type BaseOptions = (DropdownSection | false)[] | DropdownSectionElement[];
 interface DropdownProps {
   width?: number;
   distance?: number;
@@ -107,16 +107,35 @@ export const Dropdown = ({
                 focusTrapOptions={{
                   allowOutsideClick: true,
                   escapeDeactivates: false,
+                  isKeyBackward: (e) => {
+                    const isShiftTab = e.key === Key.Tab && e.shiftKey;
+                    const isUpArrow = e.key === Key.ArrowUp;
+
+                    return isShiftTab || isUpArrow;
+                  },
+                  isKeyForward: (e) => {
+                    const isTabWithoutShift = e.key === Key.Tab && !e.shiftKey;
+                    const isUpArrow = e.key === Key.ArrowDown;
+
+                    return isTabWithoutShift || isUpArrow;
+                  },
                 }}
               >
                 <WithVariables className={styles.wrapper} variables={{ width }} ref={backgroundWrapperRef}>
                   {sections.map((section, sectionI) => (
                     <Fragment key={section.id}>
-                      {section.options.map(({ id, text, ...rest }) => (
-                        <ListItem key={id} {...rest}>
-                          {text}
-                        </ListItem>
-                      ))}
+                      {section.options.map((option) => {
+                        if (option === false) {
+                          return null;
+                        }
+
+                        const { id, text, ...rest } = option;
+                        return (
+                          <ListItem key={id} {...rest}>
+                            {text}
+                          </ListItem>
+                        );
+                      })}
                       {sectionI !== sections.length - 1 && <div className={styles.divider} />}
                     </Fragment>
                   ))}
@@ -131,10 +150,16 @@ export const Dropdown = ({
   );
 };
 
-function isDropdownSections(options: DropdownSection[] | DropdownSectionElement[]): options is DropdownSection[] {
+function isDropdownSections(
+  options: (DropdownSection | false)[] | (DropdownSectionElement | false)[],
+): options is (DropdownSection | false)[] {
   let hadSection = false;
   let hadOption = false;
   for (const option of options) {
+    if (option === false) {
+      continue;
+    }
+
     if ("options" in option) {
       hadSection = true;
     } else {
@@ -156,13 +181,17 @@ function transformOptionsToSections(
   const options = typeof optionsOrFunction === "function" ? optionsOrFunction(toggleOpen) : optionsOrFunction;
 
   if (isDropdownSections(options)) {
-    return options;
+    return options.filter(isNotFalse);
   }
 
   return [
     {
       id: "__DEFAULT_SECTION_ID__",
-      options,
+      options: options.filter(isNotFalse),
     },
   ];
+}
+
+function isNotFalse<T>(o: T | false): o is T {
+  return o !== false;
 }

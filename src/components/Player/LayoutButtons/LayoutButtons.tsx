@@ -1,12 +1,14 @@
 import { Squares2X2Icon, SquaresPlusIcon } from "@heroicons/react/20/solid";
-import { useCallback, useState } from "react";
+import equal from "fast-deep-equal/es6";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useHotkeysStack } from "../../../hooks/useHotkeysStack/useHotkeysStack";
 import { useScopedHotkeys } from "../../../hooks/useScopedHotkeys/useScopedHotkeys";
 import { ChosenValueType, useStreamPicker } from "../../../hooks/useStreamPicker/useStreamPicker";
 import { Dimensions } from "../../../types/Dimensions";
 import { GridWindow } from "../../../types/GridWindow";
 import { quote } from "../../../utils/text";
-import { useLayoutsContext } from "../../../views/Viewer/hooks/useLayouts/useLayouts";
+import { useLayouts } from "../../../views/Viewer/hooks/useLayouts/useLayouts";
+import { WindowGridState } from "../../../views/Viewer/hooks/useViewerState/useViewerState.utils";
 import { Button } from "../../Button/Button";
 import { Dropdown, DropdownSection, DropdownSectionElement } from "../../Dropdown/Dropdown";
 import { sizePxToPercent } from "../../RnDWindow/RnDWindow.utils";
@@ -17,12 +19,23 @@ import styles from "./LayoutButtons.module.scss";
 interface LayoutButtonsProps {
   usedWindows: string[];
   createWindow: (newWindow: GridWindow, dimensions: Dimensions) => void;
+  loadLayout: (layout: WindowGridState) => void;
+  viewerState: WindowGridState;
 }
-export const LayoutButtons = ({ usedWindows, createWindow }: LayoutButtonsProps) => {
+export const LayoutButtons = ({ usedWindows, createWindow, loadLayout, viewerState }: LayoutButtonsProps) => {
   const { requestStream } = useStreamPicker();
   const [layoutDialogState, setLayoutDialogState] = useState<LayoutDialogState>({ type: "closed" });
   const onCancel = useCallback(() => setLayoutDialogState({ type: "closed" }), []);
-  const { loadLayout, layouts } = useLayoutsContext();
+  const { layouts, deleteLayout, renameLayout, saveLayout, updateCurrentlySelectedIndex } = useLayouts();
+
+  const selectedLayoutIndex = useMemo(
+    () => layouts.findIndex((l) => equal(l.layout, viewerState)),
+    [layouts, viewerState],
+  );
+
+  useEffect(() => {
+    updateCurrentlySelectedIndex(selectedLayoutIndex);
+  }, [selectedLayoutIndex, updateCurrentlySelectedIndex]);
 
   const onAddClick = async () => {
     const chosenData = await requestStream("all", usedWindows);
@@ -58,42 +71,92 @@ export const LayoutButtons = ({ usedWindows, createWindow }: LayoutButtonsProps)
   useScopedHotkeys("shift+n", scope, onAddClick);
 
   const dropdownOptions = useCallback(
-    (toggleOpen: () => void): DropdownSection[] => [
-      {
-        id: "layouts",
-        options: layouts.map(
-          (layout, i): DropdownSectionElement => ({
-            id: String(i),
-            text: layout.name,
-            // caption: "6 videos",
-            // isActive: true,
-            onClick: () => loadLayout(layout.layout),
-          }),
-        ),
-      },
-      {
-        id: "actions",
-        options: [
-          {
-            id: "rename",
-            text: `Rename ${quote("Layout 1")}...`,
-            onClick: () => {
-              toggleOpen();
-              setLayoutDialogState({ type: "rename", initialLayoutName: "Layout 1", onCancel });
+    (toggleOpen: () => void): (DropdownSection | false)[] => {
+      const selectedLayout = layouts[selectedLayoutIndex];
+
+      return [
+        {
+          id: "layouts",
+          options: layouts.map(
+            (layout, i): DropdownSectionElement => ({
+              id: String(i),
+              text: layout.name,
+              caption: getVideosText(layout.layout.windows.length),
+              isActive: i === selectedLayoutIndex,
+              onClick: () => {
+                toggleOpen();
+                loadLayout(layout.layout);
+              },
+            }),
+          ),
+        },
+        selectedLayout === undefined && {
+          id: "actions",
+          options: [
+            {
+              id: "save",
+              text: `Save layout...`,
+              onClick: () => {
+                toggleOpen();
+                setLayoutDialogState({
+                  type: "save",
+                  initialLayoutName: `Layout ${layouts.length + 1}`,
+                  onCancel,
+                  bannedNames: layouts.map((l) => l.name),
+                  onSave: (name: string) => {
+                    saveLayout(name, viewerState);
+                    onCancel();
+                  },
+                });
+              },
             },
-          },
-          {
-            id: "delete",
-            text: `Delete ${quote("Layout 1")}`,
-            onClick: () => {
-              toggleOpen();
-              setLayoutDialogState({ type: "delete", layoutName: "Layout 1", onCancel });
+          ],
+        },
+        selectedLayout !== undefined && {
+          id: "actions",
+          options: [
+            {
+              id: "rename",
+              text: `Rename ${quote(selectedLayout.name)}`,
+              onClick: () => {
+                toggleOpen();
+                setLayoutDialogState({
+                  type: "rename",
+                  initialLayoutName: selectedLayout.name,
+                  onCancel,
+                  bannedNames: layouts.map((l) => l.name),
+                  onRename: (name: string) => {
+                    renameLayout(selectedLayoutIndex, name);
+                    onCancel();
+                  },
+                });
+              },
             },
-          },
-        ],
-      },
-    ],
-    [onCancel],
+            selectedLayout !== undefined &&
+              layouts.length > 1 && {
+                id: "delete",
+                text: `Delete ${quote(selectedLayout.name)}`,
+                onClick: () => {
+                  toggleOpen();
+                  setLayoutDialogState({
+                    type: "delete",
+                    layoutName: selectedLayout.name,
+                    onCancel,
+                    onDelete: () => {
+                      const targetNewIndex = selectedLayoutIndex - 1;
+                      const newIndex = targetNewIndex < 0 ? 1 : targetNewIndex;
+                      loadLayout(layouts[newIndex].layout);
+                      deleteLayout(selectedLayoutIndex);
+                      onCancel();
+                    },
+                  });
+                },
+              },
+          ],
+        },
+      ];
+    },
+    [layouts, selectedLayoutIndex, onCancel, saveLayout, viewerState, renameLayout, loadLayout, deleteLayout],
   );
 
   return (
@@ -135,3 +198,11 @@ const getNewWindow = (chosenId: string, chosenType: ChosenValueType): GridWindow
 
   return null;
 };
+
+function getVideosText(videosCount: number) {
+  if (videosCount === 1) {
+    return `${videosCount} video`;
+  }
+
+  return `${videosCount} videos`;
+}
