@@ -92,7 +92,7 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
           isPaused={isPaused}
           volume={isAudioFocused ? volume : 0}
         />
-        <div className={styles.focusAudioButtonWrapper}>
+        <div className={styles.focusAudioButtonWrapper} onMouseDown={(e) => e.stopPropagation()}>
           <Button
             variant="SecondaryInverted"
             className={cn({ [styles.isAudioFocused]: isAudioFocused })}

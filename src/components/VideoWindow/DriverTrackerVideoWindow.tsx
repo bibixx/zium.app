@@ -43,7 +43,7 @@ export const DriverTrackerVideoWindow = forwardRef<PlayerAPI | null, DriverTrack
           onReady={onReady}
           isPaused={isPaused}
         />
-        <div className={styles.closeButtonWrapper}>
+        <div className={styles.closeButtonWrapper} onMouseDown={(e) => e.stopPropagation()}>
           <Button variant="SecondaryInverted" onClick={onDelete} iconLeft={XMarkIcon} />
         </div>
       </VideoWindowWrapper>

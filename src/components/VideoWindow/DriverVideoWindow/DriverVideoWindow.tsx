@@ -95,7 +95,7 @@ export const DriverVideoWindow = forwardRef<PlayerAPI | null, DriverVideoWindowP
           volume={isAudioFocused ? volume : 0}
         />
         <DriverPickerButton currentDriver={currentDriver} onDriverChange={onDriverChange} />
-        <div className={styles.focusAudioButtonWrapper}>
+        <div className={styles.focusAudioButtonWrapper} onMouseDown={(e) => e.stopPropagation()}>
           <Button
             variant="SecondaryInverted"
             className={cn({ [styles.isAudioFocused]: isAudioFocused })}
@@ -103,7 +103,7 @@ export const DriverVideoWindow = forwardRef<PlayerAPI | null, DriverVideoWindowP
             iconLeft={SpeakerWaveIcon}
           />
         </div>
-        <div className={closeButtonStyles.closeButtonWrapper}>
+        <div className={closeButtonStyles.closeButtonWrapper} onMouseDown={(e) => e.stopPropagation()}>
           <Button variant="SecondaryInverted" onClick={onDelete} iconLeft={XMarkIcon} />
         </div>
       </VideoWindowWrapper>
@@ -145,7 +145,7 @@ const DriverPickerButton = ({ currentDriver, onDriverChange }: DriverPickerButto
   };
 
   return (
-    <button className={styles.driverName} onClick={onClick}>
+    <button className={styles.driverName} onClick={onClick} onMouseDown={(e) => e.stopPropagation()}>
       <VideoFeedContent
         label={currentDriver.lastName}
         topLabel={currentDriver.firstName}
