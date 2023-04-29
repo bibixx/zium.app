@@ -1,6 +1,6 @@
 import { useReducer } from "react";
-import { getInitialState, windowGridReducer } from "./useViewerState.utils";
+import { getInitialState, windowGridReducer, WindowGridState } from "./useViewerState.utils";
 
-export const useViewerState = () => {
-  return useReducer(windowGridReducer, getInitialState());
+export const useViewerState = (initialState: WindowGridState) => {
+  return useReducer(windowGridReducer, initialState);
 };

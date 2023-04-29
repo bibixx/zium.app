@@ -29,6 +29,8 @@ import { useSyncVideos } from "./hooks/useSyncVideos";
 import { BackgroundDots } from "./BackgroundDots/BackgroundDots";
 import { useViewerState } from "./hooks/useViewerState/useViewerState";
 import { useGlobalShortcuts } from "./hooks/useGlobalShortcuts";
+import { LayoutsContextType, LayoutsProvider, useLayouts } from "./hooks/useLayouts/useLayouts";
+import { WindowGridState } from "./hooks/useViewerState/useViewerState.utils";
 
 interface ViewerProps {
   streams: StreamsStateData;
@@ -40,7 +42,8 @@ interface ViewerProps {
 
 export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets }: ViewerProps) => {
   const { baseGrid, grid } = useGrid();
-  const [{ layout, windows }, dispatch] = useViewerState();
+  const { initiallySelectedLayout, layouts, deleteLayout, renameLayout, saveLayout } = useLayouts();
+  const [{ layout, windows }, dispatch] = useViewerState(initiallySelectedLayout.layout);
 
   const [areVideosPaused, setAreVideosPaused] = useState(false);
   const { audioFocusedWindow, onWindowAudioFocus, setVolume, volume, internalVolume, setIsMuted, isMuted } =
@@ -210,50 +213,63 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
   useSyncVideos({ windows, windowVideojsRefMapRef, isLive, playbackOffsets });
   useGlobalShortcuts(mainVideoPlayer);
 
-  return (
-    <StreamPickerProvider>
-      <div className={styles.backgroundWrapper}>
-        <BackgroundDots baseGrid={baseGrid} />
-        {layout.map((l) => {
-          const gridWindow = windowsMap[l.id];
-          const dimension: Dimensions = {
-            width: l.width,
-            height: l.height,
-            x: l.x,
-            y: l.y,
-          };
+  const layoutsContext = useMemo(
+    (): LayoutsContextType => ({
+      layouts,
+      deleteLayout,
+      renameLayout,
+      saveLayout,
+      loadLayout: (layout: WindowGridState) => dispatch({ type: "loadLayout", layout }),
+    }),
+    [deleteLayout, dispatch, layouts, renameLayout, saveLayout],
+  );
 
-          return (
-            <RnDWindow
-              key={gridWindow.id}
-              grid={grid}
-              dimensions={dimension}
-              onChange={(dimensions: Dimensions) => {
-                onLayoutChange(dimensions, l.id);
-              }}
-              zIndex={l.zIndex}
-              bringToFront={() => dispatch({ type: "bringToFront", id: l.id })}
-            >
-              {getLayoutChild(gridWindow)}
-            </RnDWindow>
-          );
-        })}
-        <StreamPicker
-          availableDrivers={availableDrivers}
-          globalFeeds={[streams.defaultStream, streams.driverTrackerStream, streams.dataChannelStream]}
-        />
-        <Player
-          player={mainVideoPlayer}
-          raceInfo={raceInfo}
-          setVolume={setVolume}
-          volume={internalVolume}
-          isMuted={isMuted}
-          setIsMuted={setIsMuted}
-          usedWindows={usedWindows}
-          createWindow={createWindow}
-        />
-      </div>
-    </StreamPickerProvider>
+  return (
+    <LayoutsProvider context={layoutsContext}>
+      <StreamPickerProvider>
+        <div className={styles.backgroundWrapper}>
+          <BackgroundDots baseGrid={baseGrid} />
+          {layout.map((l) => {
+            const gridWindow = windowsMap[l.id];
+            const dimension: Dimensions = {
+              width: l.width,
+              height: l.height,
+              x: l.x,
+              y: l.y,
+            };
+
+            return (
+              <RnDWindow
+                key={gridWindow.id}
+                grid={grid}
+                dimensions={dimension}
+                onChange={(dimensions: Dimensions) => {
+                  onLayoutChange(dimensions, l.id);
+                }}
+                zIndex={l.zIndex}
+                bringToFront={() => dispatch({ type: "bringToFront", id: l.id })}
+              >
+                {getLayoutChild(gridWindow)}
+              </RnDWindow>
+            );
+          })}
+          <StreamPicker
+            availableDrivers={availableDrivers}
+            globalFeeds={[streams.defaultStream, streams.driverTrackerStream, streams.dataChannelStream]}
+          />
+          <Player
+            player={mainVideoPlayer}
+            raceInfo={raceInfo}
+            setVolume={setVolume}
+            volume={internalVolume}
+            isMuted={isMuted}
+            setIsMuted={setIsMuted}
+            usedWindows={usedWindows}
+            createWindow={createWindow}
+          />
+        </div>
+      </StreamPickerProvider>
+    </LayoutsProvider>
   );
 }, deepEqual);
 

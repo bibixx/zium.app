@@ -6,8 +6,9 @@ import { ChosenValueType, useStreamPicker } from "../../../hooks/useStreamPicker
 import { Dimensions } from "../../../types/Dimensions";
 import { GridWindow } from "../../../types/GridWindow";
 import { quote } from "../../../utils/text";
+import { useLayoutsContext } from "../../../views/Viewer/hooks/useLayouts/useLayouts";
 import { Button } from "../../Button/Button";
-import { Dropdown, DropdownSection } from "../../Dropdown/Dropdown";
+import { Dropdown, DropdownSection, DropdownSectionElement } from "../../Dropdown/Dropdown";
 import { sizePxToPercent } from "../../RnDWindow/RnDWindow.utils";
 import { LayoutDialogs } from "../LayoutDialogs/LayoutDialogs";
 import { LayoutDialogState } from "../LayoutDialogs/LayoutDialogs.types";
@@ -21,6 +22,7 @@ export const LayoutButtons = ({ usedWindows, createWindow }: LayoutButtonsProps)
   const { requestStream } = useStreamPicker();
   const [layoutDialogState, setLayoutDialogState] = useState<LayoutDialogState>({ type: "closed" });
   const onCancel = useCallback(() => setLayoutDialogState({ type: "closed" }), []);
+  const { loadLayout, layouts } = useLayoutsContext();
 
   const onAddClick = async () => {
     const chosenData = await requestStream("all", usedWindows);
@@ -59,19 +61,15 @@ export const LayoutButtons = ({ usedWindows, createWindow }: LayoutButtonsProps)
     (toggleOpen: () => void): DropdownSection[] => [
       {
         id: "layouts",
-        options: [
-          {
-            id: "layout1",
-            text: "Layout 1",
-            caption: "6 videos",
-            isActive: true,
-          },
-          {
-            id: "layout2",
-            text: "Layout 2",
-            caption: "4 videos",
-          },
-        ],
+        options: layouts.map(
+          (layout, i): DropdownSectionElement => ({
+            id: String(i),
+            text: layout.name,
+            // caption: "6 videos",
+            // isActive: true,
+            onClick: () => loadLayout(layout.layout),
+          }),
+        ),
       },
       {
         id: "actions",

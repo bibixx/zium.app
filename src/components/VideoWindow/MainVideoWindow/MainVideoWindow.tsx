@@ -110,7 +110,6 @@ const ADDITIONAL_OPTIONS: AdditionalVideoJSOptions = {
   noBufferUI: true,
   playback: {
     muted: true,
-    autoplay: true,
   },
   // controlBar: {
   //   playToggle: true,

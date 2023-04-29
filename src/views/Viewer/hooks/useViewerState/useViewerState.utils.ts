@@ -44,12 +44,18 @@ interface DeleteWindowAction {
   windowId: string;
 }
 
+interface LoadLayoutAction {
+  type: "loadLayout";
+  layout: WindowGridState;
+}
+
 type WindowGridActions =
   | UpdateLayoutAction
   | UpdateWindowAction
   | BringToFrontAction
   | DeleteWindowAction
-  | CreateWindowAction;
+  | CreateWindowAction
+  | LoadLayoutAction;
 
 export const CURRENT_STORE_VERSION = "2";
 export const windowGridReducer = (prevState: WindowGridState, action: WindowGridActions) => {
@@ -149,6 +155,12 @@ export const windowGridReducer = (prevState: WindowGridState, action: WindowGrid
     case "deleteWindow": {
       newState.windows = newState.windows.filter((w) => w.id !== action.windowId);
       newState.layout = newState.layout.filter((w) => w.id !== action.windowId);
+
+      break;
+    }
+    case "loadLayout": {
+      newState.layout = action.layout.layout;
+      newState.windows = action.layout.windows;
 
       break;
     }

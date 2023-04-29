@@ -42,7 +42,7 @@ export const VideoJS = forwardRef<PlayerAPI | null, VideoJSProps>(
           key: "<PLAYER_LICENSE_KEY>",
           playback: {
             muted: false,
-            autoplay: true,
+            autoplay: false,
           },
           logs: {
             bitmovin: false,
