@@ -38,7 +38,9 @@
       color: var(--color-text-strong);
     }
 
-    &:active {
+    &:active,
+    &.isPressed,
+    &.isPressed:hover {
       background: var(--color-background-accent-muted);
       color: var(--color-text-strong);
     }
@@ -72,7 +74,9 @@
       }
     }
 
-    &:active {
+    &:active,
+    &.isPressed,
+    &.isPressed:hover {
       background: var(--color-background-muted-alpha);
       color: var(--color-text-strong);
 
@@ -101,7 +105,9 @@
       color: var(--color-text-default);
     }
 
-    &:hover {
+    &:active,
+    &.isPressed,
+    &.isPressed:hover {
       background: var(--color-background-muted-inverted-alpha);
       color: var(--color-text-strong);
 
@@ -149,7 +155,9 @@
       }
     }
 
-    &:active {
+    &:active,
+    &.isPressed,
+    &.isPressed:hover {
       @include inner-border(var(--color-border-muted-alpha));
       background: var(--color-background-muted-alpha);
       color: var(--color-text-strong);

@@ -1,0 +1,60 @@
+.positionWrapper {
+  z-index: var(--z-index-dropdown);
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px;
+  width: calc(var(--width) * 1px);
+  background: var(--color-background-default-default);
+  @include inner-border(var(--color-border-default-default));
+  border-radius: var(--radii-medium);
+
+  &.wrapperEnter {
+    transform: translateY(10%);
+    opacity: 0;
+  }
+
+  &.wrapperEnterActive {
+    transform: translateY(0);
+    opacity: 1;
+
+    transition: var(--transition-fast);
+    transition-property: transform, opacity;
+  }
+
+  &.wrapperExit {
+    transform: translateX(0);
+    opacity: 1;
+  }
+
+  &.wrapperExitActive {
+    transform: translateY(10%);
+    opacity: 0;
+
+    transition: var(--transition-fast);
+    transition-property: transform, opacity;
+  }
+}
+
+.divider {
+  padding: 0 8px;
+
+  &::after {
+    display: block;
+    content: "";
+    width: 100%;
+    height: 2px;
+    background: var(--color-border-default-default);
+    border-radius: var(--radii-rounded);
+  }
+}
+
+.backdrop {
+  position: fixed;
+  z-index: var(--z-index-sheet-backdrop);
+  inset: 0;
+  z-index: var(--z-index-dropdown-backdrop);
+}

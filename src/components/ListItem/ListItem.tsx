@@ -1,7 +1,7 @@
 import cn from "classnames";
 import { ReactNode } from "react";
 import { withAs } from "../../utils/withAs";
-import { ListItemWrapper } from "../ListItemWrapper/ListItemWrapper";
+import { ListItemWrapper } from "./ListItemWrapper/ListItemWrapper";
 import styles from "./ListItem.module.scss";
 
 interface ListItemProps {

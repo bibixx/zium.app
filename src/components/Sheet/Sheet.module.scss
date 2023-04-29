@@ -38,9 +38,9 @@
   position: fixed;
   z-index: var(--z-index-sheet-backdrop);
   inset: 0;
-  background: #010106;
+  background: var(--color-core-neutral-darken-500);
   cursor: pointer;
-  opacity: 0.9;
+  opacity: 1;
 
   &.backdropEnter {
     opacity: 0;
@@ -48,7 +48,7 @@
   }
 
   &.backdropEnterActive {
-    opacity: 0.9;
+    opacity: 1;
     visibility: visible;
 
     transition: var(--transition-medium);
@@ -56,7 +56,7 @@
   }
 
   &.backdropExit {
-    opacity: 0.9;
+    opacity: 1;
     visibility: visible;
   }
 

@@ -1,10 +1,12 @@
 import { Squares2X2Icon, SquaresPlusIcon } from "@heroicons/react/20/solid";
+import { useMemo } from "react";
 import { useHotkeysStack } from "../../../hooks/useHotkeysStack/useHotkeysStack";
 import { useScopedHotkeys } from "../../../hooks/useScopedHotkeys/useScopedHotkeys";
 import { ChosenValueType, useStreamPicker } from "../../../hooks/useStreamPicker/useStreamPicker";
 import { Dimensions } from "../../../types/Dimensions";
 import { GridWindow } from "../../../types/GridWindow";
 import { Button } from "../../Button/Button";
+import { Dropdown, DropdownSection } from "../../Dropdown/Dropdown";
 import { sizePxToPercent } from "../../RnDWindow/RnDWindow.utils";
 import styles from "./LayoutButtons.module.scss";
 
@@ -48,9 +50,48 @@ export const LayoutButtons = ({ usedWindows, createWindow }: LayoutButtonsProps)
   const scope = useHotkeysStack(true, true, "LayoutButtons");
   useScopedHotkeys("shift+n", scope, onAddClick);
 
+  const dropdownOptions = useMemo(
+    (): DropdownSection[] => [
+      {
+        id: "layouts",
+        options: [
+          {
+            id: "layout1",
+            text: "Layout 1",
+            caption: "6 videos",
+            isActive: true,
+          },
+          {
+            id: "layout2",
+            text: "Layout 2",
+            caption: "4 videos",
+          },
+        ],
+      },
+      {
+        id: "actions",
+        options: [
+          {
+            id: "rename",
+            text: "Rename “Layout 1”...",
+          },
+          {
+            id: "delete",
+            text: "Delete “Layout 1”",
+          },
+        ],
+      },
+    ],
+    [],
+  );
+
   return (
     <div className={styles.buttonsWrapper}>
-      <Button iconLeft={Squares2X2Icon} variant="Tertiary" />
+      <Dropdown placement="top-end" options={dropdownOptions}>
+        {({ setRef, toggleOpen, isOpen }) => (
+          <Button ref={setRef} iconLeft={Squares2X2Icon} isPressed={isOpen} variant="Tertiary" onClick={toggleOpen} />
+        )}
+      </Dropdown>
       <Button iconLeft={SquaresPlusIcon} variant="Secondary" onClick={onAddClick}>
         Add video
       </Button>

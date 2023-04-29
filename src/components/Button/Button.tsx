@@ -8,6 +8,7 @@ interface ButtonProps {
   variant?: "Primary" | "Secondary" | "SecondaryInverted" | "Tertiary";
   fluid?: boolean;
   disabledState?: boolean;
+  isPressed?: boolean;
   iconLeft?: (props: React.SVGProps<SVGSVGElement>) => JSX.Element | null;
   iconRight?: (props: React.SVGProps<SVGSVGElement>) => JSX.Element | null;
 }
@@ -22,6 +23,7 @@ export const Button = withAs("button")<ButtonProps>(
       iconRight: IconRight,
       fluid = false,
       disabled = false,
+      isPressed = false,
       disabledState = false,
       className,
       ...props
@@ -39,6 +41,7 @@ export const Button = withAs("button")<ButtonProps>(
             [styles.tertiary]: variant === "Tertiary",
             [styles.disabled]: disabled || disabledState,
             [styles.fluid]: fluid,
+            [styles.isPressed]: isPressed,
           },
           className,
         )}
