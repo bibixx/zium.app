@@ -1,7 +1,7 @@
 import { SignalIcon } from "@heroicons/react/20/solid";
 import { Link } from "react-router-dom";
 import { LiveRaceData } from "../../hooks/useLiveEvent/useLiveEvent.types";
-import { toTitleCase } from "../../utils/text";
+import { MDASH, NBSP, toTitleCase } from "../../utils/text";
 import { Button } from "../Button/Button";
 import { CountryImage } from "../CountryImage/CountryImage";
 import { EventCardTag } from "../EventCardTag/EventCardTag";
@@ -14,7 +14,7 @@ export const LiveCard = ({ raceDetails }: LiveCardProps) => {
   const pictureUrl = `https://f1tv.formula1.com/image-resizer/image/${raceDetails.pictureUrl}?w=1500&h=900&q=HI&o=L`;
   const countryName = raceDetails.countryName;
   const caption = `Round ${raceDetails.roundNumber}`;
-  const description = toTitleCase(raceDetails.description).replace(" - ", "\xa0\u2014\xa0");
+  const description = toTitleCase(raceDetails.description).replace(" - ", `${NBSP}${MDASH}${NBSP}`);
   const countryId = raceDetails.countryId;
   const contentId = raceDetails.contentId;
 

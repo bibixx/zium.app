@@ -46,7 +46,7 @@ export const Button = withAs("button")<ButtonProps>(
           className,
         )}
         ref={ref}
-        // disabled={disabled}
+        disabled={disabled}
         {...props}
       >
         {IconLeft && (

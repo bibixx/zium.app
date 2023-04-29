@@ -1,13 +1,16 @@
 import { Squares2X2Icon, SquaresPlusIcon } from "@heroicons/react/20/solid";
-import { useMemo } from "react";
+import { useCallback, useState } from "react";
 import { useHotkeysStack } from "../../../hooks/useHotkeysStack/useHotkeysStack";
 import { useScopedHotkeys } from "../../../hooks/useScopedHotkeys/useScopedHotkeys";
 import { ChosenValueType, useStreamPicker } from "../../../hooks/useStreamPicker/useStreamPicker";
 import { Dimensions } from "../../../types/Dimensions";
 import { GridWindow } from "../../../types/GridWindow";
+import { quote } from "../../../utils/text";
 import { Button } from "../../Button/Button";
 import { Dropdown, DropdownSection } from "../../Dropdown/Dropdown";
 import { sizePxToPercent } from "../../RnDWindow/RnDWindow.utils";
+import { LayoutDialogs } from "../LayoutDialogs/LayoutDialogs";
+import { LayoutDialogState } from "../LayoutDialogs/LayoutDialogs.types";
 import styles from "./LayoutButtons.module.scss";
 
 interface LayoutButtonsProps {
@@ -16,6 +19,8 @@ interface LayoutButtonsProps {
 }
 export const LayoutButtons = ({ usedWindows, createWindow }: LayoutButtonsProps) => {
   const { requestStream } = useStreamPicker();
+  const [layoutDialogState, setLayoutDialogState] = useState<LayoutDialogState>({ type: "closed" });
+  const onCancel = useCallback(() => setLayoutDialogState({ type: "closed" }), []);
 
   const onAddClick = async () => {
     const chosenData = await requestStream("all", usedWindows);
@@ -50,8 +55,8 @@ export const LayoutButtons = ({ usedWindows, createWindow }: LayoutButtonsProps)
   const scope = useHotkeysStack(true, true, "LayoutButtons");
   useScopedHotkeys("shift+n", scope, onAddClick);
 
-  const dropdownOptions = useMemo(
-    (): DropdownSection[] => [
+  const dropdownOptions = useCallback(
+    (toggleOpen: () => void): DropdownSection[] => [
       {
         id: "layouts",
         options: [
@@ -73,28 +78,39 @@ export const LayoutButtons = ({ usedWindows, createWindow }: LayoutButtonsProps)
         options: [
           {
             id: "rename",
-            text: "Rename “Layout 1”...",
+            text: `Rename ${quote("Layout 1")}...`,
+            onClick: () => {
+              toggleOpen();
+              setLayoutDialogState({ type: "rename", initialLayoutName: "Layout 1", onCancel });
+            },
           },
           {
             id: "delete",
-            text: "Delete “Layout 1”",
+            text: `Delete ${quote("Layout 1")}`,
+            onClick: () => {
+              toggleOpen();
+              setLayoutDialogState({ type: "delete", layoutName: "Layout 1", onCancel });
+            },
           },
         ],
       },
     ],
-    [],
+    [onCancel],
   );
 
   return (
     <div className={styles.buttonsWrapper}>
       <Dropdown placement="top-end" options={dropdownOptions}>
-        {({ setRef, toggleOpen, isOpen }) => (
-          <Button ref={setRef} iconLeft={Squares2X2Icon} isPressed={isOpen} variant="Tertiary" onClick={toggleOpen} />
-        )}
+        {({ setRef, toggleOpen, isOpen }) => {
+          return (
+            <Button ref={setRef} iconLeft={Squares2X2Icon} isPressed={isOpen} variant="Tertiary" onClick={toggleOpen} />
+          );
+        }}
       </Dropdown>
       <Button iconLeft={SquaresPlusIcon} variant="Secondary" onClick={onAddClick}>
         Add video
       </Button>
+      <LayoutDialogs state={layoutDialogState} />
     </div>
   );
 };

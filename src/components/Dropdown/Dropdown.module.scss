@@ -1,5 +1,5 @@
 .positionWrapper {
-  z-index: var(--z-index-dropdown);
+  z-index: var(--z-index-overlay);
 }
 
 .wrapper {
@@ -54,7 +54,6 @@
 
 .backdrop {
   position: fixed;
-  z-index: var(--z-index-sheet-backdrop);
   inset: 0;
-  z-index: var(--z-index-dropdown-backdrop);
+  z-index: var(--z-index-overlay-backdrop);
 }

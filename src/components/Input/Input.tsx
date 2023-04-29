@@ -1,10 +1,11 @@
 import cn from "classnames";
+import { forwardRef } from "react";
 import styles from "./Input.module.scss";
 
 interface InputProps extends React.ComponentPropsWithoutRef<"input"> {
   icon?: (props: React.SVGProps<SVGSVGElement>) => JSX.Element | null;
 }
-export const Input = ({ className, icon: Icon, ...props }: InputProps) => {
+export const Input = forwardRef<HTMLInputElement, InputProps>(({ className, icon: Icon, ...props }, ref) => {
   return (
     <label className={styles.wrapper}>
       {Icon && (
@@ -12,7 +13,7 @@ export const Input = ({ className, icon: Icon, ...props }: InputProps) => {
           <Icon width={20} height={20} fill="currentColor" />
         </div>
       )}
-      <input className={cn(styles.input, className)} {...props} />
+      <input className={cn(styles.input, className)} {...props} ref={ref} />
     </label>
   );
-};
+});

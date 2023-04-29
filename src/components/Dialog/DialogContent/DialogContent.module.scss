@@ -1,0 +1,47 @@
+.contentWrapper {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 16px;
+  padding: 8px;
+}
+
+.textWrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 8px;
+}
+
+.title {
+  @include typography(heading, 500, default);
+  color: var(--color-text-strong);
+  margin: 0;
+  user-select: none;
+}
+
+.subtitle {
+  @include typography(text, 300, regular);
+  color: var(--color-text-default);
+  user-select: none;
+}
+
+.infoIcon {
+  color: var(--color-text-muted);
+}
+
+.alertIcon {
+  color: var(--color-text-accent);
+}
+
+.buttonFooter {
+  display: flex;
+  gap: 8px;
+}

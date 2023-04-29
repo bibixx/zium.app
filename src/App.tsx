@@ -12,7 +12,7 @@ import { LogIn } from "./views/LogIn/LogIn";
 import { Races } from "./views/Races/Races";
 import { DebugWindow } from "./components/DebugWindow/DebugWindow";
 import { useDebug } from "./hooks/useDebug/useDebug";
-import { DROPDOWN_PORTAL_ID, SHEET_PORTAL_ID } from "./constants/portals";
+import { OVERLAYS_PORTAL_ID } from "./constants/portals";
 import { HotkeysStackWithinHotkeysProvider } from "./hooks/useHotkeysStack/useHotkeysStack";
 import { DEFAULT_SCOPE } from "./hooks/useScopedHotkeys/useScopedHotkeys";
 
@@ -71,8 +71,7 @@ export default function App() {
               </BrowserRouter>
             </WithLoggedIn>
           </WithCompanion>
-          <div id={SHEET_PORTAL_ID} />
-          <div id={DROPDOWN_PORTAL_ID} />
+          <div id={OVERLAYS_PORTAL_ID} />
         </div>
       </HotkeysStackWithinHotkeysProvider>
     </HotkeysProvider>

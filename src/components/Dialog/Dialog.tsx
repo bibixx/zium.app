@@ -4,17 +4,18 @@ import { createPortal } from "react-dom";
 import { CSSTransition } from "react-transition-group";
 import FocusTrap from "focus-trap-react";
 import { OVERLAYS_PORTAL_ID } from "../../constants/portals";
-import styles from "./Sheet.module.scss";
+import { WithVariables } from "../WithVariables/WithVariables";
+import styles from "./Dialog.module.scss";
 
-interface SheetProps {
+interface DialogProps {
   children: ReactNode;
   isOpen: boolean;
+  width?: number | string;
   onClose: () => void;
   onClosed?: () => void;
   initialFocus?: boolean;
-  wrapperClassName?: string;
 }
-export const Sheet = ({ children, onClose, onClosed, isOpen, wrapperClassName, initialFocus = false }: SheetProps) => {
+export const Dialog = ({ children, onClose, onClosed, isOpen, initialFocus = false, width = "auto" }: DialogProps) => {
   const $portalContainer = useMemo(() => document.getElementById(OVERLAYS_PORTAL_ID), []);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const backdropRef = useRef<HTMLDivElement>(null);
@@ -52,7 +53,13 @@ export const Sheet = ({ children, onClose, onClosed, isOpen, wrapperClassName, i
       <CSSTransition
         in={isOpen}
         nodeRef={wrapperRef}
-        addEndListener={(done) => wrapperRef.current?.addEventListener("transitionend", done)}
+        addEndListener={(done) =>
+          wrapperRef.current?.addEventListener("transitionend", (e) => {
+            if (e.target === wrapperRef.current) {
+              done();
+            }
+          })
+        }
         unmountOnExit
         mountOnEnter
         onExited={onClosed}
@@ -70,15 +77,20 @@ export const Sheet = ({ children, onClose, onClosed, isOpen, wrapperClassName, i
             escapeDeactivates: false,
           }}
         >
-          <div className={cn(styles.wrapper)} ref={wrapperRef}>
-            <div className={wrapperClassName}>{children}</div>
-            <button className={styles.closeButton} onClick={onClose}>
-              Close
-            </button>
-          </div>
+          <WithVariables variables={{ width: addPxIfNeeded(width) }} className={cn(styles.wrapper)} ref={wrapperRef}>
+            {children}
+          </WithVariables>
         </FocusTrap>
       </CSSTransition>
     </>,
     $portalContainer,
   );
 };
+
+function addPxIfNeeded(value: string | number) {
+  if (typeof value === "string") {
+    return value;
+  }
+
+  return `${value}px`;
+}

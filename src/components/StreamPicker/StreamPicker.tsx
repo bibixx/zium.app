@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 import { Key } from "ts-key-enum";
 import { ChartBarIcon, MapIcon, TvIcon } from "@heroicons/react/24/outline";
-import { StreamPickerDataState, useStreamPicker } from "../../hooks/useStreamPicker/useStreamPicker";
+import { useStreamPicker } from "../../hooks/useStreamPicker/useStreamPicker";
 import { DriverData } from "../../views/Viewer/Viewer.utils";
 import { Input } from "../Input/Input";
 import { ListItem } from "../ListItem/ListItem";
@@ -13,6 +13,7 @@ import { assertNever } from "../../utils/assertNever";
 import { StreamInfo } from "../../hooks/useVideoRaceDetails/useVideoRaceDetails.types";
 import { isNotNullable } from "../../utils/usNotNullable";
 import { useHotkeysStack } from "../../hooks/useHotkeysStack/useHotkeysStack";
+import { useLaggedBehindData } from "../../hooks/useLaggedBehindData/useLaggedBehindData";
 import styles from "./StreamPicker.module.scss";
 import { StreamPickerEntry } from "./StreamPicker.types";
 
@@ -22,7 +23,7 @@ interface StreamPickerProps {
 }
 export const StreamPicker = ({ availableDrivers, globalFeeds }: StreamPickerProps) => {
   const { state, onCancel, onChoice } = useStreamPicker();
-  const { data: laggedState, reset: resetLaggedState } = useLaggedBehinedStreamPickerDataState(state);
+  const { data: laggedState, reset: resetLaggedState } = useLaggedBehindData(state, state.isOpen);
   const [searchText, setSearchText] = useState("");
   const [fakeSelection, setFakeSelection] = useState<number>(0);
   const listItemsRefs = useRef<(HTMLElement | null)[]>([]);
@@ -213,19 +214,4 @@ const getIconForStreamInfo = (streamInfo: StreamInfo) => {
   }
 
   return assertNever(streamInfo.type);
-};
-
-const useLaggedBehinedStreamPickerDataState = (streamPickerDataState: StreamPickerDataState) => {
-  const [laggedBehindState, setLaggedBehindState] = useState(streamPickerDataState);
-  useEffect(() => {
-    if (streamPickerDataState.isOpen) {
-      setLaggedBehindState(streamPickerDataState);
-    }
-  }, [streamPickerDataState]);
-
-  const reset = () => setLaggedBehindState(streamPickerDataState);
-
-  const data = streamPickerDataState.isOpen ? streamPickerDataState : laggedBehindState;
-
-  return { data, reset };
 };
