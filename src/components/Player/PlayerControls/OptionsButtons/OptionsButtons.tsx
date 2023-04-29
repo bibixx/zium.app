@@ -30,7 +30,8 @@ export const OptionsButtons = ({ player, volume, setVolume, isMuted, setIsMuted 
     };
 
     document.addEventListener("fullscreenchange", onFullScreenChange);
-    () => document.removeEventListener("fullscreenchange", onFullScreenChange);
+
+    return () => document.removeEventListener("fullscreenchange", onFullScreenChange);
   }, []);
 
   const toggleFullScreen = () => {

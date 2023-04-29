@@ -34,8 +34,7 @@ export const RaceDetails = ({ id }: RaceDetailsProps) => {
   return (
     <div className={styles.grid}>
       {racesDetailsState.data.map((raceDetails, i) => {
-        const isDisabled = false;
-        // const isDisabled = !raceDetails.isLive && isFuture(raceDetails.startDate);
+        const isDisabled = !raceDetails.isLive && isFuture(raceDetails.startDate);
         const props = isDisabled ? ({ as: "div" } as const) : ({ as: Link, to: `/race/${raceDetails.id}` } as const);
 
         return (

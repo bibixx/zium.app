@@ -7,11 +7,10 @@ export const fetchRaceDetailsId = async (raceId: string, signal: AbortSignal): P
   const url = `/2.0/R/ENG/WEB_DASH/ALL/PAGE/${raceId}/F1_TV_Pro_Annual/14`;
   const body = await fetchJSON(url, undefined, signal);
 
-  const replayEvents = getReplayEvents(body);
+  const liveAndReplayEvents = getReplayEvents(body);
   const scheduledEvents = getScheduledEvents(body);
 
-  const raceEvents = uniqueById([...scheduledEvents, ...replayEvents]);
-
+  const raceEvents = uniqueById([...liveAndReplayEvents, ...scheduledEvents]);
   const raceDetails = raceEvents
     .filter((r: any) => RACE_GENRES.includes(r.metadata.genres[0]?.toLowerCase()))
     .map(mapEventToRaceDetailsData)
@@ -44,6 +43,6 @@ const mapEventToRaceDetailsData = (event: any): RaceDetailsData => {
     id: event.metadata.contentId,
     pictureUrl: event.metadata.pictureUrl,
     startDate: new Date(event.metadata.emfAttributes.sessionStartDate),
-    isLive: event.metadata.contentSubtype === "LIVE_EVENT" && event.metadata.emfAttributes.state === "Live",
+    isLive: event.metadata.contentSubtype === "LIVE",
   };
 };

@@ -28,14 +28,14 @@ export const Season = ({ seasonApiId }: SeasonProps) => {
     }
 
     const sortedRaces = clone(racesState.data).sort((a, b) => b.startDate.getTime() - a.startDate.getTime());
-    const latestFinishedRaceIndex = sortedRaces.findIndex((r) => r.startDate.getTime() <= Date.now());
+    const latestFinishedRaceIndex = sortedRaces.findIndex((r) => r.endDate.getTime() <= Date.now());
     const latestFinishedRace = sortedRaces[latestFinishedRaceIndex];
 
     if (isSameDay(latestFinishedRace?.startDate, new Date())) {
-      return racesState.data.slice(latestFinishedRaceIndex);
+      return sortedRaces.slice(latestFinishedRaceIndex);
     }
 
-    return racesState.data.slice(Math.max(0, latestFinishedRaceIndex - 1));
+    return sortedRaces.slice(Math.max(0, latestFinishedRaceIndex - 1));
   }, [racesState]);
 
   if (racesState.state === "loading") {
