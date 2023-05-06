@@ -47,7 +47,7 @@ export const useVideoRaceDetails = (raceId: string): StreamsState => {
           meetingSessionKey,
         } = await fetchRaceStreams(raceId, signal);
 
-        const multiViewerOffsets = await fetchMultiViewerOffsets(meetingKey, meetingSessionKey, signal);
+        const multiViewerOffsets = isLive ? null : await fetchMultiViewerOffsets(meetingKey, meetingSessionKey, signal);
         const mappedMultiViewerOffsets =
           multiViewerOffsets != null ? createMultiViewerOffsetsMap(multiViewerOffsets) : undefined;
 
