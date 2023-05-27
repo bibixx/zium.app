@@ -29,6 +29,7 @@ interface PlayerProps {
   renameLayout: (layoutIndex: number, name: string) => void;
   deleteLayout: (layoutIndex: number) => void;
   viewerState: WindowGridState;
+  isPaused: boolean;
 }
 export const Player = ({
   player,
@@ -44,10 +45,11 @@ export const Player = ({
   renameLayout,
   deleteLayout,
   viewerState,
+  isPaused,
 }: PlayerProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const { isUIVisible } = useViewerUIVisibility();
+  const { isUIVisible, preventHiding } = useViewerUIVisibility();
   const timeoutRef = useRef(-1);
   const [isSpringing, setIsSpringing] = useState(false);
 
@@ -60,6 +62,10 @@ export const Player = ({
       }
     }
   }, [isUIVisible]);
+
+  useEffect(() => {
+    preventHiding(isPaused);
+  }, [isPaused, preventHiding]);
 
   const onDragEnd = useCallback((shouldBeCollapsed: boolean) => {
     setIsSpringing(true);

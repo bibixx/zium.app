@@ -1,6 +1,6 @@
 import { Placement } from "@popperjs/core";
 import FocusTrap from "focus-trap-react";
-import { Fragment, ReactNode, useCallback, useMemo, useRef, useState } from "react";
+import { Fragment, ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { usePopper } from "react-popper";
 import { CSSTransition } from "react-transition-group";
@@ -40,6 +40,8 @@ interface DropdownProps {
   placement?: Placement;
   children: (props: DropdownChildrenProps) => JSX.Element;
   options: BaseOptions | ((toggleOpen: () => void) => BaseOptions);
+  onOpened?: () => void;
+  onClosed?: () => void;
 }
 export const Dropdown = ({
   width = 240,
@@ -48,9 +50,20 @@ export const Dropdown = ({
   distance = 8,
   skidding = 0,
   options,
+  onOpened,
+  onClosed,
 }: DropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const toggleOpen = useCallback(() => setIsOpen((oldIsOpen) => !oldIsOpen), []);
+
+  useEffect(() => {
+    if (isOpen) {
+      onOpened?.();
+    } else {
+      onClosed?.();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen]);
 
   const scope = useHotkeysStack(isOpen, false);
   useScopedHotkeys(Key.Escape, scope, toggleOpen);

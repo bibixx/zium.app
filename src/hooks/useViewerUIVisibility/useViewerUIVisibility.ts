@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect } from "react";
+import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { useDebug } from "../useDebug/useDebug";
 import { useStateWithRef } from "../useStateWithRef/useStateWithRef";
 
@@ -8,13 +8,31 @@ export const GLOBAL_UI_VISIBILITY_CLASS_NAME = "uiVisible";
 
 interface ViewerUIVisibilityContextState {
   isUIVisible: boolean;
+  preventHiding: (shouldPrevent: boolean) => void;
 }
 export const useViewerUIVisibilityState = (): ViewerUIVisibilityContextState => {
   const [isUIVisible, isUIVisibleRef, setIsUIVisible] = useStateWithRef(true);
   const isDebugMode = useDebug();
+  const [shouldPreventHiding, setShouldPreventHiding] = useState(false);
+
+  const preventHiding = useCallback(
+    (shouldPrevent: boolean) => {
+      if (shouldPrevent) {
+        setShouldPreventHiding(true);
+        setIsUIVisible(true);
+      } else {
+        setShouldPreventHiding(false);
+      }
+    },
+    [setIsUIVisible],
+  );
 
   useEffect(() => {
-    let timeout = -1;
+    if (shouldPreventHiding) {
+      return;
+    }
+
+    let timeout: number | undefined = undefined;
 
     const onAction = () => {
       if (!isUIVisibleRef.current) {
@@ -34,18 +52,18 @@ export const useViewerUIVisibilityState = (): ViewerUIVisibilityContextState => 
     onAction();
 
     return () => {
+      document.removeEventListener("mousemove", onAction, { capture: true });
+      document.removeEventListener("keydown", onAction, { capture: true });
+      document.removeEventListener("keyup", onAction, { capture: true });
       clearTimeout(timeout);
-      document.removeEventListener("mousemove", onAction);
-      document.removeEventListener("keydown", onAction);
-      document.removeEventListener("keyup", onAction);
     };
-  }, [isUIVisibleRef, setIsUIVisible]);
+  }, [isUIVisibleRef, setIsUIVisible, shouldPreventHiding]);
 
   if (isDebugMode) {
-    return { isUIVisible: true };
+    return { isUIVisible: true, preventHiding };
   }
 
-  return { isUIVisible };
+  return { isUIVisible, preventHiding };
 };
 
 export const ViewerUIVisibilityContext = createContext<ViewerUIVisibilityContextState | null>(null);

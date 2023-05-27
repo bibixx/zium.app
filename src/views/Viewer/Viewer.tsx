@@ -299,6 +299,7 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
           renameLayout={renameLayout}
           deleteLayout={deleteLayout}
           viewerState={viewerState}
+          isPaused={areVideosPaused}
         />
       </div>
     </StreamPickerProvider>

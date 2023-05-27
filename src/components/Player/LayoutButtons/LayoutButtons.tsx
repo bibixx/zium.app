@@ -3,6 +3,7 @@ import { useCallback, useMemo, useState } from "react";
 import { useHotkeysStack } from "../../../hooks/useHotkeysStack/useHotkeysStack";
 import { useScopedHotkeys } from "../../../hooks/useScopedHotkeys/useScopedHotkeys";
 import { ChosenValueType, useStreamPicker } from "../../../hooks/useStreamPicker/useStreamPicker";
+import { useViewerUIVisibility } from "../../../hooks/useViewerUIVisibility/useViewerUIVisibility";
 import { Dimensions } from "../../../types/Dimensions";
 import { GridWindow } from "../../../types/GridWindow";
 import { quote } from "../../../utils/text";
@@ -36,6 +37,7 @@ export const LayoutButtons = ({
   viewerState,
 }: LayoutButtonsProps) => {
   const { requestStream } = useStreamPicker();
+  const { preventHiding } = useViewerUIVisibility();
   const [layoutDialogState, setLayoutDialogState] = useState<LayoutDialogState>({ type: "closed" });
   const onCancel = useCallback(() => setLayoutDialogState({ type: "closed" }), []);
 
@@ -157,7 +159,12 @@ export const LayoutButtons = ({
 
   return (
     <div className={styles.buttonsWrapper}>
-      <Dropdown placement="top-end" options={dropdownOptions}>
+      <Dropdown
+        placement="top-end"
+        options={dropdownOptions}
+        onOpened={() => preventHiding(true)}
+        onClosed={() => preventHiding(false)}
+      >
         {({ setRef, toggleOpen, isOpen }) => {
           return (
             <Button ref={setRef} iconLeft={Squares2X2Icon} isPressed={isOpen} variant="Tertiary" onClick={toggleOpen} />
