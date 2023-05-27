@@ -7,11 +7,6 @@ type DeleteLayoutDialogState = {
   onCancel: () => void;
   onDelete: () => void;
 };
-type OverwriteLayoutDialogState = {
-  type: "overwrite";
-  layoutName: string;
-  onCancel: () => void;
-};
 type DuplicateLayoutDialogState = {
   type: "duplicate";
   bannedNames: string[];
@@ -30,7 +25,6 @@ type RenameLayoutDialogState = {
 export type LayoutDialogState =
   | ClosedLayoutDialogState
   | DeleteLayoutDialogState
-  | OverwriteLayoutDialogState
   | DuplicateLayoutDialogState
   | RenameLayoutDialogState;
 export type LayoutDialogType = LayoutDialogState["type"];

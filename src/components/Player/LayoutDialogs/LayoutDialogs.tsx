@@ -12,7 +12,6 @@ import {
   DialogContentAlert,
   DialogContentButtonFooter,
   DialogContentCustom,
-  DialogContentInformation,
 } from "../../Dialog/DialogContent/DialogContent";
 import { Input } from "../../Input/Input";
 import { LayoutDialogState } from "./LayoutDialogs.types";
@@ -33,10 +32,6 @@ export const LayoutDialogs = ({ state }: LayoutDialogsProps) => {
           onConfirm={laggedState.onDelete}
         />
       );
-    }
-
-    if (laggedState.type === "overwrite") {
-      return <LoadDialog layoutName={laggedState.layoutName} onCancel={() => undefined} onConfirm={() => undefined} />;
     }
 
     if (laggedState.type === "duplicate") {
@@ -108,32 +103,6 @@ const DeleteDialog = ({ layoutName, onCancel, onConfirm }: DeleteDialogProps) =>
         </Button>
         <Button fluid variant="Primary" onClick={onConfirm}>
           Delete
-        </Button>
-      </DialogContentButtonFooter>
-    </DialogContent>
-  );
-};
-
-interface LoadDialogProps {
-  layoutName: string;
-  onCancel: () => void;
-  onConfirm: () => void;
-}
-const LoadDialog = ({ layoutName, onCancel, onConfirm }: LoadDialogProps) => {
-  return (
-    <DialogContent>
-      <DialogContentInformation
-        title={`Load ${quote(layoutName)}?`}
-        subtitle={`You haven't saved your current layout. If you load ${quote(
-          layoutName,
-        )} your unsaved changes will be lost.`}
-      />{" "}
-      <DialogContentButtonFooter>
-        <Button fluid variant="Secondary" onClick={onCancel}>
-          Cancel
-        </Button>
-        <Button fluid variant="Primary" onClick={onConfirm}>
-          Load anyway
         </Button>
       </DialogContentButtonFooter>
     </DialogContent>
