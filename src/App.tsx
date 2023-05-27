@@ -1,6 +1,5 @@
 import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import classNames from "classnames";
 import { HotkeysProvider } from "react-hotkeys-hook";
 import { ViewerWithState } from "./views/Viewer/Viewer";
 
@@ -11,10 +10,10 @@ import { useLoggedInState } from "./hooks/useLoggedInState";
 import { LogIn } from "./views/LogIn/LogIn";
 import { Races } from "./views/Races/Races";
 import { DebugWindow } from "./components/DebugWindow/DebugWindow";
-import { useDebug } from "./hooks/useDebug/useDebug";
 import { OVERLAYS_PORTAL_ID } from "./constants/portals";
 import { HotkeysStackWithinHotkeysProvider } from "./hooks/useHotkeysStack/useHotkeysStack";
 import { DEFAULT_SCOPE } from "./hooks/useScopedHotkeys/useScopedHotkeys";
+import { DebugProvider } from "./hooks/useDebug/useDebug";
 
 const WithCompanion = ({ children }: React.PropsWithChildren<unknown>) => {
   const companionState = useHasCompanion();
@@ -53,14 +52,11 @@ const WithLoggedIn = ({ children }: React.PropsWithChildren<unknown>) => {
 };
 
 export default function App() {
-  const isDebugMode = useDebug();
-
   return (
     <HotkeysProvider initiallyActiveScopes={[DEFAULT_SCOPE]}>
       <HotkeysStackWithinHotkeysProvider>
-        <div className={classNames({ debug: isDebugMode })}>
-          {isDebugMode && <DebugWindow />}
-
+        <DebugProvider>
+          <DebugWindow />
           <WithCompanion>
             <WithLoggedIn>
               <BrowserRouter>
@@ -72,7 +68,7 @@ export default function App() {
             </WithLoggedIn>
           </WithCompanion>
           <div id={OVERLAYS_PORTAL_ID} />
-        </div>
+        </DebugProvider>
       </HotkeysStackWithinHotkeysProvider>
     </HotkeysProvider>
   );

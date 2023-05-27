@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect } from "react";
+import { useDebug } from "../useDebug/useDebug";
 import { useStateWithRef } from "../useStateWithRef/useStateWithRef";
 
 const UI_VISIBILITY_TIMEOUT = 1_000;
@@ -10,6 +11,7 @@ interface ViewerUIVisibilityContextState {
 }
 export const useViewerUIVisibilityState = (): ViewerUIVisibilityContextState => {
   const [isUIVisible, isUIVisibleRef, setIsUIVisible] = useStateWithRef(true);
+  const isDebugMode = useDebug();
 
   useEffect(() => {
     let timeout = -1;
@@ -38,6 +40,10 @@ export const useViewerUIVisibilityState = (): ViewerUIVisibilityContextState => 
       document.removeEventListener("keyup", onAction);
     };
   }, [isUIVisibleRef, setIsUIVisible]);
+
+  if (isDebugMode) {
+    return { isUIVisible: true };
+  }
 
   return { isUIVisible };
 };
