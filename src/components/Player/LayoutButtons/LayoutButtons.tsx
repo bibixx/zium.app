@@ -6,7 +6,10 @@ import { ChosenValueType, useStreamPicker } from "../../../hooks/useStreamPicker
 import { Dimensions } from "../../../types/Dimensions";
 import { GridWindow } from "../../../types/GridWindow";
 import { quote } from "../../../utils/text";
-import { WindowGridState } from "../../../views/Viewer/hooks/useViewerState/useViewerState.utils";
+import {
+  WindowGridSavedLayout,
+  WindowGridState,
+} from "../../../views/Viewer/hooks/useViewerState/useViewerState.utils";
 import { Button } from "../../Button/Button";
 import { Dropdown, DropdownSection, DropdownSectionElement } from "../../Dropdown/Dropdown";
 import { sizePxToPercent } from "../../RnDWindow/RnDWindow.utils";
@@ -102,7 +105,7 @@ export const LayoutButtons = ({
                 toggleOpen();
                 setLayoutDialogState({
                   type: "duplicate",
-                  initialLayoutName: `Layout ${layouts.length + 1}`,
+                  initialLayoutName: getNewLayoutName(layouts),
                   onCancel,
                   bannedNames: layouts.map((l) => l.name),
                   onDuplicate: (name: string) => {
@@ -198,4 +201,26 @@ function getVideosText(videosCount: number) {
   }
 
   return `${videosCount} videos`;
+}
+
+function getNewLayoutName(layouts: WindowGridSavedLayout[]) {
+  const baseLayoutName = `Layout ${layouts.length + 1}`;
+  const layoutNames = layouts.map((l) => l.name);
+
+  if (!layoutNames.includes(baseLayoutName)) {
+    return baseLayoutName;
+  }
+
+  let layoutIndex = layouts.length + 2;
+  let infiniteLoopGuard = 0;
+
+  while (layoutNames.includes(`Layout ${layoutIndex}`)) {
+    if (++infiniteLoopGuard > 1000) {
+      return "Layout";
+    }
+
+    layoutIndex++;
+  }
+
+  return `Layout ${layoutIndex}`;
 }

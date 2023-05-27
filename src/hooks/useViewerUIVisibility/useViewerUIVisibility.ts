@@ -9,36 +9,35 @@ interface ViewerUIVisibilityContextState {
   isUIVisible: boolean;
 }
 export const useViewerUIVisibilityState = (): ViewerUIVisibilityContextState => {
-  // TODO: Don't hide if video paused
   const [isUIVisible, isUIVisibleRef, setIsUIVisible] = useStateWithRef(true);
 
-  // useEffect(() => {
-  //   let timeout = -1;
+  useEffect(() => {
+    let timeout = -1;
 
-  //   const onAction = () => {
-  //     if (!isUIVisibleRef.current) {
-  //       setIsUIVisible(true);
-  //     }
+    const onAction = () => {
+      if (!isUIVisibleRef.current) {
+        setIsUIVisible(true);
+      }
 
-  //     clearTimeout(timeout);
+      clearTimeout(timeout);
 
-  //     timeout = setTimeout(() => {
-  //       setIsUIVisible(false);
-  //     }, UI_VISIBILITY_TIMEOUT);
-  //   };
+      timeout = setTimeout(() => {
+        setIsUIVisible(false);
+      }, UI_VISIBILITY_TIMEOUT);
+    };
 
-  //   document.addEventListener("mousemove", onAction, { capture: true, passive: true });
-  //   document.addEventListener("keydown", onAction, { capture: true, passive: true });
-  //   document.addEventListener("keyup", onAction, { capture: true, passive: true });
-  //   onAction();
+    document.addEventListener("mousemove", onAction, { capture: true, passive: true });
+    document.addEventListener("keydown", onAction, { capture: true, passive: true });
+    document.addEventListener("keyup", onAction, { capture: true, passive: true });
+    onAction();
 
-  //   return () => {
-  //     clearTimeout(timeout);
-  //     document.removeEventListener("mousemove", onAction);
-  //     document.removeEventListener("keydown", onAction);
-  //     document.removeEventListener("keyup", onAction);
-  //   };
-  // }, [isUIVisibleRef, setIsUIVisible]);
+    return () => {
+      clearTimeout(timeout);
+      document.removeEventListener("mousemove", onAction);
+      document.removeEventListener("keydown", onAction);
+      document.removeEventListener("keyup", onAction);
+    };
+  }, [isUIVisibleRef, setIsUIVisible]);
 
   return { isUIVisible };
 };
