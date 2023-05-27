@@ -13,7 +13,6 @@ export const useSyncVideos = ({ windows, windowVideojsRefMapRef, isLive, playbac
   useEffect(() => {
     const syncVideos = (forceSync = false) => {
       const mainWindow = windows.find((w) => w.type === "main");
-      const baseTime = getBaseTime(playbackOffsets);
 
       if (mainWindow == null) {
         return;
@@ -36,7 +35,7 @@ export const useSyncVideos = ({ windows, windowVideojsRefMapRef, isLive, playbac
           return;
         }
 
-        const offset = getOffset(playbackOffsets, baseTime, w, mainWindow);
+        const offset = getOffset(playbackOffsets, w, mainWindow);
         if (isLive) {
           const diff = Math.abs(player.getTimeShift() - -offset);
 
@@ -80,38 +79,6 @@ export const useSyncVideos = ({ windows, windowVideojsRefMapRef, isLive, playbac
   }, [isLive, playbackOffsets, windowVideojsRefMapRef, windows]);
 };
 
-const getOffset = (
-  playbackOffsets: PlaybackOffsets,
-  baseTime: number | undefined,
-  w: GridWindow,
-  mainWindow: GridWindow,
-): number => {
-  // TODO: Figure out MultiViewer non-driver streams
-  if (playbackOffsets.multiViewer === undefined || w.type !== "driver") {
-    return playbackOffsets.f1[w.type]?.[mainWindow.type] ?? 0;
-  }
-
-  if (baseTime === undefined) {
-    return 0;
-  }
-
-  const playbackOffset = playbackOffsets.multiViewer.find(
-    (offset) => offset.type === "driver" && offset.driverId === w.driverId,
-  );
-
-  const playbackOffsetTime = playbackOffset?.time;
-
-  if (playbackOffsetTime === undefined) {
-    return 0;
-  }
-
-  return baseTime - playbackOffsetTime;
-};
-
-const getBaseTime = (playbackOffsets: PlaybackOffsets): number | undefined => {
-  if (playbackOffsets.multiViewer === undefined) {
-    return undefined;
-  }
-
-  return playbackOffsets.multiViewer.find(({ type }) => type === "main")?.time;
+const getOffset = (playbackOffsets: PlaybackOffsets, w: GridWindow, mainWindow: GridWindow): number => {
+  return playbackOffsets.f1[w.type]?.[mainWindow.type] ?? 0;
 };

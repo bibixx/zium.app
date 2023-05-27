@@ -112,18 +112,6 @@ export interface MultiViewerSyncOffsetsResponse {
   };
 }
 
-export type MultiViewerPlaybackOffsetsData =
-  | {
-      type: StreamInfo["type"];
-      time: number;
-    }
-  | {
-      type: DriverStreamInfo["type"];
-      time: number;
-      driverId: string;
-    };
-
 export interface PlaybackOffsets {
   f1: F1PlaybackOffsetsData;
-  multiViewer: MultiViewerPlaybackOffsetsData[] | undefined;
 }

@@ -3,8 +3,6 @@ import {
   DriverStreamInfo,
   F1PlaybackOffsetsApiResponse,
   F1PlaybackOffsetsData,
-  MultiViewerPlaybackOffsetsData,
-  MultiViewerSyncOffsetsResponse,
   StreamDataDTO,
   StreamInfo,
   StreamInfoWithDriver,
@@ -137,55 +135,6 @@ export const createF1OffsetsMap = (playbackOffsets: F1PlaybackOffsetsApiResponse
     otherValues[baseChannelType] = value;
 
     data[key] = otherValues;
-  }
-
-  return data;
-};
-
-const mapStreamPrettyNameToIdentifier = (name: string): StreamInfo["type"] => {
-  switch (name) {
-    case "F1 LIVE":
-      return "main";
-    case "TRACKER":
-      return "driver-tracker";
-    case "DATA":
-      return "data-channel";
-    // case "INTERNATIONAL":
-    //   return "INTERNATIONAL";
-    default:
-      return "other";
-  }
-};
-
-export const createMultiViewerOffsetsMap = (
-  playbackOffsets: MultiViewerSyncOffsetsResponse[],
-): MultiViewerPlaybackOffsetsData[] => {
-  const data: MultiViewerPlaybackOffsetsData[] = [];
-
-  for (const offset of playbackOffsets) {
-    const value = offset.playbackData.currentTime;
-
-    if (offset.driverData !== undefined) {
-      const driverId = offset.streamData.title;
-
-      data.push({
-        type: "driver",
-        driverId,
-        time: value,
-      });
-      continue;
-    }
-
-    const type = mapStreamPrettyNameToIdentifier(offset.streamData.title);
-
-    if (type === undefined) {
-      continue;
-    }
-
-    data.push({
-      type,
-      time: value,
-    });
   }
 
   return data;

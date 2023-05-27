@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useReducer } from "react";
-import { fetchMultiViewerOffsets, fetchRaceStreams } from "./useVideoRaceDetails.api";
+import { fetchRaceStreams } from "./useVideoRaceDetails.api";
 import { RaceInfo, StreamsState, StreamsStateAction } from "./useVideoRaceDetails.types";
-import { collectStreams, createF1OffsetsMap, createMultiViewerOffsetsMap } from "./useVideoRaceDetails.utils";
+import { collectStreams, createF1OffsetsMap } from "./useVideoRaceDetails.utils";
 
 export const useVideoRaceDetails = (raceId: string): StreamsState => {
   const [streams, dispatch] = useReducer(
@@ -35,21 +35,10 @@ export const useVideoRaceDetails = (raceId: string): StreamsState => {
       dispatch({ type: "load" });
 
       try {
-        const {
-          streams,
-          season,
-          isLive,
-          countryId,
-          countryName,
-          title,
-          playbackOffsets,
-          meetingKey,
-          meetingSessionKey,
-        } = await fetchRaceStreams(raceId, signal);
-
-        const multiViewerOffsets = isLive ? null : await fetchMultiViewerOffsets(meetingKey, meetingSessionKey, signal);
-        const mappedMultiViewerOffsets =
-          multiViewerOffsets != null ? createMultiViewerOffsetsMap(multiViewerOffsets) : undefined;
+        const { streams, season, isLive, countryId, countryName, title, playbackOffsets } = await fetchRaceStreams(
+          raceId,
+          signal,
+        );
 
         const collectedStreams = collectStreams(streams);
         const raceInfo: RaceInfo = {
@@ -67,7 +56,6 @@ export const useVideoRaceDetails = (raceId: string): StreamsState => {
           raceInfo,
           playbackOffsets: {
             f1: mappedF1PlaybackOffsets,
-            multiViewer: mappedMultiViewerOffsets,
           },
         });
       } catch (error) {
@@ -418,6 +406,5 @@ const debugLiveStreams: StreamsState & { state: "done" } = {
   },
   playbackOffsets: {
     f1: {},
-    multiViewer: undefined,
   },
 };

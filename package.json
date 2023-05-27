@@ -8,6 +8,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint src/**/*.{ts,tsx}",
+    "type-check": "tsc --noEmit",
     "build-tokens": "token-transformer src/tokens/global.json src/tokens/global.sd.json && style-dictionary build --config tokens.config.json && rm -f src/tokens/*.sd.json"
   },
   "dependencies": {
