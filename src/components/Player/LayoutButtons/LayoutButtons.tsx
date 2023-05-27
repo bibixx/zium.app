@@ -1,13 +1,11 @@
 import { Squares2X2Icon, SquaresPlusIcon } from "@heroicons/react/20/solid";
-import equal from "fast-deep-equal/es6";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useHotkeysStack } from "../../../hooks/useHotkeysStack/useHotkeysStack";
 import { useScopedHotkeys } from "../../../hooks/useScopedHotkeys/useScopedHotkeys";
 import { ChosenValueType, useStreamPicker } from "../../../hooks/useStreamPicker/useStreamPicker";
 import { Dimensions } from "../../../types/Dimensions";
 import { GridWindow } from "../../../types/GridWindow";
 import { quote } from "../../../utils/text";
-import { useLayouts } from "../../../views/Viewer/hooks/useLayouts/useLayouts";
 import { WindowGridState } from "../../../views/Viewer/hooks/useViewerState/useViewerState.utils";
 import { Button } from "../../Button/Button";
 import { Dropdown, DropdownSection, DropdownSectionElement } from "../../Dropdown/Dropdown";
@@ -19,23 +17,26 @@ import styles from "./LayoutButtons.module.scss";
 interface LayoutButtonsProps {
   usedWindows: string[];
   createWindow: (newWindow: GridWindow, dimensions: Dimensions) => void;
-  loadLayout: (layout: WindowGridState) => void;
+  loadLayout: (selectedLayoutIndex: number) => void;
+  duplicateLayout: (layoutIndex: number, name: string) => void;
+  renameLayout: (layoutIndex: number, name: string) => void;
+  deleteLayout: (layoutIndex: number) => void;
   viewerState: WindowGridState;
 }
-export const LayoutButtons = ({ usedWindows, createWindow, loadLayout, viewerState }: LayoutButtonsProps) => {
+export const LayoutButtons = ({
+  usedWindows,
+  createWindow,
+  loadLayout,
+  duplicateLayout,
+  renameLayout,
+  deleteLayout,
+  viewerState,
+}: LayoutButtonsProps) => {
   const { requestStream } = useStreamPicker();
   const [layoutDialogState, setLayoutDialogState] = useState<LayoutDialogState>({ type: "closed" });
   const onCancel = useCallback(() => setLayoutDialogState({ type: "closed" }), []);
-  const { layouts, deleteLayout, renameLayout, saveLayout, updateCurrentlySelectedIndex } = useLayouts();
 
-  const selectedLayoutIndex = useMemo(
-    () => layouts.findIndex((l) => equal(l.layout, viewerState)),
-    [layouts, viewerState],
-  );
-
-  useEffect(() => {
-    updateCurrentlySelectedIndex(selectedLayoutIndex);
-  }, [selectedLayoutIndex, updateCurrentlySelectedIndex]);
+  const selectedLayoutIndex = useMemo(() => viewerState.currentLayoutIndex, [viewerState.currentLayoutIndex]);
 
   const onAddClick = async () => {
     const chosenData = await requestStream("all", usedWindows);
@@ -72,6 +73,7 @@ export const LayoutButtons = ({ usedWindows, createWindow, loadLayout, viewerSta
 
   const dropdownOptions = useCallback(
     (toggleOpen: () => void): (DropdownSection | false)[] => {
+      const layouts = viewerState.savedLayouts;
       const selectedLayout = layouts[selectedLayoutIndex];
 
       return [
@@ -81,40 +83,35 @@ export const LayoutButtons = ({ usedWindows, createWindow, loadLayout, viewerSta
             (layout, i): DropdownSectionElement => ({
               id: String(i),
               text: layout.name,
-              caption: getVideosText(layout.layout.windows.length),
+              caption: getVideosText(layout.windows.length),
               isActive: i === selectedLayoutIndex,
               onClick: () => {
                 toggleOpen();
-                loadLayout(layout.layout);
+                loadLayout(i);
               },
             }),
           ),
         },
-        selectedLayout === undefined && {
+        {
           id: "actions",
           options: [
             {
-              id: "save",
-              text: `Save layout...`,
+              id: "duplicate",
+              text: `Duplicate layout...`,
               onClick: () => {
                 toggleOpen();
                 setLayoutDialogState({
-                  type: "save",
+                  type: "duplicate",
                   initialLayoutName: `Layout ${layouts.length + 1}`,
                   onCancel,
                   bannedNames: layouts.map((l) => l.name),
-                  onSave: (name: string) => {
-                    saveLayout(name, viewerState);
+                  onDuplicate: (name: string) => {
+                    duplicateLayout(selectedLayoutIndex, name);
                     onCancel();
                   },
                 });
               },
             },
-          ],
-        },
-        selectedLayout !== undefined && {
-          id: "actions",
-          options: [
             {
               id: "rename",
               text: `Rename ${quote(selectedLayout.name)}`,
@@ -132,31 +129,27 @@ export const LayoutButtons = ({ usedWindows, createWindow, loadLayout, viewerSta
                 });
               },
             },
-            selectedLayout !== undefined &&
-              layouts.length > 1 && {
-                id: "delete",
-                text: `Delete ${quote(selectedLayout.name)}`,
-                onClick: () => {
-                  toggleOpen();
-                  setLayoutDialogState({
-                    type: "delete",
-                    layoutName: selectedLayout.name,
-                    onCancel,
-                    onDelete: () => {
-                      const targetNewIndex = selectedLayoutIndex - 1;
-                      const newIndex = targetNewIndex < 0 ? 1 : targetNewIndex;
-                      loadLayout(layouts[newIndex].layout);
-                      deleteLayout(selectedLayoutIndex);
-                      onCancel();
-                    },
-                  });
-                },
+            layouts.length > 1 && {
+              id: "delete",
+              text: `Delete ${quote(selectedLayout.name)}`,
+              onClick: () => {
+                toggleOpen();
+                setLayoutDialogState({
+                  type: "delete",
+                  layoutName: selectedLayout.name,
+                  onCancel,
+                  onDelete: () => {
+                    deleteLayout(selectedLayoutIndex);
+                    onCancel();
+                  },
+                });
               },
+            },
           ],
         },
       ];
     },
-    [layouts, selectedLayoutIndex, onCancel, saveLayout, viewerState, renameLayout, loadLayout, deleteLayout],
+    [viewerState.savedLayouts, selectedLayoutIndex, loadLayout, onCancel, duplicateLayout, renameLayout, deleteLayout],
   );
 
   return (

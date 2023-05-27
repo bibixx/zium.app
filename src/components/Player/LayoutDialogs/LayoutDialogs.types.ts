@@ -13,11 +13,11 @@ type OverwriteLayoutDialogState = {
   onCancel: () => void;
 };
 type DuplicateLayoutDialogState = {
-  type: "save";
+  type: "duplicate";
   bannedNames: string[];
   initialLayoutName: string;
   onCancel: () => void;
-  onSave: (name: string) => void;
+  onDuplicate: (name: string) => void;
 };
 type RenameLayoutDialogState = {
   type: "rename";

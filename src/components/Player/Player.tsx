@@ -24,7 +24,10 @@ interface PlayerProps {
   setIsMuted: (newIsMuted: boolean) => void;
   usedWindows: string[];
   createWindow: (newWindow: GridWindow, dimensions: Dimensions) => void;
-  loadLayout: (layout: WindowGridState) => void;
+  loadLayout: (selectedLayoutIndex: number) => void;
+  duplicateLayout: (layoutIndex: number, name: string) => void;
+  renameLayout: (layoutIndex: number, name: string) => void;
+  deleteLayout: (layoutIndex: number) => void;
   viewerState: WindowGridState;
 }
 export const Player = ({
@@ -37,6 +40,9 @@ export const Player = ({
   usedWindows,
   createWindow,
   loadLayout,
+  duplicateLayout,
+  renameLayout,
+  deleteLayout,
   viewerState,
 }: PlayerProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -129,8 +135,11 @@ export const Player = ({
               <LayoutButtons
                 usedWindows={usedWindows}
                 createWindow={createWindow}
-                loadLayout={loadLayout}
                 viewerState={viewerState}
+                loadLayout={loadLayout}
+                duplicateLayout={duplicateLayout}
+                renameLayout={renameLayout}
+                deleteLayout={deleteLayout}
               />
             </div>
           </div>

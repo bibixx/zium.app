@@ -39,14 +39,14 @@ export const LayoutDialogs = ({ state }: LayoutDialogsProps) => {
       return <LoadDialog layoutName={laggedState.layoutName} onCancel={() => undefined} onConfirm={() => undefined} />;
     }
 
-    if (laggedState.type === "save") {
+    if (laggedState.type === "duplicate") {
       return (
         <NameDialog
           initialLayoutName={laggedState.initialLayoutName}
-          title={`Save layout...`}
+          title={`Duplicate layout...`}
           onCancel={laggedState.onCancel}
-          onSave={laggedState.onSave}
-          onSaveText="Save"
+          onSave={laggedState.onDuplicate}
+          onSaveText="Duplicate"
           bannedNames={laggedState.bannedNames}
         />
       );

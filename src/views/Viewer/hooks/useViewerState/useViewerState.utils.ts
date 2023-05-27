@@ -1,7 +1,7 @@
 import { GridWindow } from "../../../../types/GridWindow";
 import { Dimensions } from "../../../../types/Dimensions";
 import { generateUID } from "../../../../utils/generateUID";
-import { clone } from "../../../../utils/clone";
+import { assertNever } from "../../../../utils/assertNever";
 
 interface GridLayout {
   width: number;
@@ -12,9 +12,15 @@ interface GridLayout {
   zIndex: number;
 }
 
-export interface WindowGridState {
+export interface WindowGridSavedLayout {
+  name: string;
   layout: GridLayout[];
   windows: GridWindow[];
+}
+
+export interface WindowGridState {
+  savedLayouts: WindowGridSavedLayout[];
+  currentLayoutIndex: number;
 }
 
 interface UpdateLayoutAction {
@@ -46,7 +52,24 @@ interface DeleteWindowAction {
 
 interface LoadLayoutAction {
   type: "loadLayout";
-  layout: WindowGridState;
+  layoutIndex: number;
+}
+
+interface DuplicateLayoutAction {
+  type: "duplicateLayout";
+  sourceLayoutIndex: number;
+  name: string;
+}
+
+interface RenameLayoutAction {
+  type: "renameLayout";
+  layoutIndex: number;
+  name: string;
+}
+
+interface DeleteLayoutAction {
+  type: "deleteLayout";
+  layoutIndex: number;
 }
 
 type WindowGridActions =
@@ -55,14 +78,43 @@ type WindowGridActions =
   | BringToFrontAction
   | DeleteWindowAction
   | CreateWindowAction
-  | LoadLayoutAction;
+  | LoadLayoutAction
+  | RenameLayoutAction
+  | DuplicateLayoutAction
+  | DeleteLayoutAction;
+
+export const CURRENT_STORE_VERSION = "3";
+const withLocalStorage =
+  (reducer: (prevState: WindowGridState, action: WindowGridActions) => WindowGridState) =>
+  (prevState: WindowGridState, action: WindowGridActions) => {
+    const newState = reducer(prevState, action);
+
+    localStorage.setItem("store", JSON.stringify(newState));
+    localStorage.setItem("storeVersion", CURRENT_STORE_VERSION);
+
+    return newState;
+  };
 
 export const windowGridReducer = (prevState: WindowGridState, action: WindowGridActions) => {
-  const newState = clone(prevState);
+  const newState = structuredClone(prevState);
+  const currentLayoutIndex = prevState.currentLayoutIndex;
+  const prevCurrentLayout = prevState.savedLayouts[currentLayoutIndex];
+  const newCurrentLayout = newState.savedLayouts[currentLayoutIndex];
+
+  if (action.type === "deleteLayout") {
+    if (newState.savedLayouts.length === 1) {
+      return newState;
+    }
+
+    newState.savedLayouts.splice(action.layoutIndex, 1);
+    newState.currentLayoutIndex = Math.min(action.layoutIndex, newState.savedLayouts.length - 1);
+
+    return newState;
+  }
 
   switch (action.type) {
     case "bringToFront": {
-      const sortedLayoutByZIndex = [...prevState.layout]
+      const sortedLayoutByZIndex = prevCurrentLayout.layout
         .sort((a, b) => {
           if (a.id === action.id) {
             return 1;
@@ -76,7 +128,7 @@ export const windowGridReducer = (prevState: WindowGridState, action: WindowGrid
         })
         .map((l) => l.id);
 
-      newState.layout = prevState.layout.map((l) => ({
+      newCurrentLayout.layout = prevCurrentLayout.layout.map((l) => ({
         ...l,
         zIndex: sortedLayoutByZIndex.indexOf(l.id),
       }));
@@ -84,7 +136,7 @@ export const windowGridReducer = (prevState: WindowGridState, action: WindowGrid
       break;
     }
     case "updateDimension": {
-      newState.layout = prevState.layout.map((l) => {
+      newCurrentLayout.layout = prevCurrentLayout.layout.map((l) => {
         if (l.id !== action.id) {
           return l;
         }
@@ -104,33 +156,33 @@ export const windowGridReducer = (prevState: WindowGridState, action: WindowGrid
     case "updateWindow": {
       const newWindow = action.window;
 
-      const indexOfReplacedWindow = prevState.windows.findIndex((w) => w.id === newWindow.id);
-      const replacedWindow = prevState.windows[indexOfReplacedWindow];
+      const indexOfReplacedWindow = prevCurrentLayout.windows.findIndex((w) => w.id === newWindow.id);
+      const replacedWindow = prevCurrentLayout.windows[indexOfReplacedWindow];
 
       if (newWindow.type !== "driver" || replacedWindow.type !== "driver") {
-        newState.windows.splice(indexOfReplacedWindow, 1, newWindow);
+        newCurrentLayout.windows.splice(indexOfReplacedWindow, 1, newWindow);
         break;
       }
 
-      const oldWindowOfNewDriverIndex = prevState.windows.findIndex((w) => {
+      const oldWindowOfNewDriverIndex = prevCurrentLayout.windows.findIndex((w) => {
         if (w.type !== "driver" || newWindow.type !== "driver") {
           return false;
         }
 
         return w.driverId === newWindow.driverId;
       });
-      const oldWindowOfNewDriver = prevState.windows[oldWindowOfNewDriverIndex];
+      const oldWindowOfNewDriver = prevCurrentLayout.windows[oldWindowOfNewDriverIndex];
 
       if (oldWindowOfNewDriver === undefined) {
-        newState.windows.splice(indexOfReplacedWindow, 1, newWindow);
+        newCurrentLayout.windows.splice(indexOfReplacedWindow, 1, newWindow);
         break;
       }
 
-      const replacedWindowLayoutIndex = prevState.layout.findIndex((l) => l.id === replacedWindow.id);
-      const oldLayoutOfNewDriverIndex = prevState.layout.findIndex((l) => l.id === oldWindowOfNewDriver.id);
+      const replacedWindowLayoutIndex = prevCurrentLayout.layout.findIndex((l) => l.id === replacedWindow.id);
+      const oldLayoutOfNewDriverIndex = prevCurrentLayout.layout.findIndex((l) => l.id === oldWindowOfNewDriver.id);
 
-      newState.layout[replacedWindowLayoutIndex].id = oldWindowOfNewDriver.id;
-      newState.layout[oldLayoutOfNewDriverIndex].id = replacedWindow.id;
+      newCurrentLayout.layout[replacedWindowLayoutIndex].id = oldWindowOfNewDriver.id;
+      newCurrentLayout.layout[oldLayoutOfNewDriverIndex].id = replacedWindow.id;
 
       break;
     }
@@ -145,30 +197,72 @@ export const windowGridReducer = (prevState: WindowGridState, action: WindowGrid
         zIndex: 1,
       };
 
-      newState.windows.push(newWindow);
-      newState.layout.push(layout);
-      newState.layout = windowGridReducer(newState, { type: "bringToFront", id }).layout;
+      newCurrentLayout.windows.push(newWindow);
+      newCurrentLayout.layout.push(layout);
+      newCurrentLayout.layout = windowGridReducer(newState, { type: "bringToFront", id }).savedLayouts[
+        currentLayoutIndex
+      ].layout;
 
       break;
     }
     case "deleteWindow": {
-      newState.windows = newState.windows.filter((w) => w.id !== action.windowId);
-      newState.layout = newState.layout.filter((w) => w.id !== action.windowId);
+      newCurrentLayout.windows = newCurrentLayout.windows.filter((w) => w.id !== action.windowId);
+      newCurrentLayout.layout = newCurrentLayout.layout.filter((w) => w.id !== action.windowId);
 
       break;
     }
     case "loadLayout": {
-      newState.layout = action.layout.layout;
-      newState.windows = action.layout.windows;
+      newState.currentLayoutIndex = action.layoutIndex;
 
       break;
     }
+    case "duplicateLayout": {
+      const sourceLayout = newState.savedLayouts[action.sourceLayoutIndex];
+      const newLayout = structuredClone(sourceLayout);
+      newLayout.name = action.name;
+
+      newState.savedLayouts.push(newLayout);
+      newState.currentLayoutIndex = newState.savedLayouts.length - 1;
+
+      break;
+    }
+    case "renameLayout": {
+      if (action.layoutIndex === currentLayoutIndex) {
+        newCurrentLayout.name = action.name;
+      } else {
+        const sourceLayout = newState.savedLayouts[action.layoutIndex];
+        const newLayout = structuredClone(sourceLayout);
+        newLayout.name = action.name;
+        newState.savedLayouts.splice(action.layoutIndex, 1, newLayout);
+      }
+
+      break;
+    }
+    default: {
+      assertNever(action);
+    }
   }
+
+  newState.savedLayouts.splice(currentLayoutIndex, 1, newCurrentLayout);
 
   return newState;
 };
 
+export const windowGridReducerWithStorage = withLocalStorage(windowGridReducer);
+
 export const getInitialState = (): WindowGridState => {
+  const layoutFromStorage = localStorage.getItem("store") as string | null;
+  const storeVersion = localStorage.getItem("storeVersion") as string | null;
+
+  if (layoutFromStorage != null && storeVersion === CURRENT_STORE_VERSION) {
+    return JSON.parse(layoutFromStorage);
+  }
+
+  if (storeVersion !== CURRENT_STORE_VERSION) {
+    localStorage.removeItem("store");
+    localStorage.removeItem("storeVersion");
+  }
+
   const windows: GridWindow[] = [
     {
       type: "main",
@@ -205,8 +299,14 @@ export const getInitialState = (): WindowGridState => {
   ];
 
   return {
-    layout: getInitialLayout(windows),
-    windows,
+    currentLayoutIndex: 0,
+    savedLayouts: [
+      {
+        name: "Layout 1",
+        layout: getInitialLayout(windows),
+        windows,
+      },
+    ],
   };
 };
 

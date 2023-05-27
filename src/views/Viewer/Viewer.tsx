@@ -29,8 +29,6 @@ import { useSyncVideos } from "./hooks/useSyncVideos";
 import { BackgroundDots } from "./BackgroundDots/BackgroundDots";
 import { useViewerState } from "./hooks/useViewerState/useViewerState";
 import { useGlobalShortcuts } from "./hooks/useGlobalShortcuts";
-import { LayoutsProvider } from "./hooks/useLayouts/useLayouts";
-import { WindowGridState } from "./hooks/useViewerState/useViewerState.utils";
 
 interface ViewerProps {
   streams: StreamsStateData;
@@ -43,7 +41,10 @@ interface ViewerProps {
 export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets }: ViewerProps) => {
   const { baseGrid, grid } = useGrid();
   const [viewerState, dispatch] = useViewerState();
-  const { layout, windows } = viewerState;
+  const { layout, windows } = useMemo(
+    () => viewerState.savedLayouts[viewerState.currentLayoutIndex],
+    [viewerState.currentLayoutIndex, viewerState.savedLayouts],
+  );
 
   const [areVideosPaused, setAreVideosPaused] = useState(false);
   const { audioFocusedWindow, onWindowAudioFocus, setVolume, volume, internalVolume, setIsMuted, isMuted } =
@@ -75,6 +76,45 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
       dimensions,
     });
   };
+
+  const loadLayout = useCallback(
+    (selectedLayoutIndex: number) => {
+      dispatch({
+        type: "loadLayout",
+        layoutIndex: selectedLayoutIndex,
+      });
+    },
+    [dispatch],
+  );
+  const duplicateLayout = useCallback(
+    (sourceLayoutIndex: number, name: string) => {
+      dispatch({
+        type: "duplicateLayout",
+        sourceLayoutIndex,
+        name,
+      });
+    },
+    [dispatch],
+  );
+  const renameLayout = useCallback(
+    (layoutIndex: number, name: string) => {
+      dispatch({
+        type: "renameLayout",
+        layoutIndex,
+        name,
+      });
+    },
+    [dispatch],
+  );
+  const deleteLayout = useCallback(
+    (layoutIndex: number) => {
+      dispatch({
+        type: "deleteLayout",
+        layoutIndex: layoutIndex,
+      });
+    },
+    [dispatch],
+  );
 
   const executeOnAll = useCallback(
     (cb: (player: PlayerAPI) => void, callerId: string) => {
@@ -210,13 +250,6 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
     ],
   );
 
-  const loadLayout = useCallback(
-    (layout: WindowGridState) => {
-      dispatch({ type: "loadLayout", layout });
-    },
-    [dispatch],
-  );
-
   useSyncVideos({ windows, windowVideojsRefMapRef, isLive, playbackOffsets });
   useGlobalShortcuts(mainVideoPlayer);
 
@@ -262,6 +295,9 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
           usedWindows={usedWindows}
           createWindow={createWindow}
           loadLayout={loadLayout}
+          duplicateLayout={duplicateLayout}
+          renameLayout={renameLayout}
+          deleteLayout={deleteLayout}
           viewerState={viewerState}
         />
       </div>
@@ -284,21 +320,19 @@ export const ViewerWithState = () => {
 
   return (
     <ViewerUIVisibilityContext.Provider value={viewerUIVisibilityState}>
-      <LayoutsProvider>
-        <div
-          className={cn(styles.cursorWrapper, {
-            [GLOBAL_UI_VISIBILITY_CLASS_NAME]: viewerUIVisibilityState.isUIVisible,
-          })}
-        >
-          <Viewer
-            streams={state.streams}
-            season={state.season}
-            isLive={state.isLive}
-            raceInfo={state.raceInfo}
-            playbackOffsets={state.playbackOffsets}
-          />
-        </div>
-      </LayoutsProvider>
+      <div
+        className={cn(styles.cursorWrapper, {
+          [GLOBAL_UI_VISIBILITY_CLASS_NAME]: viewerUIVisibilityState.isUIVisible,
+        })}
+      >
+        <Viewer
+          streams={state.streams}
+          season={state.season}
+          isLive={state.isLive}
+          raceInfo={state.raceInfo}
+          playbackOffsets={state.playbackOffsets}
+        />
+      </div>
     </ViewerUIVisibilityContext.Provider>
   );
 };
