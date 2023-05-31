@@ -8,10 +8,10 @@ export interface RaceDetailsData {
 
 export type RaceDetailsState =
   | { state: "loading" }
-  | { state: "error"; error: string }
+  | { state: "error"; error: Error }
   | { state: "done"; data: RaceDetailsData[] };
 
 export type RaceDetailsStateAction =
   | { type: "load" }
-  | { type: "error"; error: string }
+  | { type: "error"; error: Error }
   | { type: "done"; data: RaceDetailsData[] };

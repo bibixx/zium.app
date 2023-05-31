@@ -6,6 +6,7 @@ import { EventCardSkeleton } from "../../../components/EventCardSkeleton/EventCa
 import { Sheet } from "../../../components/Sheet/Sheet";
 import { TimedOutWrapper } from "../../../components/TimedOutWrapper/TimedOutWrapper";
 import { useHotkeysStack } from "../../../hooks/useHotkeysStack/useHotkeysStack";
+import { useLaggedBehindData } from "../../../hooks/useLaggedBehindData/useLaggedBehindData";
 import { useRacesList } from "../../../hooks/useRacesList/useRacesList";
 import { useScopedHotkeys } from "../../../hooks/useScopedHotkeys/useScopedHotkeys";
 import { clone } from "../../../utils/clone";
@@ -66,9 +67,7 @@ export const Season = ({ seasonApiId }: SeasonProps) => {
 
   return (
     <>
-      <Sheet onClose={onSheetClose} isOpen={selectedRaceEvent != null}>
-        {selectedRaceEvent && <RaceDetails id={selectedRaceEvent} />}
-      </Sheet>
+      <RaceDetailsSheet onClose={onSheetClose} selectedRaceEvent={selectedRaceEvent} />
       {racesList.map(({ id, pictureUrl, countryName, startDate, endDate, roundNumber, description, countryId }) => {
         const onClick = () => {
           setSelectedRaceEvent(id);
@@ -88,5 +87,20 @@ export const Season = ({ seasonApiId }: SeasonProps) => {
         );
       })}
     </>
+  );
+};
+
+interface RaceDetailsSheetProps {
+  selectedRaceEvent: string | null;
+  onClose: () => void;
+}
+const RaceDetailsSheet = ({ selectedRaceEvent, onClose }: RaceDetailsSheetProps) => {
+  const isOpen = selectedRaceEvent != null;
+  const { data: laggedSelectedRaceEvent, reset: resetLaggedState } = useLaggedBehindData(selectedRaceEvent, isOpen);
+
+  return (
+    <Sheet onClose={onClose} isOpen={selectedRaceEvent != null} onClosed={resetLaggedState}>
+      {laggedSelectedRaceEvent && <RaceDetails id={laggedSelectedRaceEvent} />}
+    </Sheet>
   );
 };

@@ -36,7 +36,7 @@ export const useRaceDetails = (racePageId: string) => {
       dispatch({ type: "done", data: newDetails });
     } catch (error) {
       console.error(error);
-      dispatch({ type: "error", error: (error as Error).message });
+      dispatch({ type: "error", error: error as Error });
     }
   }, [racePageId]);
 

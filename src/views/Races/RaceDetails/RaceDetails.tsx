@@ -1,6 +1,7 @@
-import { addDays, differenceInHours, formatDistanceStrict, isBefore, isFuture, isSameDay, subHours } from "date-fns";
+import { addDays, differenceInHours, formatDistanceStrict, isBefore, isFuture, isSameDay } from "date-fns";
 import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
+import { ErrorMessage } from "../../../components/ErrorMessage/ErrorMessage";
 import { ListItem } from "../../../components/ListItem/ListItem";
 import { useRaceDetails } from "../../../hooks/useRaceDetails/useRaceDetails";
 import { EventSession } from "./EventSession/EventSession";
@@ -23,12 +24,17 @@ export const RaceDetails = ({ id }: RaceDetailsProps) => {
   if (racesDetailsState.state === "loading") {
     return <div>Loading...</div>;
   }
+
   if (racesDetailsState.state === "error") {
-    return <div>Error: {racesDetailsState.error.toString()}</div>;
+    return (
+      <div className={styles.errorWrapper}>
+        <ErrorMessage error={racesDetailsState.error} />
+      </div>
+    );
   }
 
   if (racesDetailsState.data.length === 0) {
-    <strong>No races found</strong>;
+    return <div>No races found</div>;
   }
 
   return (
