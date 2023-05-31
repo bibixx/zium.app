@@ -43,6 +43,7 @@ export const useResize = ({ elementRef, onResizeStart, onResizeEnd, grid }: UseR
       initialSizeRef.current = { width, height };
       currentSizeRef.current = { width, height };
       initialPositionRef.current = { x, y };
+      currentPositionRef.current = { x, y };
 
       const mouseX = e.clientX;
       const mouseY = e.clientY;
@@ -97,6 +98,9 @@ export const useResize = ({ elementRef, onResizeStart, onResizeEnd, grid }: UseR
 
       const [gridXStep, gridYStep] = grid;
 
+      const minWidth = gridXStep === 1 ? 150 : gridXStep * 10;
+      const minHeight = gridYStep === 1 ? 84 : gridYStep * 10;
+
       // Horizontal resizing
       let left = boundTo(initialX, 0, window.innerWidth);
       if (isAdjustingXPosition) {
@@ -111,7 +115,8 @@ export const useResize = ({ elementRef, onResizeStart, onResizeEnd, grid }: UseR
       }
 
       const snappedWidth = right - left;
-      const snappedX = left;
+      const boundSnappedWidth = boundTo(snappedWidth, minWidth, Infinity);
+      const snappedX = left + (isAdjustingXPosition ? snappedWidth - boundSnappedWidth : 0);
 
       // Vertical resizing
       let top = boundTo(initialY, 0, window.innerHeight);
@@ -127,16 +132,17 @@ export const useResize = ({ elementRef, onResizeStart, onResizeEnd, grid }: UseR
       }
 
       const snappedHeight = bottom - top;
-      const snappedY = top;
+      const boundSnappedHeight = boundTo(snappedHeight, minHeight, Infinity);
+      const snappedY = top + (isAdjustingYPosition ? snappedHeight - boundSnappedHeight : 0);
 
       // Apply values
-      $element.style.width = `${snappedWidth}px`;
-      $element.style.height = `${snappedHeight}px`;
+      $element.style.width = `${boundSnappedWidth}px`;
+      $element.style.height = `${boundSnappedHeight}px`;
       $element.style.transform = getTransform(snappedX, snappedY);
 
       currentSizeRef.current = {
-        width: snappedWidth,
-        height: snappedHeight,
+        width: boundSnappedWidth,
+        height: boundSnappedHeight,
       };
       currentPositionRef.current = {
         x: snappedX,

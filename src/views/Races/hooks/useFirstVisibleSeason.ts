@@ -24,7 +24,6 @@ export const useFirstVisibleSeason = (refsRef: RefObject<Array<HTMLElement | nul
         });
 
         const elementsWithIndices = Array.from(intersectingElements).map((el) => refs.indexOf(el));
-        console.log(elementsWithIndices, seasonIndexOverwrite);
 
         const newFirstVisibleSeasonIndex = Math.min(...elementsWithIndices);
 
