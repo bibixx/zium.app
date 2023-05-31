@@ -62,7 +62,7 @@
     opacity: 1;
     visibility: visible;
 
-    transition: var(--transition-medium);
+    transition: var(--transition-slow);
     transition-property: opacity, visibility;
   }
 
@@ -75,7 +75,7 @@
     opacity: 0;
     visibility: hidden;
 
-    transition: var(--transition-medium);
+    transition: var(--transition-slow);
     transition-property: opacity, visibility;
   }
 }

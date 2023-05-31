@@ -6,3 +6,21 @@
   color: var(--color-text-muted);
   margin-top: 8px;
 }
+
+.learnMoreButton {
+  appearance: none;
+  display: inline;
+  text-decoration: underline;
+  background: none;
+  padding: 0;
+  border: 0;
+  color: inherit;
+  font-size: inherit;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  transition-property: color;
+
+  &:hover {
+    color: var(--color-text-default);
+  }
+}

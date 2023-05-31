@@ -31,6 +31,18 @@
   @include typography(text, 300, regular);
   color: var(--color-text-default);
   user-select: none;
+
+  p {
+    margin: 8px 0;
+
+    &:first-child {
+      margin-top: 0;
+    }
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
 }
 
 .infoIcon {
