@@ -1,10 +1,11 @@
-import { forwardRef, useEffect, useRef } from "react";
+import { forwardRef, useEffect, useRef, useState } from "react";
 import objectMerge from "object-merge";
 import { BufferingOverlay, UIContainer, UIFactory, UIManager } from "bitmovin-player-ui";
 import { UIConfig } from "bitmovin-player-ui/dist/js/framework/uiconfig";
 // import "bitmovin-player-ui/dist/css/bitmovinplayer-ui.min.css";
 
 import { Player, PlayerAPI, PlayerConfig, PlayerEvent, SourceConfig } from "bitmovin-player";
+import classNames from "classnames";
 import { setRef } from "../../utils/setRef";
 import { VideoStreamInfo } from "../../hooks/useStreamVideo/useStreamVideo.api";
 import styles from "./VideoJS.module.scss";
@@ -30,6 +31,7 @@ export const VideoJS = forwardRef<PlayerAPI | null, VideoJSProps>(
     const placeholderRef = useRef<HTMLDivElement>(null);
     const playerRef = useRef<PlayerAPI | null>(null);
     const uiManagerRef = useRef<UIManager | null>(null);
+    const [isVisible, setIsVisible] = useState(false);
 
     useEffect(() => {
       async function run() {
@@ -69,7 +71,10 @@ export const VideoJS = forwardRef<PlayerAPI | null, VideoJSProps>(
 
         await player.load(sourceConfig);
 
-        player.on(PlayerEvent.Ready, () => onReady(player));
+        player.on(PlayerEvent.Ready, () => {
+          setIsVisible(true);
+          onReady(player);
+        });
 
         player.setVolume(volume);
 
@@ -116,7 +121,7 @@ export const VideoJS = forwardRef<PlayerAPI | null, VideoJSProps>(
       }
     }, [isMuted]);
 
-    return <div ref={placeholderRef} className={styles.videoWrapper} />;
+    return <div ref={placeholderRef} className={classNames(styles.videoWrapper, { [styles.isVisible]: isVisible })} />;
   },
 );
 

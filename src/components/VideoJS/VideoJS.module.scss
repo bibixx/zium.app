@@ -2,6 +2,13 @@
   width: 100%;
   height: 100%;
   position: relative;
+  opacity: 0;
+  transition: var(--transition-slow);
+  transition-property: opacity;
+
+  &.isVisible {
+    opacity: 1;
+  }
 
   video:focus {
     outline: none;
