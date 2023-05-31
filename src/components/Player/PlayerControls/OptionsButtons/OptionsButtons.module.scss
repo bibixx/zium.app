@@ -20,6 +20,13 @@
   visibility: hidden;
   transition: var(--transition-fast);
   transition-property: opacity, visibility;
+  pointer-events: none;
+
+  :global {
+    .bmpui-ui-uicontainer * {
+      pointer-events: none !important;
+    }
+  }
 }
 
 .volumeWrapper {
@@ -34,6 +41,13 @@
     .volumeSliderContainer {
       opacity: 1;
       visibility: visible;
+      pointer-events: all;
+
+      :global {
+        .bmpui-ui-uicontainer * {
+          pointer-events: auto !important;
+        }
+      }
     }
   }
 }

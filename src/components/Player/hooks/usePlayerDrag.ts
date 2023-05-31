@@ -20,6 +20,7 @@ export const usePlayerDrag = ({
   const initialOffset = useRef<number>(0);
   const currentPosition = useRef<number>(0);
   const [isDragging, setIsDragging] = useState(false);
+  const [isMouseDown, setIsMouseDown] = useState(false);
   const clickEventTarget = useRef<EventTarget | null>(null);
   const windowSizeRef = useWindowSizeRef();
 
@@ -30,11 +31,13 @@ export const usePlayerDrag = ({
 
     clickEventTarget.current = e.currentTarget;
     hasPressedDownRef.current = true;
+    setIsMouseDown(true);
   }, []);
 
   const onMouseUp = useCallback(
     (e: MouseEvent) => {
       hasPressedDownRef.current = false;
+      setIsMouseDown(false);
 
       if (!isDragging) {
         if (shouldTriggerClick(clickEventTarget.current, e.target)) {
@@ -108,12 +111,12 @@ export const usePlayerDrag = ({
   );
 
   useEffect(() => {
-    if (isDragging) {
+    if (isDragging || isMouseDown) {
       document.body.style.cursor = "grabbing";
     } else {
       document.body.style.removeProperty("cursor");
     }
-  }, [isDragging]);
+  }, [isDragging, isMouseDown]);
 
   useEffect(() => {
     document.addEventListener("mouseup", onMouseUp);
@@ -125,7 +128,7 @@ export const usePlayerDrag = ({
     };
   }, [onMouseMove, onMouseUp]);
 
-  return { onMouseDown, isDragging };
+  return { onMouseDown, isDragging, isMouseDown };
 };
 
 const shouldTriggerClick = (mouseDownTarget: EventTarget | null, mouseUpTarget: EventTarget | null) => {

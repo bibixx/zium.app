@@ -1,8 +1,9 @@
 .wrapper {
+  --scale: scale(1);
   position: fixed;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%) var(--scale);
   background: var(--color-background-muted-default);
   box-shadow: inset 0 0 0 1px var(--color-border-muted-default);
   border-radius: var(--radii-large);
@@ -15,27 +16,31 @@
   &.wrapperEnter {
     opacity: 0;
     visibility: hidden;
+    --scale: scale(0.975);
   }
 
   &.wrapperEnterActive {
     opacity: 1;
     visibility: visible;
+    --scale: scale(1);
 
-    transition: var(--transition-medium);
-    transition-property: opacity, visibility;
+    transition: var(--transition-slow);
+    transition-property: opacity, visibility, transform;
   }
 
   &.wrapperExit {
     opacity: 1;
     visibility: visible;
+    --scale: scale(1);
   }
 
   &.wrapperExitActive {
     opacity: 0;
     visibility: hidden;
 
-    transition: var(--transition-medium);
-    transition-property: opacity, visibility;
+    transition: var(--transition-slow);
+    transition-property: opacity, visibility, transform;
+    --scale: scale(0.975);
   }
 }
 

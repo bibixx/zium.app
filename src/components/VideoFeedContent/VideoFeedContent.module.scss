@@ -17,17 +17,24 @@
   user-select: none;
   color: var(--color-text-default);
 
-  & img {
-    width: 100%;
-    height: 100%;
-  }
-
   *[fill] {
     fill: currentColor;
   }
 
   *[fill="none"] {
     fill: none;
+  }
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  opacity: 1;
+  transition: var(--transition-medium);
+  transition-property: opacity;
+
+  &.isLoading {
+    opacity: 0;
   }
 }
 

@@ -3,6 +3,7 @@ import cn from "classnames";
 import { useWindowSize } from "../../hooks/useWindowSize";
 import { Dimensions } from "../../types/Dimensions";
 import { WithVariables } from "../WithVariables/WithVariables";
+import { useViewerUIVisibility } from "../../hooks/useViewerUIVisibility/useViewerUIVisibility";
 import { sizePercentToPx, sizePxToPercent } from "./RnDWindow.utils";
 import styles from "./RnDWindow.module.scss";
 import { useDrag } from "./hooks/useDrag";
@@ -20,6 +21,7 @@ interface RnDWindowProps {
 }
 export const RnDWindow = ({ dimensions, grid, children, onChange, zIndex, bringToFront }: RnDWindowProps) => {
   const elementRef = useRef<HTMLDivElement>(null);
+  const { isUIVisible, preventHiding } = useViewerUIVisibility();
   const { height: windowHeight, width: windowWidth } = useWindowSize();
   const position = useMemo(
     () => ({ x: sizePercentToPx(dimensions.x, windowWidth), y: sizePercentToPx(dimensions.y, windowHeight) }),
@@ -76,7 +78,11 @@ export const RnDWindow = ({ dimensions, grid, children, onChange, zIndex, bringT
     [onChange, size.height, size.width, windowHeight, windowWidth],
   );
 
-  const { onMouseDown: onWrapperMouseDown, isDragging } = useDrag({
+  const {
+    onMouseDown: onWrapperMouseDown,
+    isDragging,
+    isMouseDown,
+  } = useDrag({
     elementRef,
     onDragStart,
     onDragEnd,
@@ -89,10 +95,14 @@ export const RnDWindow = ({ dimensions, grid, children, onChange, zIndex, bringT
     grid: grid ?? [1, 1],
   });
 
+  useEffect(() => {
+    preventHiding(isDragging);
+  }, [isDragging, preventHiding]);
+
   return (
     <WithVariables
       ref={elementRef}
-      className={cn(styles.rndWrapper, { [styles.isDragging]: isDragging })}
+      className={cn(styles.rndWrapper, { [styles.isDragging]: isDragging || isMouseDown })}
       onMouseDown={onWrapperMouseDown}
       variables={{
         zIndex: zIndex,

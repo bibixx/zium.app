@@ -10,8 +10,6 @@
   @include typography(label, 300);
   color: var(--color-text-default);
   flex: 1;
-  transition: var(--transition-fast);
-  transition-property: color;
   text-decoration: none;
   line-height: 20px;
 

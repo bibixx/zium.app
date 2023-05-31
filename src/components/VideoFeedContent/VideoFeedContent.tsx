@@ -1,3 +1,4 @@
+import classNames from "classnames";
 import { ReactNode } from "react";
 import { useImage } from "react-image";
 import styles from "./VideoFeedContent.module.scss";
@@ -34,10 +35,12 @@ interface ImgProps {
   srcList: string[];
 }
 const Img = ({ srcList }: ImgProps) => {
-  const { src } = useImage({
+  const { src, isLoading } = useImage({
     srcList,
     useSuspense: false,
   });
 
-  return <img src={src} alt="" draggable={false} />;
+  return (
+    <img src={src} alt="" draggable={false} className={classNames(styles.image, { [styles.isLoading]: isLoading })} />
+  );
 };

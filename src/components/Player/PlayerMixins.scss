@@ -37,6 +37,7 @@
     .bmpui-seekbar {
       height: 4px;
       border-radius: var(--radii-xsmall);
+      // width: calc(100% - 8px);
 
       &:focus-visible {
         outline: 2px solid var(--color-border-accent);

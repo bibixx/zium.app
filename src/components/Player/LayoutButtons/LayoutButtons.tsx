@@ -119,7 +119,7 @@ export const LayoutButtons = ({
             },
             {
               id: "rename",
-              text: `Rename ${quote(selectedLayout.name)}`,
+              text: `Rename ${quote(selectedLayout.name)}...`,
               onClick: () => {
                 toggleOpen();
                 setLayoutDialogState({

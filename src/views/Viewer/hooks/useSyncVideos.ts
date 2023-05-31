@@ -1,4 +1,4 @@
-import { PlayerAPI, TimeMode } from "bitmovin-player";
+import { PlayerAPI, PlayerEvent, TimeMode } from "bitmovin-player";
 import { MutableRefObject, useEffect } from "react";
 import { PlaybackOffsets } from "../../../hooks/useVideoRaceDetails/useVideoRaceDetails.types";
 import { GridWindow } from "../../../types/GridWindow";
@@ -58,9 +58,37 @@ export const useSyncVideos = ({ windows, windowVideojsRefMapRef, isLive, playbac
       });
     };
 
+    let cleanupFunction: (() => void) | null = null;
+    const setupPlayerListeners = () => {
+      const mainWindow = windows.find((w) => w.type === "main");
+
+      if (mainWindow == null) {
+        return;
+      }
+
+      const mainWindowPlayer = windowVideojsRefMapRef.current[mainWindow.id];
+
+      if (mainWindowPlayer == null) {
+        return;
+      }
+
+      const forceSync = () => syncVideos(true);
+      mainWindowPlayer.on(PlayerEvent.Seek, forceSync);
+      mainWindowPlayer.on(PlayerEvent.TimeShift, forceSync);
+
+      cleanupFunction = () => {
+        mainWindowPlayer.off(PlayerEvent.Seek, forceSync);
+        mainWindowPlayer.off(PlayerEvent.TimeShift, forceSync);
+      };
+    };
+
     const interval = window.setInterval(
       () => {
         syncVideos();
+
+        if (cleanupFunction == null) {
+          setupPlayerListeners();
+        }
       },
       isLive ? 5_000 : 100,
     );
@@ -75,6 +103,7 @@ export const useSyncVideos = ({ windows, windowVideojsRefMapRef, isLive, playbac
     return () => {
       window.clearInterval(interval);
       document.removeEventListener("visibilitychange", onVisibilityChange);
+      cleanupFunction?.();
     };
   }, [isLive, playbackOffsets, windowVideojsRefMapRef, windows]);
 };

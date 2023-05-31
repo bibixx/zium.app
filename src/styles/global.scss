@@ -2,6 +2,9 @@ body {
   margin: 0;
   background: var(--color-background-surface);
   color: var(--color-text-default);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: geometricprecision;
+
   @include typography(text, 300, regular);
 }
 

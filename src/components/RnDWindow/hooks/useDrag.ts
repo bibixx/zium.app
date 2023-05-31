@@ -16,17 +16,20 @@ export const useDrag = ({ elementRef, onDragStart, onDragEnd, grid }: UseDragArg
   const cursorOffset = useRef<Position>({ x: 0, y: 0 });
   const currentPosition = useRef<Position>({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
+  const [isMouseDown, setIsMouseDown] = useState(false);
 
   const onMouseDown = useCallback((e: React.MouseEvent) => {
     if (e.button !== 0) {
       return;
     }
 
+    setIsMouseDown(true);
     hasPressedDownRef.current = true;
   }, []);
 
   const onMouseUp = useCallback(() => {
     hasPressedDownRef.current = false;
+    setIsMouseDown(false);
 
     if (!isDragging) {
       return;
@@ -119,12 +122,12 @@ export const useDrag = ({ elementRef, onDragStart, onDragEnd, grid }: UseDragArg
   );
 
   useEffect(() => {
-    if (isDragging) {
+    if (isDragging || isMouseDown) {
       document.body.style.cursor = "grabbing";
     } else {
       document.body.style.removeProperty("cursor");
     }
-  }, [isDragging]);
+  }, [isDragging, isMouseDown]);
 
   useEffect(() => {
     document.addEventListener("mouseup", onMouseUp);
@@ -136,5 +139,5 @@ export const useDrag = ({ elementRef, onDragStart, onDragEnd, grid }: UseDragArg
     };
   }, [onMouseMove, onMouseUp]);
 
-  return { onMouseDown, isDragging };
+  return { onMouseDown, isDragging, isMouseDown };
 };

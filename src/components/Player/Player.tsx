@@ -63,10 +63,6 @@ export const Player = ({
     }
   }, [isUIVisible]);
 
-  useEffect(() => {
-    preventHiding(isPaused);
-  }, [isPaused, preventHiding]);
-
   const onDragEnd = useCallback((shouldBeCollapsed: boolean) => {
     setIsSpringing(true);
     setIsCollapsed(shouldBeCollapsed);
@@ -76,12 +72,16 @@ export const Player = ({
     setIsCollapsed((oldIsCollapsed) => !oldIsCollapsed);
   }, []);
 
-  const { isDragging, onMouseDown } = usePlayerDrag({
+  const { isDragging, onMouseDown, isMouseDown } = usePlayerDrag({
     elementRef: wrapperRef,
     onClick,
     onDragEnd,
     playerCollapsedZone: isCollapsed ? PLAYER_COLLAPSED_ZONE_WHEN_COLLAPSED : PLAYER_COLLAPSED_ZONE_WHEN_OPEN,
   });
+
+  useEffect(() => {
+    preventHiding(isPaused || isDragging);
+  }, [isPaused, preventHiding, isDragging]);
 
   return (
     <>
@@ -94,6 +94,8 @@ export const Player = ({
         }}
       >
         <div
+          onMouseEnter={() => preventHiding(true)}
+          onMouseLeave={() => preventHiding(isPaused || isDragging)}
           className={classNames(styles.wrapper, {
             [styles.isCollapsed]: isCollapsed,
             [styles.isVisible]: isUIVisible,
@@ -109,7 +111,7 @@ export const Player = ({
         >
           <div className={styles.dragHandlePlaceholder} />
           <button
-            className={classNames(styles.dragHandle, { [styles.dragHandleIsDragging]: isDragging })}
+            className={classNames(styles.dragHandle, { [styles.dragHandleIsDragging]: isDragging || isMouseDown })}
             onMouseDown={onMouseDown}
             onClick={(e) => {
               const isClickByKeyboard = e.detail === 0;

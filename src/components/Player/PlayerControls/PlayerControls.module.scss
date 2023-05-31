@@ -4,6 +4,13 @@
   display: flex;
   align-items: center;
   gap: 24px;
+  opacity: 0;
+  transition: var(--transition-medium);
+  transition-property: opacity;
+
+  &.isVisible {
+    opacity: 1;
+  }
 }
 
 .bitmovinWrapper {
@@ -30,6 +37,7 @@
       .bmpui-ui-playbacktimelabel {
         height: 20px;
         @include typography(text, 300, regular);
+        user-select: none;
 
         &.bmpui-hidden {
           display: none;

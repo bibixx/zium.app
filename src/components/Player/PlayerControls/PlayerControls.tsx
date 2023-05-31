@@ -12,6 +12,7 @@ import {
 } from "bitmovin-player-ui";
 
 import { UIConfig } from "bitmovin-player-ui/dist/js/framework/uiconfig";
+import cn from "classnames";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useStateWithRef } from "../../../hooks/useStateWithRef/useStateWithRef";
 import { Button } from "../../Button/Button";
@@ -87,7 +88,7 @@ export const PlayerControls = ({ player, setVolume, volume, isMuted, setIsMuted 
   }, [player]);
 
   return (
-    <div className={styles.wrapper}>
+    <div className={cn(styles.wrapper, { [styles.isVisible]: player !== null })}>
       <PlaybackButtons player={player} />
       <div className={styles.bitmovinWrapper} ref={wrapperRef} />
       <OptionsButtons player={player} setVolume={setVolume} volume={volume} isMuted={isMuted} setIsMuted={setIsMuted} />
@@ -204,11 +205,27 @@ const PlaybackButtons = ({ player }: PlaybackButtonsProps) => {
   }, [player]);
 
   const onSkipAhead = useCallback(() => {
-    player?.seek(player.getCurrentTime() + 30);
+    if (player == null) {
+      return;
+    }
+
+    if (player.isLive()) {
+      player.timeShift(player.getTimeShift() + 30);
+    } else {
+      player.seek(player.getCurrentTime() + 30);
+    }
   }, [player]);
 
   const onSkipBackwards = useCallback(() => {
-    player?.seek(player.getCurrentTime() - 30);
+    if (player == null) {
+      return;
+    }
+
+    if (player.isLive()) {
+      player.timeShift(player.getTimeShift() - 30);
+    } else {
+      player.seek(player.getCurrentTime() - 30);
+    }
   }, [player]);
 
   const PlayPauseIcon = useMemo(() => {
