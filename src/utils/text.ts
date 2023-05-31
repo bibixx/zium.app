@@ -1,4 +1,17 @@
-export const firstUpper = (text: string) => `${text.charAt(0).toUpperCase()}${text.slice(1).toLowerCase()}`;
+const nonUpperableWords = ["e", "de", "AWS", "dell'Emilia-Romagna", "del", "in", "STC", "d’Italia", "MSC", "von", "du"];
+const lowerCaseNonUpperableWordsSet = Object.fromEntries(nonUpperableWords.map((w, i) => [w.toLowerCase(), i]));
+
+export const firstUpper = (text: string) => {
+  const nonUpperableWordIndex = lowerCaseNonUpperableWordsSet[text.toLowerCase()] ?? -1;
+  const nonUpperableWord = nonUpperableWords[nonUpperableWordIndex];
+
+  if (nonUpperableWord != null) {
+    return nonUpperableWord;
+  }
+
+  return `${text.charAt(0).toUpperCase()}${text.slice(1).toLowerCase()}`;
+};
+
 export const toTitleCase = (text: string) => text.split(" ").map(firstUpper).join(" ");
 
 export const NBSP = "\xa0";
