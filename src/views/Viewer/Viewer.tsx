@@ -21,6 +21,7 @@ import {
   useViewerUIVisibilityState,
   ViewerUIVisibilityContext,
 } from "../../hooks/useViewerUIVisibility/useViewerUIVisibility";
+import { FullScreenError } from "../../components/FullScreenError/FullScreenError";
 import { getWindowStreamMap, getAvailableDrivers } from "./Viewer.utils";
 import { useGrid } from "./hooks/useGrid";
 import styles from "./Viewer.module.scss";
@@ -312,7 +313,7 @@ export const ViewerWithState = () => {
   const viewerUIVisibilityState = useViewerUIVisibilityState();
 
   if (state.state === "error") {
-    return <div>Error occurred</div>;
+    return <FullScreenError error={state.error} />;
   }
 
   if (state.state === "loading") {

@@ -61,7 +61,7 @@ export const useVideoRaceDetails = (raceId: string): StreamsState => {
       } catch (error) {
         console.error(error);
 
-        dispatch({ type: "error", error: (error as Error).message });
+        dispatch({ type: "error", error: error as Error });
       }
     },
     [raceId],

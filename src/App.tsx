@@ -14,6 +14,7 @@ import { OVERLAYS_PORTAL_ID } from "./constants/portals";
 import { HotkeysStackWithinHotkeysProvider } from "./hooks/useHotkeysStack/useHotkeysStack";
 import { DEFAULT_SCOPE } from "./hooks/useScopedHotkeys/useScopedHotkeys";
 import { DebugProvider } from "./hooks/useDebug/useDebug";
+import { ErrorBoundary } from "./components/ErrorBoundary/ErrorBoundary";
 
 const WithCompanion = ({ children }: React.PropsWithChildren<unknown>) => {
   const companionState = useHasCompanion();
@@ -53,23 +54,25 @@ const WithLoggedIn = ({ children }: React.PropsWithChildren<unknown>) => {
 
 export default function App() {
   return (
-    <HotkeysProvider initiallyActiveScopes={[DEFAULT_SCOPE]}>
-      <HotkeysStackWithinHotkeysProvider>
-        <DebugProvider>
-          <DebugWindow />
-          <WithCompanion>
-            <WithLoggedIn>
-              <BrowserRouter>
-                <Routes>
-                  <Route path="/" element={<Races />} />
-                  <Route path="/race/:raceId" element={<ViewerWithState />} />
-                </Routes>
-              </BrowserRouter>
-            </WithLoggedIn>
-          </WithCompanion>
-          <div id={OVERLAYS_PORTAL_ID} />
-        </DebugProvider>
-      </HotkeysStackWithinHotkeysProvider>
-    </HotkeysProvider>
+    <ErrorBoundary>
+      <HotkeysProvider initiallyActiveScopes={[DEFAULT_SCOPE]}>
+        <HotkeysStackWithinHotkeysProvider>
+          <DebugProvider>
+            <DebugWindow />
+            <WithCompanion>
+              <WithLoggedIn>
+                <BrowserRouter>
+                  <Routes>
+                    <Route path="/" element={<Races />} />
+                    <Route path="/race/:raceId" element={<ViewerWithState />} />
+                  </Routes>
+                </BrowserRouter>
+              </WithLoggedIn>
+            </WithCompanion>
+            <div id={OVERLAYS_PORTAL_ID} />
+          </DebugProvider>
+        </HotkeysStackWithinHotkeysProvider>
+      </HotkeysProvider>
+    </ErrorBoundary>
   );
 }

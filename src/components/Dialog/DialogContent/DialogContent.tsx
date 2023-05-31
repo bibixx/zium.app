@@ -16,7 +16,7 @@ export const DialogContent = withAs("div")<DialogContentProps>(({ children, as: 
 
 interface DialogContentInformationProps {
   title: string;
-  subtitle: string;
+  subtitle: ReactNode;
 }
 export const DialogContentInformation = ({ title, subtitle }: DialogContentInformationProps) => {
   return (
@@ -32,7 +32,7 @@ export const DialogContentInformation = ({ title, subtitle }: DialogContentInfor
 
 interface DialogContentAlertProps {
   title: string;
-  subtitle: string;
+  subtitle: ReactNode;
 }
 export const DialogContentAlert = ({ title, subtitle }: DialogContentAlertProps) => {
   return (

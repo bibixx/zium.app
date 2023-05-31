@@ -14,7 +14,7 @@ export interface RaceInfo {
 
 export type StreamsState =
   | { state: "loading" }
-  | { state: "error"; error: string }
+  | { state: "error"; error: Error }
   | {
       state: "done";
       streams: StreamsStateData;
@@ -26,7 +26,7 @@ export type StreamsState =
 
 export type StreamsStateAction =
   | { type: "load" }
-  | { type: "error"; error: string }
+  | { type: "error"; error: Error }
   | {
       type: "done";
       streams: StreamsStateData;
