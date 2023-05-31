@@ -1,7 +1,9 @@
 import { isSameDay } from "date-fns";
 import { useCallback, useMemo, useState } from "react";
 import { EventCard } from "../../../components/EventCard/EventCard";
+import { EventCardSkeleton } from "../../../components/EventCardSkeleton/EventCardSkeleton";
 import { Sheet } from "../../../components/Sheet/Sheet";
+import { TimedOutWrapper } from "../../../components/TimedOutWrapper/TimedOutWrapper";
 import { useHotkeysStack } from "../../../hooks/useHotkeysStack/useHotkeysStack";
 import { useRacesList } from "../../../hooks/useRacesList/useRacesList";
 import { useScopedHotkeys } from "../../../hooks/useScopedHotkeys/useScopedHotkeys";
@@ -39,7 +41,15 @@ export const Season = ({ seasonApiId }: SeasonProps) => {
   }, [racesState]);
 
   if (racesState.state === "loading") {
-    return <div>Loading...</div>;
+    return (
+      <>
+        {Array.from({ length: 6 }).map((_, i) => (
+          <TimedOutWrapper timeout={100} key={i}>
+            <EventCardSkeleton />
+          </TimedOutWrapper>
+        ))}
+      </>
+    );
   }
 
   if (racesState.state === "error") {

@@ -1,0 +1,11 @@
+.wrapper {
+  opacity: 0;
+  visibility: hidden;
+  transition: var(--transition-slow);
+  transition-property: opacity !important;
+
+  &.isVisible {
+    opacity: 1;
+    visibility: visible;
+  }
+}

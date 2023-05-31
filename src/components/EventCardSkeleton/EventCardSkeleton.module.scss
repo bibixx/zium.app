@@ -1,0 +1,70 @@
+.wrapper {
+  background: none;
+}
+.image {
+  background: var(--color-background-default-default);
+  height: 160px;
+  border-radius: var(--radii-medium);
+}
+
+.contentWrapper {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.header {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.headerLines {
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+}
+
+@mixin skeleton {
+  background: var(--color-background-default-default);
+  border-radius: var(--radii-rounded);
+}
+
+.country {
+  @include skeleton();
+  width: 40px;
+  height: 40px;
+}
+
+.headerFirstLine {
+  @include skeleton();
+  width: 112px;
+  height: 16px;
+  margin: 4px 0;
+}
+
+.headerSecondLine {
+  @include skeleton();
+  width: 64px;
+  height: 12px;
+  margin: 4px 0;
+}
+
+.contentFirstLine {
+  @include skeleton();
+  width: 178px;
+  height: 12px;
+  margin: 4px 0;
+}
+
+.contentSecondLine {
+  @include skeleton();
+  width: 157px;
+  height: 12px;
+  margin: 4px 0;
+}

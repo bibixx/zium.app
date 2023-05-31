@@ -32,13 +32,4 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  opacity: 0;
-  visibility: hidden;
-  transition: var(--transition-slow);
-  transition-property: opacity;
-
-  &.loaderVisible {
-    opacity: 1;
-    visibility: visible;
-  }
 }

@@ -33,6 +33,8 @@ export const useRacesList = (seasonId: string) => {
       try {
         const newRaces = await fetchRacesList(seasonId, signal);
 
+        // throw new Error("asd");
+
         dispatch({ type: "done", data: newRaces });
       } catch (error) {
         console.error(error);

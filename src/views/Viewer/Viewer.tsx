@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { memo, useCallback, useMemo, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { PlayerAPI } from "bitmovin-player";
 import deepEqual from "fast-deep-equal/es6";
@@ -23,6 +23,7 @@ import {
 } from "../../hooks/useViewerUIVisibility/useViewerUIVisibility";
 import { FullScreenError } from "../../components/FullScreenError/FullScreenError";
 import { Loader } from "../../components/Loader/Loader";
+import { TimedOutWrapper } from "../../components/TimedOutWrapper/TimedOutWrapper";
 import { getWindowStreamMap, getAvailableDrivers } from "./Viewer.utils";
 import { useGrid } from "./hooks/useGrid";
 import styles from "./Viewer.module.scss";
@@ -342,24 +343,16 @@ export const ViewerWithState = () => {
 
 const LoadingState = () => {
   const { baseGrid } = useGrid();
-  const [showLoader, setShowLoader] = useState(false);
-
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setShowLoader(true);
-    }, 500);
-
-    return () => {
-      clearTimeout(timeout);
-    };
-  }, [setShowLoader]);
 
   return (
     <div className={styles.backgroundWrapper}>
       <BackgroundDots baseGrid={baseGrid} />
-      <div className={cn(styles.loaderWrapper, { [styles.loaderVisible]: showLoader })}>
-        <Loader width={128} />
-      </div>
+
+      <TimedOutWrapper timeout={500}>
+        <div className={styles.loaderWrapper}>
+          <Loader width={128} />
+        </div>
+      </TimedOutWrapper>
     </div>
   );
 };
