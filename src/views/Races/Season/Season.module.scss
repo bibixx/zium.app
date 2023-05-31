@@ -1,0 +1,12 @@
+.errorWrapper {
+  padding: 32px 64px;
+  background: var(--color-background-muted-default);
+  @include inner-border(var(--color-border-muted-default));
+  border-radius: var(--radii-large);
+  grid-column: 1 / -1;
+}
+
+.errorContent {
+  width: 400px;
+  margin: 0 auto;
+}

@@ -10,6 +10,6 @@ export interface RaceData {
   countryId: string;
 }
 
-export type RacesState = { state: "loading" } | { state: "error"; error: string } | { state: "done"; data: RaceData[] };
+export type RacesState = { state: "loading" } | { state: "error"; error: Error } | { state: "done"; data: RaceData[] };
 
-export type RacesStateAction = { type: "load" } | { type: "error"; error: string } | { type: "done"; data: RaceData[] };
+export type RacesStateAction = { type: "load" } | { type: "error"; error: Error } | { type: "done"; data: RaceData[] };

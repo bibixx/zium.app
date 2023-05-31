@@ -1,5 +1,6 @@
 import { isSameDay } from "date-fns";
 import { useCallback, useMemo, useState } from "react";
+import { ErrorMessage } from "../../../components/ErrorMessage/ErrorMessage";
 import { EventCard } from "../../../components/EventCard/EventCard";
 import { EventCardSkeleton } from "../../../components/EventCardSkeleton/EventCardSkeleton";
 import { Sheet } from "../../../components/Sheet/Sheet";
@@ -11,6 +12,7 @@ import { clone } from "../../../utils/clone";
 import { formatDateRange } from "../../../utils/date";
 import { toTitleCase } from "../../../utils/text";
 import { RaceDetails } from "../RaceDetails/RaceDetails";
+import styles from "./Season.module.scss";
 
 interface SeasonProps {
   seasonApiId: string;
@@ -53,7 +55,13 @@ export const Season = ({ seasonApiId }: SeasonProps) => {
   }
 
   if (racesState.state === "error") {
-    return <div>Error {racesState.error.toString()}</div>;
+    return (
+      <div className={styles.errorWrapper}>
+        <div className={styles.errorContent}>
+          <ErrorMessage error={racesState.error} />
+        </div>
+      </div>
+    );
   }
 
   return (

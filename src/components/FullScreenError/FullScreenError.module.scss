@@ -18,26 +18,3 @@
   @include inner-border(var(--color-border-muted-default));
   border-radius: var(--radii-large);
 }
-
-.title {
-  @include typography(heading, 500, default);
-  color: var(--color-text-strong);
-  margin: 0;
-  user-select: none;
-}
-
-.subtitle {
-  @include typography(text, 300, regular);
-  color: var(--color-text-default);
-  user-select: none;
-  margin: 8px 0;
-}
-
-.buttonWrapper {
-  width: 100%;
-  margin-top: 16px;
-}
-
-.flagIcon {
-  color: var(--color-text-accent);
-}
