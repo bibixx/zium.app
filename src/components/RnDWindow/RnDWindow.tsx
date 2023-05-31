@@ -1,5 +1,6 @@
 import { ReactNode, useCallback, useEffect, useMemo, useRef } from "react";
 import cn from "classnames";
+import { TransitionStatus } from "react-transition-group";
 import { useWindowSize } from "../../hooks/useWindowSize";
 import { Dimensions } from "../../types/Dimensions";
 import { WithVariables } from "../WithVariables/WithVariables";
@@ -18,10 +19,19 @@ interface RnDWindowProps {
   onChange: (dimensions: Dimensions) => void;
   zIndex: number;
   bringToFront: () => void;
+  transitionStatus: TransitionStatus;
 }
-export const RnDWindow = ({ dimensions, grid, children, onChange, zIndex, bringToFront }: RnDWindowProps) => {
+export const RnDWindow = ({
+  dimensions,
+  grid,
+  children,
+  onChange,
+  zIndex,
+  bringToFront,
+  transitionStatus,
+}: RnDWindowProps) => {
   const elementRef = useRef<HTMLDivElement>(null);
-  const { isUIVisible, preventHiding } = useViewerUIVisibility();
+  const { preventHiding } = useViewerUIVisibility();
   const { height: windowHeight, width: windowWidth } = useWindowSize();
   const position = useMemo(
     () => ({ x: sizePercentToPx(dimensions.x, windowWidth), y: sizePercentToPx(dimensions.y, windowHeight) }),
@@ -98,6 +108,37 @@ export const RnDWindow = ({ dimensions, grid, children, onChange, zIndex, bringT
   useEffect(() => {
     preventHiding(isDragging);
   }, [isDragging, preventHiding]);
+
+  useEffect(() => {
+    const $element = elementRef.current;
+    if ($element == null) {
+      return;
+    }
+
+    if (transitionStatus === "entering") {
+      $element.classList.add(styles.rndWrapperEnterActive);
+    } else {
+      $element.classList.remove(styles.rndWrapperEnterActive);
+    }
+
+    if (transitionStatus === "entered") {
+      $element.classList.add(styles.rndWrapperEntered);
+    } else {
+      $element.classList.remove(styles.rndWrapperEntered);
+    }
+
+    if (transitionStatus === "exiting") {
+      $element.classList.add(styles.rndWrapperExitActive);
+    } else {
+      $element.classList.remove(styles.rndWrapperExitActive);
+    }
+
+    if (transitionStatus === "exited") {
+      $element.classList.add(styles.rndWrapperExited);
+    } else {
+      $element.classList.remove(styles.rndWrapperExited);
+    }
+  }, [transitionStatus]);
 
   return (
     <WithVariables

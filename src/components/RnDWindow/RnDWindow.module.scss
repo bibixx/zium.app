@@ -11,6 +11,7 @@
   overflow: hidden;
   background: var(--color-background-default-default);
   border-radius: var(--radii-small);
+  --scale: 1;
 
   &::after {
     content: "";
@@ -35,6 +36,36 @@
 
   &.isDragging {
     cursor: grabbing;
+  }
+
+  &.rndWrapperEntered {
+    opacity: 1;
+    visibility: visible;
+    --scale: 1;
+  }
+
+  &.rndWrapperExited {
+    opacity: 0;
+    visibility: hidden;
+    --scale: 0.975;
+  }
+
+  &.rndWrapperEnterActive {
+    opacity: 1;
+    visibility: visible;
+    --scale: 1;
+
+    transition: var(--transition-fast);
+    transition-property: opacity, visibility, transform;
+  }
+
+  &.rndWrapperExitActive {
+    opacity: 0;
+    visibility: hidden;
+    --scale: 0.95;
+
+    transition: var(--transition-fast);
+    transition-property: opacity, visibility, transform;
   }
 }
 

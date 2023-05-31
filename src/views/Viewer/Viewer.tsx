@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { PlayerAPI } from "bitmovin-player";
 import deepEqual from "fast-deep-equal/es6";
 import cn from "classnames";
+import { Transition, TransitionGroup } from "react-transition-group";
 import { GridWindow } from "../../types/GridWindow";
 import { MainVideoWindow } from "../../components/VideoWindow/MainVideoWindow/MainVideoWindow";
 import { DriverVideoWindow } from "../../components/VideoWindow/DriverVideoWindow/DriverVideoWindow";
@@ -260,30 +261,36 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
     <StreamPickerProvider>
       <div className={styles.backgroundWrapper}>
         <BackgroundDots baseGrid={baseGrid} />
-        {layout.map((l) => {
-          const gridWindow = windowsMap[l.id];
-          const dimension: Dimensions = {
-            width: l.width,
-            height: l.height,
-            x: l.x,
-            y: l.y,
-          };
+        <TransitionGroup component={null}>
+          {layout.map((l) => {
+            const gridWindow = windowsMap[l.id];
+            const dimension: Dimensions = {
+              width: l.width,
+              height: l.height,
+              x: l.x,
+              y: l.y,
+            };
 
-          return (
-            <RnDWindow
-              key={gridWindow.type === "driver" ? gridWindow.driverId : gridWindow.type}
-              grid={grid}
-              dimensions={dimension}
-              onChange={(dimensions: Dimensions) => {
-                onLayoutChange(dimensions, l.id);
-              }}
-              zIndex={l.zIndex}
-              bringToFront={() => dispatch({ type: "bringToFront", id: l.id })}
-            >
-              {getLayoutChild(gridWindow)}
-            </RnDWindow>
-          );
-        })}
+            return (
+              <Transition timeout={300} key={gridWindow.type === "driver" ? gridWindow.driverId : gridWindow.type}>
+                {(transitionStatus) => (
+                  <RnDWindow
+                    grid={grid}
+                    dimensions={dimension}
+                    onChange={(dimensions: Dimensions) => {
+                      onLayoutChange(dimensions, l.id);
+                    }}
+                    zIndex={l.zIndex}
+                    bringToFront={() => dispatch({ type: "bringToFront", id: l.id })}
+                    transitionStatus={transitionStatus}
+                  >
+                    {getLayoutChild(gridWindow)}
+                  </RnDWindow>
+                )}
+              </Transition>
+            );
+          })}
+        </TransitionGroup>
         <StreamPicker
           availableDrivers={availableDrivers}
           globalFeeds={[streams.defaultStream, streams.driverTrackerStream, streams.dataChannelStream]}
