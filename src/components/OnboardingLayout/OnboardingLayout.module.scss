@@ -6,6 +6,10 @@
   height: 100vh;
   background: var(--color-background-surface);
   --dotColor: var(--color-core-neutral-lighten-300);
+
+  @media (max-width: 800px) {
+    height: 100%;
+  }
 }
 
 .contentWrapper {
@@ -15,6 +19,15 @@
   display: flex;
   flex-direction: column;
   gap: 32px;
+
+  @media (max-width: 800px) {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 32px;
+    max-width: 480px;
+  }
 }
 
 .content {
@@ -102,4 +115,13 @@
   background: linear-gradient(135deg, #000000 0%, transparent 100%),
     linear-gradient(315deg, #000000 0%, transparent 100%);
   opacity: 0.75;
+}
+
+.mobileDivider {
+  flex: 1;
+  display: none;
+
+  @media (max-width: 800px) {
+    display: block;
+  }
 }

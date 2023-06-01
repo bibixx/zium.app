@@ -15,6 +15,7 @@ import { HotkeysStackWithinHotkeysProvider } from "./hooks/useHotkeysStack/useHo
 import { DEFAULT_SCOPE } from "./hooks/useScopedHotkeys/useScopedHotkeys";
 import { DebugProvider } from "./hooks/useDebug/useDebug";
 import { ErrorBoundary } from "./components/ErrorBoundary/ErrorBoundary";
+import { NotSupported } from "./views/NotSupported/NotSupported";
 
 const WithCompanion = ({ children }: React.PropsWithChildren<unknown>) => {
   const companionState = useHasCompanion();
@@ -52,6 +53,9 @@ const WithLoggedIn = ({ children }: React.PropsWithChildren<unknown>) => {
   return assertNever(loggedInState);
 };
 
+const isSupportedBrowser = false;
+// const isSupportedBrowser = navigator.userAgent.includes("Chrome");
+
 export default function App() {
   return (
     <ErrorBoundary>
@@ -59,16 +63,20 @@ export default function App() {
         <HotkeysStackWithinHotkeysProvider>
           <DebugProvider>
             <DebugWindow />
-            <WithCompanion>
-              <WithLoggedIn>
-                <BrowserRouter>
-                  <Routes>
-                    <Route path="/" element={<Races />} />
-                    <Route path="/race/:raceId" element={<ViewerWithState />} />
-                  </Routes>
-                </BrowserRouter>
-              </WithLoggedIn>
-            </WithCompanion>
+            {isSupportedBrowser ? (
+              <WithCompanion>
+                <WithLoggedIn>
+                  <BrowserRouter>
+                    <Routes>
+                      <Route path="/" element={<Races />} />
+                      <Route path="/race/:raceId" element={<ViewerWithState />} />
+                    </Routes>
+                  </BrowserRouter>
+                </WithLoggedIn>
+              </WithCompanion>
+            ) : (
+              <NotSupported />
+            )}
             <div id={OVERLAYS_PORTAL_ID} />
           </DebugProvider>
         </HotkeysStackWithinHotkeysProvider>

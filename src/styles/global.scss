@@ -18,6 +18,15 @@ body,
   height: 100vh;
 }
 
+html,
+body,
+#root,
+#root > div {
+  @media (max-width: 800px) {
+    height: 100%;
+  }
+}
+
 * {
   box-sizing: border-box;
 }
