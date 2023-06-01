@@ -53,8 +53,7 @@ const WithLoggedIn = ({ children }: React.PropsWithChildren<unknown>) => {
   return assertNever(loggedInState);
 };
 
-const isSupportedBrowser = false;
-// const isSupportedBrowser = navigator.userAgent.includes("Chrome");
+const isSupportedBrowser = navigator.userAgent.includes("Chrome");
 
 export default function App() {
   return (
