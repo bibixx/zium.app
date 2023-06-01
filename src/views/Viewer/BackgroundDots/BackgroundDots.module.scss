@@ -7,8 +7,4 @@
   width: 1px;
   height: 1px;
   box-shadow: var(--boxShadow);
-
-  @media (max-width: 800px) {
-    display: none;
-  }
 }
