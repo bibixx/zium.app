@@ -9,6 +9,7 @@
   transition: var(--transition-fast);
   transition-property: background, color;
   border: 0;
+  user-select: none;
   @include typography(label, 300);
 
   &:not(.disabled) {

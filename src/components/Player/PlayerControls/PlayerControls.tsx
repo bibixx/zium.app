@@ -88,7 +88,10 @@ export const PlayerControls = ({ player, setVolume, volume, isMuted, setIsMuted 
   }, [player]);
 
   return (
-    <div className={cn(styles.wrapper, { [styles.isVisible]: player !== null })}>
+    <div
+      className={cn(styles.wrapper, { [styles.isVisible]: player !== null })}
+      inert={player == null ? "" : undefined}
+    >
       <PlaybackButtons player={player} />
       <div className={styles.bitmovinWrapper} ref={wrapperRef} />
       <OptionsButtons player={player} setVolume={setVolume} volume={volume} isMuted={isMuted} setIsMuted={setIsMuted} />
