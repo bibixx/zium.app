@@ -1,7 +1,6 @@
 .driverName {
   appearance: none;
   border: none;
-  position: absolute;
   top: 8px;
   left: 8px;
   height: 64px;
@@ -9,6 +8,9 @@
   padding: 0 8px;
   border-radius: 8px;
   cursor: pointer;
+
+  @include inner-border(var(--color-border-default-default));
+  position: absolute;
 }
 
 .bitmovinWrapper {
@@ -57,4 +59,12 @@
 
 .errorIconContainer {
   color: var(--color-background-accent-strong);
+}
+
+.noFeedIconWrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--color-background-strong-default);
 }

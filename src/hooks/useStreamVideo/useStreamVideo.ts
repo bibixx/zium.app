@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useReducer } from "react";
 import { fetchVideoStream } from "./useStreamVideo.api";
 import { StreamVideoState, StreamVideoStateAction } from "./useStreamVideo.types";
+import { StreamVideoError } from "./useStreamVideo.utils";
 
 export const useStreamVideo = (playbackUrl: string | null) => {
   const [streams, dispatch] = useReducer(
@@ -36,7 +37,7 @@ export const useStreamVideo = (playbackUrl: string | null) => {
       }
 
       if (playbackUrl === null) {
-        dispatch({ type: "error", error: "No playback url" });
+        dispatch({ type: "error", error: new StreamVideoError("NO_PLAYBACK_URL") });
         return;
       }
 
@@ -60,7 +61,7 @@ export const useStreamVideo = (playbackUrl: string | null) => {
 
         dispatch({ type: "done", data });
       } catch (error) {
-        dispatch({ type: "error", error: (error as Error).message });
+        dispatch({ type: "error", error: error as Error });
       }
     },
     [playbackUrl],

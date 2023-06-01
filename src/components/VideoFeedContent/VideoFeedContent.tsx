@@ -1,6 +1,7 @@
 import classNames from "classnames";
 import { ReactNode } from "react";
 import { useImage } from "react-image";
+import { SquaresPlusIcon } from "@heroicons/react/24/outline";
 import styles from "./VideoFeedContent.module.scss";
 
 interface VideoFeedContentProps {
@@ -8,14 +9,20 @@ interface VideoFeedContentProps {
   srcList?: string[];
   icon?: (props: React.SVGProps<SVGSVGElement>) => JSX.Element | null;
   topLabel?: ReactNode;
+  showPlaceholder?: boolean;
 }
 
-export const VideoFeedContent = ({ label, srcList, icon: Icon, topLabel }: VideoFeedContentProps) => {
+export const VideoFeedContent = ({ label, srcList, icon: Icon, topLabel, showPlaceholder }: VideoFeedContentProps) => {
   return (
     <div className={styles.wrapper}>
       {srcList && (
         <div className={styles.imageWrapper}>
           <Img srcList={srcList} />
+        </div>
+      )}
+      {showPlaceholder && (
+        <div className={styles.imageWrapper}>
+          <SquaresPlusIcon height={24} width={24} />
         </div>
       )}
       {Icon && (

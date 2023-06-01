@@ -272,7 +272,7 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
             };
 
             return (
-              <Transition timeout={300} key={gridWindow.type === "driver" ? gridWindow.driverId : gridWindow.type}>
+              <Transition timeout={300} key={gridWindow.id}>
                 {(transitionStatus) => (
                   <RnDWindow
                     grid={grid}
