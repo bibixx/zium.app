@@ -2,25 +2,46 @@
   display: flex;
   appearance: none;
   border: none;
-  @include inner-border(var(--color-border-default-default));
-
   position: absolute;
   top: 0;
   left: 50%;
-  padding: 2px 24px 8px;
+  padding: 2px 24px 2px;
   transform: translateX(-50%) translateY(0);
   z-index: 2;
-
-  background-color: var(--color-background-default-default);
   border-top-right-radius: var(--radii-small);
   border-top-left-radius: var(--radii-small);
   transition: var(--transition-fast);
-  transition-property: background-color, transform;
+  transition-property: transform;
   cursor: grab;
   color: var(--color-core-neutral-600);
+  background: none;
 
   &.dragHandleIsDragging {
     cursor: grabbing;
+  }
+
+  &:focus-visible {
+    outline: none;
+
+    &::before {
+      outline: 2px solid var(--color-border-accent);
+    }
+  }
+
+  &::before {
+    content: "";
+    display: block;
+    background-color: var(--color-background-default-default);
+    @include inner-border(var(--color-border-default-default));
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: calc(100% + 6px);
+    border-radius: inherit;
+    transition: var(--transition-fast);
+    transition-property: background-color;
   }
 }
 
@@ -110,7 +131,7 @@
 
 .wrapper.isCollapsed .dragHandle,
 .wrapper:hover .dragHandle {
-  transform: translateX(-50%) translateY(calc(-100% + 6px));
+  transform: translateX(-50%) translateY(calc(-100%));
 }
 
 .dragHandlePlaceholder:hover ~ .dragHandle,
@@ -119,6 +140,9 @@
 .wrapper.wrapperIsDragging .dragHandle,
 .dragHandle:focus-visible,
 .dragHandle:hover {
-  transform: translateX(-50%) translateY(calc(-100%));
-  background-color: var(--color-background-strong-default);
+  transform: translateX(-50%) translateY(calc(-100% - 6px));
+
+  &::before {
+    background-color: var(--color-background-strong-default);
+  }
 }
