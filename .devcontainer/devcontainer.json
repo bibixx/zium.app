@@ -7,7 +7,7 @@
   "updateContentCommand": "yarn install",
   "postCreateCommand": "",
   "postAttachCommand": {
-    "server": "yarn dev"
+    "server": "yarn dev --host"
   },
   "customizations": {
     "codespaces": {
