@@ -11,6 +11,10 @@
   z-index: var(--z-index-overlay);
   overflow: auto;
 
+  &.noPadding {
+    padding: 0;
+  }
+
   &.wrapperEnter {
     transform: translateX(calc(100% + 8px));
   }

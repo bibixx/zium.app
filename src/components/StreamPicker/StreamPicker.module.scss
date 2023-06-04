@@ -10,10 +10,11 @@
 
 .inputWrapper {
   flex: 0;
-  margin-bottom: 8px;
+  padding: 8px 8px 0 8px;
 }
 
 .streamsWrapper {
   flex: 1;
   overflow: auto;
+  padding: 8px;
 }

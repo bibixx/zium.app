@@ -49,4 +49,8 @@
   &:hover:not(&.disabled) {
     transform: scale(1.025);
   }
+
+  &:active:not(&.disabled) {
+    transform: scale(1);
+  }
 }

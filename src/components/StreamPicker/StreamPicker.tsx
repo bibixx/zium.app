@@ -92,12 +92,16 @@ export const StreamPicker = ({ availableDrivers, globalFeeds }: StreamPickerProp
   }, []);
 
   const onArrowDown = useCallback(() => {
+    console.log("onArrowDown");
+
     const newFakeSelection = loopSelection(fakeSelection + 1, streamPickerEntries.length - 1);
     setFakeSelection(newFakeSelection);
     scrollListItemIntoView(newFakeSelection);
   }, [fakeSelection, scrollListItemIntoView, streamPickerEntries.length]);
 
   const onArrowUp = useCallback(() => {
+    console.log("onArrowUp");
+
     const newFakeSelection = loopSelection(fakeSelection - 1, streamPickerEntries.length - 1);
     setFakeSelection(newFakeSelection);
     scrollListItemIntoView(newFakeSelection);
@@ -121,7 +125,14 @@ export const StreamPicker = ({ availableDrivers, globalFeeds }: StreamPickerProp
   useScopedHotkeys(Key.Enter, scope, onEnter, commonOptions);
 
   return (
-    <Sheet isOpen={state.isOpen} onClose={onCancel} initialFocus onClosed={onClosed} wrapperClassName={styles.sheet}>
+    <Sheet
+      isOpen={state.isOpen}
+      onClose={onCancel}
+      initialFocus
+      onClosed={onClosed}
+      wrapperClassName={styles.sheet}
+      noPadding
+    >
       <div className={styles.wrapper}>
         <div className={styles.inputWrapper}>
           <Input

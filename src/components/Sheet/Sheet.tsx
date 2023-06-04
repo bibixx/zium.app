@@ -13,8 +13,17 @@ interface SheetProps {
   onClosed?: () => void;
   initialFocus?: boolean;
   wrapperClassName?: string;
+  noPadding?: boolean;
 }
-export const Sheet = ({ children, onClose, onClosed, isOpen, wrapperClassName, initialFocus = false }: SheetProps) => {
+export const Sheet = ({
+  children,
+  onClose,
+  onClosed,
+  isOpen,
+  wrapperClassName,
+  initialFocus = false,
+  noPadding,
+}: SheetProps) => {
   const $portalContainer = useMemo(() => document.getElementById(OVERLAYS_PORTAL_ID), []);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const backdropRef = useRef<HTMLDivElement>(null);
@@ -70,7 +79,7 @@ export const Sheet = ({ children, onClose, onClosed, isOpen, wrapperClassName, i
             escapeDeactivates: false,
           }}
         >
-          <div className={cn(styles.wrapper)} ref={wrapperRef}>
+          <div className={cn(styles.wrapper, { [styles.noPadding]: noPadding })} ref={wrapperRef}>
             <div className={wrapperClassName}>{children}</div>
             <button className={styles.closeButton} onClick={onClose}>
               Close
