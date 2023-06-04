@@ -7,9 +7,10 @@
   padding: 12px;
   text-decoration: none;
   transition: var(--transition-fast);
-  transition-property: background, color;
+  transition-property: background, color, transform;
   border: 0;
   user-select: none;
+  transform: scale(1);
   @include typography(label, 300);
 
   &:not(.disabled) {
@@ -19,6 +20,14 @@
   &::after {
     transition: var(--transition-fast);
     transition-property: box-shadow;
+  }
+
+  &:hover {
+    transform: scale(1.0333);
+  }
+
+  &:active {
+    transform: scale(1);
   }
 
   &.fluid {

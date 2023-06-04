@@ -274,8 +274,8 @@
   --radii-medium: 12px;
   --radii-large: 16px;
   --radii-rounded: 999px;
-  --motion-timing-fast: 150ms;
-  --motion-timing-medium: 200ms;
-  --motion-timing-slow: 300ms;
-  --motion-function: 0.4,0,0.2,1;
+  --motion-timing-fast: 300ms;
+  --motion-timing-medium: 400ms;
+  --motion-timing-slow: 600ms;
+  --motion-function: 0, 0.67, 0.2, 1;
 }
