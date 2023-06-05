@@ -46,3 +46,32 @@
   transition: var(--transition-medium);
   transition-property: color, opacity;
 }
+
+.skeletonLeftIcon {
+  background: var(--color-background-muted-alpha);
+  border-radius: var(--radii-xsmall);
+  height: 48px;
+  width: 48px;
+}
+
+.skeletonFirstLine {
+  background: var(--color-background-muted-alpha);
+  border-radius: var(--radii-rounded);
+  height: 10px;
+  width: 112px;
+  margin: 4px 0;
+}
+
+.skeletonSecondLine {
+  background: var(--color-background-muted-alpha);
+  border-radius: var(--radii-rounded);
+  height: 8px;
+  width: 64px;
+  margin: 4px 0;
+}
+
+.skeletonTextWrapper {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}

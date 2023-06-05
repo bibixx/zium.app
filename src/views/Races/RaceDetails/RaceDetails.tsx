@@ -1,6 +1,8 @@
-import { addDays, differenceInHours, formatDistanceStrict, isBefore, isFuture, isSameDay } from "date-fns";
+import { addDays, differenceInHours, formatDistanceStrict, isAfter, isBefore, isFuture, isSameDay } from "date-fns";
 import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
+import { Button } from "../../../components/Button/Button";
+import { DialogContentInformation } from "../../../components/Dialog/DialogContent/DialogContent";
 import { ErrorMessage } from "../../../components/ErrorMessage/ErrorMessage";
 import { ListItem } from "../../../components/ListItem/ListItem";
 import { useRaceDetails } from "../../../hooks/useRaceDetails/useRaceDetails";
@@ -9,9 +11,11 @@ import styles from "./RaceDetails.module.scss";
 
 interface RaceDetailsProps {
   id: string;
+  endDate: Date;
+  onClose: () => void;
 }
 
-export const RaceDetails = ({ id }: RaceDetailsProps) => {
+export const RaceDetails = ({ id, endDate, onClose }: RaceDetailsProps) => {
   const { racesDetailsState } = useRaceDetails(id);
   const firstListItemRef = useRef<HTMLAnchorElement | null>(null);
 
@@ -22,7 +26,15 @@ export const RaceDetails = ({ id }: RaceDetailsProps) => {
   }, [racesDetailsState]);
 
   if (racesDetailsState.state === "loading") {
-    return <div>Loading...</div>;
+    return (
+      <div className={styles.grid}>
+        {Array.from({ length: 5 }).map((_, i) => (
+          <ListItem as="div" disabled key={i}>
+            <EventSession title="" subtitle="" isLoading />
+          </ListItem>
+        ))}
+      </div>
+    );
   }
 
   if (racesDetailsState.state === "error") {
@@ -34,7 +46,37 @@ export const RaceDetails = ({ id }: RaceDetailsProps) => {
   }
 
   if (racesDetailsState.data.length === 0) {
-    return <div>No races found</div>;
+    const isUpcomingEvent = isAfter(endDate, new Date());
+
+    if (!isUpcomingEvent) {
+      return (
+        <div className={styles.errorWrapper}>
+          <DialogContentInformation
+            title="Grand Prix cancelled"
+            subtitle="The F1 officials have waved the yellow flag and this Grand Prix is no more. Buckle up for the next race, it's going to be a thrilling ride!"
+          />
+          <div className={styles.zeroStateButtonWrapper}>
+            <Button fluid variant="Secondary" onClick={onClose}>
+              Close
+            </Button>
+          </div>
+        </div>
+      );
+    } else {
+      return (
+        <div className={styles.errorWrapper}>
+          <DialogContentInformation
+            title="No schedule yet"
+            subtitle="It seems the schedule for this Grand Prix is still in the pit lane. Once the F1 officials wave the green flag, we'll have it right here for you."
+          />
+          <div className={styles.zeroStateButtonWrapper}>
+            <Button fluid variant="Secondary" onClick={onClose}>
+              Close
+            </Button>
+          </div>
+        </div>
+      );
+    }
   }
 
   return (

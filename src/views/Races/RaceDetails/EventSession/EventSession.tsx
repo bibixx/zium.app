@@ -9,6 +9,7 @@ interface EventSessionProps {
   rightIconWrapperClassName?: string;
   isLive?: boolean;
   disabled?: boolean;
+  isLoading?: boolean;
 }
 export const EventSession = ({
   title,
@@ -16,7 +17,20 @@ export const EventSession = ({
   rightIconWrapperClassName,
   isLive = false,
   disabled = false,
+  isLoading,
 }: EventSessionProps) => {
+  if (isLoading) {
+    return (
+      <div className={styles.wrapper}>
+        <div className={styles.skeletonLeftIcon}></div>
+        <div className={styles.skeletonTextWrapper}>
+          <div className={styles.skeletonFirstLine}></div>
+          <div className={styles.skeletonSecondLine}></div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.leftIconWrapper}>

@@ -18,3 +18,7 @@
   @include inner-border(var(--color-border-muted-default));
   border-radius: var(--radii-large);
 }
+
+.buttonWrapper {
+  margin-top: 16px;
+}

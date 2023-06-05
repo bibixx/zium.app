@@ -15,13 +15,18 @@ import { toTitleCase } from "../../../utils/text";
 import { RaceDetails } from "../RaceDetails/RaceDetails";
 import styles from "./Season.module.scss";
 
+interface SelectedRaceEvent {
+  id: string;
+  endDate: Date;
+}
+
 interface SeasonProps {
   seasonApiId: string;
 }
 
 export const Season = ({ seasonApiId }: SeasonProps) => {
   const { racesState } = useRacesList(seasonApiId);
-  const [selectedRaceEvent, setSelectedRaceEvent] = useState<string | null>(null);
+  const [selectedRaceEvent, setSelectedRaceEvent] = useState<SelectedRaceEvent | null>(null);
 
   const onSheetClose = useCallback(() => setSelectedRaceEvent(null), []);
   const scope = useHotkeysStack(selectedRaceEvent != null, false);
@@ -70,7 +75,7 @@ export const Season = ({ seasonApiId }: SeasonProps) => {
       <RaceDetailsSheet onClose={onSheetClose} selectedRaceEvent={selectedRaceEvent} />
       {racesList.map(({ id, pictureUrl, countryName, startDate, endDate, roundNumber, description, countryId }) => {
         const onClick = () => {
-          setSelectedRaceEvent(id);
+          setSelectedRaceEvent({ id, endDate });
         };
 
         return (
@@ -91,7 +96,7 @@ export const Season = ({ seasonApiId }: SeasonProps) => {
 };
 
 interface RaceDetailsSheetProps {
-  selectedRaceEvent: string | null;
+  selectedRaceEvent: SelectedRaceEvent | null;
   onClose: () => void;
 }
 const RaceDetailsSheet = ({ selectedRaceEvent, onClose }: RaceDetailsSheetProps) => {
@@ -100,7 +105,9 @@ const RaceDetailsSheet = ({ selectedRaceEvent, onClose }: RaceDetailsSheetProps)
 
   return (
     <Sheet onClose={onClose} isOpen={selectedRaceEvent != null} onClosed={resetLaggedState}>
-      {laggedSelectedRaceEvent && <RaceDetails id={laggedSelectedRaceEvent} />}
+      {laggedSelectedRaceEvent && (
+        <RaceDetails onClose={onClose} id={laggedSelectedRaceEvent.id} endDate={laggedSelectedRaceEvent.endDate} />
+      )}
     </Sheet>
   );
 };

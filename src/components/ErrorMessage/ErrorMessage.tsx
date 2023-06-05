@@ -1,6 +1,6 @@
-import { FlagIcon } from "@heroicons/react/24/outline";
 import { useMemo } from "react";
 import { Button } from "../Button/Button";
+import { DialogContentFlag } from "../Dialog/DialogContent/DialogContent";
 import styles from "./ErrorMessage.module.scss";
 
 const EMAIL_ADDRESS = "zium@zium.app";
@@ -40,15 +40,10 @@ ${errorMessage}
 
   return (
     <div>
-      <FlagIcon width={36} height={36} className={styles.flagIcon} />
-      <h2 className={styles.title}>Red flag! Red flag!</h2>
-      <div>
-        <div className={styles.subtitle}>Looks like we&rsquo;ve crashed.</div>
-        <div className={styles.subtitle}>
-          Please try refreshing the page to see if that gets us back on track, or report the issue using the button
-          below.
-        </div>
-      </div>
+      <DialogContentFlag
+        title="Red flag! Red flag!"
+        subtitle="Looks like we’ve crashed. Please try refreshing the page to see if that gets us back on track, or report the issue using the button below."
+      />
       <div className={styles.buttonWrapper}>
         <Button fluid variant="Secondary" as="a" href={mailtoUrl}>
           Report Error
