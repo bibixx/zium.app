@@ -69,11 +69,13 @@
   &.backdropExit {
     opacity: 1;
     visibility: visible;
+    pointer-events: none;
   }
 
   &.backdropExitActive {
     opacity: 0;
     visibility: hidden;
+    pointer-events: none;
 
     transition: var(--transition-slow);
     transition-property: opacity, visibility;
