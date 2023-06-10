@@ -151,7 +151,7 @@ const NameDialog = ({ initialLayoutName, title, onSaveText, onCancel, onSave, ba
           autoFocus
           value={newNameValue}
           placeholder="Layout name"
-          onChange={(e) => setNewNameValue(e.target.value)}
+          onChange={(value) => setNewNameValue(value)}
           ref={inputRef}
         />
       </DialogContentCustom>

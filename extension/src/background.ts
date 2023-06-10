@@ -113,6 +113,19 @@ const requestLogin = () =>
     }
   });
 
+const COOKIES_TO_BE_REMOVED = ["ascSessionInfo", "login-session", "account-info", "user-metadata"];
+
+const logOut = () => {
+  const cookiePromises = COOKIES_TO_BE_REMOVED.map((cookieName) =>
+    chrome.cookies.remove({
+      name: cookieName,
+      url: "https://account.formula1.com",
+    }),
+  );
+
+  return Promise.all(cookiePromises);
+};
+
 async function focusOrOpenZium() {
   const [firstTab] = await chrome.tabs.query({ url: ["https://*.zium.app/"] });
   if (firstTab?.id == null) {
@@ -161,6 +174,11 @@ chrome.runtime.onMessage.addListener(function (msg, _sender, sendResponse) {
         const loginResponse = await requestLogin();
         await focusOrOpenZium();
         sendResponse(loginResponse);
+        break;
+      }
+      case "LOGOUT": {
+        await logOut();
+        sendResponse(true);
         break;
       }
     }

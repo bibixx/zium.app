@@ -17,6 +17,12 @@ const requestLogin = async () =>
     source: "extension",
   });
 
+const logOut = async () =>
+  chrome.runtime.sendMessage({
+    type: "LOGOUT",
+    source: "extension",
+  });
+
 window.addEventListener(
   "message",
   async (event) => {
@@ -47,6 +53,9 @@ window.addEventListener(
         break;
       case "REQUEST_LOGIN":
         returnMessage(await requestLogin());
+        break;
+      case "LOGOUT":
+        returnMessage(await logOut());
         break;
     }
   },

@@ -1,11 +1,13 @@
 .wrapper {
+  --offset-from-top: calc(var(--season-header-height) + var(--season-header-margin));
+
   display: flex;
   flex-direction: column;
   position: sticky;
-  top: 32px;
+  top: calc(var(--offset-from-top) + var(--header-height) + var(--heading-margin-bottom));
   width: 330px;
   align-self: flex-start;
-  margin-top: 32px;
+  margin-top: var(--offset-from-top);
 }
 
 .element {
@@ -31,4 +33,8 @@
   pointer-events: none;
   transition: var(--transition-fast);
   transition-property: transform;
+
+  &.isHidden {
+    display: none;
+  }
 }

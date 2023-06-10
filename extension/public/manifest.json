@@ -1,6 +1,6 @@
 {
   "name": "zium.app Helper",
-  "version": "0.9.4",
+  "version": "0.9.5",
   "declarative_net_request": {
     "rule_resources": [
       {

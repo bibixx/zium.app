@@ -9,7 +9,41 @@
   }
 }
 
-.wrapper {
+.closeWrapperPlaceholder {
+  width: 20px;
+}
+
+.closeWrapper {
+  display: flex;
+  color: var(--color-text-muted);
+  transition: var(--transition-fast);
+  transition-property: color, opacity;
+  visibility: hidden;
+  appearance: none;
+  border: none;
+  padding: 2px;
+  margin: -2px;
+  background: none;
+  cursor: pointer;
+  border-radius: var(--radii-rounded);
+  position: absolute;
+  right: 12px;
+  top: 12px;
+
+  * {
+    color: currentColor;
+  }
+
+  &:hover {
+    color: var(--color-text-strong);
+  }
+
+  &.isVisible {
+    visibility: visible;
+  }
+}
+
+.label {
   display: flex;
   gap: 4px;
   padding: 12px 12px;
@@ -19,6 +53,12 @@
   box-shadow: 0 0 0 2px transparent;
   transition: var(--transition-fast);
   transition-property: background, box-shadow;
+  cursor: text;
+  width: 100%;
+
+  &.isRounded {
+    border-radius: var(--radii-rounded);
+  }
 
   @include inner-border(var(--color-border-muted-alpha), 1px) {
     transition: var(--transition-fast);
@@ -50,12 +90,18 @@
   }
 }
 
+.wrapper {
+  display: flex;
+  position: relative;
+}
+
 .input {
   border: 0;
   background: none;
   color: var(--color-text-strong);
   caret-color: var(--color-background-accent-default);
   padding: 0 4px;
+  flex: 1;
 
   @include typography(text, 300, regular);
 

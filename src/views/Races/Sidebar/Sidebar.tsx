@@ -1,16 +1,23 @@
+import cn from "classnames";
 import { ListItem } from "../../../components/ListItem/ListItem";
-import { SupportedSeasons, SUPPORTED_SEASONS } from "../../../constants/seasons";
+import { SupportedSeasons } from "../../../constants/seasons";
 import { isSeasonComingSoon } from "../../../utils/SeasonUtils";
 import { WithVariables } from "../../../components/WithVariables/WithVariables";
-import { Header } from "../Header/Header";
 import styles from "./Sidebar.module.scss";
 
+interface SidebarSeason {
+  seasonId: SupportedSeasons;
+  count: number | null;
+}
+
 interface SidebarProps {
-  visibleSeasonId: string;
+  visibleSeasonId: SupportedSeasons;
+  seasons: SidebarSeason[];
   overwriteVisibleSeason: (season: SupportedSeasons) => void;
 }
-export const Sidebar = ({ visibleSeasonId, overwriteVisibleSeason }: SidebarProps) => {
-  const visibleSeasonIndex = (SUPPORTED_SEASONS as readonly string[]).indexOf(visibleSeasonId);
+export const Sidebar = ({ visibleSeasonId, seasons, overwriteVisibleSeason }: SidebarProps) => {
+  const seasonIds = seasons.map((season) => season.seasonId);
+  const visibleSeasonIndex = seasonIds.indexOf(visibleSeasonId);
 
   const onSidebarElementClick = (season: SupportedSeasons) => (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (e.metaKey) {
@@ -33,19 +40,22 @@ export const Sidebar = ({ visibleSeasonId, overwriteVisibleSeason }: SidebarProp
 
   return (
     <div className={styles.wrapper}>
-      <Header />
       <div className={styles.elementsWrapper}>
-        <WithVariables className={styles.carrot} variables={{ i: visibleSeasonIndex }} />
-        {SUPPORTED_SEASONS.map((season) => {
-          const isComingSoon = isSeasonComingSoon(season);
+        <WithVariables
+          className={cn(styles.carrot, { [styles.isHidden]: visibleSeasonIndex < 0 })}
+          variables={{ i: visibleSeasonIndex }}
+        />
+        {seasons.map((season) => {
+          const isComingSoon = isSeasonComingSoon(season.seasonId);
 
           return (
             <SidebarElement
-              season={season}
+              season={season.seasonId}
+              count={season.count}
               isComingSoon={isComingSoon}
-              key={season}
-              isActive={visibleSeasonId === season}
-              onSidebarElementClick={onSidebarElementClick(season)}
+              key={season.seasonId}
+              isActive={visibleSeasonId === season.seasonId}
+              onSidebarElementClick={onSidebarElementClick(season.seasonId)}
             />
           );
         })}
@@ -56,18 +66,25 @@ export const Sidebar = ({ visibleSeasonId, overwriteVisibleSeason }: SidebarProp
 
 interface SidebarElementProps {
   season: string;
+  count: number | null;
   isComingSoon?: boolean;
   isActive: boolean;
   onSidebarElementClick: (e: React.MouseEvent<HTMLAnchorElement>) => void;
 }
-const SidebarElement = ({ season, isComingSoon = false, isActive, onSidebarElementClick }: SidebarElementProps) => {
+const SidebarElement = ({
+  season,
+  isComingSoon = false,
+  isActive,
+  onSidebarElementClick,
+  count,
+}: SidebarElementProps) => {
   const baseProps = !isComingSoon ? ({ as: "a", href: `#season-${season}` } as const) : ({ as: "div" } as const);
 
   return (
     <div className={styles.element}>
       <ListItem
         {...baseProps}
-        caption={isComingSoon ? "Coming soon" : undefined}
+        caption={isComingSoon ? "Coming soon" : count}
         disabled={isComingSoon}
         isActive={isActive}
         onClick={onSidebarElementClick}

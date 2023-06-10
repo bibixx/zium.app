@@ -10,3 +10,24 @@
   width: 400px;
   margin: 0 auto;
 }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.heading {
+  @include typography(heading, 600, default);
+  color: var(--color-text-strong);
+  margin-bottom: var(--season-header-margin);
+  margin-top: 0;
+  height: var(--season-header-height);
+  scroll-margin-top: calc(var(--header-height) + var(--heading-margin-bottom));
+  user-select: none;
+
+  &:focus {
+    border-radius: var(--radii-xsmall);
+  }
+}

@@ -1,0 +1,27 @@
+.wrapper {
+  margin-top: 64px;
+  padding: 64px;
+  background: var(--color-background-muted-default);
+  @include inner-border(var(--color-border-muted-default));
+  border-radius: var(--radii-large);
+  text-align: center;
+  display: flex;
+  justify-content: center;
+}
+
+.content {
+  width: 400px;
+}
+
+.heading {
+  color: var(--color-text-strong);
+  @include typography(heading, 400, default);
+  margin-bottom: 8px;
+  user-select: none;
+}
+
+.subheading {
+  color: var(--color-text-default);
+  @include typography(text, 300, regular);
+  user-select: none;
+}

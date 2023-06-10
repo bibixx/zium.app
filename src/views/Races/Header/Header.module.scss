@@ -1,12 +1,37 @@
 .wrapper {
+  position: sticky;
+  top: 0;
   display: flex;
   align-items: center;
-  margin-bottom: 28px;
-  margin-left: 16px;
-  margin-top: 8px;
+  justify-content: space-between;
+  padding: 24px 0 24px 16px;
+  grid-column: -1 / 1;
+  background: var(--color-background-surface);
+  z-index: var(--z-index-header);
 }
 
 .headerImage {
   height: 32px;
   user-select: none;
+}
+
+.rightContent {
+  display: flex;
+  gap: 16px;
+  justify-content: flex-end;
+}
+
+.inputWrapper {
+  width: 304px;
+}
+
+.shadow {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: var(--z-index-header-shadow);
+  background: linear-gradient(to bottom, var(--color-background-surface), rgba(0, 0, 0, 0));
+  height: calc(var(--header-height) + 64px);
+  width: 100%;
+  pointer-events: none;
 }

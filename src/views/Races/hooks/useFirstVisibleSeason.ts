@@ -1,4 +1,5 @@
 import { RefObject, useEffect, useState } from "react";
+import { HEADER_HEIGHT } from "../Header/Header";
 
 export const useFirstVisibleSeason = (refsRef: RefObject<Array<HTMLElement | null>>) => {
   const [firstVisibleSeasonIndex, setFirstVisibleSeasonIndex] = useState(0);
@@ -33,7 +34,7 @@ export const useFirstVisibleSeason = (refsRef: RefObject<Array<HTMLElement | nul
           setSeasonIndexOverwrite(null);
         }
       },
-      { rootMargin: "-1px" },
+      { rootMargin: `-${1 + HEADER_HEIGHT}px` },
     );
 
     refs.forEach((ref) => {

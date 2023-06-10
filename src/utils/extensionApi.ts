@@ -52,6 +52,12 @@ export const requestLogin = async () => {
   return logInSucceeded;
 };
 
+export const logOut = async () => {
+  const logOutSucceeded = await makeRequest<boolean>("LOGOUT");
+
+  return logOutSucceeded;
+};
+
 export const listenOnTokenChange = (onChanged: (isLoggedIn: boolean) => void) => {
   const onEvent = (event: MessageEvent<{ type: string; source: string; data: boolean }>) => {
     if (event.source !== window) {

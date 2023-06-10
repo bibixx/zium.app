@@ -1,10 +1,12 @@
+import { SEASON_TO_F1_ID_MAP, SupportedSeasons } from "../../constants/seasons";
 import { fetchJSON } from "../../utils/api";
 import { uniqueById } from "../../utils/uniqueById";
 import { isNotNullable } from "../../utils/usNotNullable";
 import { RaceData } from "./useRacesList.types";
 
-export const fetchRacesList = async (id: string, signal: AbortSignal): Promise<RaceData[]> => {
-  const url = `/2.0/R/ENG/WEB_DASH/ALL/PAGE/${id}/F1_TV_Pro_Annual/14`;
+export const fetchRacesList = async (seasonId: SupportedSeasons, signal: AbortSignal): Promise<RaceData[]> => {
+  const seasonApiId = SEASON_TO_F1_ID_MAP[seasonId];
+  const url = `/2.0/R/ENG/WEB_DASH/ALL/PAGE/${seasonApiId}/F1_TV_Pro_Annual/14`;
   const body = await fetchJSON(url, undefined, signal);
 
   const containers = body.resultObj.containers
@@ -30,6 +32,7 @@ export const fetchRacesList = async (id: string, signal: AbortSignal): Promise<R
 
       return {
         id: racePageId,
+        seasonId,
         title,
         pictureUrl,
         countryName,

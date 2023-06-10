@@ -139,8 +139,8 @@ export const StreamPicker = ({ availableDrivers, globalFeeds }: StreamPickerProp
             icon={MagnifyingGlassIcon}
             placeholder="Search"
             type="text"
-            onChange={(e) => {
-              setSearchText(e.target.value);
+            onChange={(value) => {
+              setSearchText(value);
               setFakeSelection(0);
               scrollListItemIntoView(0);
             }}
