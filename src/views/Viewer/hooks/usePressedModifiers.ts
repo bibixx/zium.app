@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
+import { isWindows } from "../../../utils/platform";
 
 export const usePressedModifiers = () => {
   const [state, setState] = useState<{ meta: boolean; shift: boolean }>({ meta: false, shift: false });
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent | MouseEvent) => {
-      setState({ meta: e.metaKey, shift: e.shiftKey });
+      const meta = isWindows ? e.ctrlKey : e.metaKey;
+
+      setState({ meta, shift: e.shiftKey });
     };
 
     document.addEventListener("keydown", onKey, { capture: true });

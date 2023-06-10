@@ -20,6 +20,7 @@ interface RnDWindowProps {
   zIndex: number;
   bringToFront: () => void;
   transitionStatus: TransitionStatus;
+  onResize: () => void;
 }
 export const RnDWindow = ({
   dimensions,
@@ -29,6 +30,7 @@ export const RnDWindow = ({
   zIndex,
   bringToFront,
   transitionStatus,
+  onResize,
 }: RnDWindowProps) => {
   const elementRef = useRef<HTMLDivElement>(null);
   const { preventHiding } = useViewerUIVisibility();
@@ -68,8 +70,9 @@ export const RnDWindow = ({
         x: sizePxToPercent(position.x, windowWidth),
         y: sizePxToPercent(position.y, windowHeight),
       });
+      onResize();
     },
-    [onChange, windowHeight, windowWidth],
+    [onChange, onResize, windowHeight, windowWidth],
   );
 
   const onDragStart = useCallback(() => {
