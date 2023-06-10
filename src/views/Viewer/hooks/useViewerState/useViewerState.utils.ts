@@ -2,6 +2,7 @@ import { GridWindow } from "../../../../types/GridWindow";
 import { Dimensions } from "../../../../types/Dimensions";
 import { generateUID } from "../../../../utils/generateUID";
 import { assertNever } from "../../../../utils/assertNever";
+import { clone } from "../../../../utils/clone";
 
 interface GridLayout {
   width: number;
@@ -96,7 +97,7 @@ const withLocalStorage =
   };
 
 export const windowGridReducer = (prevState: WindowGridState, action: WindowGridActions) => {
-  const newState = structuredClone(prevState);
+  const newState = clone(prevState);
   const currentLayoutIndex = prevState.currentLayoutIndex;
   const prevCurrentLayout = prevState.savedLayouts[currentLayoutIndex];
   const newCurrentLayout = newState.savedLayouts[currentLayoutIndex];

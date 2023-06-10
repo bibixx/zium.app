@@ -16,6 +16,7 @@ import { DEFAULT_SCOPE } from "./hooks/useScopedHotkeys/useScopedHotkeys";
 import { DebugProvider } from "./hooks/useDebug/useDebug";
 import { ErrorBoundary } from "./components/ErrorBoundary/ErrorBoundary";
 import { NotSupported } from "./views/NotSupported/NotSupported";
+import { isSupportedBrowser } from "./utils/platform";
 
 const WithCompanion = ({ children }: React.PropsWithChildren<unknown>) => {
   const companionState = useHasCompanion();
@@ -52,8 +53,6 @@ const WithLoggedIn = () => {
 
   return assertNever(loggedInState);
 };
-
-const isSupportedBrowser = navigator.userAgent.includes("Chrome");
 
 export default function App() {
   return (

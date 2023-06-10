@@ -26,6 +26,8 @@ import { FullScreenError } from "../../components/FullScreenError/FullScreenErro
 import { Loader } from "../../components/Loader/Loader";
 import { TimedOutWrapper } from "../../components/TimedOutWrapper/TimedOutWrapper";
 import { useTrackWithTitle } from "../../hooks/useAnalytics/useAnalytics";
+import { Snackbar } from "../../components/Snackbar/Snackbar";
+import { isWindows } from "../../utils/platform";
 import { getWindowStreamMap, getAvailableDrivers } from "./Viewer.utils";
 import { useGrid } from "./hooks/useGrid";
 import styles from "./Viewer.module.scss";
@@ -34,6 +36,7 @@ import { useSyncVideos } from "./hooks/useSyncVideos";
 import { BackgroundDots } from "./BackgroundDots/BackgroundDots";
 import { useViewerState } from "./hooks/useViewerState/useViewerState";
 import { useGlobalShortcuts } from "./hooks/useGlobalShortcuts";
+import { useCmdTutorial } from "./hooks/useCmdTutorial";
 
 interface ViewerProps {
   streams: StreamsStateData;
@@ -60,6 +63,7 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
   const windowStreamMap = useMemo(() => getWindowStreamMap(windows, streams), [windows, streams]);
   const windowVideojsRefMapRef = useRef<Record<string, PlayerAPI | null>>({});
   const [mainVideoPlayer, setMainVideoPlayer] = useState<PlayerAPI | null>(null);
+  const { onResize, shouldShowTutorial } = useCmdTutorial();
 
   const windowsMap = useMemo((): Record<string, GridWindow> => {
     const entries = windows.map((w) => [w.id, w]);
@@ -284,6 +288,7 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
                     zIndex={l.zIndex}
                     bringToFront={() => dispatch({ type: "bringToFront", id: l.id })}
                     transitionStatus={transitionStatus}
+                    onResize={onResize}
                   >
                     {getLayoutChild(gridWindow)}
                   </RnDWindow>
@@ -312,6 +317,11 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
           viewerState={viewerState}
           isPaused={areVideosPaused}
         />
+        <Snackbar isOpen={shouldShowTutorial}>
+          Hold
+          <div className={cn(styles.cmdContainer, { [styles.isCmd]: !isWindows })}>{isWindows ? "Ctrl" : "⌘"}</div>
+          while resizing to prevent snapping
+        </Snackbar>
       </div>
     </StreamPickerProvider>
   );
