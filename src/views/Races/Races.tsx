@@ -31,13 +31,17 @@ export const Races = () => {
     const transliteratedSearchQuery = prepareForSearch(searchQuery);
 
     return seasonsList.map((season) => {
-      if (season.state !== "done" || searchQuery === "") {
+      if (season.state !== "done") {
         return season;
       }
 
       return {
         ...season,
         data: filterOutFutureRaces(season.data).filter((race) => {
+          if (searchQuery === "") {
+            return true;
+          }
+
           const title = prepareForSearch(race.title);
           const description = prepareForSearch(race.description);
           const countryName = prepareForSearch(race.countryName);

@@ -1,5 +1,4 @@
-import { isSameDay } from "date-fns";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useState } from "react";
 import { ErrorMessage } from "../../../components/ErrorMessage/ErrorMessage";
 import { EventCard } from "../../../components/EventCard/EventCard";
 import { EventCardSkeleton } from "../../../components/EventCardSkeleton/EventCardSkeleton";
@@ -9,7 +8,6 @@ import { useHotkeysStack } from "../../../hooks/useHotkeysStack/useHotkeysStack"
 import { useLaggedBehindData } from "../../../hooks/useLaggedBehindData/useLaggedBehindData";
 import { RacesState } from "../../../hooks/useRacesList/useRacesList.types";
 import { useScopedHotkeys } from "../../../hooks/useScopedHotkeys/useScopedHotkeys";
-import { clone } from "../../../utils/clone";
 import { formatDateRange } from "../../../utils/date";
 import { toTitleCase } from "../../../utils/text";
 import { RaceDetails } from "../RaceDetails/RaceDetails";
@@ -30,22 +28,6 @@ export const Season = ({ season }: SeasonProps) => {
   const onSheetClose = useCallback(() => setSelectedRaceEvent(null), []);
   const scope = useHotkeysStack(selectedRaceEvent != null, false);
   useScopedHotkeys("esc", scope, onSheetClose);
-
-  const racesList = useMemo(() => {
-    if (season.state !== "done") {
-      return [];
-    }
-
-    const sortedRaces = clone(season.data).sort((a, b) => b.startDate.getTime() - a.startDate.getTime());
-    const latestFinishedRaceIndex = sortedRaces.findIndex((r) => r.endDate.getTime() <= Date.now());
-    const latestFinishedRace = sortedRaces[latestFinishedRaceIndex];
-
-    if (isSameDay(latestFinishedRace?.startDate, new Date())) {
-      return sortedRaces.slice(latestFinishedRaceIndex);
-    }
-
-    return sortedRaces.slice(Math.max(0, latestFinishedRaceIndex - 1));
-  }, [season]);
 
   const heading = (
     <h2 className={styles.heading} id={`season-${season.seasonId}`} tabIndex={-1}>
@@ -86,7 +68,7 @@ export const Season = ({ season }: SeasonProps) => {
       {heading}
       <RaceDetailsSheet onClose={onSheetClose} selectedRaceEvent={selectedRaceEvent} />
       <div className={styles.grid}>
-        {racesList.map(({ id, pictureUrl, countryName, startDate, endDate, roundNumber, description, countryId }) => {
+        {season.data.map(({ id, pictureUrl, countryName, startDate, endDate, roundNumber, description, countryId }) => {
           const onClick = () => {
             setSelectedRaceEvent({ id, endDate });
           };
