@@ -4,6 +4,7 @@ import { differenceInMinutes, differenceInSeconds, sub } from "date-fns";
 import { ReactNode, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useActiveAlarms } from "../../hooks/useActiveAlarms";
+import { LiveEventState } from "../../hooks/useLiveEvent/useLiveEvent.types";
 import { RaceData } from "../../hooks/useRacesList/useRacesList.types";
 import { createAlarm, deleteAlarm } from "../../utils/extensionApi";
 import { MDASH, NBSP, toTitleCase } from "../../utils/text";
@@ -13,16 +14,24 @@ import { EventCardTag } from "../EventCardTag/EventCardTag";
 import styles from "./LiveCard.module.scss";
 
 interface LiveCardWithZeroStateProps {
-  raceDetails: RaceData | null;
+  liveEventState: LiveEventState;
 }
-export const LiveCardWithZeroState = ({ raceDetails }: LiveCardWithZeroStateProps) => {
+export const LiveCardWithZeroState = ({ liveEventState }: LiveCardWithZeroStateProps) => {
   const activeAlarms = useActiveAlarms();
 
-  if (raceDetails === null) {
-    return <div className={styles.wrapperSkeleton} />;
+  if (liveEventState.state === "loading") {
+    return <div className={cn(styles.wrapperSkeleton, styles.marginWrapper)} />;
   }
 
-  return <LiveCard raceDetails={raceDetails} activeAlarms={activeAlarms} />;
+  if (liveEventState.state !== "done" || liveEventState.data == null) {
+    return null;
+  }
+
+  return (
+    <div className={styles.marginWrapper}>
+      <LiveCard raceDetails={liveEventState.data} activeAlarms={activeAlarms} />
+    </div>
+  );
 };
 
 interface LiveCardProps {

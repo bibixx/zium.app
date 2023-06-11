@@ -13,6 +13,7 @@ export const useLiveEvent = (fallbackRaceId: string | null): LiveEventState => {
       const liveRace = await fetchLiveEvent(signal);
       setState({ state: "done", data: liveRace });
     } catch (error) {
+      setState({ state: "error" });
       console.error(error);
     }
   }, []);
