@@ -1,6 +1,6 @@
 import { ArrowUturnLeftIcon, BellIcon, CheckIcon, SignalIcon } from "@heroicons/react/20/solid";
 import cn from "classnames";
-import { differenceInMinutes, differenceInSeconds, isFuture, sub } from "date-fns";
+import { differenceInMinutes, differenceInSeconds, sub } from "date-fns";
 import { ReactNode, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useActiveAlarms } from "../../hooks/useActiveAlarms";
@@ -110,10 +110,9 @@ const LiveCard = ({ raceDetails, activeAlarms }: LiveCardProps) => {
       <div className={styles.contentBackground}></div>
       <div className={styles.shadow}></div>
       {raceDetails.isLive && <img className={styles.imageBlur} src={pictureUrl} alt="" />}
-      <div
-        style={{ backgroundImage: `url(${pictureUrl})` }}
-        className={cn(styles.image, { [styles.isLive]: raceDetails.isLive })}
-      />
+      <div className={styles.imageWrapper}>
+        <img src={pictureUrl} className={cn(styles.image, { [styles.isLive]: raceDetails.isLive })} alt="" />
+      </div>
     </Wrapper>
   );
 };
