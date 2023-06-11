@@ -1,6 +1,7 @@
 import { SupportedSeasons } from "../../constants/seasons";
 
 export interface RaceData {
+  contentId: number;
   title: string;
   id: string;
   pictureUrl: string;
@@ -10,6 +11,8 @@ export interface RaceData {
   roundNumber: number;
   description: string;
   countryId: string;
+  isLive: boolean;
+  hasMedia?: boolean;
 }
 
 export type BaseRaces = { seasonId: SupportedSeasons };

@@ -5,11 +5,7 @@ interface LiveEventStateLoading {
 }
 interface LiveEventStateLoaded {
   state: "done";
-  data: LiveRaceData | null;
+  data: RaceData | null;
 }
 
 export type LiveEventState = LiveEventStateLoading | LiveEventStateLoaded;
-
-export interface LiveRaceData extends RaceData {
-  contentId: number;
-}

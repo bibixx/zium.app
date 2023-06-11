@@ -25,7 +25,7 @@ const getResponse = <T>(type: string, timeout?: number) =>
 
 const sendMessage = <T>(type: string, data: T) => window.postMessage({ type, data, source: "page" }, "*");
 
-const makeRequest = async <T>(type: string, data?: T, timeout?: number) => {
+const makeRequest = async <T, U = never>(type: string, data?: U, timeout?: number) => {
   const responsePromise = getResponse<T>(type, timeout);
   sendMessage(type, data);
 
@@ -58,6 +58,31 @@ export const logOut = async () => {
   return logOutSucceeded;
 };
 
+interface Alarm {
+  id: number;
+  date: number;
+  eventName: string;
+  image: string;
+}
+
+export const createAlarm = async (alarm: Alarm) => {
+  const createAlarmSucceeded = await makeRequest<boolean, Alarm>("CREATE_ALARM", alarm);
+
+  return createAlarmSucceeded;
+};
+
+export const deleteAlarm = async (alarmId: number) => {
+  const deleteAlarmSucceeded = await makeRequest<boolean, number>("DELETE_ALARM", alarmId);
+
+  return deleteAlarmSucceeded;
+};
+
+export const getAlarms = async () => {
+  const alarms = await makeRequest<string[]>("ALARMS");
+
+  return alarms;
+};
+
 export const listenOnTokenChange = (onChanged: (isLoggedIn: boolean) => void) => {
   const onEvent = (event: MessageEvent<{ type: string; source: string; data: boolean }>) => {
     if (event.source !== window) {
@@ -65,6 +90,22 @@ export const listenOnTokenChange = (onChanged: (isLoggedIn: boolean) => void) =>
     }
 
     if (event.data.type === "LOGGED_IN_CHANGED" && event.data.source === "extension") {
+      onChanged(event.data.data);
+    }
+  };
+
+  window.addEventListener("message", onEvent);
+
+  return () => window.removeEventListener("message", onEvent);
+};
+
+export const listenOnAlarmChange = (onChanged: (activeAlarmIds: string[]) => void) => {
+  const onEvent = (event: MessageEvent<{ type: string; source: string; data: string[] }>) => {
+    if (event.source !== window) {
+      return;
+    }
+
+    if (event.data.type === "ALARM_CHANGED" && event.data.source === "extension") {
       onChanged(event.data.data);
     }
   };

@@ -1,9 +1,9 @@
 import { RACE_GENRES } from "../../constants/races";
 import { fetchJSON } from "../../utils/api";
 import { uniqueById } from "../../utils/uniqueById";
-import { LiveRaceData } from "./useLiveEvent.types";
+import { RaceData } from "../useRacesList/useRacesList.types";
 
-export const fetchLiveEvent = async (signal: AbortSignal): Promise<LiveRaceData | null> => {
+export const fetchLiveEvent = async (signal: AbortSignal): Promise<RaceData | null> => {
   const url = `/2.0/R/ENG/WEB_DASH/ALL/PAGE/395/F1_TV_Pro_Annual/14`;
   const body = await fetchJSON(url, undefined, signal);
 
@@ -30,6 +30,7 @@ export const fetchLiveEvent = async (signal: AbortSignal): Promise<LiveRaceData 
   const description = liveContainer.metadata.emfAttributes.Global_Title;
   const countryId = liveContainer.metadata.emfAttributes.MeetingCountryKey;
   const contentId = liveContainer.metadata.contentId;
+  const isLive = liveContainer.metadata.contentSubtype === "LIVE";
 
   return {
     id: racePageId,
@@ -42,5 +43,7 @@ export const fetchLiveEvent = async (signal: AbortSignal): Promise<LiveRaceData 
     roundNumber,
     description,
     countryId,
+    isLive,
+    hasMedia: isLive,
   };
 };

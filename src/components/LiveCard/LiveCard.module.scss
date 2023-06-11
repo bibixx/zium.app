@@ -1,16 +1,23 @@
 .wrapper {
-  margin-top: 64px;
   display: flex;
   width: 100%;
   height: 436px;
   border-radius: var(--radii-large);
   background: var(--color-background-muted-default);
   user-select: none;
-
+  margin: 0;
+  padding: 0;
+  border: none;
+  appearance: none;
+  text-align: left;
   @include inner-border(var(--color-border-muted-alpha)) {
     z-index: 4;
   }
   overflow: visible;
+
+  &:is(a) {
+    cursor: pointer;
+  }
 }
 
 .shadow {
@@ -59,10 +66,17 @@
   height: 100%;
   right: 0;
   top: 0;
-  object-fit: cover;
   z-index: 1;
   border-top-right-radius: var(--radii-large);
   border-bottom-right-radius: var(--radii-large);
+  background-size: 100%;
+  background-position: 0 center;
+
+  &:not(.isLive) {
+    filter: grayscale(1);
+    opacity: 0.5;
+    background-size: 125%;
+  }
 }
 
 .imageBlur {
@@ -75,7 +89,7 @@
   z-index: 0;
   opacity: 0.75;
   border-radius: 24px;
-  filter: blur(144px);
+  filter: blur(64px);
 }
 
 .content {
@@ -124,4 +138,11 @@
 .raceRound {
   @include typography(text, 300, regular);
   color: var(--color-text-default);
+}
+
+.wrapperSkeleton {
+  width: 100%;
+  height: 436px;
+  border-radius: var(--radii-large);
+  background: var(--color-background-muted-default);
 }

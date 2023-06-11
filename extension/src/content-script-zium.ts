@@ -1,3 +1,5 @@
+import { Alarm } from "./common";
+
 const { version } = chrome.runtime.getManifest();
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -11,17 +13,17 @@ const isLoggedIn = async () => {
   return token != null;
 };
 
-const requestLogin = async () =>
-  chrome.runtime.sendMessage({
-    type: "REQUEST_LOGIN",
-    source: "extension",
-  });
+const getAlarms = async () => {
+  const alarmsStorage = (await chrome.storage.local.get("alarms")).alarms as Record<string, Alarm>;
 
-const logOut = async () =>
-  chrome.runtime.sendMessage({
-    type: "LOGOUT",
-    source: "extension",
-  });
+  if (alarmsStorage == null) {
+    return [];
+  }
+
+  return Object.entries(alarmsStorage)
+    .filter(([, value]) => new Date(value.date).getTime() > Date.now())
+    .map(([key]) => key);
+};
 
 window.addEventListener(
   "message",
@@ -51,24 +53,31 @@ window.addEventListener(
       case "LOGGED_IN":
         returnMessage(await isLoggedIn());
         break;
-      case "REQUEST_LOGIN":
-        returnMessage(await requestLogin());
+      case "ALARMS":
+        returnMessage(await getAlarms());
         break;
-      case "LOGOUT":
-        returnMessage(await logOut());
+      default: {
+        chrome.runtime.sendMessage({
+          type,
+          source: "extension",
+          data: event.data.data,
+        });
         break;
+      }
     }
   },
   false,
 );
 
-chrome.storage.local.onChanged.addListener((changes) => {
-  if (!("token" in changes)) {
-    return;
+chrome.storage.local.onChanged.addListener(async (changes) => {
+  if ("token" in changes) {
+    const token = changes.token.newValue;
+    sendMessageToPage("LOGGED_IN_CHANGED", token != null);
   }
 
-  const token = changes.token.newValue;
-  sendMessageToPage("LOGGED_IN_CHANGED", token != null);
+  if ("alarms" in changes) {
+    sendMessageToPage("ALARM_CHANGED", await getAlarms());
+  }
 });
 
 export {};

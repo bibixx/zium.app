@@ -4,16 +4,22 @@ import moize from "moize";
 import { RaceData, RacesState } from "../../hooks/useRacesList/useRacesList.types";
 import { clone } from "../../utils/clone";
 
-const _prepareForSearch = (text: string) => {
+const unmemoizedPrepareForSearch = (text: string) => {
   return transliterate(text).toLowerCase();
 };
 
-export const prepareForSearch = moize.infinite(_prepareForSearch);
+export const prepareForSearch = moize.infinite(unmemoizedPrepareForSearch);
 
-export const filterOutFutureRaces = (races: RaceData[]) => {
+export const getLatestFinishedRaceData = (races: RaceData[]) => {
   const sortedRaces = clone(races).sort((a, b) => b.startDate.getTime() - a.startDate.getTime());
   const latestFinishedRaceIndex = sortedRaces.findIndex((r) => r.endDate.getTime() <= Date.now());
   const latestFinishedRace = sortedRaces[latestFinishedRaceIndex];
+
+  return { index: latestFinishedRaceIndex, race: latestFinishedRace, sortedRaces };
+};
+
+export const filterOutFutureRaces = (races: RaceData[]) => {
+  const { race: latestFinishedRace, index: latestFinishedRaceIndex, sortedRaces } = getLatestFinishedRaceData(races);
 
   if (isSameDay(latestFinishedRace?.startDate, new Date())) {
     return sortedRaces.slice(latestFinishedRaceIndex);

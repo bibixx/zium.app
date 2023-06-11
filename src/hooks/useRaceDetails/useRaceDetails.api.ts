@@ -10,16 +10,22 @@ export const fetchRaceDetailsId = async (raceId: string, signal: AbortSignal): P
   const liveAndReplayEvents = getReplayEvents(body);
   const scheduledEvents = getScheduledEvents(body);
 
-  const raceEvents = uniqueById([...liveAndReplayEvents, ...scheduledEvents]);
-  const raceDetails = raceEvents
+  const liveAndReplayDetails = liveAndReplayEvents
     .filter((r: any) => RACE_GENRES.includes(r.metadata.genres[0]?.toLowerCase()))
-    .map(mapEventToRaceDetailsData)
-    .sort((a, b) => a.startDate.getTime() - b.startDate.getTime());
+    .map((e) => mapEventToRaceDetailsData(e, true));
+
+  const scheduledDetails = scheduledEvents
+    .filter((r: any) => RACE_GENRES.includes(r.metadata.genres[0]?.toLowerCase()))
+    .map((e) => mapEventToRaceDetailsData(e, false));
+
+  const raceDetails = uniqueById([...liveAndReplayDetails, ...scheduledDetails]).sort(
+    (a, b) => a.startDate.getTime() - b.startDate.getTime(),
+  );
 
   return raceDetails;
 };
 
-const getReplayEvents = (body: any): RaceDetailsData[] => {
+const getReplayEvents = (body: any): any[] => {
   const replays = body.resultObj.containers
     .filter((c: any) => c.metadata.label?.includes("Replays"))
     .flatMap((c: any) => c.retrieveItems.resultObj.containers);
@@ -27,7 +33,7 @@ const getReplayEvents = (body: any): RaceDetailsData[] => {
   return replays ?? [];
 };
 
-const getScheduledEvents = (body: any): RaceDetailsData[] => {
+const getScheduledEvents = (body: any): any[] => {
   const scheduled = body.resultObj.containers
     .filter((c: any) => c.layout === "schedule")
     .flatMap((c: any) => c.retrieveItems.resultObj.containers);
@@ -37,12 +43,19 @@ const getScheduledEvents = (body: any): RaceDetailsData[] => {
   return f1Scheduled?.events ?? [];
 };
 
-const mapEventToRaceDetailsData = (event: any): RaceDetailsData => {
+const mapEventToRaceDetailsData = (event: any, isReplay: boolean): RaceDetailsData => {
   return {
     title: event.metadata.titleBrief,
     id: event.metadata.contentId,
     pictureUrl: event.metadata.pictureUrl,
-    startDate: new Date(event.metadata.emfAttributes.sessionStartDate),
     isLive: event.metadata.contentSubtype === "LIVE",
+    hasMedia: isReplay,
+    description: event.metadata.emfAttributes.Global_Title,
+    contentId: event.metadata.contentId,
+    countryName: event.metadata.emfAttributes.Meeting_Country_Name,
+    countryId: event.metadata.emfAttributes.MeetingCountryKey,
+    startDate: new Date(event.metadata.emfAttributes.sessionStartDate),
+    endDate: new Date(event.metadata.emfAttributes.sessionEndDate),
+    roundNumber: +event.metadata.emfAttributes.Meeting_Number,
   };
 };
