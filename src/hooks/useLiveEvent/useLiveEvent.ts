@@ -1,9 +1,12 @@
 import { useCallback, useEffect, useState } from "react";
+import { useRaceDetails } from "../useRaceDetails/useRaceDetails";
+import { RaceDetailsData } from "../useRaceDetails/useRacesDetails.types";
 import { fetchLiveEvent } from "./useLiveEvent.api";
 import { LiveEventState } from "./useLiveEvent.types";
 
-export const useLiveEvent = () => {
+export const useLiveEvent = (fallbackRaceId: string | null): LiveEventState => {
   const [state, setState] = useState<LiveEventState>({ state: "loading" });
+  const { racesDetailsState } = useRaceDetails(fallbackRaceId);
 
   const fetchData = useCallback(async (signal: AbortSignal) => {
     try {
@@ -28,5 +31,35 @@ export const useLiveEvent = () => {
     };
   }, [fetchData]);
 
+  if (state.state === "done" && state.data === null && racesDetailsState.state === "done") {
+    return {
+      state: "done",
+      data: findClosestToNow(racesDetailsState.data) ?? null,
+    };
+  }
+
   return state;
+};
+
+const findClosestToNow = (races: RaceDetailsData[]) => {
+  let closestIndex = 0;
+  let closestDiff = Infinity;
+
+  const now = new Date();
+  for (let i = 0; i < races.length; i++) {
+    const race = races[i];
+
+    if (race.isLive) {
+      return race;
+    }
+
+    const compareDate = race.hasMedia ? race.endDate : race.startDate;
+    const diff = Math.abs(now.getTime() - compareDate.getTime());
+    if (diff < closestDiff) {
+      closestIndex = i;
+      closestDiff = diff;
+    }
+  }
+
+  return races[closestIndex];
 };

@@ -24,6 +24,6 @@
   "externally_connectable": {
     "matches": ["__FROM_ENV__"]
   },
-  "permissions": ["declarativeNetRequest", "storage", "tabs", "cookies"],
+  "permissions": ["declarativeNetRequest", "storage", "tabs", "cookies", "alarms", "notifications"],
   "manifest_version": 3
 }

@@ -4,6 +4,14 @@ export interface RaceDetailsData {
   pictureUrl: string;
   startDate: Date;
   isLive: boolean;
+  hasMedia: boolean;
+  description: string;
+
+  contentId: number;
+  countryName: string;
+  endDate: Date;
+  roundNumber: number;
+  countryId: string;
 }
 
 export type RaceDetailsState =

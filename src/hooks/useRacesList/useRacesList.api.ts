@@ -25,12 +25,15 @@ export const fetchRacesList = async (seasonId: SupportedSeasons, signal: AbortSi
       const roundNumber = +racePage.metadata.emfAttributes.Championship_Meeting_Ordinal;
       const description = racePage.metadata.emfAttributes.Meeting_Official_Name;
       const countryId = racePage.metadata.emfAttributes.MeetingCountryKey;
+      const contentId = racePage.metadata.contentId;
+      const isLive = racePage.metadata.contentSubtype === "LIVE";
 
       if (!title.toLowerCase().includes("grand prix")) {
         return null;
       }
 
       return {
+        contentId,
         id: racePageId,
         seasonId,
         title,
@@ -41,6 +44,7 @@ export const fetchRacesList = async (seasonId: SupportedSeasons, signal: AbortSi
         roundNumber,
         description,
         countryId,
+        isLive,
       };
     })
     .filter(isNotNullable)

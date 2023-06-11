@@ -70,6 +70,7 @@
 
 .wrapper {
   display: flex;
+  width: 100%;
   flex-direction: column;
   border-radius: var(--radii-medium);
   transition: var(--transition-medium);

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useReducer, useRef } from "react";
 import { fetchRaceDetailsId } from "./useRaceDetails.api";
 import { RaceDetailsState, RaceDetailsStateAction } from "./useRacesDetails.types";
 
-export const useRaceDetails = (racePageId: string) => {
+export const useRaceDetails = (racePageId: string | null) => {
   const abortControllerRef = useRef<AbortController | undefined>(undefined);
 
   const [racesDetailsState, dispatch] = useReducer(
@@ -25,6 +25,10 @@ export const useRaceDetails = (racePageId: string) => {
   );
 
   const fetchRaceEvents = useCallback(async () => {
+    if (racePageId === null) {
+      return;
+    }
+
     const abortController = new AbortController();
     abortControllerRef.current = abortController;
     dispatch({ type: "load" });

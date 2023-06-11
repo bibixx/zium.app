@@ -1,4 +1,4 @@
-import { addDays, differenceInHours, formatDistanceStrict, isAfter, isBefore, isFuture, isSameDay } from "date-fns";
+import { addDays, differenceInHours, formatDistanceStrict, isAfter, isBefore, isSameDay } from "date-fns";
 import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "../../../components/Button/Button";
@@ -82,7 +82,7 @@ export const RaceDetails = ({ id, endDate, onClose }: RaceDetailsProps) => {
   return (
     <div className={styles.grid}>
       {racesDetailsState.data.map((raceDetails, i) => {
-        const isDisabled = !raceDetails.isLive && isFuture(raceDetails.startDate);
+        const isDisabled = !raceDetails.isLive && !raceDetails.hasMedia;
         const props = isDisabled ? ({ as: "div" } as const) : ({ as: Link, to: `/race/${raceDetails.id}` } as const);
 
         return (

@@ -1,8 +1,10 @@
+import { Alarm } from "./common";
 import { EventEmitter } from "./utils/EventEmitter";
 import { parseLoginSession } from "./utils/parseLoginSession";
 
 const { RuleActionType, HeaderOperation } = chrome.declarativeNetRequest;
 const TOKEN_STORE_KEY = "token";
+const ALARMS_STORE_KEY = "alarms";
 
 interface BackgroundEmitterHandlers {
   TOKEN_CHANGED: (token: string | null) => void;
@@ -126,8 +128,74 @@ const logOut = () => {
   return Promise.all(cookiePromises);
 };
 
+const getAlarmsStorage = async () => {
+  const alarms = await chrome.storage.local.get(ALARMS_STORE_KEY);
+  return (alarms?.[ALARMS_STORE_KEY] ?? null) as Record<string, Alarm> | null;
+};
+
+const createAlarm = async (alarm: Alarm) => {
+  await chrome.storage.local.remove(ALARMS_STORE_KEY);
+  const alarmDate = new Date(alarm.date);
+  console.log(alarmDate);
+
+  await chrome.alarms.create(String(alarm.id), {
+    when: alarmDate.getTime(),
+  });
+
+  const alarmsStorage = await getAlarmsStorage();
+  const newAlarmsStorage = {
+    ...alarmsStorage,
+    [String(alarm.id)]: alarm,
+  };
+  await chrome.storage.local.set({
+    [ALARMS_STORE_KEY]: newAlarmsStorage,
+  });
+
+  return true;
+};
+
+const deleteAlarm = async (alarmId: number) => {
+  await chrome.alarms.clear(String(alarmId));
+
+  const alarmsStorage = await getAlarmsStorage();
+  if (alarmsStorage == null) {
+    return false;
+  }
+
+  const newAlarmsStorage = structuredClone(alarmsStorage);
+  delete newAlarmsStorage[String(alarmId)];
+
+  await chrome.storage.local.set({
+    [ALARMS_STORE_KEY]: newAlarmsStorage,
+  });
+
+  return true;
+};
+
+chrome.alarms.onAlarm.addListener(async ({ name }) => {
+  const alarmsStorage = await getAlarmsStorage();
+  const alarm = alarmsStorage?.[name];
+
+  if (alarm == null) {
+    return;
+  }
+
+  chrome.notifications.create({
+    type: "basic",
+    title: `${alarm.eventName} starts soon!`,
+    message: "Click here to open zium.app",
+    iconUrl: alarm.image,
+  });
+});
+
+chrome.notifications.onClicked.addListener(() => focusOrOpenZium());
+
 async function focusOrOpenZium() {
-  const [firstTab] = await chrome.tabs.query({ url: ["https://*.zium.app/"] });
+  const appDomains = import.meta.env.VITE_APP_DOMAINS.split(",").map((d: string) =>
+    d === "localhost" ? `http://${d.trim()}:*/` : `https://${d.trim()}/`,
+  );
+
+  const [firstTab] = await chrome.tabs.query({ url: appDomains });
   if (firstTab?.id == null) {
     await chrome.tabs.create({
       url: "https://www.zium.app",
@@ -179,6 +247,16 @@ chrome.runtime.onMessage.addListener(function (msg, _sender, sendResponse) {
       case "LOGOUT": {
         await logOut();
         sendResponse(true);
+        break;
+      }
+      case "CREATE_ALARM": {
+        const alarmResult = await createAlarm(msg.data);
+        sendResponse(alarmResult);
+        break;
+      }
+      case "DELETE_ALARM": {
+        const alarmResult = await deleteAlarm(msg.data);
+        sendResponse(alarmResult);
         break;
       }
     }

@@ -22,12 +22,14 @@
     transition-property: box-shadow;
   }
 
-  &:hover {
-    transform: scale(1.0333);
-  }
+  &:not(:disabled) {
+    &:hover {
+      transform: scale(1.0333);
+    }
 
-  &:active {
-    transform: scale(1);
+    &:active {
+      transform: scale(1);
+    }
   }
 
   &.fluid {
