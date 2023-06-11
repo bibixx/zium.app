@@ -118,11 +118,7 @@ export const Races = () => {
           overwriteVisibleSeason={overwriteVisibleSeason}
         />
         <div>
-          <div className={styles.liveCardWrapper}>
-            <LiveCardWithZeroState
-              raceDetails={liveEvent.state === "done" && liveEvent.data !== null ? liveEvent.data : null}
-            />
-          </div>
+          <LiveCardWithZeroState liveEventState={liveEvent} />
           {!wasSearchSuccessful && <ZeroState />}
           {filteredRacesState.map((season, i) => {
             const prevSeason = filteredRacesState[i - 1];
