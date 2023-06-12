@@ -132,7 +132,11 @@ To get a local copy up and running follow these steps.
 <!-- ROADMAP -->
 ## Roadmap
 
-[craft.do/s/fffYcaZcBCUEFK](https://www.craft.do/s/fffYcaZcBCUEFK)
+<a href="https://www.craft.do/s/fffYcaZcBCUEFK">
+  <div align="center">
+    <img src="https://api.craft.do/render/preview/fffYcaZcBCUEFK" alt="zium.app Features Roadmap" width="500" />
+  </div>
+</a>
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
