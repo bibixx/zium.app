@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
 import { HotkeysProvider } from "react-hotkeys-hook";
 import { ViewerWithState } from "./views/Viewer/Viewer";
 
@@ -35,7 +35,7 @@ const WithCompanion = ({ children }: React.PropsWithChildren<unknown>) => {
   return assertNever(companionState);
 };
 
-const WithLoggedIn = ({ children }: React.PropsWithChildren<unknown>) => {
+const WithLoggedIn = () => {
   const loggedInState = useLoggedInState();
 
   if (loggedInState === "loading") {
@@ -43,7 +43,7 @@ const WithLoggedIn = ({ children }: React.PropsWithChildren<unknown>) => {
   }
 
   if (loggedInState === "loggedIn") {
-    return <>{children}</>;
+    return <Outlet />;
   }
 
   if (loggedInState === "loggedOut") {
@@ -63,16 +63,21 @@ export default function App() {
           <DebugProvider>
             <DebugWindow />
             {isSupportedBrowser ? (
-              <WithCompanion>
-                <WithLoggedIn>
-                  <BrowserRouter>
-                    <Routes>
-                      <Route path="/" element={<Races />} />
-                      <Route path="/race/:raceId" element={<ViewerWithState />} />
-                    </Routes>
-                  </BrowserRouter>
-                </WithLoggedIn>
-              </WithCompanion>
+              <BrowserRouter>
+                <Routes>
+                  <Route
+                    path="/"
+                    element={
+                      <WithCompanion>
+                        <WithLoggedIn />
+                      </WithCompanion>
+                    }
+                  >
+                    <Route path="/" element={<Races />} />
+                    <Route path="/race/:raceId" element={<ViewerWithState />} />
+                  </Route>
+                </Routes>
+              </BrowserRouter>
             ) : (
               <NotSupported />
             )}

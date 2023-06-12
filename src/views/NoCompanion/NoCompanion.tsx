@@ -3,9 +3,11 @@ import { useState } from "react";
 import { Button } from "../../components/Button/Button";
 import { OnboardingLayout } from "../../components/OnboardingLayout/OnboardingLayout";
 import { Spinner } from "../../components/Spinner/Spinner";
+import { useTrackWithTitle } from "../../hooks/useAnalytics/useAnalytics";
 import styles from "./NoCompanion.module.scss";
 
 export const NoCompanion = () => {
+  useTrackWithTitle("No companion");
   const [isOpening, setIsOpening] = useState(false);
 
   return (

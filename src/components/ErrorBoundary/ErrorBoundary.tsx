@@ -1,16 +1,18 @@
 import { Component, ReactNode } from "react";
+import { Piwik, useAnalytics } from "../../hooks/useAnalytics/useAnalytics";
 import { FullScreenError } from "../FullScreenError/FullScreenError";
 
-interface ErrorBoundaryProps {
+interface InnerErrorBoundaryProps {
   children: ReactNode;
+  piwik: Piwik;
 }
-interface ErrorBoundaryState {
+interface InnerErrorBoundaryState {
   error: Error | undefined;
   hasError: boolean;
 }
 
-export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
-  constructor(props: ErrorBoundaryProps) {
+class InnerErrorBoundary extends Component<InnerErrorBoundaryProps, InnerErrorBoundaryState> {
+  constructor(props: InnerErrorBoundaryProps) {
     super(props);
     this.state = { hasError: false, error: undefined };
   }
@@ -18,6 +20,10 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
   static getDerivedStateFromError(error: Error) {
     // Update state so the next render will show the fallback UI.
     return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error): void {
+    this.props.piwik.trackError(error, "Error Boundary Error");
   }
 
   render() {
@@ -28,3 +34,12 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
     return this.props.children;
   }
 }
+
+interface ErrorBoundaryProps {
+  children: ReactNode;
+}
+export const ErrorBoundary = (props: ErrorBoundaryProps) => {
+  const piwik = useAnalytics();
+
+  return <InnerErrorBoundary piwik={piwik} {...props} />;
+};

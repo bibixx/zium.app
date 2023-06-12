@@ -9,6 +9,7 @@ import { useRacesList } from "../../hooks/useRacesList/useRacesList";
 import { formatDateFull } from "../../utils/date";
 import { RacesState } from "../../hooks/useRacesList/useRacesList.types";
 import { WithVariables } from "../../components/WithVariables/WithVariables";
+import { useTrackWithTitle } from "../../hooks/useAnalytics/useAnalytics";
 import { Season } from "./Season/Season";
 import styles from "./Races.module.scss";
 import { Sidebar } from "./Sidebar/Sidebar";
@@ -18,6 +19,8 @@ import { filterOutFutureRaces, getWasSearchSuccessful, prepareForSearch } from "
 import { ZeroState } from "./ZeroState/ZeroState";
 
 export const Races = () => {
+  useTrackWithTitle("Races");
+
   const wrapperRefs = useRef<Array<HTMLDivElement | null>>([]);
 
   const seasonsToRender = useMemo(() => SUPPORTED_SEASONS.filter((season) => !isSeasonComingSoon(season)), []);

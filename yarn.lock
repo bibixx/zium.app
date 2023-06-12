@@ -906,6 +906,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/piwik-react-router@npm:^0.12.0":
+  version: 0.12.0
+  resolution: "@types/piwik-react-router@npm:0.12.0"
+  checksum: 603ba99cde455a1f7d55a8664273373ff2f0e4adf74b896c755e6cbe3f5d7ad3776ffcb236ee58906ca3a535cde3f2fd4f60081a32e15978dedff242d45d681f
+  languageName: node
+  linkType: hard
+
 "@types/postcss-modules-local-by-default@npm:^4.0.0":
   version: 4.0.0
   resolution: "@types/postcss-modules-local-by-default@npm:4.0.0"
@@ -2300,6 +2307,7 @@ __metadata:
     "@popperjs/core": ^2.11.7
     "@sindresorhus/transliterate": ^1.6.0
     "@types/object-merge": ^2.5.0
+    "@types/piwik-react-router": ^0.12.0
     "@types/react": ^18.0.26
     "@types/react-dom": ^18.0.9
     "@types/react-transition-group": ^4.4.5
@@ -2321,6 +2329,7 @@ __metadata:
     lottie-react: ^2.4.0
     moize: ^6.1.6
     object-merge: ^2.5.1
+    piwik-react-router: ^0.12.1
     prettier: ^2.8.3
     react: ^18.2.0
     react-dom: ^18.2.0
@@ -3965,6 +3974,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"piwik-react-router@npm:^0.12.1":
+  version: 0.12.1
+  resolution: "piwik-react-router@npm:0.12.1"
+  dependencies:
+    url-join: ^1.1.0
+    warning: ^3.0.0
+  peerDependencies:
+    history: ^3.0.0 || ^4.0.0
+  checksum: 1270b017a425553c5e1fa081129e8a27a7e9d764334e95e6bace5f4544e9ffa42293b035efcf6d5c2348b4549015879729fe103dd3a3d9e1ee7f0fafb6aaf006
+  languageName: node
+  linkType: hard
+
 "postcss-load-config@npm:^3.1.4":
   version: 3.1.4
   resolution: "postcss-load-config@npm:3.1.4"
@@ -5008,6 +5029,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"url-join@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "url-join@npm:1.1.0"
+  checksum: affa33998f671205e9bbfba95d840fa7445d548f903f79912836a4cdb068c8a926c1dfe94c220fe5fbd822b6be9a199561c78d0cb181abafee2075b4f03a9c28
+  languageName: node
+  linkType: hard
+
 "util-deprecate@npm:^1.0.1, util-deprecate@npm:^1.0.2":
   version: 1.0.2
   resolution: "util-deprecate@npm:1.0.2"
@@ -5062,6 +5090,15 @@ __metadata:
   bin:
     vite: bin/vite.js
   checksum: eb86c8cdfe8dcb6644005486b31cb60bc596f2aa683cb194abb5c0afca7c2a5dfdb02bbc7f83f419ad170227ac9c3b898f4406a6d1433105fb61d79d78e47d52
+  languageName: node
+  linkType: hard
+
+"warning@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "warning@npm:3.0.0"
+  dependencies:
+    loose-envify: ^1.0.0
+  checksum: c9f99a12803aab81b29858e7dc3415bf98b41baee3a4c3acdeb680d98c47b6e17490f1087dccc54432deed5711a5ce0ebcda2b27e9b5eb054c32ae50acb4419c
   languageName: node
   linkType: hard
 

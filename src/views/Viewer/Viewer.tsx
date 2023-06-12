@@ -25,6 +25,7 @@ import {
 import { FullScreenError } from "../../components/FullScreenError/FullScreenError";
 import { Loader } from "../../components/Loader/Loader";
 import { TimedOutWrapper } from "../../components/TimedOutWrapper/TimedOutWrapper";
+import { useTrackWithTitle } from "../../hooks/useAnalytics/useAnalytics";
 import { getWindowStreamMap, getAvailableDrivers } from "./Viewer.utils";
 import { useGrid } from "./hooks/useGrid";
 import styles from "./Viewer.module.scss";
@@ -318,6 +319,8 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
 
 export const ViewerWithState = () => {
   const { raceId } = useParams();
+  useTrackWithTitle(`Viewer: ${raceId}`);
+
   const state = useVideoRaceDetails(raceId as string);
   const viewerUIVisibilityState = useViewerUIVisibilityState();
 

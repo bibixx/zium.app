@@ -9,12 +9,14 @@ import {
 } from "../../components/Dialog/DialogContent/DialogContent";
 import { OnboardingLayout } from "../../components/OnboardingLayout/OnboardingLayout";
 import { Spinner } from "../../components/Spinner/Spinner";
+import { useTrackWithTitle } from "../../hooks/useAnalytics/useAnalytics";
 import { useHotkeysStack } from "../../hooks/useHotkeysStack/useHotkeysStack";
 import { useScopedHotkeys } from "../../hooks/useScopedHotkeys/useScopedHotkeys";
 import { requestLogin } from "../../utils/extensionApi";
 import styles from "./LogIn.module.scss";
 
 export const LogIn = () => {
+  useTrackWithTitle("Log in");
   const [isOpening, setIsOpening] = useState(false);
   const [isLearnMoreOpen, setIsLearnMoreOpen] = useState(false);
 
