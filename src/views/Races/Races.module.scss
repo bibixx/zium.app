@@ -1,9 +1,14 @@
 .layout {
   display: grid;
-  grid-template-columns: 330px 1fr;
+  grid-template-columns: minmax(256px, 1fr) repeat(3, 1fr);
+  grid-template-rows: auto 1fr;
   padding: 24px;
   padding-top: 0;
   gap: var(--heading-margin-bottom) 24px;
+}
+
+.seasons {
+  grid-area: 2 / 2 / 3 / 5;
 }
 
 .races summary {

@@ -117,7 +117,7 @@ export const Races = () => {
           }))}
           overwriteVisibleSeason={overwriteVisibleSeason}
         />
-        <div>
+        <div className={styles.seasons}>
           <LiveCardWithZeroState liveEventState={liveEvent} />
           {!wasSearchSuccessful && <ZeroState />}
           {filteredRacesState.map((season, i) => {
