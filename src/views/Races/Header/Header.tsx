@@ -14,7 +14,6 @@ interface HeaderProps {
 export const Header = ({ searchQuery, setSearchQuery }: HeaderProps) => {
   return (
     <>
-      <div className={styles.shadow} />
       <div className={styles.wrapper}>
         <Logo height={32} width={88} color={"var(--color-text-strong)"} />
         <div className={styles.rightContent}>
@@ -32,6 +31,10 @@ export const Header = ({ searchQuery, setSearchQuery }: HeaderProps) => {
             Log out
           </Button>
         </div>
+      </div>
+      <div className={styles.shadow}>
+        <div />
+        <div />
       </div>
     </>
   );

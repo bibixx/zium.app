@@ -5,8 +5,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 24px 0 24px 16px;
-  grid-column: -1 / 1;
-  background: var(--color-background-surface);
+  grid-column: -1 / 1;  
   z-index: var(--z-index-header);
 }
 
@@ -29,9 +28,26 @@
   position: fixed;
   top: 0;
   left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   z-index: var(--z-index-header-shadow);
-  background: linear-gradient(to bottom, var(--color-background-surface), rgba(0, 0, 0, 0));
   height: calc(var(--header-height) + 64px);
-  width: 100%;
   pointer-events: none;
+  & > :nth-child(1) {
+    height: 32px;
+    flex: none;
+    order: 0;
+    align-self: stretch;
+    flex-grow: 0;    
+    background: var(--color-background-surface)
+  }
+  & > :nth-child(2) {
+    flex: none;
+    order: 1;
+    align-self: stretch;
+    flex-grow: 1;   
+    background: linear-gradient(180deg, #000000 0%, rgba(0, 0, 0, 0.991615) 11.79%, rgba(0, 0, 0, 0.967585) 21.38%, rgba(0, 0, 0, 0.9296) 29.12%, rgba(0, 0, 0, 0.879348) 35.34%, rgba(0, 0, 0, 0.818519) 40.37%, rgba(0, 0, 0, 0.7488) 44.56%, rgba(0, 0, 0, 0.671881) 48.24%, rgba(0, 0, 0, 0.589452) 51.76%, rgba(0, 0, 0, 0.5032) 55.44%, rgba(0, 0, 0, 0.414815) 59.63%, rgba(0, 0, 0, 0.325985) 64.66%, rgba(0, 0, 0, 0.2384) 70.88%, rgba(0, 0, 0, 0.153748) 78.62%, rgba(0, 0, 0, 0.0737185) 88.21%, rgba(0, 0, 0, 0) 100%);
+  }
 }
