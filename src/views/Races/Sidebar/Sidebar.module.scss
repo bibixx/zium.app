@@ -5,9 +5,10 @@
   flex-direction: column;
   position: sticky;
   top: calc(var(--offset-from-top) + var(--header-height) + var(--heading-margin-bottom));
-  width: 330px;
   align-self: flex-start;
   margin-top: var(--offset-from-top);
+  margin-bottom: var(--offset-from-top);
+  padding-right: 24px;
 }
 
 .element {
