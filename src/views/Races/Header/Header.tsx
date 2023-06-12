@@ -32,10 +32,7 @@ export const Header = ({ searchQuery, setSearchQuery }: HeaderProps) => {
           </Button>
         </div>
       </div>
-      <div className={styles.shadow}>
-        <div />
-        <div />
-      </div>
+      <div className={styles.shadow} />
     </>
   );
 };
