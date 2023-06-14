@@ -196,7 +196,7 @@ Project Link: [https://github.com/bibixx/zium.app](https://github.com/bibixx/ziu
 <!-- DISCLAIMERS -->
 ## Disclaimers
 
-* F1™ is a registered trademark of Formula One World Championship Limited. This page is not affiliated, authorized, endorsed by or in any way officially associated with Formula One World Championship Limited. The official F1™ website can be found at https://www.formula1.com.
+* This website is unofficial and is not associated in any way with the Formula 1 companies. F1, FORMULA ONE, FORMULA 1, FIA FORMULA ONE WORLD CHAMPIONSHIP, GRAND PRIX and related marks are trade marks of Formula One Licensing B.V.
 * Login information is stored and used solely on your device. No passwords, personal data, or payment information is sent to zium.app servers.
 * You must have an active F1 TV subscription to access video streams. zium.app doesn’t allow you to watch Formula 1 for free.
 
