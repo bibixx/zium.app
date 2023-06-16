@@ -1,3 +1,4 @@
+import { RACE_GENRES } from "../../constants/races";
 import { fetchJSON } from "../../utils/api";
 import {
   F1PlaybackOffsetsApiResponse,
@@ -19,8 +20,20 @@ export const fetchRaceStreams = async (raceId: string, signal: AbortSignal) => {
   const playbackOffsets = container.playbackOffsets as F1PlaybackOffsetsApiResponse[];
   const meetingKey = container.metadata.meetingKey as string;
   const meetingSessionKey = container.metadata.emfAttributes.MeetingSessionKey as string;
+  const isRaceEvent = RACE_GENRES.includes(container.metadata.genres[0]?.toLowerCase());
 
-  return { streams, season, isLive, countryName, countryId, title, playbackOffsets, meetingKey, meetingSessionKey };
+  return {
+    streams,
+    season,
+    isLive,
+    countryName,
+    countryId,
+    title,
+    playbackOffsets,
+    meetingKey,
+    meetingSessionKey,
+    isRaceEvent,
+  };
 };
 
 export const fetchMultiViewerOffsets = async (meetingKey: string, meetingSessionKey: string, signal: AbortSignal) => {

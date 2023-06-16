@@ -10,16 +10,21 @@ interface PlayerRaceInfoProps {
 }
 
 export const PlayerRaceInfo = ({ raceInfo }: PlayerRaceInfoProps) => {
-  const { countryId, countryName, title } = raceInfo;
+  const { countryId, countryName, title, isRaceEvent } = raceInfo;
+
   return (
     <div className={styles.wrapper}>
       <Button variant="Tertiary" iconLeft={ArrowLeftIcon} as={Link} to="/" />
       <div className={styles.countryContent}>
         {countryId && <CountryImage countryId={countryId} width={40} height={40} />}
-        <div>
-          <div className={styles.countryName}>{countryName}</div>
-          <div className={styles.eventTitle}>{title}</div>
-        </div>
+        {isRaceEvent ? (
+          <div>
+            <div className={styles.countryName}>{countryName}</div>
+            <div className={styles.eventTitle}>{title}</div>
+          </div>
+        ) : (
+          <div className={styles.nonRaceEventName}>{title}</div>
+        )}
       </div>
     </div>
   );

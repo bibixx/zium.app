@@ -10,6 +10,7 @@ export interface RaceInfo {
   countryName: string;
   countryId: string;
   title: string;
+  isRaceEvent: boolean;
 }
 
 export type StreamsState =

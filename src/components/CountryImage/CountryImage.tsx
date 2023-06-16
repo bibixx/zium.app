@@ -9,7 +9,10 @@ interface CountryImageProps {
 }
 export const CountryImage = ({ countryId, className, width, height }: CountryImageProps) => {
   return (
-    <div className={styles.countryImageWrapper} style={{ width: getSize(width), height: getSize(height) }}>
+    <div
+      className={styles.countryImageWrapper}
+      style={{ width: getSize(width), minWidth: getSize(width), height: getSize(height) }}
+    >
       <img
         className={cn(styles.countryImage, `country-${countryId}`, className)}
         draggable={false}

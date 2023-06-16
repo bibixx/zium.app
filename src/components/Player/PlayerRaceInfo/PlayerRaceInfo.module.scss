@@ -10,6 +10,16 @@
   white-space: nowrap;
 }
 
+.nonRaceEventName {
+  @include typography(heading, 300, default);
+  color: var(--color-text-strong);
+  display: -webkit-box;
+  max-width: 300px;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
 .wrapper {
   display: flex;
   align-items: center;

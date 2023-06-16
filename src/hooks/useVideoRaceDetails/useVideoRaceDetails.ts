@@ -35,16 +35,15 @@ export const useVideoRaceDetails = (raceId: string): StreamsState => {
       dispatch({ type: "load" });
 
       try {
-        const { streams, season, isLive, countryId, countryName, title, playbackOffsets } = await fetchRaceStreams(
-          raceId,
-          signal,
-        );
+        const { streams, season, isLive, countryId, countryName, title, playbackOffsets, isRaceEvent } =
+          await fetchRaceStreams(raceId, signal);
 
         const collectedStreams = collectStreams(streams, season, raceId);
         const raceInfo: RaceInfo = {
           countryId,
           countryName,
           title,
+          isRaceEvent,
         };
         const mappedF1PlaybackOffsets = createF1OffsetsMap(playbackOffsets, season);
 
