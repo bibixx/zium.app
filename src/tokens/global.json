@@ -787,7 +787,7 @@
             "type": "color"
           },
           "default": {
-            "value": "{color.core.red.500}",
+            "value": "#2399f7",
             "type": "color"
           },
           "strong": {
@@ -909,5 +909,11 @@
         "type": "cubicBezier"
       }
     }
+  },
+  "$themes": [],
+  "$metadata": {
+    "tokenSetOrder": [
+      "global"
+    ]
   }
 }
