@@ -4,6 +4,8 @@ on:
   push:
     paths:
       - 'src/tokens/global.json'
+    branches:
+      - dev
 
 jobs:
   build-token-variables:
