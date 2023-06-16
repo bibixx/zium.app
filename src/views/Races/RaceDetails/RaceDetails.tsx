@@ -95,7 +95,7 @@ export const RaceDetails = ({ id, endDate, onClose }: RaceDetailsProps) => {
           >
             <EventSession
               title={raceDetails.title}
-              subtitle={formatDateRelative(raceDetails.startDate)}
+              subtitle={raceDetails.startDate !== null ? formatDateRelative(raceDetails.startDate) : null}
               rightIconWrapperClassName={styles.raceDetailsListItemRightIconWrapper}
               isLive={raceDetails.isLive}
               disabled={isDisabled}

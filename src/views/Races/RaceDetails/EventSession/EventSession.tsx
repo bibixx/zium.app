@@ -5,7 +5,7 @@ import styles from "./EventSession.module.scss";
 
 interface EventSessionProps {
   title: string;
-  subtitle: string;
+  subtitle: string | null;
   rightIconWrapperClassName?: string;
   isLive?: boolean;
   disabled?: boolean;
@@ -38,7 +38,7 @@ export const EventSession = ({
       </div>
       <div className={styles.textWrapper}>
         <div className={styles.title}>{title}</div>
-        {!isLive && <div className={cn(styles.subtitle)}>{subtitle}</div>}
+        {!isLive && subtitle && <div className={cn(styles.subtitle)}>{subtitle}</div>}
         {isLive && <div className={cn(styles.subtitle, styles.isLive)}>LIVE</div>}
       </div>
       {!disabled && (

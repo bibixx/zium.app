@@ -1,7 +1,6 @@
 import { forwardRef, useRef } from "react";
 import { PlayerAPI } from "bitmovin-player";
-import { ExclamationCircleIcon, SpeakerWaveIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import { EyeSlashIcon } from "@heroicons/react/20/solid";
+import { SpeakerWaveIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import cn from "classnames";
 import { useStreamVideo } from "../../../hooks/useStreamVideo/useStreamVideo";
 import { DriverGridWindow } from "../../../types/GridWindow";
@@ -16,6 +15,8 @@ import { VideoFeedContent } from "../../VideoFeedContent/VideoFeedContent";
 import closeButtonStyles from "../VideoWindow.module.scss";
 import { Button } from "../../Button/Button";
 import { StreamVideoError } from "../../../hooks/useStreamVideo/useStreamVideo.utils";
+import { NoFeed } from "../NoFeed/NoFeed";
+import { FeedError } from "../FeedError/FeedError";
 import styles from "./DriverVideoWindow.module.scss";
 
 interface DriverVideoWindowProps extends VideoWindowProps {
@@ -27,6 +28,7 @@ interface DriverVideoWindowProps extends VideoWindowProps {
   focusMainWindow: () => void;
   volume: number;
   onDelete: () => void;
+  hasOnlyOneStream: boolean;
 }
 
 export const DriverVideoWindow = forwardRef<PlayerAPI | null, DriverVideoWindowProps>(
@@ -42,6 +44,7 @@ export const DriverVideoWindow = forwardRef<PlayerAPI | null, DriverVideoWindowP
       focusMainWindow,
       volume,
       onDelete,
+      hasOnlyOneStream,
     },
     forwardedRef,
   ) => {
@@ -76,36 +79,18 @@ export const DriverVideoWindow = forwardRef<PlayerAPI | null, DriverVideoWindowP
       streamVideoState.error.type === "NO_PLAYBACK_URL"
     ) {
       return (
-        <VideoWindowWrapper className={styles.bitmovinWrapper}>
-          <div className={styles.noFeedIconWrapper}>
-            <EyeSlashIcon height={36} width={36} />
-          </div>
-          <DriverPickerButton currentDriver={currentDriver} onDriverChange={onDriverChange} />
-          <div className={closeButtonStyles.closeButtonWrapper}>
-            <Button variant="SecondaryInverted" onClick={onDelete} iconLeft={XMarkIcon} />
-          </div>
-        </VideoWindowWrapper>
+        <NoFeed onDelete={onDelete}>
+          {!hasOnlyOneStream && <DriverPickerButton currentDriver={currentDriver} onDriverChange={onDriverChange} />}
+        </NoFeed>
       );
     }
 
     if (streamVideoState.state === "error") {
-      return (
-        <VideoWindowWrapper className={styles.bitmovinWrapper}>
-          <div className={styles.errorContent}>
-            <div className={styles.errorIconContainer}>
-              <ExclamationCircleIcon height={36} width={36} />
-            </div>
-            <div>{streamVideoState.error.message}</div>
-          </div>
-          <div className={closeButtonStyles.closeButtonWrapper}>
-            <Button variant="SecondaryInverted" onClick={onDelete} iconLeft={XMarkIcon} />
-          </div>
-        </VideoWindowWrapper>
-      );
+      return <FeedError error={streamVideoState.error} onDelete={onDelete} />;
     }
 
     return (
-      <VideoWindowWrapper className={styles.bitmovinWrapper}>
+      <VideoWindowWrapper className={closeButtonStyles.bitmovinWrapper}>
         <VideoJS
           videoStreamInfo={streamVideoState.data}
           options={ADDITIONAL_OPTIONS}
@@ -114,7 +99,7 @@ export const DriverVideoWindow = forwardRef<PlayerAPI | null, DriverVideoWindowP
           isPaused={isPaused}
           volume={isAudioFocused ? volume : 0}
         />
-        <DriverPickerButton currentDriver={currentDriver} onDriverChange={onDriverChange} />
+        {!hasOnlyOneStream && <DriverPickerButton currentDriver={currentDriver} onDriverChange={onDriverChange} />}
         <div className={styles.focusAudioButtonWrapper} onMouseDown={(e) => e.stopPropagation()}>
           <Button
             variant="SecondaryInverted"

@@ -9,7 +9,7 @@ export const fetchLiveEvent = async (signal: AbortSignal): Promise<RaceData | nu
 
   const containers = body.resultObj.containers
     .flatMap((c: any) => c.retrieveItems.resultObj.containers)
-    .filter((c) => c?.metadata?.contentSubtype != null);
+    .filter((c: any) => c?.metadata?.contentSubtype != null);
 
   const uniqueContainers = uniqueById(containers);
 
@@ -47,5 +47,6 @@ export const fetchLiveEvent = async (signal: AbortSignal): Promise<RaceData | nu
     countryId,
     isLive,
     hasMedia: isLive,
+    isSingleEvent: false,
   };
 };

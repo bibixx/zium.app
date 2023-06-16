@@ -1,3 +1,4 @@
+import { isValid } from "date-fns";
 import { RACE_GENRES } from "../../constants/races";
 import { fetchJSON } from "../../utils/api";
 import { uniqueById } from "../../utils/uniqueById";
@@ -19,7 +20,7 @@ export const fetchRaceDetailsId = async (raceId: string, signal: AbortSignal): P
     .map((e) => mapEventToRaceDetailsData(e, false));
 
   const raceDetails = uniqueById([...liveAndReplayDetails, ...scheduledDetails]).sort(
-    (a, b) => a.startDate.getTime() - b.startDate.getTime(),
+    (a, b) => (a.startDate?.getTime() ?? 0) - (b.startDate?.getTime() ?? 0),
   );
 
   return raceDetails;
@@ -27,8 +28,9 @@ export const fetchRaceDetailsId = async (raceId: string, signal: AbortSignal): P
 
 const getReplayEvents = (body: any): any[] => {
   const replays = body.resultObj.containers
-    .filter((c: any) => c.metadata.label?.includes("Replays"))
-    .flatMap((c: any) => c.retrieveItems.resultObj.containers);
+    .filter((c: any) => c.metadata.label?.includes("Replays") || c.metadata.label?.includes("Weekend Sessions"))
+    .flatMap((c: any) => c.retrieveItems.resultObj.containers)
+    .filter((c: any) => c.metadata.emfAttributes.Series === "FORMULA 1");
 
   return replays ?? [];
 };
@@ -43,7 +45,32 @@ const getScheduledEvents = (body: any): any[] => {
   return f1Scheduled?.events ?? [];
 };
 
+const getDates = (event: any) => {
+  // let startDate = null;
+  let startDate = new Date();
+
+  if (
+    event.metadata.emfAttributes.sessionStartDate > 0 &&
+    isValid(new Date(event.metadata.emfAttributes.sessionStartDate))
+  ) {
+    startDate = new Date(event.metadata.emfAttributes.sessionStartDate);
+  }
+
+  // let endDate = null;
+  let endDate = new Date();
+  if (
+    event.metadata.emfAttributes.sessionEndDate > 0 &&
+    isValid(new Date(event.metadata.emfAttributes.sessionEndDate))
+  ) {
+    endDate = new Date(event.metadata.emfAttributes.sessionEndDate);
+  }
+
+  return { startDate, endDate };
+};
+
 const mapEventToRaceDetailsData = (event: any, isReplay: boolean): RaceDetailsData => {
+  const { startDate, endDate } = getDates(event);
+
   return {
     title: event.metadata.titleBrief,
     id: event.metadata.contentId,
@@ -54,8 +81,9 @@ const mapEventToRaceDetailsData = (event: any, isReplay: boolean): RaceDetailsDa
     contentId: event.metadata.contentId,
     countryName: event.metadata.emfAttributes.Meeting_Country_Name,
     countryId: event.metadata.emfAttributes.MeetingCountryKey,
-    startDate: new Date(event.metadata.emfAttributes.sessionStartDate),
-    endDate: new Date(event.metadata.emfAttributes.sessionEndDate),
+    startDate,
+    endDate,
     roundNumber: +event.metadata.emfAttributes.Meeting_Number,
+    isSingleEvent: false,
   };
 };

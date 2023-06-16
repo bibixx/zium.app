@@ -28,6 +28,7 @@ import { TimedOutWrapper } from "../../components/TimedOutWrapper/TimedOutWrappe
 import { useTrackWithTitle } from "../../hooks/useAnalytics/useAnalytics";
 import { Snackbar } from "../../components/Snackbar/Snackbar";
 import { isWindows } from "../../utils/platform";
+import { isNotNullable } from "../../utils/isNotNullable";
 import { getWindowStreamMap, getAvailableDrivers } from "./Viewer.utils";
 import { useGrid } from "./hooks/useGrid";
 import styles from "./Viewer.module.scss";
@@ -153,6 +154,18 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
     [windows],
   );
 
+  const hasOnlyOneStream = useMemo(() => {
+    const allStreams = [
+      streams.defaultStream,
+      streams.driverTrackerStream,
+      streams.dataChannelStream,
+      ...streams.driverStreams,
+      ...streams.otherStreams,
+    ].filter(isNotNullable);
+
+    return allStreams.length === 1;
+  }, [streams]);
+
   const getLayoutChild = useCallback(
     (gridWindow: GridWindow) => {
       const setRef = (video: PlayerAPI | null) => {
@@ -215,6 +228,7 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
             volume={volume}
             streamUrl={windowStreamMap[gridWindow.id]}
             onDelete={onDelete}
+            hasOnlyOneStream={hasOnlyOneStream}
           />
         );
       }
@@ -255,6 +269,7 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
       windowStreamMap,
       onWindowAudioFocus,
       availableDrivers,
+      hasOnlyOneStream,
       windows,
     ],
   );
@@ -316,6 +331,7 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
           deleteLayout={deleteLayout}
           viewerState={viewerState}
           isPaused={areVideosPaused}
+          hasOnlyOneStream={hasOnlyOneStream}
         />
         <Snackbar isOpen={shouldShowTutorial}>
           Hold

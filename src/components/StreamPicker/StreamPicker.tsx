@@ -11,7 +11,7 @@ import { VideoFeedContent } from "../VideoFeedContent/VideoFeedContent";
 import { useScopedHotkeys } from "../../hooks/useScopedHotkeys/useScopedHotkeys";
 import { assertNever } from "../../utils/assertNever";
 import { StreamInfo } from "../../hooks/useVideoRaceDetails/useVideoRaceDetails.types";
-import { isNotNullable } from "../../utils/usNotNullable";
+import { isNotNullable } from "../../utils/isNotNullable";
 import { useHotkeysStack } from "../../hooks/useHotkeysStack/useHotkeysStack";
 import { useLaggedBehindData } from "../../hooks/useLaggedBehindData/useLaggedBehindData";
 import styles from "./StreamPicker.module.scss";

@@ -1,12 +1,11 @@
 import cn from "classnames";
 import { Fragment, useCallback, useMemo, useRef, useState } from "react";
-import { add, differenceInDays, endOfDay, startOfDay } from "date-fns";
+import { differenceInDays } from "date-fns";
 import { SupportedSeasons, SUPPORTED_SEASONS } from "../../constants/seasons";
 import { isSeasonComingSoon } from "../../utils/SeasonUtils";
 import { LiveCardWithZeroState } from "../../components/LiveCard/LiveCard";
 import { useLiveEvent } from "../../hooks/useLiveEvent/useLiveEvent";
 import { useRacesList } from "../../hooks/useRacesList/useRacesList";
-import { formatDateFull } from "../../utils/date";
 import { RacesState } from "../../hooks/useRacesList/useRacesList.types";
 import { WithVariables } from "../../components/WithVariables/WithVariables";
 import { useTrackWithTitle } from "../../hooks/useAnalytics/useAnalytics";
@@ -20,6 +19,7 @@ import {
   getLatestFinishedRaceData,
   getWasSearchSuccessful,
   prepareForSearch,
+  serachRacePredicate,
 } from "./Races.utils";
 import { ZeroState } from "./ZeroState/ZeroState";
 
@@ -69,26 +69,7 @@ export const Races = () => {
 
       return {
         ...season,
-        data: filterOutFutureRaces(season.data).filter((race) => {
-          if (searchQuery === "") {
-            return true;
-          }
-
-          const title = prepareForSearch(race.title);
-          const description = prepareForSearch(race.description);
-          const countryName = prepareForSearch(race.countryName);
-          const sessionDuration = differenceInDays(endOfDay(race.endDate), startOfDay(race.startDate)) + 1;
-          const searchFoundInDate = Array.from({ length: sessionDuration }).some((_, offset) =>
-            prepareForSearch(formatDateFull(add(race.startDate, { days: offset }))).includes(transliteratedSearchQuery),
-          );
-
-          return (
-            searchFoundInDate ||
-            title.includes(transliteratedSearchQuery) ||
-            description.includes(transliteratedSearchQuery) ||
-            countryName.includes(transliteratedSearchQuery)
-          );
-        }),
+        data: filterOutFutureRaces(season.data).filter(serachRacePredicate(transliteratedSearchQuery)),
       };
     });
   }, [searchQuery, seasonsList]);

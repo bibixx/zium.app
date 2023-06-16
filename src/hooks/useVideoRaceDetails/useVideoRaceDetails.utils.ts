@@ -25,8 +25,12 @@ const getStreamPrettyName = (name: string) => {
   }
 };
 
-const mapStreamIdentifierToType = (identifier: string): StreamInfoWithDriver["type"] => {
+const mapStreamIdentifierToType = (identifier: string, season: number): StreamInfoWithDriver["type"] => {
   if (identifier === "PRES") {
+    return "main";
+  }
+
+  if (identifier === "WIF" && season <= 2021) {
     return "main";
   }
 
@@ -45,15 +49,33 @@ const mapStreamIdentifierToType = (identifier: string): StreamInfoWithDriver["ty
   return "other";
 };
 
-export const collectStreams = (streams: StreamDataDTO[]) => {
+export const collectStreams = (streams: StreamDataDTO[] | undefined, season: number, raceId: string) => {
   let defaultStream: StreamInfo | null = null;
   let driverTrackerStream: StreamInfo | null = null;
   let dataChannelStream: StreamInfo | null = null;
   const driverStreams: DriverStreamInfo[] = [];
   const otherStreams: StreamInfo[] = [];
 
+  if (streams == null) {
+    defaultStream = {
+      type: "main",
+      channelId: 0,
+      playbackUrl: `CONTENT/PLAY?contentId=${raceId}`,
+      title: "main",
+      identifier: "main",
+    };
+
+    return {
+      defaultStream,
+      driverStreams,
+      otherStreams,
+      driverTrackerStream,
+      dataChannelStream,
+    };
+  }
+
   for (const stream of streams) {
-    const streamType = mapStreamIdentifierToType(stream.identifier);
+    const streamType = mapStreamIdentifierToType(stream.identifier, season);
     const baseStreamInfo: BaseStreamInfo = {
       channelId: stream.channelId,
       playbackUrl: stream.playbackUrl,
@@ -118,11 +140,18 @@ export const collectStreams = (streams: StreamDataDTO[]) => {
   };
 };
 
-export const createF1OffsetsMap = (playbackOffsets: F1PlaybackOffsetsApiResponse[]): F1PlaybackOffsetsData => {
+export const createF1OffsetsMap = (
+  playbackOffsets: F1PlaybackOffsetsApiResponse[] | undefined,
+  season: number,
+): F1PlaybackOffsetsData => {
   const data: F1PlaybackOffsetsData = {};
 
+  if (playbackOffsets == null) {
+    return data;
+  }
+
   for (const offset of playbackOffsets) {
-    const key = mapStreamIdentifierToType(offset.channelToAdjust);
+    const key = mapStreamIdentifierToType(offset.channelToAdjust, season);
     const value = offset.delaySeconds;
     const baseChannel = offset.channels.find((channel) => channel !== offset.channelToAdjust);
 
@@ -130,7 +159,7 @@ export const createF1OffsetsMap = (playbackOffsets: F1PlaybackOffsetsApiResponse
       continue;
     }
 
-    const baseChannelType = mapStreamIdentifierToType(baseChannel);
+    const baseChannelType = mapStreamIdentifierToType(baseChannel, season);
     const otherValues: Record<StreamInfoWithDriver["type"], number | undefined> = data[key] ?? {};
     otherValues[baseChannelType] = value;
 

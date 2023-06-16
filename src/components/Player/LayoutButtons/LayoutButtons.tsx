@@ -26,6 +26,7 @@ interface LayoutButtonsProps {
   renameLayout: (layoutIndex: number, name: string) => void;
   deleteLayout: (layoutIndex: number) => void;
   viewerState: WindowGridState;
+  hasOnlyOneStream: boolean;
 }
 export const LayoutButtons = ({
   usedWindows,
@@ -35,6 +36,7 @@ export const LayoutButtons = ({
   renameLayout,
   deleteLayout,
   viewerState,
+  hasOnlyOneStream,
 }: LayoutButtonsProps) => {
   const { requestStream } = useStreamPicker();
   const { preventHiding } = useViewerUIVisibility();
@@ -171,7 +173,7 @@ export const LayoutButtons = ({
           );
         }}
       </Dropdown>
-      <Button iconLeft={SquaresPlusIcon} variant="Secondary" onClick={onAddClick}>
+      <Button iconLeft={SquaresPlusIcon} variant="Secondary" onClick={onAddClick} disabled={hasOnlyOneStream}>
         Add video
       </Button>
       <LayoutDialogs state={layoutDialogState} />

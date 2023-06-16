@@ -12,6 +12,9 @@ import { setRef } from "../../../utils/setRef";
 import { AdditionalVideoJSOptions, VideoJS } from "../../VideoJS/VideoJS";
 import { VideoWindowWrapper } from "../VideoWindowWrapper/VideoWindowWrapper";
 import { Button } from "../../Button/Button";
+import { NoFeed } from "../NoFeed/NoFeed";
+import { FeedError } from "../FeedError/FeedError";
+import { StreamVideoError } from "../../../hooks/useStreamVideo/useStreamVideo.utils";
 import styles from "./MainVideoWindow.module.scss";
 
 interface MainVideoWindowProps extends VideoWindowProps {
@@ -78,8 +81,20 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
       player.unmute();
     };
 
-    if (streamVideoState.state !== "done") {
+    if (streamVideoState.state === "loading") {
       return null;
+    }
+
+    if (
+      streamVideoState.state === "error" &&
+      streamVideoState.error instanceof StreamVideoError &&
+      streamVideoState.error.type === "NO_PLAYBACK_URL"
+    ) {
+      return <NoFeed />;
+    }
+
+    if (streamVideoState.state === "error") {
+      return <FeedError error={streamVideoState.error} />;
     }
 
     return (

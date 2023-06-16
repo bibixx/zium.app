@@ -8,8 +8,11 @@ import { onVideoWindowReadyBase } from "../../utils/onVideoWindowReady";
 import { setRef } from "../../utils/setRef";
 import { AdditionalVideoJSOptions, VideoJS } from "../VideoJS/VideoJS";
 import { Button } from "../Button/Button";
+import { StreamVideoError } from "../../hooks/useStreamVideo/useStreamVideo.utils";
 import { VideoWindowWrapper } from "./VideoWindowWrapper/VideoWindowWrapper";
 import styles from "./VideoWindow.module.scss";
+import { NoFeed } from "./NoFeed/NoFeed";
+import { FeedError } from "./FeedError/FeedError";
 
 interface DriverTrackerVideoWindowProps extends VideoWindowProps {
   gridWindow: BaseGridWindow;
@@ -30,8 +33,20 @@ export const DriverTrackerVideoWindow = forwardRef<PlayerAPI | null, DriverTrack
       onVideoWindowReadyBase(player);
     };
 
-    if (streamVideoState.state !== "done") {
+    if (streamVideoState.state === "loading") {
       return null;
+    }
+
+    if (
+      streamVideoState.state === "error" &&
+      streamVideoState.error instanceof StreamVideoError &&
+      streamVideoState.error.type === "NO_PLAYBACK_URL"
+    ) {
+      return <NoFeed onDelete={onDelete} />;
+    }
+
+    if (streamVideoState.state === "error") {
+      return <FeedError error={streamVideoState.error} onDelete={onDelete} />;
     }
 
     return (

@@ -13,21 +13,6 @@
   position: absolute;
 }
 
-.bitmovinWrapper {
-  :global(.bmpui-ui-settingstogglebutton),
-  :global(.bmpui-ui-fullscreentogglebutton),
-  :global(.bmpui-ui-volumetogglebutton) {
-    display: none;
-  }
-
-  :global(.bmpui-ui-volumeslider) {
-    &,
-    * {
-      pointer-events: none !important;
-    }
-  }
-}
-
 .focusAudioButtonWrapper {
   position: absolute;
   bottom: 8px;
@@ -59,12 +44,4 @@
 
 .errorIconContainer {
   color: var(--color-background-accent-strong);
-}
-
-.noFeedIconWrapper {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: var(--color-background-strong-default);
 }

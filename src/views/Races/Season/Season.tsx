@@ -68,24 +68,47 @@ export const Season = ({ season }: SeasonProps) => {
       {heading}
       <RaceDetailsSheet onClose={onSheetClose} selectedRaceEvent={selectedRaceEvent} />
       <div className={styles.grid}>
-        {season.data.map(({ id, pictureUrl, countryName, startDate, endDate, roundNumber, description, countryId }) => {
-          const onClick = () => {
-            setSelectedRaceEvent({ id, endDate });
-          };
+        {season.data.map(
+          ({
+            id,
+            pictureUrl,
+            countryName,
+            startDate,
+            endDate,
+            roundNumber,
+            description,
+            countryId,
+            contentId,
+            isSingleEvent,
+          }) => {
+            const onClick = () => {
+              if (id != null) {
+                setSelectedRaceEvent({ id, endDate });
+              }
+            };
 
-          return (
-            <EventCard
-              key={id}
-              pictureUrl={pictureUrl}
-              countryName={countryName}
-              displayDate={formatDateRange(startDate, endDate)}
-              caption={`Round ${roundNumber}`}
-              description={toTitleCase(description).replace(/Prix /, "Prix ")}
-              countryId={countryId}
-              onClick={onClick}
-            />
-          );
-        })}
+            const props = isSingleEvent
+              ? ({
+                  as: "a",
+                  href: `/race/${contentId}`,
+                } as const)
+              : {};
+
+            return (
+              <EventCard
+                key={id ?? contentId}
+                {...props}
+                pictureUrl={pictureUrl}
+                countryName={countryName}
+                displayDate={formatDateRange(startDate, endDate)}
+                caption={`Round ${roundNumber}`}
+                description={toTitleCase(description).replace(/Prix /, "Prix ")}
+                countryId={countryId}
+                onClick={onClick}
+              />
+            );
+          },
+        )}
       </div>
     </>
   );

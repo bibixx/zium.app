@@ -3,7 +3,7 @@ import { SupportedSeasons } from "../../constants/seasons";
 export interface RaceData {
   contentId: number;
   title: string;
-  id: string;
+  id: string | null;
   pictureUrl: string;
   countryName: string;
   startDate: Date;
@@ -12,6 +12,7 @@ export interface RaceData {
   description: string;
   countryId: string;
   isLive: boolean;
+  isSingleEvent: boolean;
   hasMedia?: boolean;
 }
 

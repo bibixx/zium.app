@@ -1,9 +1,13 @@
-import { useCallback, useEffect, useReducer } from "react";
+import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 import { SupportedSeasons } from "../../constants/seasons";
 import { fetchRacesList } from "./useRacesList.api";
 import { RacesState, RacesStateAction } from "./useRacesList.types";
 
 export const useRacesList = (seasonIds: SupportedSeasons[]) => {
+  const racesThatStartedLoading = useRef<string[]>([]);
+  const isLoadingRef = useRef(false);
+  const [racesLimit, setRacesLimit] = useState(Infinity);
+
   const [racesState, dispatch] = useReducer(
     (state: RacesState[], action: RacesStateAction): RacesState[] => {
       const { seasonId } = action;
@@ -49,14 +53,29 @@ export const useRacesList = (seasonIds: SupportedSeasons[]) => {
   useEffect(() => {
     const abortController = new AbortController();
 
-    seasonIds.forEach((seasonId) => {
-      fetchData(seasonId, abortController.signal);
+    isLoadingRef.current = true;
+    const promises = seasonIds
+      .slice(0, racesLimit)
+      .filter((seasonId) => !racesThatStartedLoading.current.includes(seasonId))
+      .map((seasonId) => {
+        racesThatStartedLoading.current.push(seasonId);
+        return fetchData(seasonId, abortController.signal);
+      });
+
+    Promise.all(promises).then(() => {
+      isLoadingRef.current = false;
     });
 
     return () => abortController.abort();
-  }, [fetchData, seasonIds]);
+  }, [fetchData, seasonIds, racesLimit]);
 
-  return { racesState };
+  const loadMoreRaces = useCallback(() => {
+    if (!isLoadingRef.current) {
+      setRacesLimit((limit) => limit + 5);
+    }
+  }, []);
+
+  return { racesState, loadMoreRaces, racesLimit };
 };
 
 const replaceSeason = (seasons: RacesState[], seasonId: string, newValue: RacesState): RacesState[] =>
