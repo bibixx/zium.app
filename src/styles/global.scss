@@ -13,6 +13,10 @@ a {
   color: var(--color-text-default);
 }
 
+button {
+  font: inherit;
+}
+
 body,
 #root {
   height: 100vh;
