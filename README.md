@@ -26,6 +26,8 @@
     <a href="https://github.com/bibixx/zium.app/issues">Report Bug</a>
     ·
     <a href="https://github.com/bibixx/zium.app/issues">Request Feature</a>
+    ·
+    <a href="https://www.craft.do/s/fffYcaZcBCUEFK">Features Roadmap</a>
   </p>
 </div>
 
@@ -70,7 +72,7 @@
   </a>
 </div>
 
-Want to feel like you're a race engineer during a Formula 1 race? With zium.app, you can watch the race from multiple angles at once, all inside your browser. The Multi-View Experience lets you create your own responsive pit-wall with multiple onboard cameras, race details and the main F1 TV broadcast.
+Want to feel like you're a race engineer during a Formula 1 race? With zium.app (_/[ʑ](https://en.wikipedia.org/wiki/Voiced_alveolo-palatal_fricative)[u](https://en.wikipedia.org/wiki/Close_back_rounded_vowel)[m](https://en.wikipedia.org/wiki/Voiced_bilabial_nasal) [d](https://en.wikipedia.org/wiki/Voiced_dental_and_alveolar_plosives)[ɒ](https://en.wikipedia.org/wiki/Open_back_rounded_vowel)[t](https://en.wikipedia.org/wiki/Voiceless_dental_and_alveolar_plosives) [æ](https://en.wikipedia.org/wiki/Near-open_front_unrounded_vowel)[p](https://en.wikipedia.org/wiki/Voiceless_bilabial_plosive)/_), you can watch the race from multiple angles at once, all inside your browser. The Multi-View Experience lets you create your own responsive pit-wall with multiple onboard cameras, race details and the main F1 TV broadcast.
 
 > An active F1 TV subscription is required to access the video streams. zium.app doesn’t allow you to watch Formula 1 for free.
 
@@ -164,7 +166,7 @@ Don't forget to give the project a star! Thanks again!
 <!-- LICENSE -->
 ## License
 
-Copyright © 2023 Bartosz Legięć
+Copyright © 2023 Bartosz Legięć, Adam Ruthendorf-Przewoski
 
 zium.app is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
