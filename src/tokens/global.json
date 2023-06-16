@@ -787,7 +787,7 @@
             "type": "color"
           },
           "default": {
-            "value": "#2399f7",
+            "value": "{color.core.red.500}",
             "type": "color"
           },
           "strong": {
