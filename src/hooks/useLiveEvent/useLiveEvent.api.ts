@@ -7,7 +7,9 @@ export const fetchLiveEvent = async (signal: AbortSignal): Promise<RaceData | nu
   const url = `/2.0/R/ENG/WEB_DASH/ALL/PAGE/395/F1_TV_Pro_Annual/14`;
   const body = await fetchJSON(url, undefined, signal);
 
-  const containers = body.resultObj.containers.flatMap((c: any) => c.retrieveItems.resultObj.containers);
+  const containers = body.resultObj.containers
+    .flatMap((c: any) => c.retrieveItems.resultObj.containers)
+    .filter((c) => c?.metadata?.contentSubtype != null);
 
   const uniqueContainers = uniqueById(containers);
 

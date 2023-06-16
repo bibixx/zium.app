@@ -32,7 +32,10 @@ export const useLiveEvent = (fallbackRaceId: string | null): LiveEventState => {
     };
   }, [fetchData]);
 
-  if (state.state === "done" && state.data === null && racesDetailsState.state === "done") {
+  const hasError = state.state === "error";
+  const isDoneAndHasNoData = state.state === "done" && state.data === null;
+
+  if (racesDetailsState.state === "done" && (hasError || isDoneAndHasNoData)) {
     return {
       state: "done",
       data: findClosestToNow(racesDetailsState.data) ?? null,
