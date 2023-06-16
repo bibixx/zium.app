@@ -3,11 +3,11 @@
     "typography": {
       "fontFamilies": {
         "body": {
-          "value": "Comic Sans MS",
+          "value": "General Sans",
           "type": "fontFamilies"
         },
         "heading": {
-          "value": "Comic Sans MS",
+          "value": "General Sans",
           "type": "fontFamilies"
         }
       },
@@ -51,15 +51,15 @@
       },
       "fontWeights": {
         "normal": {
-          "value": "Regular",
+          "value": "500",
           "type": "fontWeights"
         },
         "medium": {
-          "value": "Bold",
+          "value": "600",
           "type": "fontWeights"
         },
         "bold": {
-          "value": "Bold",
+          "value": "700",
           "type": "fontWeights"
         }
       },
