@@ -402,6 +402,7 @@ const debugLiveStreams: StreamsState & { state: "done" } = {
     countryId: "1",
     countryName: "Debug",
     title: "Debug",
+    isRaceEvent: true,
   },
   playbackOffsets: {
     f1: {},
