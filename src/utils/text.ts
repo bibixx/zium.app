@@ -1,4 +1,4 @@
-const nonUpperableWords = ["e", "de", "AWS", "dell'Emilia-Romagna", "dell'Emilia Romagna" "del", "in", "STC", "d’Italia", "MSC", "von", "du"];
+const nonUpperableWords = ["e", "de", "AWS", "dell'Emilia-Romagna", "dell'Emilia Romagna", "del", "in", "STC", "d’Italia", "MSC", "von", "du"];
 const lowerCaseNonUpperableWordsSet = Object.fromEntries(nonUpperableWords.map((w, i) => [w.toLowerCase(), i]));
 
 export const firstUpper = (text: string) => {
