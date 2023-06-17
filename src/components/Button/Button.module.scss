@@ -37,7 +37,7 @@
   }
 
   &.primary {
-    @include inner-border(var(--color-border-strong-alpha));
+    @include inner-border(var(--color-border-default-alpha));
     background: var(--color-background-accent-default);
     color: var(--color-text-strong);
 
