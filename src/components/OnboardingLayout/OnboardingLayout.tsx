@@ -1,5 +1,6 @@
 import classNames from "classnames";
 import { ReactNode } from "react";
+import { NON_BREAKING_HYPHEN } from "../../utils/text";
 import { BackgroundDots } from "../../views/Viewer/BackgroundDots/BackgroundDots";
 import { useGrid } from "../../views/Viewer/hooks/useGrid";
 import { Logo } from "../Logo/Logo";
@@ -22,7 +23,7 @@ export const OnboardingLayout = ({ children, stepsCount, selectedStepIndex }: On
         <div className={styles.content}>
           <div className={styles.head}>
             <Logo height={40} color="var(--color-core-red-500)" />
-            <h1 className={styles.heading}>Formula 1 Multi&#x2011;View Experience</h1>
+            <h1 className={styles.heading}>Formula 1 Multi{NON_BREAKING_HYPHEN}View Experience</h1>
           </div>
           {children}
           <Steps count={stepsCount} selectedIndex={selectedStepIndex} />
