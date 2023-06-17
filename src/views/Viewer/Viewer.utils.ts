@@ -54,7 +54,7 @@ export const getAvailableDrivers = (streams: StreamsStateData, season: number) =
       id,
       imageUrls:
         season === +LATEST_SEASON
-          ? [getDriverUrl(driverStream, true), `/images/avatars/${season}/f${id}.png`, `/images/avatars/default.png`]
+          ? [getDriverUrl(driverStream, true), `/images/avatars/${season}/${id}.png`, `/images/avatars/default.png`]
           : [`/images/avatars/${season}/${id}.png`, getDriverUrl(driverStream, true), `/images/avatars/default.png`],
     };
   });
