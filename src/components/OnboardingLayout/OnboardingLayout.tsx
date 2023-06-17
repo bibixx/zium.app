@@ -22,7 +22,7 @@ export const OnboardingLayout = ({ children, stepsCount, selectedStepIndex }: On
         <div className={styles.content}>
           <div className={styles.head}>
             <Logo height={40} color="var(--color-core-red-500)" />
-            <h1 className={styles.heading}>Formula 1 Multi-View Experience</h1>
+            <h1 className={styles.heading}>Formula 1 Multi&#x2011;View Experience</h1>
           </div>
           {children}
           <Steps count={stepsCount} selectedIndex={selectedStepIndex} />
