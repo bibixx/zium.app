@@ -1,4 +1,4 @@
-import { Squares2X2Icon, SquaresPlusIcon } from "@heroicons/react/20/solid";
+import { PlusCircleIcon, RectangleGroupIcon, Squares2X2Icon, SquaresPlusIcon } from "@heroicons/react/20/solid";
 import { useCallback, useMemo, useState } from "react";
 import { useHotkeysStack } from "../../../hooks/useHotkeysStack/useHotkeysStack";
 import { useScopedHotkeys } from "../../../hooks/useScopedHotkeys/useScopedHotkeys";
@@ -169,11 +169,11 @@ export const LayoutButtons = ({
       >
         {({ setRef, toggleOpen, isOpen }) => {
           return (
-            <Button ref={setRef} iconLeft={Squares2X2Icon} isPressed={isOpen} variant="Tertiary" onClick={toggleOpen} />
+            <Button ref={setRef} iconLeft={RectangleGroupIcon} isPressed={isOpen} variant="Tertiary" onClick={toggleOpen} />
           );
         }}
       </Dropdown>
-      <Button iconLeft={SquaresPlusIcon} variant="Secondary" onClick={onAddClick} disabled={hasOnlyOneStream}>
+      <Button iconLeft={PlusCircleIcon} variant="Secondary" onClick={onAddClick} disabled={hasOnlyOneStream}>
         Add video
       </Button>
       <LayoutDialogs state={layoutDialogState} />
