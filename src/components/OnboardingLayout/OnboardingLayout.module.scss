@@ -81,10 +81,9 @@
 }
 
 .heading {
-  @include typography(heading, 700, display);
+  @include typography(heading, 700, default);
   margin: 0;
   color: var(--color-text-strong);
-  text-transform: uppercase;
   user-select: none;
 }
 
