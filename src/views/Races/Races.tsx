@@ -88,8 +88,13 @@ export const Races = () => {
 
   return (
     <WithVariables variables={{ "header-height": `${HEADER_HEIGHT}px` }}>
+      <div id="top" tabIndex={-1} />
       <div className={cn(styles.races, styles.layout)}>
-        <Header searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+        <Header
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          overwriteVisibleSeason={() => overwriteVisibleSeason(seasonsToRender[0])}
+        />
         <Sidebar
           visibleSeasonId={seasonsToRender[firstVisibleSeasonIndex]}
           seasons={filteredRacesState.map((season) => ({

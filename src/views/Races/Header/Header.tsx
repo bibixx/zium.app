@@ -10,12 +10,34 @@ export const HEADER_HEIGHT = 92;
 interface HeaderProps {
   searchQuery: string;
   setSearchQuery: (newValue: string) => void;
+  overwriteVisibleSeason?: () => void;
 }
-export const Header = ({ searchQuery, setSearchQuery }: HeaderProps) => {
+export const Header = ({ searchQuery, setSearchQuery, overwriteVisibleSeason }: HeaderProps) => {
+  const onLogoClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (e.metaKey) {
+      return;
+    }
+
+    overwriteVisibleSeason?.();
+    e.preventDefault();
+    const id = `top`;
+    const $scrollToElement = document.getElementById(id);
+    if ($scrollToElement == null) {
+      return;
+    }
+
+    $scrollToElement.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
+
   return (
     <>
       <div className={styles.wrapper}>
-        <Logo height={32} width={88} color={"var(--color-text-strong)"} />
+        <a href="#top" onClick={onLogoClick} className={styles.logoLink} aria-label="Scroll to top">
+          <Logo height={32} width={88} color={"var(--color-text-strong)"} aria-label="ZIUM logo" />
+        </a>
         <div className={styles.rightContent}>
           <div className={styles.inputWrapper}>
             <Input

@@ -19,7 +19,8 @@ type BothProvided = {
 type SizeProps = OptionalHeight | OptionalWidth | BothProvided;
 type LogoProps = {
   color?: string;
-} & SizeProps;
-export const Logo = ({ color, height, width }: LogoProps) => {
-  return <LogoSvg className={styles.logo} height={height} width={width} style={{ color }} />;
+} & SizeProps &
+  React.SVGProps<SVGSVGElement>;
+export const Logo = ({ color, height, width, ...props }: LogoProps) => {
+  return <LogoSvg className={styles.logo} height={height} width={width} style={{ color }} {...props} />;
 };

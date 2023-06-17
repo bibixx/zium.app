@@ -75,3 +75,12 @@
     );
   }
 }
+
+.logoLink {
+  display: flex;
+  border-radius: var(--radii-xsmall);
+
+  &:focus-visible {
+    outline-offset: 6px;
+  }
+}
