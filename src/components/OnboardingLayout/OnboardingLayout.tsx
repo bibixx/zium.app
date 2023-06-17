@@ -21,7 +21,7 @@ export const OnboardingLayout = ({ children, stepsCount, selectedStepIndex }: On
         <div className={styles.mobileDivider}></div>
         <div className={styles.content}>
           <div className={styles.head}>
-            <Logo height={48} color="var(--color-core-red-500)" />
+            <Logo height={40} color="var(--color-core-red-500)" />
             <h1 className={styles.heading}>Formula 1 Multi-View Experience</h1>
           </div>
           {children}
