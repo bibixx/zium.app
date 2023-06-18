@@ -81,12 +81,12 @@
   height: 100%;
   object-fit: cover;
   right: 0;
+  width: 120%;
+  transform: translateX(20%);
 
   &:not(.isLive) {
     filter: grayscale(1);
     opacity: 0.5;
-    width: 120%;
-    transform: translateX(20%);
   }
 }
 
