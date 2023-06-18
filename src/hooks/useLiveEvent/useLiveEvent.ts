@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { isRaceGenre } from "../../constants/races";
 import { useRaceDetails } from "../useRaceDetails/useRaceDetails";
 import { RaceDetailsData } from "../useRaceDetails/useRacesDetails.types";
 import { fetchLiveEvent } from "./useLiveEvent.api";
@@ -58,6 +59,10 @@ const findClosestToNow = (races: RaceDetailsData[]) => {
   const now = new Date();
   for (let i = 0; i < races.length; i++) {
     const race = races[i];
+
+    if (!isRaceGenre(race.genre)) {
+      continue;
+    }
 
     if (race.isLive) {
       return race;

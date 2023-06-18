@@ -1,3 +1,5 @@
+import { EventGenre } from "../../constants/races";
+
 export interface RaceDetailsData {
   title: string;
   id: string;
@@ -16,6 +18,7 @@ export interface RaceDetailsData {
   roundNumber: number;
   countryId: string;
   isSingleEvent: boolean;
+  genre: EventGenre;
 }
 
 export type RaceDetailsState =

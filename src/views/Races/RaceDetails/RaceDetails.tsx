@@ -28,7 +28,7 @@ export const RaceDetails = ({ id, endDate, onClose }: RaceDetailsProps) => {
   if (racesDetailsState.state === "loading") {
     return (
       <div className={styles.grid}>
-        {Array.from({ length: 5 }).map((_, i) => (
+        {Array.from({ length: 8 }).map((_, i) => (
           <ListItem as="div" disabled key={i}>
             <EventSession title="" subtitle="" isLoading />
           </ListItem>

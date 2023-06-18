@@ -1,4 +1,4 @@
-import { RACE_GENRES } from "../../constants/races";
+import { EVENT_GENRES } from "../../constants/races";
 import { fetchJSON } from "../../utils/api";
 import { uniqueById } from "../../utils/uniqueById";
 import { RaceData } from "../useRacesList/useRacesList.types";
@@ -11,12 +11,12 @@ export const fetchLiveEvent = async (signal: AbortSignal): Promise<RaceData | nu
     .flatMap((c: any) => c.retrieveItems.resultObj.containers)
     .filter((c: any) => c?.metadata?.contentSubtype != null);
 
-  const uniqueContainers = uniqueById(containers);
+  const uniqueContainers = uniqueById(containers) as any[];
 
   const liveContainer = uniqueContainers.find(
     (racePage: any) =>
-      racePage.metadata.contentSubtype === "LIVE" && RACE_GENRES.includes(racePage.metadata.genres[0]?.toLowerCase()),
-  ) as any | undefined;
+      racePage.metadata.contentSubtype === "LIVE" && EVENT_GENRES.includes(racePage.metadata.genres[0]?.toLowerCase()),
+  );
 
   if (liveContainer == null) {
     return null;

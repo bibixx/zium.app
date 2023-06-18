@@ -1,3 +1,5 @@
+import { EventGenre } from "../../constants/races";
+
 export interface StreamsStateData {
   defaultStream: StreamInfo | null;
   driverTrackerStream: StreamInfo | null;
@@ -10,7 +12,7 @@ export interface RaceInfo {
   countryName: string;
   countryId: string;
   title: string;
-  isRaceEvent: boolean;
+  genre: EventGenre;
 }
 
 export type StreamsState =

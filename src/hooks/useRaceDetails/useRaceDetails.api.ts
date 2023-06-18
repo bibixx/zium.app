@@ -1,5 +1,5 @@
 import { isValid } from "date-fns";
-import { RACE_GENRES } from "../../constants/races";
+import { EventGenre, EVENT_GENRES } from "../../constants/races";
 import { fetchJSON } from "../../utils/api";
 import { uniqueById } from "../../utils/uniqueById";
 import { RaceDetailsData } from "./useRacesDetails.types";
@@ -12,11 +12,11 @@ export const fetchRaceDetailsId = async (raceId: string, signal: AbortSignal): P
   const scheduledEvents = getScheduledEvents(body);
 
   const liveAndReplayDetails = liveAndReplayEvents
-    .filter((r: any) => RACE_GENRES.includes(r.metadata.genres[0]?.toLowerCase()))
+    .filter((r: any) => EVENT_GENRES.includes(r.metadata.genres[0]?.toLowerCase()))
     .map((e) => mapEventToRaceDetailsData(e, true));
 
   const scheduledDetails = scheduledEvents
-    .filter((r: any) => RACE_GENRES.includes(r.metadata.genres[0]?.toLowerCase()))
+    .filter((r: any) => EVENT_GENRES.includes(r.metadata.genres[0]?.toLowerCase()))
     .map((e) => mapEventToRaceDetailsData(e, false));
 
   const raceDetails = uniqueById([...liveAndReplayDetails, ...scheduledDetails]).sort(
@@ -85,5 +85,6 @@ const mapEventToRaceDetailsData = (event: any, isReplay: boolean): RaceDetailsDa
     endDate,
     roundNumber: +event.metadata.emfAttributes.Meeting_Number,
     isSingleEvent: false,
+    genre: event.metadata.genres[0]?.toLowerCase() as EventGenre,
   };
 };

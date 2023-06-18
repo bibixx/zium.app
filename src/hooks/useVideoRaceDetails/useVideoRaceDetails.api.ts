@@ -1,4 +1,4 @@
-import { RACE_GENRES } from "../../constants/races";
+import { EventGenre } from "../../constants/races";
 import { fetchJSON } from "../../utils/api";
 import {
   F1PlaybackOffsetsApiResponse,
@@ -16,11 +16,11 @@ export const fetchRaceStreams = async (raceId: string, signal: AbortSignal) => {
   const isLive = container.metadata.contentSubtype === "LIVE";
   const countryName = container.metadata.emfAttributes.Meeting_Country_Name;
   const countryId = container.metadata.emfAttributes.MeetingCountryKey;
-  const title = container.metadata.shortDescription || container.metadata.title;
+  const title = container.metadata.titleBrief;
   const playbackOffsets = container.playbackOffsets as F1PlaybackOffsetsApiResponse[];
   const meetingKey = container.metadata.meetingKey as string;
   const meetingSessionKey = container.metadata.emfAttributes.MeetingSessionKey as string;
-  const isRaceEvent = RACE_GENRES.includes(container.metadata.genres[0]?.toLowerCase());
+  const genre = container.metadata.genres[0]?.toLowerCase() as EventGenre;
 
   return {
     streams,
@@ -32,7 +32,7 @@ export const fetchRaceStreams = async (raceId: string, signal: AbortSignal) => {
     playbackOffsets,
     meetingKey,
     meetingSessionKey,
-    isRaceEvent,
+    genre,
   };
 };
 
