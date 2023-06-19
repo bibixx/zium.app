@@ -48,5 +48,6 @@ export const fetchLiveEvent = async (signal: AbortSignal): Promise<RaceData | nu
     isLive,
     hasMedia: isLive,
     isSingleEvent: false,
+    genre: liveContainer.metadata.genres[0],
   };
 };

@@ -32,7 +32,7 @@ export const fetchRacesList = async (seasonId: SupportedSeasons, signal: AbortSi
   let fallbackRoundNumber = 0;
 
   const races = uniqueContainers
-    .map((racePage: any) => {
+    .map((racePage: any): RaceData | null => {
       const racePageId =
         racePage.metadata.emfAttributes.PageID == null ? null : String(racePage.metadata.emfAttributes.PageID);
       const title = racePage.metadata.emfAttributes.Global_Meeting_Name;
@@ -55,7 +55,6 @@ export const fetchRacesList = async (seasonId: SupportedSeasons, signal: AbortSi
       return {
         contentId,
         id: racePageId,
-        seasonId,
         title,
         pictureUrl,
         countryName,
@@ -66,6 +65,7 @@ export const fetchRacesList = async (seasonId: SupportedSeasons, signal: AbortSi
         countryId,
         isLive,
         isSingleEvent: racePageId == null,
+        genre: racePage?.metadata?.genres[0],
       };
     })
     .filter(isNotNullable)

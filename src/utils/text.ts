@@ -1,9 +1,21 @@
+import { pipe } from "./pipe";
+
+export const NBSP = "\xa0";
+export const MDASH = "\u2014";
+export const OPEN_QUOTE = "\u201c";
+export const CLOSE_QUOTE = "\u201d";
+export const APOSTROPHE = "\u2019";
+export const NON_BREAKING_HYPHEN = "\u2011";
+export const TM_SIGN = "\u2122";
+
+export const quote = (text: string) => `${OPEN_QUOTE}${text}${CLOSE_QUOTE}`;
+
 const nonUpperableWords = [
   "e",
   "de",
   "AWS",
   "dell'Emilia-Romagna",
-  "dell'Emilia Romagna",
+  "dell'Emilia",
   "del",
   "in",
   "STC",
@@ -11,11 +23,18 @@ const nonUpperableWords = [
   "MSC",
   "von",
   "du",
+  "VTB",
+  "BWT",
+  "DHL",
+  "der",
+  "della",
 ];
 const lowerCaseNonUpperableWordsSet = Object.fromEntries(nonUpperableWords.map((w, i) => [w.toLowerCase(), i]));
 
 const applyToTextParts = (text: string, separator: string, mapper: (text: string) => string) =>
   text.split(separator).map(mapper).join(separator);
+
+export const fixEmDashes = (text: string) => text.replace(" - ", `${NBSP}${MDASH}${NBSP}`);
 
 const toFirstUpper = (text: string) => {
   const nonUpperableWordIndex = lowerCaseNonUpperableWordsSet[text.toLowerCase()] ?? -1;
@@ -38,10 +57,17 @@ const applyTitleCaseToWord = (text: string): string => {
 
 export const toTitleCase = (text: string) => applyToTextParts(text, " ", applyTitleCaseToWord);
 
-export const NBSP = "\xa0";
-export const MDASH = "\u2014";
-export const OPEN_QUOTE = "\u201c";
-export const CLOSE_QUOTE = "\u201d";
-export const NON_BREAKING_HYPHEN = "\u2011";
-
-export const quote = (text: string) => `${OPEN_QUOTE}${text}${CLOSE_QUOTE}`;
+const raceApostrophesSet: Record<string, string | undefined> = {
+  "dell'Emilia-Romagna": `dell${APOSTROPHE}Emilia-Romagna`,
+  "dell'Emilia": `dell${APOSTROPHE}Emilia`,
+};
+export const formatRaceName = (text: string, addTm: boolean) => {
+  return pipe(
+    text,
+    toTitleCase,
+    fixEmDashes,
+    (text) => applyToTextParts(text, " ", (w) => raceApostrophesSet[w] ?? w),
+    (text) => text.replace(/Prix /, `Prix${NBSP}`),
+    addTm ? (text) => text + TM_SIGN : (text) => text,
+  );
+};

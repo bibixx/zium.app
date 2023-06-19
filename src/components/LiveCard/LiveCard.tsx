@@ -3,11 +3,12 @@ import cn from "classnames";
 import { differenceInMinutes, differenceInSeconds, sub } from "date-fns";
 import { ReactNode, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import { isRaceGenre } from "../../constants/races";
 import { useActiveAlarms } from "../../hooks/useActiveAlarms";
 import { LiveEventState } from "../../hooks/useLiveEvent/useLiveEvent.types";
 import { RaceData } from "../../hooks/useRacesList/useRacesList.types";
 import { createAlarm, deleteAlarm } from "../../utils/extensionApi";
-import { MDASH, NBSP, toTitleCase } from "../../utils/text";
+import { fixEmDashes, formatRaceName, toTitleCase } from "../../utils/text";
 import { Button } from "../Button/Button";
 import { CountryImage } from "../CountryImage/CountryImage";
 import { EventCardTag } from "../EventCardTag/EventCardTag";
@@ -42,7 +43,10 @@ const LiveCard = ({ raceDetails, activeAlarms }: LiveCardProps) => {
   const pictureUrl = `https://f1tv.formula1.com/image-resizer/image/${raceDetails.pictureUrl}?w=1800&h=1080&q=HI&o=L`;
   const countryName = raceDetails.countryName;
   const caption = `Round ${raceDetails.roundNumber}`;
-  const description = toTitleCase(raceDetails.description).replace(" - ", `${NBSP}${MDASH}${NBSP}`);
+  const isRaceEvent = isRaceGenre(raceDetails.genre);
+  const description = isRaceEvent
+    ? formatRaceName(raceDetails.description, false)
+    : fixEmDashes(toTitleCase(raceDetails.description));
   const countryId = raceDetails.countryId;
   const isReminderSet = activeAlarms.includes(String(raceDetails.contentId));
 

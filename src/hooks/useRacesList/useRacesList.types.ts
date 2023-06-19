@@ -1,3 +1,4 @@
+import { EventGenre } from "../../constants/races";
 import { SupportedSeasons } from "../../constants/seasons";
 
 export interface RaceData {
@@ -14,6 +15,7 @@ export interface RaceData {
   isLive: boolean;
   isSingleEvent: boolean;
   hasMedia?: boolean;
+  genre: EventGenre;
 }
 
 export type BaseRaces = { seasonId: SupportedSeasons };

@@ -9,7 +9,7 @@ import { useLaggedBehindData } from "../../../hooks/useLaggedBehindData/useLagge
 import { RacesState } from "../../../hooks/useRacesList/useRacesList.types";
 import { useScopedHotkeys } from "../../../hooks/useScopedHotkeys/useScopedHotkeys";
 import { formatDateRange } from "../../../utils/date";
-import { toTitleCase } from "../../../utils/text";
+import { formatRaceName } from "../../../utils/text";
 import { RaceDetails } from "../RaceDetails/RaceDetails";
 import styles from "./Season.module.scss";
 
@@ -102,7 +102,7 @@ export const Season = ({ season }: SeasonProps) => {
                 countryName={countryName}
                 displayDate={formatDateRange(startDate, endDate)}
                 caption={`Round ${roundNumber}`}
-                description={toTitleCase(description).replace(/Prix /, "Prix ")}
+                description={formatRaceName(description, true)}
                 countryId={countryId}
                 onClick={onClick}
               />
