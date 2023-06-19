@@ -1,0 +1,15 @@
+.wrapper {
+  display: inline-flex;
+  height: 20px;
+  min-width: 20px;
+  border-radius: var(--radii-xsmall);
+  justify-content: center;
+  text-align: center;
+  padding-top: 1px;
+  padding-bottom: 3px;
+
+  @include inner-border(var(--color-border-strong-default), 1px);
+  @include typography(text, 200, regular);
+  background: var(--color-background-strong-alpha);
+  color: var(--color-text-strong);
+}

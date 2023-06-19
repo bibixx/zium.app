@@ -1,7 +1,10 @@
 import { ArrowRightOnRectangleIcon, MagnifyingGlassIcon } from "@heroicons/react/20/solid";
+import { useRef } from "react";
 import { Button } from "../../../components/Button/Button";
 import { Input } from "../../../components/Input/Input";
 import { Logo } from "../../../components/Logo/Logo";
+import { useHotkeysStack } from "../../../hooks/useHotkeysStack/useHotkeysStack";
+import { useScopedHotkeys } from "../../../hooks/useScopedHotkeys/useScopedHotkeys";
 import { logOut } from "../../../utils/extensionApi";
 import styles from "./Header.module.scss";
 
@@ -13,6 +16,7 @@ interface HeaderProps {
   overwriteVisibleSeason?: () => void;
 }
 export const Header = ({ searchQuery, setSearchQuery, overwriteVisibleSeason }: HeaderProps) => {
+  const inputRef = useRef<HTMLInputElement>(null);
   const onLogoClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (e.metaKey) {
       return;
@@ -32,6 +36,9 @@ export const Header = ({ searchQuery, setSearchQuery, overwriteVisibleSeason }: 
     });
   };
 
+  const scope = useHotkeysStack(true, true);
+  useScopedHotkeys("/", scope, () => inputRef.current?.focus(), { enableOnFormTags: false, preventDefault: true });
+
   return (
     <>
       <div className={styles.wrapper}>
@@ -47,6 +54,8 @@ export const Header = ({ searchQuery, setSearchQuery, overwriteVisibleSeason }: 
               value={searchQuery}
               onChange={(value) => setSearchQuery(value)}
               canClear
+              ref={inputRef}
+              shortcut="/"
             />
           </div>
           <Button variant="Tertiary" iconRight={ArrowRightOnRectangleIcon} onClick={logOut}>

@@ -13,6 +13,28 @@
   width: 20px;
 }
 
+.shortcutPlaceholder {
+  visibility: hidden;
+}
+
+.rightButtonsWrapper {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 0;
+  overflow: hidden;
+  pointer-events: none;
+
+  &.isAbsolute {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    padding: 12px;
+    padding-left: 0;
+  }
+}
+
 .closeWrapper {
   display: flex;
   color: var(--color-text-muted);
@@ -26,9 +48,7 @@
   background: none;
   cursor: pointer;
   border-radius: var(--radii-rounded);
-  position: absolute;
-  right: 12px;
-  top: 12px;
+  pointer-events: auto;
 
   * {
     color: currentColor;
