@@ -1,4 +1,4 @@
-export const RACE_GENRES = ["race", "qualifying", "practice", "sprint qualifying", "sprint race"] as const;
+export const RACE_GENRES = ["race", "qualifying", "practice", "sprint qualifying", "sprint race", "sprint"] as const;
 export const EVENT_GENRES = [
   ...RACE_GENRES,
   "post-race show",
@@ -6,6 +6,8 @@ export const EVENT_GENRES = [
   "weekend warm-up",
   "post-qualifying show",
   "pre-qualifying show",
+  "post-sprint show",
+  "pre-sprint show",
 ] as const;
 
 export type EventGenre = (typeof EVENT_GENRES)[number];

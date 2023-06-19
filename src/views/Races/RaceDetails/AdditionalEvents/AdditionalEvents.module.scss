@@ -1,0 +1,44 @@
+.header {
+  padding: 16px;
+  padding-bottom: 8px;
+  @include typography(text, 200, regular);
+  color: var(--color-text-muted);
+  user-select: none;
+}
+
+.liveIndicator {
+  color: var(--color-text-accent);
+  text-transform: uppercase;
+}
+
+.zeroStateWrapper {
+  background: var(--color-background-default-default);
+  @include inner-border(var(--color-border-default-default));
+  border-radius: var(--radii-medium);
+  margin: 8px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  user-select: none;
+}
+
+.zeroStateContent {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.zeroStateIcon {
+  color: var(--color-text-muted);
+}
+
+.zeroStateHeader {
+  @include typography(heading, 300, default);
+  color: var(--color-text-strong);
+}
+
+.zeroStateSubheader {
+  @include typography(text, 200, regular);
+  color: var(--color-text-default);
+}

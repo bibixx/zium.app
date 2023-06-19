@@ -1,4 +1,3 @@
-import { TvIcon } from "@heroicons/react/24/outline";
 import { PlayCircleIcon } from "@heroicons/react/24/solid";
 import cn from "classnames";
 import styles from "./EventSession.module.scss";
@@ -10,6 +9,7 @@ interface EventSessionProps {
   isLive?: boolean;
   disabled?: boolean;
   isLoading?: boolean;
+  icon?: (props: React.SVGProps<SVGSVGElement>) => JSX.Element | null;
 }
 export const EventSession = ({
   title,
@@ -18,6 +18,7 @@ export const EventSession = ({
   isLive = false,
   disabled = false,
   isLoading,
+  icon: Icon,
 }: EventSessionProps) => {
   if (isLoading) {
     return (
@@ -33,9 +34,11 @@ export const EventSession = ({
 
   return (
     <div className={styles.wrapper}>
-      <div className={styles.leftIconWrapper}>
-        <TvIcon width={24} height={24} stroke="currentColor" />
-      </div>
+      {Icon && (
+        <div className={styles.leftIconWrapper}>
+          <Icon width={24} height={24} />
+        </div>
+      )}
       <div className={styles.textWrapper}>
         <div className={styles.title}>{title}</div>
         {!isLive && subtitle && <div className={cn(styles.subtitle)}>{subtitle}</div>}

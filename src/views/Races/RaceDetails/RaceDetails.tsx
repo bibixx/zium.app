@@ -7,9 +7,10 @@ import { ErrorMessage } from "../../../components/ErrorMessage/ErrorMessage";
 import { ListItem } from "../../../components/ListItem/ListItem";
 import { isRaceGenre } from "../../../constants/races";
 import { useRaceDetails } from "../../../hooks/useRaceDetails/useRaceDetails";
-import { toTitleCase } from "../../../utils/text";
+import { AdditionalEvents } from "./AdditionalEvents/AdditionalEvents";
 import { EventSession } from "./EventSession/EventSession";
 import styles from "./RaceDetails.module.scss";
+import { adjustTitle, getRaceIcon } from "./RaceDetails.utils";
 
 interface RaceDetailsProps {
   id: string;
@@ -30,7 +31,7 @@ export const RaceDetails = ({ id, endDate, onClose }: RaceDetailsProps) => {
   if (racesDetailsState.state === "loading") {
     return (
       <div className={styles.grid}>
-        {Array.from({ length: 8 }).map((_, i) => (
+        {Array.from({ length: 5 }).map((_, i) => (
           <ListItem as="div" disabled key={i}>
             <EventSession title="" subtitle="" isLoading />
           </ListItem>
@@ -82,7 +83,9 @@ export const RaceDetails = ({ id, endDate, onClose }: RaceDetailsProps) => {
   }
 
   const raceEvents = racesDetailsState.data.filter((race) => isRaceGenre(race.genre));
-  const additionalEvents = racesDetailsState.data.filter((race) => !isRaceGenre(race.genre));
+  const additionalEvents = racesDetailsState.data.filter(
+    (race) => !isRaceGenre(race.genre) && (race.hasMedia || race.isLive),
+  );
 
   return (
     <div className={styles.grid}>
@@ -99,34 +102,17 @@ export const RaceDetails = ({ id, endDate, onClose }: RaceDetailsProps) => {
             {...props}
           >
             <EventSession
-              title={raceDetails.title}
+              title={adjustTitle(raceDetails.title)}
               subtitle={raceDetails.startDate !== null ? formatDateRelative(raceDetails.startDate) : null}
               rightIconWrapperClassName={styles.raceDetailsListItemRightIconWrapper}
               isLive={raceDetails.isLive}
               disabled={isDisabled}
+              icon={getRaceIcon(raceDetails)}
             />
           </ListItem>
         );
       })}
-      {raceEvents.length > 0 && additionalEvents.length > 0 && (
-        <div className={styles.moreFromF1}>More from Formula 1</div>
-      )}
-      {additionalEvents.map((raceDetails, i) => {
-        const isDisabled = !raceDetails.isLive && !raceDetails.hasMedia;
-        const props = isDisabled ? ({ as: "div" } as const) : ({ as: Link, to: `/race/${raceDetails.id}` } as const);
-
-        return (
-          <ListItem<"div" | typeof Link>
-            className={styles.raceDetailsListItem}
-            disabled={isDisabled}
-            key={raceDetails.id}
-            ref={i === 0 ? firstListItemRef : undefined}
-            {...props}
-          >
-            {toTitleCase(raceDetails.title)}
-          </ListItem>
-        );
-      })}
+      <AdditionalEvents additionalEvents={additionalEvents} />
     </div>
   );
 };
