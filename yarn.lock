@@ -2341,6 +2341,7 @@ __metadata:
     sass: ^1.58.3
     style-dictionary: ^3.7.2
     token-transformer: ^0.0.30
+    ts-functional-pipe: ^3.1.2
     ts-key-enum: ^2.0.12
     typescript: ^4.9.3
     typescript-plugin-css-modules: ^4.2.2
@@ -4821,6 +4822,15 @@ __metadata:
   bin:
     token-transformer: cli.js
   checksum: bdbd5c0078d6d838910eac36994d97b18e6228f59723544a83837a96c181257204b8e4b511f37b91033d4fb0ad2a915703b81797e7da2e1e35e6f5a81a7c5181
+  languageName: node
+  linkType: hard
+
+"ts-functional-pipe@npm:^3.1.2":
+  version: 3.1.2
+  resolution: "ts-functional-pipe@npm:3.1.2"
+  dependencies:
+    tslib: ^2.3.0
+  checksum: 5c4cb28286061ac09c3a345795f3e15c75a3a20b33f3b31ea02f376b6eccb23043043b5f349fc081e5fc4ecd8cb33ae04fca66b9c94df8edae2bd0d0a2ee7486
   languageName: node
   linkType: hard
 

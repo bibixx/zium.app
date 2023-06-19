@@ -1,4 +1,4 @@
-import { pipe } from "./pipe";
+import { pipe } from "ts-functional-pipe";
 
 export const NBSP = "\xa0";
 export const MDASH = "\u2014";
@@ -63,11 +63,10 @@ const raceApostrophesSet: Record<string, string | undefined> = {
 };
 export const formatRaceName = (text: string, addTm: boolean) => {
   return pipe(
-    text,
     toTitleCase,
     fixEmDashes,
     (text) => applyToTextParts(text, " ", (w) => raceApostrophesSet[w] ?? w),
     (text) => text.replace(/Prix /, `Prix${NBSP}`),
     addTm ? (text) => text + TM_SIGN : (text) => text,
-  );
+  )(text);
 };
