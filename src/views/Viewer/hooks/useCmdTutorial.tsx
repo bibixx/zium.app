@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { KeyIndicator } from "../../../components/KeyIndicator/KeyIndicator";
 import { useSnackbars } from "../../../components/Snackbar/SnackbarsProvider";
+import { isWindows } from "../../../utils/platform";
 
 const NUMBER_OF_ADJUSTMENTS = 4;
 const ADJUSTMENTS_TIME = 10_000;
@@ -35,7 +36,8 @@ export const useCmdTutorial = () => {
         title: "Pro tip",
         content: (
           <span>
-            To prevent snapping, hold down <KeyIndicator shortcut="⌘" /> command key while resizing.
+            To prevent snapping, hold down <KeyIndicator shortcut={isWindows ? "Ctrl" : "⌘"} /> command key while
+            resizing.
           </span>
         ),
       });

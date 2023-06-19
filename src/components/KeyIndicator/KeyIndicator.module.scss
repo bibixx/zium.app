@@ -6,6 +6,8 @@
   justify-content: center;
   text-align: center;
   align-items: center;
+  padding-left: 5px;
+  padding-right: 5px;
 
   @include typography(text, 200, regular);
   background: var(--color-background-strong-alpha);
