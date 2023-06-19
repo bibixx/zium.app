@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useDevicePixelRatio } from "../../hooks/useDevicePixelRatio/useDevicePixelRatio";
+import { addQueryParams } from "../../utils/addQueryParams";
 import { withAs } from "../../utils/withAs";
 import { CountryImage } from "../CountryImage/CountryImage";
 import { WithVariables } from "../WithVariables/WithVariables";
@@ -14,6 +16,7 @@ interface EventCardProps {
 }
 export const EventCard = withAs("button")<EventCardProps>(
   ({ as: Component, pictureUrl, countryName, countryId, displayDate, caption, description, ...props }, ref) => {
+    const devicePixelRatio = useDevicePixelRatio();
     const [cursorPosition, setCursorPosition] = useState<{ x: number | undefined; y: number | undefined }>({
       x: undefined,
       y: undefined,
@@ -46,7 +49,12 @@ export const EventCard = withAs("button")<EventCardProps>(
         <Component className={styles.wrapper} {...props} ref={ref}>
           <div className={styles.heroImageWrapper}>
             <img
-              src={`https://f1tv.formula1.com/image-resizer/image/${pictureUrl}?w=400&h=195&q=HI&o=L`}
+              src={addQueryParams(`https://f1tv.formula1.com/image-resizer/image/${pictureUrl}`, {
+                w: 400 * devicePixelRatio,
+                h: 195 * devicePixelRatio,
+                q: "HI",
+                o: "L",
+              })}
               alt=""
               className={styles.heroImage}
               draggable={false}

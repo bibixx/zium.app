@@ -5,8 +5,10 @@ import { ReactNode, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { isRaceGenre } from "../../constants/races";
 import { useActiveAlarms } from "../../hooks/useActiveAlarms";
+import { useDevicePixelRatio } from "../../hooks/useDevicePixelRatio/useDevicePixelRatio";
 import { LiveEventState } from "../../hooks/useLiveEvent/useLiveEvent.types";
 import { RaceData } from "../../hooks/useRacesList/useRacesList.types";
+import { addQueryParams } from "../../utils/addQueryParams";
 import { createAlarm, deleteAlarm } from "../../utils/extensionApi";
 import { fixEmDashes, formatRaceName, toTitleCase } from "../../utils/text";
 import { Button } from "../Button/Button";
@@ -40,7 +42,13 @@ interface LiveCardProps {
   activeAlarms: string[];
 }
 const LiveCard = ({ raceDetails, activeAlarms }: LiveCardProps) => {
-  const pictureUrl = `https://f1tv.formula1.com/image-resizer/image/${raceDetails.pictureUrl}?w=1800&h=1080&q=HI&o=L`;
+  const devicePixelRatio = useDevicePixelRatio();
+  const pictureUrl = addQueryParams(`https://f1tv.formula1.com/image-resizer/image/${raceDetails.pictureUrl}`, {
+    w: 1920 * devicePixelRatio,
+    h: 800 * devicePixelRatio,
+    q: "HI",
+    o: "L",
+  });
   const countryName = raceDetails.countryName;
   const caption = `Round ${raceDetails.roundNumber}`;
   const isRaceEvent = isRaceGenre(raceDetails.genre);
@@ -49,14 +57,15 @@ const LiveCard = ({ raceDetails, activeAlarms }: LiveCardProps) => {
     : fixEmDashes(toTitleCase(raceDetails.description));
   const countryId = raceDetails.countryId;
   const isReminderSet = activeAlarms.includes(String(raceDetails.contentId));
+  const isLive = raceDetails.isLive;
 
   const variant = useMemo(() => {
-    if (raceDetails.isLive) {
+    if (isLive) {
       return "live";
     }
 
     return raceDetails.hasMedia ? "replay" : "upcoming";
-  }, [raceDetails.hasMedia, raceDetails.isLive]);
+  }, [raceDetails.hasMedia, isLive]);
 
   const canRemindFifteenMinutesBefore = differenceInMinutes(raceDetails.startDate, new Date()) >= 15;
 
@@ -121,10 +130,21 @@ const LiveCard = ({ raceDetails, activeAlarms }: LiveCardProps) => {
         </div>
       </div>
       <div className={styles.contentBackground}></div>
-      <div className={styles.shadow}></div>
-      {raceDetails.isLive && <img className={styles.imageBlur} src={pictureUrl} alt="" />}
+      {isLive && (
+        <div className={styles.imageBlur}>
+          <div className={styles.imageWrapper}>
+            <div className={styles.shadow}></div>
+            <div className={styles.imageTrimAdjustment}>
+              <img src={pictureUrl} className={cn(styles.image, styles.isLive)} alt="" />
+            </div>
+          </div>
+        </div>
+      )}
       <div className={styles.imageWrapper}>
-        <img src={pictureUrl} className={cn(styles.image, { [styles.isLive]: raceDetails.isLive })} alt="" />
+        <div className={styles.shadow}></div>
+        <div className={styles.imageTrimAdjustment}>
+          <img src={pictureUrl} className={cn(styles.image, { [styles.isLive]: isLive })} alt="" />
+        </div>
       </div>
     </Wrapper>
   );
