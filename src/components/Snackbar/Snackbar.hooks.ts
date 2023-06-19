@@ -155,7 +155,14 @@ export const useSnackbarHeight = (
       return;
     }
 
-    onHeightChange($element.offsetHeight);
+    const resizeObserver = new ResizeObserver(([entry]) => {
+      const [borderBoxSize] = entry.borderBoxSize;
+      onHeightChange(borderBoxSize.blockSize);
+    });
+
+    resizeObserver.observe($element);
+
+    return () => resizeObserver.disconnect();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ref]);
 };

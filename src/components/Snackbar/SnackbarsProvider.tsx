@@ -29,10 +29,20 @@ const useSnackbarsState = () => {
   const openSnackbar = useCallback((snackbar: ArgumentSnackbarData) => {
     const snackbarId = snackbar.id ?? generateUID();
 
-    setSnackbars((snackbars) => [
-      ...snackbars.filter(({ id }) => id !== snackbarId),
-      { ...snackbar, id: snackbarId, nodeRef: createMutableRef<HTMLElement | undefined>() },
-    ]);
+    setSnackbars((snackbars) => {
+      const alreadyExistingSnackbarIndex = snackbars.findIndex(({ id }) => id === snackbarId);
+      const newSnackbar = { ...snackbar, id: snackbarId, nodeRef: createMutableRef<HTMLElement | undefined>() };
+
+      if (alreadyExistingSnackbarIndex >= 0) {
+        return [
+          ...snackbars.slice(0, alreadyExistingSnackbarIndex),
+          newSnackbar,
+          ...snackbars.slice(alreadyExistingSnackbarIndex + 1),
+        ];
+      }
+
+      return [...snackbars, newSnackbar];
+    });
 
     return snackbarId;
   }, []);
