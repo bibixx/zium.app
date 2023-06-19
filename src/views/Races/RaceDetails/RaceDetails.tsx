@@ -108,7 +108,9 @@ export const RaceDetails = ({ id, endDate, onClose }: RaceDetailsProps) => {
           </ListItem>
         );
       })}
-      <div className={styles.moreFromF1}>More from Formula 1</div>
+      {raceEvents.length > 0 && additionalEvents.length > 0 && (
+        <div className={styles.moreFromF1}>More from Formula 1</div>
+      )}
       {additionalEvents.map((raceDetails, i) => {
         const isDisabled = !raceDetails.isLive && !raceDetails.hasMedia;
         const props = isDisabled ? ({ as: "div" } as const) : ({ as: Link, to: `/race/${raceDetails.id}` } as const);
