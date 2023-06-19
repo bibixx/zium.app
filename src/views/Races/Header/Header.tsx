@@ -3,6 +3,8 @@ import { useRef } from "react";
 import { Button } from "../../../components/Button/Button";
 import { Input } from "../../../components/Input/Input";
 import { Logo } from "../../../components/Logo/Logo";
+import { useSnackbars } from "../../../components/Snackbar/SnackbarsProvider";
+import { useDebug } from "../../../hooks/useDebug/useDebug";
 import { useHotkeysStack } from "../../../hooks/useHotkeysStack/useHotkeysStack";
 import { useScopedHotkeys } from "../../../hooks/useScopedHotkeys/useScopedHotkeys";
 import { logOut } from "../../../utils/extensionApi";
@@ -39,6 +41,9 @@ export const Header = ({ searchQuery, setSearchQuery, overwriteVisibleSeason }: 
   const scope = useHotkeysStack(true, true);
   useScopedHotkeys("/", scope, () => inputRef.current?.focus(), { enableOnFormTags: false, preventDefault: true });
 
+  const { openSnackbar } = useSnackbars();
+  const isDebug = useDebug();
+
   return (
     <>
       <div className={styles.wrapper}>
@@ -46,6 +51,18 @@ export const Header = ({ searchQuery, setSearchQuery, overwriteVisibleSeason }: 
           <Logo height={32} width={88} color={"var(--color-text-strong)"} aria-label="ZIUM logo" />
         </a>
         <div className={styles.rightContent}>
+          {isDebug && (
+            <Button
+              onClick={() =>
+                openSnackbar({
+                  content: getLorem(),
+                  title: getLorem(20),
+                })
+              }
+            >
+              Show debug snackbar
+            </Button>
+          )}
           <div className={styles.inputWrapper}>
             <Input
               isRounded
@@ -67,3 +84,10 @@ export const Header = ({ searchQuery, setSearchQuery, overwriteVisibleSeason }: 
     </>
   );
 };
+
+function getLorem(max = Infinity) {
+  const fullLorem =
+    "Ipsam ea voluptate nostrum cupiditate quo voluptatibus laborum sunt maiores id sequi. Deleniti nobis et natus asperiores doloremque quis aperiam voluptates iusto excepturi eius facere dolorum. Molestiae debitis eaque praesentium quia ex eum exercitationem sequi ut magnam maxime sunt asperiores cumque. Exercitationem ipsam ad quisquam velit itaque et doloribus delectus natus. Alias tempore iusto dolorem facilis ut corporis assumenda repellat itaque sint repellendus. Doloribus est enim et voluptatem cupiditate autem sint voluptatibus.";
+
+  return fullLorem[0] + fullLorem.slice(1, Math.floor(Math.random() * Math.min(fullLorem.length, max)));
+}
