@@ -26,8 +26,6 @@ import { FullScreenError } from "../../components/FullScreenError/FullScreenErro
 import { Loader } from "../../components/Loader/Loader";
 import { TimedOutWrapper } from "../../components/TimedOutWrapper/TimedOutWrapper";
 import { useTrackWithTitle } from "../../hooks/useAnalytics/useAnalytics";
-import { Snackbar } from "../../components/Snackbar/Snackbar";
-import { isWindows } from "../../utils/platform";
 import { isNotNullable } from "../../utils/isNotNullable";
 import { getWindowStreamMap, getAvailableDrivers } from "./Viewer.utils";
 import { useGrid } from "./hooks/useGrid";
@@ -64,7 +62,7 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
   const windowStreamMap = useMemo(() => getWindowStreamMap(windows, streams), [windows, streams]);
   const windowVideojsRefMapRef = useRef<Record<string, PlayerAPI | null>>({});
   const [mainVideoPlayer, setMainVideoPlayer] = useState<PlayerAPI | null>(null);
-  const { onResize, shouldShowTutorial } = useCmdTutorial();
+  const { onResize } = useCmdTutorial();
 
   const windowsMap = useMemo((): Record<string, GridWindow> => {
     const entries = windows.map((w) => [w.id, w]);
@@ -333,11 +331,6 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
           isPaused={areVideosPaused}
           hasOnlyOneStream={hasOnlyOneStream}
         />
-        <Snackbar isOpen={shouldShowTutorial}>
-          Hold
-          <div className={cn(styles.cmdContainer, { [styles.isCmd]: !isWindows })}>{isWindows ? "Ctrl" : "⌘"}</div>
-          while resizing to prevent snapping
-        </Snackbar>
       </div>
     </StreamPickerProvider>
   );

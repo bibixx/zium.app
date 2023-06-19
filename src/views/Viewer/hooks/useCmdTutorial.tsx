@@ -1,18 +1,18 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { KeyIndicator } from "../../../components/KeyIndicator/KeyIndicator";
+import { useSnackbars } from "../../../components/Snackbar/SnackbarsProvider";
 
-const NUMBER_OF_ADJUSTMENTS = 5;
+const NUMBER_OF_ADJUSTMENTS = 4;
 const ADJUSTMENTS_TIME = 10_000;
-const POPUP_VISIBILITY_TIME = 5_000;
 
 export const useCmdTutorial = () => {
-  const [shouldShowTutorial, setShouldShowTutorial] = useState(false);
   const [canUseCmd, setCanUseCmdState] = useState(getCanUseCmd);
   const counterRef = useRef(0);
-  const endTimerRef = useRef<number | undefined>(undefined);
   const debounceTimerRef = useRef<number | undefined>(undefined);
+  const { openSnackbar } = useSnackbars();
 
   const onResize = useCallback(() => {
-    if (shouldShowTutorial || canUseCmd) {
+    if (canUseCmd) {
       return;
     }
 
@@ -30,22 +30,25 @@ export const useCmdTutorial = () => {
     counterRef.current++;
 
     if (counterRef.current === NUMBER_OF_ADJUSTMENTS) {
-      setShouldShowTutorial(true);
+      openSnackbar({
+        id: "pro-tip-cmd",
+        title: "Pro tip",
+        content: (
+          <span>
+            To prevent snapping, hold down <KeyIndicator shortcut="⌘" /> command key while resizing.
+          </span>
+        ),
+      });
       setCanUseCmd();
       setCanUseCmdState(true);
-
-      endTimerRef.current = window.setTimeout(() => {
-        setShouldShowTutorial(false);
-      }, POPUP_VISIBILITY_TIME);
     }
-  }, [canUseCmd, shouldShowTutorial]);
+  }, [canUseCmd, openSnackbar]);
 
   useEffect(function cleanup() {
-    window.clearTimeout(endTimerRef.current);
     window.clearTimeout(debounceTimerRef.current);
   }, []);
 
-  return { onResize, shouldShowTutorial };
+  return { onResize };
 };
 
 const CAN_USE_CMD_STORAGE_KEY = "canUseCmd";

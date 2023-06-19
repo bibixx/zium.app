@@ -1,46 +1,137 @@
-.wrapper {
-  --transform-y: 0;
-  --wrapper-top: 12px;
+.timeIndicatorWrapper {
+  padding: 4px;
+}
 
-  @include typography(text, 200, regular);
-  @include inner-border(var(--color-border-default-default), 1px);
-  user-select: none;
+.timeIndicatorTrack {
+  background: var(--color-border-default-alpha);
+  border-radius: var(--radii-rounded);
+  overflow: hidden;
+  height: 2px;
+}
+
+.timeIndicator {
+  background: var(--color-border-accent);
+  width: 100%;
+  height: 100%;
+  transform-origin: left center;
+  transform: scaleX(var(--progress, 0));
+  transition: var(--transition-fast);
+  transition-property: background;
+}
+
+.wrapper {
+  top: 0;
+  right: 0;
+
+  --drag-translate-x: 0px;
+  --translate-x: var(--drag-translate-x);
 
   background: var(--color-background-default-default);
-  border-radius: var(--radii-rounded);
+  @include inner-border(var(--color-border-default-default));
+  position: absolute;
+  border-radius: var(--radii-medium);
+  width: 360px;
+  padding: 4px;
+  transform: translateX(var(--translate-x));
+  transition: cubic-bezier(0, 0.405, 0, 1.2) var(--motion-timing-slow) transform, var(--transition-slow) opacity;
+  cursor: grab;
 
-  position: fixed;
-  top: var(--wrapper-top);
-  left: 50%;
-  padding: 8px 16px;
+  &.isDragging {
+    cursor: grabbing;
+    transition: none;
+  }
+
+  &:hover,
+  &.isDragging {
+    .timeIndicator {
+      background: var(--color-border-default-inverted-default);
+    }
+  }
+}
+
+.offsetWrapper {
+  transform: translateY(var(--offset-y));
+  transition: var(--transition-slow);
+  transition-property: transform;
+  position: relative;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition-duration: 0.1ms;
+  }
+
+  &.enter .wrapper {
+    --translate-x: calc(100% + var(--snackbar-offset));
+    transition: none;
+  }
+
+  &.enterActive .wrapper {
+    --translate-x: var(--drag-translate-x);
+    transition: transform var(--transition-slow);
+  }
+
+  &.exit {
+    z-index: -1;
+
+    .wrapper {
+      --translate-x: var(--drag-translate-x);
+      pointer-events: none;
+      transition: none;
+    }
+  }
+
+  &.exitActive .wrapper {
+    --translate-x: calc(100% + var(--snackbar-offset));
+    transition: transform var(--transition-slow);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    &.exitActive .wrapper,
+    &.enterActive .wrapper {
+      transition-duration: 0.1ms;
+    }
+  }
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px;
+  flex: 1;
+}
+
+.title {
   color: var(--color-text-strong);
+  user-select: none;
+  @include typography(heading, 300, default);
+}
 
-  transform: translate(-50%, var(--transform-y));
+.textContent {
+  color: var(--color-text-default);
+  user-select: none;
+  @include typography(text, 300, regular);
+}
+
+.mainWrapper {
+  display: flex;
+  gap: 8px;
+}
+
+.buttonWrapper {
+  padding: 12px;
+}
+
+.snackbarsWrapper {
+  --snackbar-offset: 16px;
+
   z-index: var(--z-index-snackbar);
+  position: fixed;
+  top: var(--snackbar-offset);
+  right: var(--snackbar-offset);
+}
 
-  &.wrapperEnter {
-    visibility: hidden;
-    --transform-y: calc(-100% - var(--wrapper-top));
-  }
-
-  &.wrapperEnterActive {
-    visibility: visible;
-    --transform-y: 0;
-
-    transition: var(--transition-slow);
-    transition-property: transform;
-  }
-
-  &.wrapperExit {
-    visibility: visible;
-    --transform-y: 0;
-  }
-
-  &.wrapperExitActive {
-    visibility: visible;
-    --transform-y: calc(-100% - var(--wrapper-top));
-
-    transition: var(--transition-slow);
-    transition-property: transform;
-  }
+.draggingOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-index-snackbar);
 }

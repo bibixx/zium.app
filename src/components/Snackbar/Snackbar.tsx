@@ -1,37 +1,97 @@
-import { ReactNode, useMemo } from "react";
-import { createPortal } from "react-dom";
-import { CSSTransition } from "react-transition-group";
-import { OVERLAYS_PORTAL_ID } from "../../constants/portals";
+import { XMarkIcon } from "@heroicons/react/20/solid";
+import cn from "classnames";
+import { forwardRef, ReactNode, useCallback, useRef, useState } from "react";
+import { Button } from "../Button/Button";
+import { WithVariables } from "../WithVariables/WithVariables";
+import { useSnackbarDrag, useSnackbarHeight, useSnackbarTime } from "./Snackbar.hooks";
 import styles from "./Snackbar.module.scss";
 
+const DEFAULT_SNACKBAR_TIME = 4_000;
 interface SnackbarProps {
-  children: ReactNode;
-  isOpen: boolean;
+  title: ReactNode;
+  content: ReactNode;
+  time?: number;
+  offsetY: number;
+  onClose: () => void;
+  setShowDraggingOverlay: (showDraggingOverlay: boolean) => void;
+  onHeightChange: (height: number) => void;
 }
 
-export const Snackbar = ({ children, isOpen }: SnackbarProps) => {
-  const $portalContainer = useMemo(() => document.getElementById(OVERLAYS_PORTAL_ID), []);
+export const Snackbar = forwardRef<HTMLDivElement | null, SnackbarProps>(
+  (
+    { title, content, offsetY, time = DEFAULT_SNACKBAR_TIME, onClose, setShowDraggingOverlay, onHeightChange },
+    forwardedRef,
+  ) => {
+    const [isHovering, setIsHovering] = useState(false);
+    const wrapperRef = useRef<HTMLDivElement | null>(null);
+    const onDragEnd = useCallback(
+      (shouldClose: boolean) => {
+        setShowDraggingOverlay(false);
 
-  if ($portalContainer == null) {
-    throw new Error("$portalContainer not defined");
-  }
+        if (shouldClose) {
+          onClose();
+        }
+      },
+      [onClose, setShowDraggingOverlay],
+    );
 
-  return createPortal(
-    <CSSTransition
-      in={isOpen}
-      addEndListener={(node, done) => node.addEventListener("transitionend", done)}
-      unmountOnExit
-      mountOnEnter
-      classNames={{
-        enter: styles.wrapperEnter,
-        enterActive: styles.wrapperEnterActive,
-        exit: styles.wrapperExit,
-        exitActive: styles.wrapperExitActive,
-      }}
-    >
-      <div className={styles.wrapper}>{children}</div>
-    </CSSTransition>,
+    const onDragStart = useCallback(() => {
+      setShowDraggingOverlay(true);
+    }, [setShowDraggingOverlay]);
 
-    $portalContainer,
+    const { onMouseDown, isDragging, isMouseDown } = useSnackbarDrag({
+      elementRef: wrapperRef,
+      onDragStart,
+      onDragEnd,
+    });
+
+    useSnackbarHeight(onHeightChange, wrapperRef);
+
+    return (
+      <>
+        <WithVariables
+          className={styles.offsetWrapper}
+          variables={{ "offset-y": `${offsetY}px` }}
+          onMouseDown={onMouseDown}
+          ref={forwardedRef}
+        >
+          <div
+            className={cn(styles.wrapper, { [styles.isDragging]: isDragging || isMouseDown })}
+            onMouseEnter={() => setIsHovering(true)}
+            onMouseLeave={() => setIsHovering(false)}
+            ref={wrapperRef}
+            data-css-transition
+          >
+            <div className={styles.mainWrapper}>
+              <div className={styles.content}>
+                <div className={styles.title}>{title}</div>
+                <div className={styles.textContent}>{content}</div>
+              </div>
+              <div onMouseDown={(e) => e.stopPropagation()}>
+                <Button variant="Tertiary" iconLeft={XMarkIcon} onClick={onClose} />
+              </div>
+            </div>
+            <TimeIndicator isPaused={isHovering || isDragging} onClose={onClose} time={time} />
+          </div>
+        </WithVariables>
+      </>
+    );
+  },
+);
+
+interface TimeIndicatorProps {
+  isPaused: boolean;
+  time: number;
+  onClose: () => void;
+}
+const TimeIndicator = ({ isPaused, onClose, time }: TimeIndicatorProps) => {
+  const progress = useSnackbarTime(time, isPaused, onClose);
+
+  return (
+    <div className={styles.timeIndicatorWrapper}>
+      <div className={styles.timeIndicatorTrack}>
+        <WithVariables className={styles.timeIndicator} variables={{ progress }} />
+      </div>
+    </div>
   );
 };

@@ -17,6 +17,7 @@ import { DebugProvider } from "./hooks/useDebug/useDebug";
 import { ErrorBoundary } from "./components/ErrorBoundary/ErrorBoundary";
 import { NotSupported } from "./views/NotSupported/NotSupported";
 import { isSupportedBrowser } from "./utils/platform";
+import { SnackbarsProvider } from "./components/Snackbar/SnackbarsProvider";
 
 const WithCompanion = ({ children }: React.PropsWithChildren<unknown>) => {
   const companionState = useHasCompanion();
@@ -59,29 +60,31 @@ export default function App() {
     <ErrorBoundary>
       <HotkeysProvider initiallyActiveScopes={[DEFAULT_SCOPE]}>
         <HotkeysStackWithinHotkeysProvider>
-          <DebugProvider>
-            <DebugWindow />
-            {isSupportedBrowser ? (
-              <BrowserRouter>
-                <Routes>
-                  <Route
-                    path="/"
-                    element={
-                      <WithCompanion>
-                        <WithLoggedIn />
-                      </WithCompanion>
-                    }
-                  >
-                    <Route path="/" element={<Races />} />
-                    <Route path="/race/:raceId" element={<ViewerWithState />} />
-                  </Route>
-                </Routes>
-              </BrowserRouter>
-            ) : (
-              <NotSupported />
-            )}
-            <div id={OVERLAYS_PORTAL_ID} />
-          </DebugProvider>
+          <SnackbarsProvider>
+            <DebugProvider>
+              <DebugWindow />
+              {isSupportedBrowser ? (
+                <BrowserRouter>
+                  <Routes>
+                    <Route
+                      path="/"
+                      element={
+                        <WithCompanion>
+                          <WithLoggedIn />
+                        </WithCompanion>
+                      }
+                    >
+                      <Route path="/" element={<Races />} />
+                      <Route path="/race/:raceId" element={<ViewerWithState />} />
+                    </Route>
+                  </Routes>
+                </BrowserRouter>
+              ) : (
+                <NotSupported />
+              )}
+              <div id={OVERLAYS_PORTAL_ID} />
+            </DebugProvider>
+          </SnackbarsProvider>
         </HotkeysStackWithinHotkeysProvider>
       </HotkeysProvider>
     </ErrorBoundary>
