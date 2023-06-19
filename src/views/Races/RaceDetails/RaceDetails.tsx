@@ -5,7 +5,9 @@ import { Button } from "../../../components/Button/Button";
 import { DialogContentInformation } from "../../../components/Dialog/DialogContent/DialogContent";
 import { ErrorMessage } from "../../../components/ErrorMessage/ErrorMessage";
 import { ListItem } from "../../../components/ListItem/ListItem";
+import { isRaceGenre } from "../../../constants/races";
 import { useRaceDetails } from "../../../hooks/useRaceDetails/useRaceDetails";
+import { toTitleCase } from "../../../utils/text";
 import { EventSession } from "./EventSession/EventSession";
 import styles from "./RaceDetails.module.scss";
 
@@ -79,9 +81,12 @@ export const RaceDetails = ({ id, endDate, onClose }: RaceDetailsProps) => {
     }
   }
 
+  const raceEvents = racesDetailsState.data.filter((race) => isRaceGenre(race.genre));
+  const additionalEvents = racesDetailsState.data.filter((race) => !isRaceGenre(race.genre));
+
   return (
     <div className={styles.grid}>
-      {racesDetailsState.data.map((raceDetails, i) => {
+      {raceEvents.map((raceDetails, i) => {
         const isDisabled = !raceDetails.isLive && !raceDetails.hasMedia;
         const props = isDisabled ? ({ as: "div" } as const) : ({ as: Link, to: `/race/${raceDetails.id}` } as const);
 
@@ -100,6 +105,23 @@ export const RaceDetails = ({ id, endDate, onClose }: RaceDetailsProps) => {
               isLive={raceDetails.isLive}
               disabled={isDisabled}
             />
+          </ListItem>
+        );
+      })}
+      <div className={styles.moreFromF1}>More from Formula 1</div>
+      {additionalEvents.map((raceDetails, i) => {
+        const isDisabled = !raceDetails.isLive && !raceDetails.hasMedia;
+        const props = isDisabled ? ({ as: "div" } as const) : ({ as: Link, to: `/race/${raceDetails.id}` } as const);
+
+        return (
+          <ListItem<"div" | typeof Link>
+            className={styles.raceDetailsListItem}
+            disabled={isDisabled}
+            key={raceDetails.id}
+            ref={i === 0 ? firstListItemRef : undefined}
+            {...props}
+          >
+            {toTitleCase(raceDetails.title)}
           </ListItem>
         );
       })}
