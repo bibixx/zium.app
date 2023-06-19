@@ -1,7 +1,23 @@
-const nonUpperableWords = ["e", "de", "AWS", "dell'Emilia-Romagna", "dell'Emilia Romagna", "del", "in", "STC", "d’Italia", "MSC", "von", "du"];
+const nonUpperableWords = [
+  "e",
+  "de",
+  "AWS",
+  "dell'Emilia-Romagna",
+  "dell'Emilia Romagna",
+  "del",
+  "in",
+  "STC",
+  "d’Italia",
+  "MSC",
+  "von",
+  "du",
+];
 const lowerCaseNonUpperableWordsSet = Object.fromEntries(nonUpperableWords.map((w, i) => [w.toLowerCase(), i]));
 
-export const firstUpper = (text: string) => {
+const applyToTextParts = (text: string, separator: string, mapper: (text: string) => string) =>
+  text.split(separator).map(mapper).join(separator);
+
+const toFirstUpper = (text: string) => {
   const nonUpperableWordIndex = lowerCaseNonUpperableWordsSet[text.toLowerCase()] ?? -1;
   const nonUpperableWord = nonUpperableWords[nonUpperableWordIndex];
 
@@ -12,7 +28,15 @@ export const firstUpper = (text: string) => {
   return `${text.charAt(0).toUpperCase()}${text.slice(1).toLowerCase()}`;
 };
 
-export const toTitleCase = (text: string) => text.split(" ").map(firstUpper).join(" ");
+const applyTitleCaseToWord = (text: string): string => {
+  if (text.includes("-")) {
+    return applyToTextParts(text, "-", applyTitleCaseToWord);
+  }
+
+  return toFirstUpper(text);
+};
+
+export const toTitleCase = (text: string) => applyToTextParts(text, " ", applyTitleCaseToWord);
 
 export const NBSP = "\xa0";
 export const MDASH = "\u2014";
