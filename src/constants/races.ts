@@ -1,4 +1,4 @@
-export const RACE_GENRES = ["qualifying"] as const;
+export const RACE_GENRES = ["race", "qualifying", "practice", "sprint qualifying", "sprint race"] as const;
 export const EVENT_GENRES = [
   ...RACE_GENRES,
   "post-race show",
