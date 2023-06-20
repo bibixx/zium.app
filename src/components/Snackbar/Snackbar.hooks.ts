@@ -140,7 +140,7 @@ export const useSnackbarTime = (totalTime: number, isPaused: boolean, onClose: (
     };
   }, [isPaused, onClose, totalTime]);
 
-  const progress = useMemo(() => timeProgress / totalTime, [timeProgress, totalTime]);
+  const progress = useMemo(() => 1 - timeProgress / totalTime, [timeProgress, totalTime]);
   return progress;
 };
 
