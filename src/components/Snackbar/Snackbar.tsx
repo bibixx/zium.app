@@ -67,8 +67,10 @@ export const Snackbar = forwardRef<HTMLDivElement | null, SnackbarProps>(
                 <div className={styles.title}>{title}</div>
                 <div className={styles.textContent}>{content}</div>
               </div>
-              <div onMouseDown={(e) => e.stopPropagation()}>
-                <Button variant="Tertiary" iconLeft={XMarkIcon} onClick={onClose} />
+              <div>
+                <div onMouseDown={(e) => e.stopPropagation()}>
+                  <Button variant="Tertiary" iconLeft={XMarkIcon} onClick={onClose} />
+                </div>
               </div>
             </div>
             <TimeIndicator isPaused={isHovering || isDragging} onClose={onClose} time={time} />
