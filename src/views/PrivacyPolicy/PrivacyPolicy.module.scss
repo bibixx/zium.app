@@ -11,6 +11,9 @@
     color: var(--color-text-strong);
     margin-top: 48px;
     margin-bottom: 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
 
   h2 {
@@ -47,4 +50,12 @@
   color: var(--color-text-muted);
   @include typography(text, 400, regular);
   margin-bottom: 40px;
+}
+
+.logo {
+  color: var(--color-text-muted);
+
+  @media (max-width: 800px) {
+    display: none;
+  }
 }

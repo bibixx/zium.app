@@ -2,6 +2,7 @@ import { ArrowLeftIcon } from "@heroicons/react/20/solid";
 import { Link } from "react-router-dom";
 import { Button } from "../../components/Button/Button";
 import { CookieBanner } from "../../components/CookieBanner/CookieBanner";
+import { Logo } from "../../components/Logo/Logo";
 import { useTrackWithTitle } from "../../hooks/useAnalytics/useAnalytics";
 import styles from "./PrivacyPolicy.module.scss";
 
@@ -14,7 +15,10 @@ export const PrivacyPolicy = () => {
         Back to Zium
       </Button>
 
-      <h1>Privacy Policy</h1>
+      <h1>
+        <span>Privacy Policy</span>
+        <Logo className={styles.logo} height={40} aria-hidden />
+      </h1>
 
       <div className={styles.lastUpdated}>Last update: Jun 22, 2023</div>
 

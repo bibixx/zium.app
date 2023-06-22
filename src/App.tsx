@@ -66,10 +66,10 @@ export default function App() {
             <SnackbarsProvider>
               <DebugProvider>
                 <DebugWindow />
-                {isSupportedBrowser ? (
-                  <BrowserRouter>
-                    <Routes>
-                      <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                <BrowserRouter>
+                  <Routes>
+                    <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                    {isSupportedBrowser ? (
                       <Route
                         path="/"
                         element={
@@ -81,11 +81,11 @@ export default function App() {
                         <Route path="/" element={<Races />} />
                         <Route path="/race/:raceId" element={<ViewerWithState />} />
                       </Route>
-                    </Routes>
-                  </BrowserRouter>
-                ) : (
-                  <NotSupported />
-                )}
+                    ) : (
+                      <Route path="/" element={<NotSupported />} />
+                    )}
+                  </Routes>
+                </BrowserRouter>
                 <div id={OVERLAYS_PORTAL_ID} />
               </DebugProvider>
             </SnackbarsProvider>
