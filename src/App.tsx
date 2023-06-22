@@ -18,6 +18,7 @@ import { ErrorBoundary } from "./components/ErrorBoundary/ErrorBoundary";
 import { NotSupported } from "./views/NotSupported/NotSupported";
 import { isSupportedBrowser } from "./utils/platform";
 import { SnackbarsProvider } from "./components/Snackbar/SnackbarsProvider";
+import { AnalyticsContextProvider } from "./hooks/useAnalytics/useAnalytics";
 
 const WithCompanion = ({ children }: React.PropsWithChildren<unknown>) => {
   const companionState = useHasCompanion();
@@ -57,36 +58,38 @@ const WithLoggedIn = () => {
 
 export default function App() {
   return (
-    <ErrorBoundary>
-      <HotkeysProvider initiallyActiveScopes={[DEFAULT_SCOPE]}>
-        <HotkeysStackWithinHotkeysProvider>
-          <SnackbarsProvider>
-            <DebugProvider>
-              <DebugWindow />
-              {isSupportedBrowser ? (
-                <BrowserRouter>
-                  <Routes>
-                    <Route
-                      path="/"
-                      element={
-                        <WithCompanion>
-                          <WithLoggedIn />
-                        </WithCompanion>
-                      }
-                    >
-                      <Route path="/" element={<Races />} />
-                      <Route path="/race/:raceId" element={<ViewerWithState />} />
-                    </Route>
-                  </Routes>
-                </BrowserRouter>
-              ) : (
-                <NotSupported />
-              )}
-              <div id={OVERLAYS_PORTAL_ID} />
-            </DebugProvider>
-          </SnackbarsProvider>
-        </HotkeysStackWithinHotkeysProvider>
-      </HotkeysProvider>
-    </ErrorBoundary>
+    <AnalyticsContextProvider>
+      <ErrorBoundary>
+        <HotkeysProvider initiallyActiveScopes={[DEFAULT_SCOPE]}>
+          <HotkeysStackWithinHotkeysProvider>
+            <SnackbarsProvider>
+              <DebugProvider>
+                <DebugWindow />
+                {isSupportedBrowser ? (
+                  <BrowserRouter>
+                    <Routes>
+                      <Route
+                        path="/"
+                        element={
+                          <WithCompanion>
+                            <WithLoggedIn />
+                          </WithCompanion>
+                        }
+                      >
+                        <Route path="/" element={<Races />} />
+                        <Route path="/race/:raceId" element={<ViewerWithState />} />
+                      </Route>
+                    </Routes>
+                  </BrowserRouter>
+                ) : (
+                  <NotSupported />
+                )}
+                <div id={OVERLAYS_PORTAL_ID} />
+              </DebugProvider>
+            </SnackbarsProvider>
+          </HotkeysStackWithinHotkeysProvider>
+        </HotkeysProvider>
+      </ErrorBoundary>
+    </AnalyticsContextProvider>
   );
 }

@@ -9,6 +9,7 @@ import { useRacesList } from "../../hooks/useRacesList/useRacesList";
 import { RacesState } from "../../hooks/useRacesList/useRacesList.types";
 import { WithVariables } from "../../components/WithVariables/WithVariables";
 import { useTrackWithTitle } from "../../hooks/useAnalytics/useAnalytics";
+import { CookieBanner } from "../../components/CookieBanner/CookieBanner";
 import { Season } from "./Season/Season";
 import styles from "./Races.module.scss";
 import { Sidebar } from "./Sidebar/Sidebar";
@@ -135,6 +136,7 @@ export const Races = () => {
           })}
         </div>
       </div>
+      <CookieBanner mode="sticky" position="bottom" />
     </WithVariables>
   );
 };

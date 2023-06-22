@@ -7,8 +7,7 @@
 }
 
 :root {
-  --z-index-header-shadow: 1000;
-  --z-index-header: 1001;
+  --z-index-header: 1000;
 
   --z-index-player: 1001;
   --z-index-player-grabbing-container: 1000;
@@ -17,6 +16,8 @@
   --z-index-overlay-backdrop: 2000;
 
   --z-index-hide-cursor-wrapper: 3000;
+
+  --z-index-cookie-banner: 3500;
 
   --z-index-snackbar: 4000;
 

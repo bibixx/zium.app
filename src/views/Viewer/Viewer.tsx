@@ -27,6 +27,7 @@ import { Loader } from "../../components/Loader/Loader";
 import { TimedOutWrapper } from "../../components/TimedOutWrapper/TimedOutWrapper";
 import { useTrackWithTitle } from "../../hooks/useAnalytics/useAnalytics";
 import { isNotNullable } from "../../utils/isNotNullable";
+import { CookieBanner } from "../../components/CookieBanner/CookieBanner";
 import { getWindowStreamMap, getAvailableDrivers } from "./Viewer.utils";
 import { useGrid } from "./hooks/useGrid";
 import styles from "./Viewer.module.scss";
@@ -278,6 +279,7 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
   return (
     <StreamPickerProvider>
       <div className={styles.backgroundWrapper}>
+        <CookieBanner position="top" mode="fixed" />
         <BackgroundDots baseGrid={baseGrid} />
         <TransitionGroup component={null}>
           {layout.map((l) => {
@@ -375,6 +377,8 @@ const LoadingState = () => {
 
   return (
     <div className={styles.backgroundWrapper}>
+      <CookieBanner position="top" mode="fixed" />
+
       <BackgroundDots baseGrid={baseGrid} />
 
       <TimedOutWrapper timeout={500}>
