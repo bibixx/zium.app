@@ -2,12 +2,13 @@ import classNames from "classnames";
 import { ReactNode } from "react";
 import { useImage } from "react-image";
 import { SquaresPlusIcon } from "@heroicons/react/24/outline";
+import { IconComponent } from "../../types/Icon";
 import styles from "./VideoFeedContent.module.scss";
 
 interface VideoFeedContentProps {
   label: ReactNode;
   srcList?: string[];
-  icon?: (props: React.SVGProps<SVGSVGElement>) => JSX.Element | null;
+  icon?: IconComponent | null;
   topLabel?: ReactNode;
   showPlaceholder?: boolean;
 }

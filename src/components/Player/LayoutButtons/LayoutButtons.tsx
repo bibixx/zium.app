@@ -1,4 +1,4 @@
-import { PlusCircleIcon, RectangleGroupIcon, Squares2X2Icon, SquaresPlusIcon } from "@heroicons/react/20/solid";
+import { PlusCircleIcon, RectangleGroupIcon } from "@heroicons/react/20/solid";
 import { useCallback, useMemo, useState } from "react";
 import { useHotkeysStack } from "../../../hooks/useHotkeysStack/useHotkeysStack";
 import { useScopedHotkeys } from "../../../hooks/useScopedHotkeys/useScopedHotkeys";
@@ -169,7 +169,13 @@ export const LayoutButtons = ({
       >
         {({ setRef, toggleOpen, isOpen }) => {
           return (
-            <Button ref={setRef} iconLeft={RectangleGroupIcon} isPressed={isOpen} variant="Tertiary" onClick={toggleOpen} />
+            <Button
+              ref={setRef}
+              iconLeft={RectangleGroupIcon}
+              isPressed={isOpen}
+              variant="Tertiary"
+              onClick={toggleOpen}
+            />
           );
         }}
       </Dropdown>

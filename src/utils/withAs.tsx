@@ -10,7 +10,7 @@ export function withAs<T extends React.ElementType>(defaultAs: T) {
   ): (<U extends React.ElementType = T>(
     props: Omit<Props, "as"> &
       Omit<React.ComponentPropsWithoutRef<U>, keyof Props> & { as?: U } & React.RefAttributes<React.ElementRef<U>>,
-  ) => React.ReactElement | null) => {
+  ) => React.ReactNode) => {
     return forwardRef<any, any>(({ as, ...props }, ref) => {
       const Component = useMemo(() => forwardRef(C) as React.FC<any>, []);
       return <Component {...props} as={as ?? defaultAs} ref={ref} />;

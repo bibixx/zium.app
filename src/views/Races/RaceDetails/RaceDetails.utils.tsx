@@ -9,8 +9,9 @@ import {
   SprintShootoutIcon,
 } from "../../../components/CustomIcons/CustomIcons";
 import { RaceDetailsData } from "../../../hooks/useRaceDetails/useRacesDetails.types";
+import { IconComponent } from "../../../types/Icon";
 
-const TvIconWithStroke = (props: React.SVGProps<SVGSVGElement>) => <TvIcon {...props} stroke="currentColor" />;
+const TvIconWithStroke: IconComponent = (props) => <TvIcon {...props} stroke="currentColor" />;
 
 type RaceDetailsType =
   | "race"

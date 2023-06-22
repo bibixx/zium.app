@@ -1,5 +1,6 @@
 import { PlayCircleIcon } from "@heroicons/react/24/solid";
 import cn from "classnames";
+import { IconComponent } from "../../../../types/Icon";
 import styles from "./EventSession.module.scss";
 
 interface EventSessionProps {
@@ -9,7 +10,7 @@ interface EventSessionProps {
   isLive?: boolean;
   disabled?: boolean;
   isLoading?: boolean;
-  icon?: (props: React.SVGProps<SVGSVGElement>) => JSX.Element | null;
+  icon?: IconComponent | null;
 }
 export const EventSession = ({
   title,

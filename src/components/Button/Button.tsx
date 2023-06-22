@@ -1,6 +1,7 @@
 import cn from "classnames";
 import { ReactNode } from "react";
 import { withAs } from "../../utils/withAs";
+import { IconComponent } from "../../types/Icon";
 import styles from "./Button.module.scss";
 
 interface ButtonProps {
@@ -9,8 +10,8 @@ interface ButtonProps {
   fluid?: boolean;
   disabledState?: boolean;
   isPressed?: boolean;
-  iconLeft?: (props: React.SVGProps<SVGSVGElement>) => JSX.Element | null;
-  iconRight?: (props: React.SVGProps<SVGSVGElement>) => JSX.Element | null;
+  iconLeft?: IconComponent | null;
+  iconRight?: IconComponent | null;
 }
 
 export const Button = withAs("button")<ButtonProps>(
