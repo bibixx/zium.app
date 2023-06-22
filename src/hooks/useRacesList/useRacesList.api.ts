@@ -26,7 +26,17 @@ export const fetchRacesList = async (seasonId: SupportedSeasons, signal: AbortSi
   const body = await fetchJSON(url, undefined, signal);
   const containers = body.resultObj.containers
     .flatMap((c: any) => c.retrieveItems.resultObj.containers)
-    .filter((c: any) => c?.metadata?.genres?.includes("RACE") || c?.metadata?.genres?.includes("FULL RACE"));
+    .filter((c: any) => {
+      if (c == null) {
+        return false;
+      }
+
+      if (c.metadata?.emfAttributes?.Series?.toLowerCase() === "w series") {
+        return false;
+      }
+
+      return c.metadata?.genres?.includes("RACE") || c.metadata?.genres?.includes("FULL RACE");
+    });
 
   const uniqueContainers = uniqueById(containers);
   let fallbackRoundNumber = 0;
