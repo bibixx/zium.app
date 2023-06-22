@@ -85,7 +85,7 @@ const SidebarElement = ({
       <ListItem
         {...baseProps}
         caption={isComingSoon ? "Coming soon" : count}
-        disabled={isComingSoon}
+        disabled={isComingSoon || count === 0}
         isActive={isActive}
         onClick={onSidebarElementClick}
       >

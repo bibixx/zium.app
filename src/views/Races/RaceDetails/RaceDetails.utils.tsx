@@ -30,18 +30,32 @@ export const raceDetailsTypeToIconMap: Record<RaceDetailsType, React.FC> = {
   "sprint race": SprintIcon,
 };
 
-export const getRaceIcon = (raceDetails: RaceDetailsData) => {
+export const getRaceIcon = (raceDetails: RaceDetailsData, seasonId: string) => {
+  const seasonIdAsNumber = Number.parseInt(seasonId, 10);
+
   switch (raceDetails.genre) {
     case "race":
-    case "qualifying":
-    case "sprint race": {
+    case "qualifying": {
       return raceDetailsTypeToIconMap[raceDetails.genre];
     }
+    case "sprint race":
     case "sprint qualifying":
     case "sprint": {
+      if (raceDetails.genre === "sprint qualifying" && seasonIdAsNumber < 2023) {
+        return raceDetailsTypeToIconMap["sprint race"];
+      }
+
+      if (raceDetails.genre === "sprint race") {
+        return raceDetailsTypeToIconMap[raceDetails.genre];
+      }
+
       return raceDetailsTypeToIconMap["sprint qualifying"];
     }
     case "practice": {
+      if (raceDetails.title.toLowerCase() === "practice") {
+        return raceDetailsTypeToIconMap["practice 1"];
+      }
+
       if (raceDetails.title.toLowerCase() === "practice 1") {
         return raceDetailsTypeToIconMap["practice 1"];
       }

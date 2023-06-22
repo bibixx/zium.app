@@ -1,4 +1,4 @@
-import { addDays, differenceInHours, formatDistanceStrict, isAfter, isBefore, isSameDay } from "date-fns";
+import { addDays, differenceInHours, formatDistanceStrict, isAfter, isBefore, isPast, isSameDay } from "date-fns";
 import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "../../../components/Button/Button";
@@ -16,9 +16,10 @@ interface RaceDetailsProps {
   id: string;
   endDate: Date;
   onClose: () => void;
+  seasonId: string;
 }
 
-export const RaceDetails = ({ id, endDate, onClose }: RaceDetailsProps) => {
+export const RaceDetails = ({ id, endDate, onClose, seasonId }: RaceDetailsProps) => {
   const { racesDetailsState } = useRaceDetails(id);
   const firstListItemRef = useRef<HTMLAnchorElement | null>(null);
 
@@ -83,6 +84,7 @@ export const RaceDetails = ({ id, endDate, onClose }: RaceDetailsProps) => {
   }
 
   const raceEvents = racesDetailsState.data.filter((race) => isRaceGenre(race.genre));
+  const areAllEventsFinished = racesDetailsState.data.every(({ endDate }) => endDate == null || isPast(endDate));
   const additionalEvents = racesDetailsState.data.filter(
     (race) => !isRaceGenre(race.genre) && (race.hasMedia || race.isLive),
   );
@@ -107,12 +109,14 @@ export const RaceDetails = ({ id, endDate, onClose }: RaceDetailsProps) => {
               rightIconWrapperClassName={styles.raceDetailsListItemRightIconWrapper}
               isLive={raceDetails.isLive}
               disabled={isDisabled}
-              icon={getRaceIcon(raceDetails)}
+              icon={getRaceIcon(raceDetails, seasonId)}
             />
           </ListItem>
         );
       })}
-      <AdditionalEvents additionalEvents={additionalEvents} />
+      {(!areAllEventsFinished || additionalEvents.length > 0) && (
+        <AdditionalEvents additionalEvents={additionalEvents} />
+      )}
     </div>
   );
 };

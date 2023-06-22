@@ -66,7 +66,7 @@ export const Season = ({ season }: SeasonProps) => {
   return (
     <>
       {heading}
-      <RaceDetailsSheet onClose={onSheetClose} selectedRaceEvent={selectedRaceEvent} />
+      <RaceDetailsSheet onClose={onSheetClose} selectedRaceEvent={selectedRaceEvent} seasonId={season.seasonId} />
       <div className={styles.grid}>
         {season.data.map(
           ({
@@ -117,15 +117,21 @@ export const Season = ({ season }: SeasonProps) => {
 interface RaceDetailsSheetProps {
   selectedRaceEvent: SelectedRaceEvent | null;
   onClose: () => void;
+  seasonId: string;
 }
-const RaceDetailsSheet = ({ selectedRaceEvent, onClose }: RaceDetailsSheetProps) => {
+const RaceDetailsSheet = ({ selectedRaceEvent, onClose, seasonId }: RaceDetailsSheetProps) => {
   const isOpen = selectedRaceEvent != null;
   const { data: laggedSelectedRaceEvent, reset: resetLaggedState } = useLaggedBehindData(selectedRaceEvent, isOpen);
 
   return (
     <Sheet onClose={onClose} isOpen={selectedRaceEvent != null} onClosed={resetLaggedState}>
       {laggedSelectedRaceEvent && (
-        <RaceDetails onClose={onClose} id={laggedSelectedRaceEvent.id} endDate={laggedSelectedRaceEvent.endDate} />
+        <RaceDetails
+          onClose={onClose}
+          id={laggedSelectedRaceEvent.id}
+          endDate={laggedSelectedRaceEvent.endDate}
+          seasonId={seasonId}
+        />
       )}
     </Sheet>
   );

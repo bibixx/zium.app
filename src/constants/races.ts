@@ -8,6 +8,7 @@ export const EVENT_GENRES = [
   "pre-qualifying show",
   "post-sprint show",
   "pre-sprint show",
+  "show",
 ] as const;
 
 export type EventGenre = (typeof EVENT_GENRES)[number];

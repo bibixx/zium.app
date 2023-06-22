@@ -85,6 +85,9 @@ const mapEventToRaceDetailsData = (event: any, isReplay: boolean): RaceDetailsDa
     endDate,
     roundNumber: +event.metadata.emfAttributes.Meeting_Number,
     isSingleEvent: false,
-    genre: event.metadata.genres[0]?.toLowerCase() as EventGenre,
+    genre:
+      event.metadata.contentSubtype !== "REPLAY" && event.metadata.contentSubtype !== "LIVE_EVENT"
+        ? "show"
+        : (event.metadata.genres[0]?.toLowerCase() as EventGenre),
   };
 };
