@@ -7,13 +7,18 @@ import styles from "./AdditionalEvents.module.scss";
 
 interface AdditionalEventsProps {
   additionalEvents: RaceDetailsData[];
+  areAllEventsFinished: boolean;
 }
 
-export const AdditionalEvents = ({ additionalEvents }: AdditionalEventsProps) => {
+export const AdditionalEvents = ({ additionalEvents, areAllEventsFinished }: AdditionalEventsProps) => {
+  if (areAllEventsFinished && additionalEvents.length === 0) {
+    return null;
+  }
+
   return (
     <>
       <div className={styles.header}>More from Formula 1</div>
-      {additionalEvents.length === 0 && (
+      {!areAllEventsFinished && (
         <div className={styles.zeroStateWrapper}>
           <InformationCircleIcon width={24} className={styles.zeroStateIcon} />
           <div className={styles.zeroStateContent}>

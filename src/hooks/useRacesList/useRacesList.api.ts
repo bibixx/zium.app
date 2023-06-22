@@ -6,13 +6,13 @@ import { isNotNullable } from "../../utils/isNotNullable";
 import { RaceData } from "./useRacesList.types";
 
 const getDates = (racePage: any) => {
-  let startDate = new Date();
+  let startDate = new Date(0);
 
   if (isValid(new Date(racePage.metadata.emfAttributes.Meeting_Start_Date))) {
     startDate = new Date(racePage.metadata.emfAttributes.Meeting_Start_Date);
   }
 
-  let endDate = new Date();
+  let endDate = new Date(0);
   if (isValid(new Date(racePage.metadata.emfAttributes.Meeting_End_Date))) {
     endDate = new Date(racePage.metadata.emfAttributes.Meeting_End_Date);
   }

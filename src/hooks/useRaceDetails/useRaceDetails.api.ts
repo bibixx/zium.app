@@ -47,7 +47,7 @@ const getScheduledEvents = (body: any): any[] => {
 
 const getDates = (event: any) => {
   // let startDate = null;
-  let startDate = new Date();
+  let startDate = new Date(0);
 
   if (
     event.metadata.emfAttributes.sessionStartDate > 0 &&
@@ -57,7 +57,7 @@ const getDates = (event: any) => {
   }
 
   // let endDate = null;
-  let endDate = new Date();
+  let endDate = new Date(0);
   if (
     event.metadata.emfAttributes.sessionEndDate > 0 &&
     isValid(new Date(event.metadata.emfAttributes.sessionEndDate))

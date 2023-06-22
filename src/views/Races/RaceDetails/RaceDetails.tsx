@@ -84,7 +84,9 @@ export const RaceDetails = ({ id, endDate, onClose, seasonId }: RaceDetailsProps
   }
 
   const raceEvents = racesDetailsState.data.filter((race) => isRaceGenre(race.genre));
-  const areAllEventsFinished = racesDetailsState.data.every(({ endDate }) => endDate == null || isPast(endDate));
+  const areAllEventsFinished = racesDetailsState.data.every(
+    ({ endDate, hasMedia, isLive }) => hasMedia || isLive || endDate == null || isPast(endDate),
+  );
   const additionalEvents = racesDetailsState.data.filter(
     (race) => !isRaceGenre(race.genre) && (race.hasMedia || race.isLive),
   );
@@ -114,9 +116,7 @@ export const RaceDetails = ({ id, endDate, onClose, seasonId }: RaceDetailsProps
           </ListItem>
         );
       })}
-      {(!areAllEventsFinished || additionalEvents.length > 0) && (
-        <AdditionalEvents additionalEvents={additionalEvents} />
-      )}
+      <AdditionalEvents areAllEventsFinished={areAllEventsFinished} additionalEvents={additionalEvents} />
     </div>
   );
 };
