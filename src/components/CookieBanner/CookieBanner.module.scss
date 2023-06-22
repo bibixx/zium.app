@@ -8,6 +8,16 @@
   color: var(--color-text-default);
   @include typography(text, 200, regular);
   user-select: none;
+
+  a {
+    text-decoration: underline;
+    transition: var(--transition-fast);
+    transition-property: color;
+
+    &:hover {
+      color: var(--color-text-strong);
+    }
+  }
 }
 
 .wrapper {
@@ -34,7 +44,7 @@
   }
 
   &.isFixed {
-    position: absolute;
+    position: fixed;
   }
 
   &.isSticky {

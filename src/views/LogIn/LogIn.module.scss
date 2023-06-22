@@ -24,3 +24,15 @@
     color: var(--color-text-default);
   }
 }
+
+.learnMoreContent {
+  a {
+    text-decoration: underline;
+    transition: var(--transition-fast);
+    transition-property: color;
+
+    &:hover {
+      color: var(--color-text-strong);
+    }
+  }
+}

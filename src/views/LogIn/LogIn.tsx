@@ -1,5 +1,6 @@
 import { ArrowLeftOnRectangleIcon } from "@heroicons/react/20/solid";
 import { useCallback, useState } from "react";
+import { Link } from "react-router-dom";
 import { Button } from "../../components/Button/Button";
 import { Dialog } from "../../components/Dialog/Dialog";
 import {
@@ -58,7 +59,7 @@ export const LogIn = () => {
           <DialogContentInformation
             title="Zium and privacy"
             subtitle={
-              <>
+              <div className={styles.learnMoreContent}>
                 <p>
                   Login information is stored and used solely on your device. No passwords, personal data, or payment
                   information is sent to zium.app servers.
@@ -67,7 +68,10 @@ export const LogIn = () => {
                   You must have an active F1 TV subscription to access video streams. zium.app doesn&rsquo;t allow you
                   to watch Formula 1 for free.
                 </p>
-              </>
+                <p>
+                  Learn even more from our <Link to="/privacy-policy">Privacy Policy</Link>.
+                </p>
+              </div>
             }
           />
           <DialogContentButtonFooter>

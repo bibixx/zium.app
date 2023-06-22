@@ -1,4 +1,5 @@
 import cn from "classnames";
+import { Link } from "react-router-dom";
 import { useAnalytics } from "../../hooks/useAnalytics/useAnalytics";
 import { Button } from "../Button/Button";
 import styles from "./CookieBanner.module.scss";
@@ -27,7 +28,8 @@ export const CookieBanner = ({ position, mode }: CookieBannerProps) => {
         <div className={styles.heading}>🍪 We use cookies</div>
         <div className={styles.body}>
           By clicking on “Allow all cookies”, you agree to the storing of cookies on your device to enhance site
-          navigation, analyze site usage, and assist in our marketing efforts.
+          navigation, analyze site usage, and assist in our marketing efforts. Learn more from our{" "}
+          <Link to="/privacy-policy">Privacy Policy</Link>.
         </div>
       </div>
       <div className={styles.buttonsWrapper}>

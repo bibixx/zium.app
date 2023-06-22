@@ -19,6 +19,7 @@ import { NotSupported } from "./views/NotSupported/NotSupported";
 import { isSupportedBrowser } from "./utils/platform";
 import { SnackbarsProvider } from "./components/Snackbar/SnackbarsProvider";
 import { AnalyticsContextProvider } from "./hooks/useAnalytics/useAnalytics";
+import { PrivacyPolicy } from "./views/PrivacyPolicy/PrivacyPolicy";
 
 const WithCompanion = ({ children }: React.PropsWithChildren<unknown>) => {
   const companionState = useHasCompanion();
@@ -68,6 +69,7 @@ export default function App() {
                 {isSupportedBrowser ? (
                   <BrowserRouter>
                     <Routes>
+                      <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                       <Route
                         path="/"
                         element={

@@ -1,0 +1,50 @@
+.wrapper {
+  max-width: 748px;
+  margin: 0 auto;
+  padding: 128px 32px;
+  color: var(--color-text-default);
+  @include typography(text, 400, regular);
+  line-height: var(--typography-line-heights-xloose);
+
+  h1 {
+    @include typography(heading, 700, default);
+    color: var(--color-text-strong);
+    margin-top: 48px;
+    margin-bottom: 32px;
+  }
+
+  h2 {
+    @include typography(heading, 600, default);
+    color: var(--color-text-strong);
+    margin-top: 40px;
+    margin-bottom: 16px;
+  }
+
+  h3 {
+    @include typography(heading, 500, default);
+    color: var(--color-text-strong);
+    margin-top: 40px;
+    margin-bottom: 16px;
+  }
+
+  p {
+    margin-top: 16px;
+    margin-bottom: 16px;
+  }
+
+  p a {
+    text-decoration: underline;
+    transition: var(--transition-fast);
+    transition-property: color;
+
+    &:hover {
+      color: var(--color-text-strong);
+    }
+  }
+}
+
+.lastUpdated {
+  color: var(--color-text-muted);
+  @include typography(text, 400, regular);
+  margin-bottom: 40px;
+}
