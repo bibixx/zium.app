@@ -1,8 +1,11 @@
 import cn from "classnames";
+import { Link } from "react-router-dom";
 import { ListItem } from "../../../components/ListItem/ListItem";
 import { SupportedSeasons } from "../../../constants/seasons";
 import { isSeasonComingSoon } from "../../../utils/SeasonUtils";
 import { WithVariables } from "../../../components/WithVariables/WithVariables";
+import { FigmaIcon, GitHubIcon, TwitterIcon } from "../../../components/CustomIcons/CustomIcons";
+import { BULLET } from "../../../utils/text";
 import styles from "./Sidebar.module.scss";
 
 interface SidebarSeason {
@@ -60,6 +63,43 @@ export const Sidebar = ({ visibleSeasonId, seasons, overwriteVisibleSeason }: Si
           );
         })}
       </div>
+      <footer className={styles.footer}>
+        <div className={styles.footerButtonsWrapper}>
+          <a
+            href="https://twitter.com/ziumapp"
+            className={cn(styles.footerLink, styles.footerIconLink)}
+            target="_blank"
+            rel="noreferrer noopener"
+          >
+            <TwitterIcon height={20} />
+          </a>
+          <a
+            href="https://github.com/bibixx/zium.app"
+            className={cn(styles.footerLink, styles.footerIconLink)}
+            target="_blank"
+            rel="noreferrer noopener"
+          >
+            <GitHubIcon height={20} />
+          </a>
+          <a
+            href="https://www.figma.com/community/file/1250905585551204036"
+            className={cn(styles.footerLink, styles.footerIconLink)}
+            target="_blank"
+            rel="noreferrer noopener"
+          >
+            <FigmaIcon height={20} />
+          </a>
+        </div>
+        <div className={styles.footerText}>
+          <Link to="/privacy-policy" className={styles.footerLink}>
+            Privacy policy
+          </Link>
+          <span>{BULLET}</span>
+          <a href="mailto:zium@zium.app" className={styles.footerLink}>
+            Contact us
+          </a>
+        </div>
+      </footer>
     </div>
   );
 };

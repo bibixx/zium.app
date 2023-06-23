@@ -2,12 +2,12 @@
   --offset-from-top: calc(var(--season-header-height) + var(--season-header-margin));
 
   display: flex;
+  height: calc(100vh - calc(var(--offset-from-top) + var(--header-height) + var(--heading-margin-bottom)));
   flex-direction: column;
   position: sticky;
   top: calc(var(--offset-from-top) + var(--header-height) + var(--heading-margin-bottom));
   align-self: flex-start;
   margin-top: var(--offset-from-top);
-  margin-bottom: var(--offset-from-top);
   padding-right: 24px;
 }
 
@@ -38,4 +38,41 @@
   &.isHidden {
     display: none;
   }
+}
+
+.footer {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding-bottom: 24px;
+  justify-content: flex-end;
+  gap: 16px;
+}
+
+.footerButtonsWrapper {
+  display: flex;
+  gap: 16px;
+}
+
+.footerLink {
+  color: var(--color-text-muted);
+  transition: var(--transition-fast);
+  transition-property: color;
+  border-radius: var(--radii-xsmall);
+  outline-offset: 4px;
+
+  &:hover,
+  &:focus-visible {
+    color: var(--color-text-strong);
+  }
+}
+
+.footerIconLink {
+  display: flex;
+}
+
+.footerText {
+  color: var(--color-text-muted);
+  display: flex;
+  gap: 4px;
 }

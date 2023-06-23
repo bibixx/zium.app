@@ -1,9 +1,10 @@
 .positionWrapper {
   position: sticky;
   top: 0;
-  width: 100%;
   grid-column: -1 / 1;
   z-index: var(--z-index-header);
+  margin: 0 -24px;
+  padding: 0 24px;
 }
 
 .wrapper {
@@ -27,11 +28,6 @@
 
 .inputWrapper {
   width: 304px;
-}
-
-.shadowWrapper {
-  position: relative;
-  width: 100%;
 }
 
 .shadow {

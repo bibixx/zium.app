@@ -8,6 +8,9 @@ import { ReactComponent as QualificationsSvg } from "../../assets/custom-icons/q
 import { ReactComponent as RaceSvg } from "../../assets/custom-icons/race.svg";
 import { ReactComponent as SprintShootoutSvg } from "../../assets/custom-icons/sprint-shootout.svg";
 import { ReactComponent as SprintSvg } from "../../assets/custom-icons/sprint.svg";
+import { ReactComponent as FigmaSvg } from "../../assets/custom-icons/figma.svg";
+import { ReactComponent as GitHubSvg } from "../../assets/custom-icons/github.svg";
+import { ReactComponent as TwitterSvg } from "../../assets/custom-icons/twitter.svg";
 import styles from "./CustomIcons.module.scss";
 
 export const ArrowLeft30Icon = (props: React.SVGProps<SVGSVGElement>) => {
@@ -48,4 +51,16 @@ export const SprintShootoutIcon = (props: React.SVGProps<SVGSVGElement>) => {
 
 export const SprintIcon = (props: React.SVGProps<SVGSVGElement>) => {
   return <SprintSvg className={styles.wrapper} {...props} />;
+};
+
+export const FigmaIcon = (props: React.SVGProps<SVGSVGElement>) => {
+  return <FigmaSvg className={styles.wrapper} {...props} />;
+};
+
+export const GitHubIcon = (props: React.SVGProps<SVGSVGElement>) => {
+  return <GitHubSvg className={styles.wrapper} {...props} />;
+};
+
+export const TwitterIcon = (props: React.SVGProps<SVGSVGElement>) => {
+  return <TwitterSvg className={styles.wrapper} {...props} />;
 };
