@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { EVENT_GENRES } from "../../constants/races";
 import { fetchJSON } from "../../utils/api";
 import { uniqueById } from "../../utils/uniqueById";

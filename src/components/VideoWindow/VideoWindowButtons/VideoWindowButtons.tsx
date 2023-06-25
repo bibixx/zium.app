@@ -38,18 +38,27 @@ type ClosedCaptionsProps =
       toggleClosedCaptions?: never;
     };
 
+type OffsetProps =
+  | {
+      onOffsetChange?: (value: number) => void;
+      currentOffset: number;
+    }
+  | {
+      onOffsetChange?: never;
+    };
+
 type VideoWindowButtonsProps = {
-  onOffsetChange?: (value: number) => void;
   onClose?: () => void;
 } & AudioFocusProps &
   FillModeProps &
-  ClosedCaptionsProps;
+  ClosedCaptionsProps &
+  OffsetProps;
 
 export const VideoWindowButtons = (props: VideoWindowButtonsProps) => {
   return (
     <>
       <div className={styles.optionsButtonsWrapper} onMouseDown={(e) => e.stopPropagation()}>
-        {props.onOffsetChange && <OffsetInput onChange={props.onOffsetChange} />}
+        {props.onOffsetChange && <OffsetInput onChange={props.onOffsetChange} initialValue={props.currentOffset} />}
         {props.updateFillMode && (
           <Button
             variant="SecondaryInverted"

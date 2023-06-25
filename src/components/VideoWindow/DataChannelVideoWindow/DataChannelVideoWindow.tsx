@@ -11,7 +11,7 @@ import { VideoWindowWrapper } from "../VideoWindowWrapper/VideoWindowWrapper";
 import { NoFeed } from "../NoFeed/NoFeed";
 import { FeedError } from "../FeedError/FeedError";
 import { VideoWindowButtons } from "../VideoWindowButtons/VideoWindowButtons";
-import { useUserOffsets } from "../../../hooks/useUserOffests";
+import { useReactiveUserOffsets, useUserOffsets } from "../../../hooks/useUserOffests";
 
 interface DataChannelVideoWindowProps extends VideoWindowProps {
   gridWindow: BaseGridWindow;
@@ -19,10 +19,11 @@ interface DataChannelVideoWindowProps extends VideoWindowProps {
 }
 
 export const DataChannelVideoWindow = forwardRef<PlayerAPI | null, DataChannelVideoWindowProps>(
-  ({ gridWindow, isPaused, streamUrl, onDelete, fillMode, updateFillMode }, forwardedRef) => {
+  ({ isPaused, streamUrl, onDelete, fillMode, updateFillMode }, forwardedRef) => {
     const playerRef = useRef<PlayerAPI | null>(null);
     const streamVideoState = useStreamVideo(streamUrl);
     const { updateOffset } = useUserOffsets();
+    const offsets = useReactiveUserOffsets();
 
     const ref = (r: PlayerAPI | null) => {
       setRef(forwardedRef, r);
@@ -61,8 +62,9 @@ export const DataChannelVideoWindow = forwardRef<PlayerAPI | null, DataChannelVi
         />
         <VideoWindowButtons
           onOffsetChange={(value) => {
-            updateOffset(gridWindow.id, value);
+            updateOffset("data-channel", value);
           }}
+          currentOffset={offsets["data-channel"] ?? 0}
           updateFillMode={() => updateFillMode(fillMode === "fill" ? "fit" : "fill")}
           fillMode={fillMode}
           onClose={onDelete}

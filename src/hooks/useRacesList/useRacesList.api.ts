@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { isValid } from "date-fns";
 import { SEASON_TO_F1_ID_MAP, SupportedSeasons } from "../../constants/seasons";
 import { fetchJSON } from "../../utils/api";

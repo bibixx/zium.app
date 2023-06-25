@@ -39,6 +39,7 @@ export const useSyncVideos = ({ windows, windowVideojsRefMapRef, isLive, playbac
         }
 
         const offset = getOffset(playbackOffsets, userOffsetsRef.current, w, mainWindow);
+
         if (isLive) {
           const diff = Math.abs(player.getTimeShift() + offset);
 

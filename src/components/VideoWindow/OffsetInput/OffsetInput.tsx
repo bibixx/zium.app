@@ -11,16 +11,24 @@ import styles from "./OffsetInput.module.scss";
 
 interface OffsetInputProps {
   onChange: (value: number) => void;
+  initialValue: number;
 }
-export const OffsetInput = ({ onChange: onExternalChange }: OffsetInputProps) => {
+export const OffsetInput = ({ onChange: onExternalChange, initialValue }: OffsetInputProps) => {
   const [isFocused, setIsFocused] = useState(false);
-  const [numberValue, setNumberValue] = useState(0);
+  const [numberValue, setNumberValue] = useState(initialValue);
   const [value, setValue] = useState(formatValue(numberValue));
   const { preventHiding } = useViewerUIVisibility();
 
   useEffect(() => {
     preventHiding(isFocused);
   }, [isFocused, preventHiding]);
+
+  useEffect(() => {
+    if (!isFocused) {
+      setNumberValue(initialValue);
+      setValue(formatValue(initialValue));
+    }
+  }, [isFocused, initialValue]);
 
   const onChange = (value: string, e?: React.ChangeEvent) => {
     if (!NUMBER_REGEX.test(value)) {

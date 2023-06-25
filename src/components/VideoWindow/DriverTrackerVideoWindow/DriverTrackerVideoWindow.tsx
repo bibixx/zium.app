@@ -11,7 +11,7 @@ import { VideoWindowWrapper } from "../VideoWindowWrapper/VideoWindowWrapper";
 import { NoFeed } from "../NoFeed/NoFeed";
 import { FeedError } from "../FeedError/FeedError";
 import { VideoWindowButtons } from "../VideoWindowButtons/VideoWindowButtons";
-import { useUserOffsets } from "../../../hooks/useUserOffests";
+import { useReactiveUserOffsets, useUserOffsets } from "../../../hooks/useUserOffests";
 
 interface DriverTrackerVideoWindowProps extends VideoWindowProps {
   gridWindow: BaseGridWindow;
@@ -19,10 +19,11 @@ interface DriverTrackerVideoWindowProps extends VideoWindowProps {
 }
 
 export const DriverTrackerVideoWindow = forwardRef<PlayerAPI | null, DriverTrackerVideoWindowProps>(
-  ({ gridWindow, isPaused, streamUrl, onDelete, fillMode, updateFillMode }, forwardedRef) => {
+  ({ isPaused, streamUrl, onDelete, fillMode, updateFillMode }, forwardedRef) => {
     const playerRef = useRef<PlayerAPI | null>(null);
     const streamVideoState = useStreamVideo(streamUrl);
     const { updateOffset } = useUserOffsets();
+    const offsets = useReactiveUserOffsets();
 
     const ref = (r: PlayerAPI | null) => {
       setRef(forwardedRef, r);
@@ -61,8 +62,9 @@ export const DriverTrackerVideoWindow = forwardRef<PlayerAPI | null, DriverTrack
         />
         <VideoWindowButtons
           onOffsetChange={(value) => {
-            updateOffset(gridWindow.id, value);
+            updateOffset("driver-tracker", value);
           }}
+          currentOffset={offsets["driver-tracker"] ?? 0}
           updateFillMode={() => updateFillMode(fillMode === "fill" ? "fit" : "fill")}
           fillMode={fillMode}
           onClose={onDelete}

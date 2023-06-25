@@ -1,4 +1,14 @@
-import { MutableRefObject, ReactNode, createContext, useCallback, useContext, useMemo, useRef } from "react";
+import {
+  MutableRefObject,
+  ReactNode,
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { AutoComplete } from "../types/AutoComplete";
 import { EventEmitter } from "../utils/EventEmitter";
 import { StreamInfo } from "./useVideoRaceDetails/useVideoRaceDetails.types";
@@ -51,4 +61,20 @@ export const UserOffsetsProvider = ({ children }: UserOffsetsProviderProps) => {
   const context = useMemo(() => state, [state]);
 
   return <UserOffsetsContext.Provider value={context}>{children}</UserOffsetsContext.Provider>;
+};
+
+export const useReactiveUserOffsets = () => {
+  const { offsets: offsetsRef, offsetEmitter } = useUserOffsets();
+  const [offsets, setOffsets] = useState(offsetsRef.current);
+
+  useEffect(() => {
+    const onChange = () => setOffsets(offsetsRef.current);
+    offsetEmitter.addEventListener("change", onChange);
+
+    return () => {
+      offsetEmitter.removeEventListener("change", onChange);
+    };
+  }, [offsetEmitter, offsetsRef]);
+
+  return offsets;
 };

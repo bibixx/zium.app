@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { forwardRef, useMemo } from "react";
 
 /* eslint-disable react/prop-types */

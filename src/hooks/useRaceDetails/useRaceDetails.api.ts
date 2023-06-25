@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { isValid } from "date-fns";
 import { EventGenre, EVENT_GENRES, isRaceGenre } from "../../constants/races";
 import { fetchJSON } from "../../utils/api";

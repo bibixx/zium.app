@@ -137,8 +137,6 @@ export const VideoJS = forwardRef<PlayerAPI | null, VideoJSProps>(
     }, [volume]);
 
     useEffect(() => {
-      console.log(areClosedCaptionsOn);
-
       setSubtitles(playerRef.current, areClosedCaptionsOn);
     }, [areClosedCaptionsOn]);
 

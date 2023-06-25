@@ -15,7 +15,7 @@ import { NoFeed } from "../NoFeed/NoFeed";
 import { FeedError } from "../FeedError/FeedError";
 import { DriverImage } from "../../DriverImage/DriverImage";
 import { WithVariables } from "../../WithVariables/WithVariables";
-import { useUserOffsets } from "../../../hooks/useUserOffests";
+import { useReactiveUserOffsets, useUserOffsets } from "../../../hooks/useUserOffests";
 import { VideoWindowButtons } from "../VideoWindowButtons/VideoWindowButtons";
 import styles from "./DriverVideoWindow.module.scss";
 
@@ -54,6 +54,7 @@ export const DriverVideoWindow = forwardRef<PlayerAPI | null, DriverVideoWindowP
     const streamVideoState = useStreamVideo(streamUrl);
     const currentDriver = availableDrivers.find((driver) => driver.id === gridWindow.driverId);
     const { updateOffset } = useUserOffsets();
+    const offsets = useReactiveUserOffsets();
 
     const ref = (r: PlayerAPI | null) => {
       setRef(forwardedRef, r);
@@ -109,6 +110,7 @@ export const DriverVideoWindow = forwardRef<PlayerAPI | null, DriverVideoWindowP
           onOffsetChange={(value) => {
             updateOffset(gridWindow.driverId, value);
           }}
+          currentOffset={offsets[gridWindow.driverId] ?? 0}
           updateFillMode={() => updateFillMode(fillMode === "fill" ? "fit" : "fill")}
           fillMode={fillMode}
           onAudioFocusClick={onAudioFocusClick}

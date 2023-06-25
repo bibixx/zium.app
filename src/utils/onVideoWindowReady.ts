@@ -1,4 +1,4 @@
-import { PlayerAPI, PlayerEvent } from "bitmovin-player";
+import { PlayerAPI } from "bitmovin-player";
 
 export function onVideoWindowReadyBase(player: PlayerAPI) {
   const $container = player.getContainer();
