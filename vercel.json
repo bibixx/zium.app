@@ -34,7 +34,7 @@
       ]
     },
     {
-      "source": "/*.png",
+      "source": "/(.*).png",
       "headers": [
         {
           "key": "Cache-Control",
