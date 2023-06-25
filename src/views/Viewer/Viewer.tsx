@@ -28,7 +28,7 @@ import { TimedOutWrapper } from "../../components/TimedOutWrapper/TimedOutWrappe
 import { useTrackWithTitle } from "../../hooks/useAnalytics/useAnalytics";
 import { isNotNullable } from "../../utils/isNotNullable";
 import { CookieBanner } from "../../components/CookieBanner/CookieBanner";
-import { UserOffsetsProvider } from "../../hooks/useUserOffests";
+import { UserOffsetsProvider } from "../../hooks/useUserOffests/useUserOffests";
 import { isValidGridWindowType } from "../../utils/isValidGridWindowType";
 import { getWindowStreamMap, getAvailableDrivers } from "./Viewer.utils";
 import { useGrid } from "./hooks/useGrid";
@@ -373,7 +373,7 @@ export const ViewerWithState = () => {
 
   return (
     <ViewerUIVisibilityContext.Provider value={viewerUIVisibilityState}>
-      <UserOffsetsProvider>
+      <UserOffsetsProvider raceId={raceId}>
         <div
           className={cn(styles.cursorWrapper, {
             [GLOBAL_UI_VISIBILITY_CLASS_NAME]: viewerUIVisibilityState.isUIVisible,

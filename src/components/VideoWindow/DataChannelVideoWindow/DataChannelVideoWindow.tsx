@@ -11,7 +11,7 @@ import { VideoWindowWrapper } from "../VideoWindowWrapper/VideoWindowWrapper";
 import { NoFeed } from "../NoFeed/NoFeed";
 import { FeedError } from "../FeedError/FeedError";
 import { VideoWindowButtons } from "../VideoWindowButtons/VideoWindowButtons";
-import { useReactiveUserOffsets, useUserOffsets } from "../../../hooks/useUserOffests";
+import { useReactiveUserOffsets, useUserOffsets } from "../../../hooks/useUserOffests/useUserOffests";
 import { SourceButton } from "../../SourceButton/SourceButton";
 import { getIconForStreamInfo } from "../../../utils/getIconForStreamInfo";
 import { useStreamPicker } from "../../../hooks/useStreamPicker/useStreamPicker";

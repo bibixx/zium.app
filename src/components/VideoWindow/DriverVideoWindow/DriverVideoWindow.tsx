@@ -12,7 +12,7 @@ import { useStreamPicker } from "../../../hooks/useStreamPicker/useStreamPicker"
 import { StreamVideoError } from "../../../hooks/useStreamVideo/useStreamVideo.utils";
 import { NoFeed } from "../NoFeed/NoFeed";
 import { FeedError } from "../FeedError/FeedError";
-import { useReactiveUserOffsets, useUserOffsets } from "../../../hooks/useUserOffests";
+import { useReactiveUserOffsets, useUserOffsets } from "../../../hooks/useUserOffests/useUserOffests";
 import { VideoWindowButtons } from "../VideoWindowButtons/VideoWindowButtons";
 import { SourceButton } from "../../SourceButton/SourceButton";
 

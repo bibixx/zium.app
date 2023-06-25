@@ -2,7 +2,7 @@ import { PlayerAPI, PlayerEvent, TimeMode } from "bitmovin-player";
 import { MutableRefObject, useEffect } from "react";
 import { PlaybackOffsets } from "../../../hooks/useVideoRaceDetails/useVideoRaceDetails.types";
 import { GridWindow } from "../../../types/GridWindow";
-import { UserOffsets, useUserOffsets } from "../../../hooks/useUserOffests";
+import { UserOffsets, useUserOffsets } from "../../../hooks/useUserOffests/useUserOffests";
 
 interface UseSyncVideosArguments {
   windows: GridWindow[];
