@@ -57,6 +57,11 @@ type VideoWindowButtonsProps = {
 export const VideoWindowButtons = (props: VideoWindowButtonsProps) => {
   return (
     <>
+      {props.onClose && (
+        <div className={styles.closeButtonWrapper} onMouseDown={(e) => e.stopPropagation()}>
+          <Button variant="SecondaryInverted" onClick={props.onClose} iconLeft={XMarkIcon} />
+        </div>
+      )}
       <div className={styles.optionsButtonsWrapper} onMouseDown={(e) => e.stopPropagation()}>
         {props.onOffsetChange && <OffsetInput onChange={props.onOffsetChange} initialValue={props.currentOffset} />}
         {props.updateFillMode && (
@@ -82,11 +87,6 @@ export const VideoWindowButtons = (props: VideoWindowButtonsProps) => {
           />
         )}
       </div>
-      {props.onClose && (
-        <div className={styles.closeButtonWrapper} onMouseDown={(e) => e.stopPropagation()}>
-          <Button variant="SecondaryInverted" onClick={props.onClose} iconLeft={XMarkIcon} />
-        </div>
-      )}
     </>
   );
 };

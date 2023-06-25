@@ -1,7 +1,6 @@
 import { PlayerAPI } from "bitmovin-player";
 import classNames from "classnames";
 import { useCallback, useEffect, useRef, useState } from "react";
-import FocusTrap from "focus-trap-react";
 import { RaceInfo } from "../../hooks/useVideoRaceDetails/useVideoRaceDetails.types";
 import { useViewerUIVisibility } from "../../hooks/useViewerUIVisibility/useViewerUIVisibility";
 import { GridWindow } from "../../types/GridWindow";
@@ -88,75 +87,66 @@ export const Player = ({
   return (
     <>
       {isDragging && <div className={styles.grabbingWrapper} />}
-      <FocusTrap
-        active={false}
-        focusTrapOptions={{
-          allowOutsideClick: true,
-          clickOutsideDeactivates: false,
-          initialFocus: false,
+      <div
+        onMouseEnter={() => preventHiding(true)}
+        onMouseLeave={() => preventHiding(isPaused || isDragging)}
+        className={classNames(styles.wrapper, {
+          [styles.isCollapsed]: isCollapsed,
+          [styles.isVisible]: isUIVisible,
+          [styles.wrapperIsDragging]: isDragging,
+          [styles.isSpringing]: isSpringing,
+        })}
+        ref={wrapperRef}
+        onTransitionEnd={(e) => {
+          if (e.propertyName === "transform" && isSpringing) {
+            setIsSpringing(false);
+          }
         }}
       >
-        <div
-          onMouseEnter={() => preventHiding(true)}
-          onMouseLeave={() => preventHiding(isPaused || isDragging)}
-          className={classNames(styles.wrapper, {
-            [styles.isCollapsed]: isCollapsed,
-            [styles.isVisible]: isUIVisible,
-            [styles.wrapperIsDragging]: isDragging,
-            [styles.isSpringing]: isSpringing,
-          })}
-          ref={wrapperRef}
-          onTransitionEnd={(e) => {
-            if (e.propertyName === "transform" && isSpringing) {
-              setIsSpringing(false);
+        <div className={styles.dragHandlePlaceholder} />
+        <button
+          className={classNames(styles.dragHandle, { [styles.dragHandleIsDragging]: isDragging || isMouseDown })}
+          onMouseDown={onMouseDown}
+          onClick={(e) => {
+            const isClickByKeyboard = e.detail === 0;
+            if (isClickByKeyboard) {
+              onClick();
             }
           }}
         >
-          <div className={styles.dragHandlePlaceholder} />
-          <button
-            className={classNames(styles.dragHandle, { [styles.dragHandleIsDragging]: isDragging || isMouseDown })}
-            onMouseDown={onMouseDown}
-            onClick={(e) => {
-              const isClickByKeyboard = e.detail === 0;
-              if (isClickByKeyboard) {
-                onClick();
-              }
-            }}
-          >
-            <DoubleEllipsisIcon width={20} height={20} />
-          </button>
+          <DoubleEllipsisIcon width={20} height={20} />
+        </button>
 
-          <div
-            className={styles.content}
-            ref={(node) => (!isCollapsed ? node?.removeAttribute("inert") : node?.setAttribute("inert", ""))}
-          >
-            <div className={styles.section}>
-              <PlayerRaceInfo raceInfo={raceInfo} />
-            </div>
-            <div className={classNames(styles.section, styles.middle)}>
-              <PlayerControls
-                player={player}
-                setVolume={setVolume}
-                volume={volume}
-                isMuted={isMuted}
-                setIsMuted={setIsMuted}
-              />
-            </div>
-            <div className={styles.section}>
-              <LayoutButtons
-                usedWindows={usedWindows}
-                createWindow={createWindow}
-                viewerState={viewerState}
-                loadLayout={loadLayout}
-                duplicateLayout={duplicateLayout}
-                renameLayout={renameLayout}
-                deleteLayout={deleteLayout}
-                hasOnlyOneStream={hasOnlyOneStream}
-              />
-            </div>
+        <div
+          className={styles.content}
+          ref={(node) => (!isCollapsed ? node?.removeAttribute("inert") : node?.setAttribute("inert", ""))}
+        >
+          <div className={styles.section}>
+            <PlayerRaceInfo raceInfo={raceInfo} />
+          </div>
+          <div className={classNames(styles.section, styles.middle)}>
+            <PlayerControls
+              player={player}
+              setVolume={setVolume}
+              volume={volume}
+              isMuted={isMuted}
+              setIsMuted={setIsMuted}
+            />
+          </div>
+          <div className={styles.section}>
+            <LayoutButtons
+              usedWindows={usedWindows}
+              createWindow={createWindow}
+              viewerState={viewerState}
+              loadLayout={loadLayout}
+              duplicateLayout={duplicateLayout}
+              renameLayout={renameLayout}
+              deleteLayout={deleteLayout}
+              hasOnlyOneStream={hasOnlyOneStream}
+            />
           </div>
         </div>
-      </FocusTrap>
+      </div>
     </>
   );
 };
