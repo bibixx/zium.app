@@ -122,6 +122,7 @@
   caret-color: var(--color-background-accent-default);
   padding: 0 4px;
   flex: 1;
+  width: 100%;
 
   @include typography(text, 300, regular);
 

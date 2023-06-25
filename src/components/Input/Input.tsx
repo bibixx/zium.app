@@ -11,15 +11,19 @@ interface InputProps extends Omit<React.ComponentPropsWithoutRef<"input">, "onCh
   canClear?: boolean;
   onChange?: (value: string, e?: React.ChangeEvent) => void;
   shortcut?: string;
+  labelClassName?: string;
 }
 export const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ className, icon: Icon, isRounded = false, canClear = false, onChange, value, shortcut, ...props }, ref) => {
+  (
+    { className, icon: Icon, isRounded = false, canClear = false, onChange, value, shortcut, labelClassName, ...props },
+    ref,
+  ) => {
     const isInputEmpty = value === "" || value === undefined;
     const inputFallbackRef = useRef<HTMLInputElement>(null);
 
     return (
       <div className={styles.wrapper}>
-        <label className={cn(styles.label, { [styles.isRounded]: isRounded })}>
+        <label className={cn(styles.label, { [styles.isRounded]: isRounded }, labelClassName)}>
           {Icon && (
             <div className={styles.iconWrapper}>
               <Icon width={20} height={20} fill="currentColor" />

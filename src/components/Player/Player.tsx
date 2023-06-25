@@ -89,6 +89,7 @@ export const Player = ({
     <>
       {isDragging && <div className={styles.grabbingWrapper} />}
       <FocusTrap
+        active={false}
         focusTrapOptions={{
           allowOutsideClick: true,
           clickOutsideDeactivates: false,

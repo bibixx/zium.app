@@ -1,0 +1,22 @@
+.wrapper {
+  padding: 4px;
+  display: flex;
+  gap: 4px;
+  background: var(--color-core-neutral-darken-400);
+  @include inner-border(var(--color-border-default-alpha));
+  border-radius: var(--radii-rounded);
+}
+
+.input {
+  text-align: center;
+}
+
+.inputLabel {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  width: 80px;
+}
+
+.button {
+  padding: 8px;
+}

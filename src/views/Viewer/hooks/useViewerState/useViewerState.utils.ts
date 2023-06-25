@@ -4,6 +4,8 @@ import { generateUID } from "../../../../utils/generateUID";
 import { assertNever } from "../../../../utils/assertNever";
 import { clone } from "../../../../utils/clone";
 
+export type GridLayoutFillMode = "fit" | "fill";
+
 interface GridLayout {
   width: number;
   height: number;
@@ -11,6 +13,7 @@ interface GridLayout {
   y: number;
   id: string;
   zIndex: number;
+  fillMode: GridLayoutFillMode;
 }
 
 export interface WindowGridSavedLayout {
@@ -33,6 +36,12 @@ interface UpdateLayoutAction {
 interface BringToFrontAction {
   type: "bringToFront";
   id: string;
+}
+
+interface UpdateFillModeAction {
+  type: "updateFillMode";
+  id: string;
+  fillMode: GridLayoutFillMode;
 }
 
 interface UpdateWindowAction {
@@ -77,6 +86,7 @@ type WindowGridActions =
   | UpdateLayoutAction
   | UpdateWindowAction
   | BringToFrontAction
+  | UpdateFillModeAction
   | DeleteWindowAction
   | CreateWindowAction
   | LoadLayoutAction
@@ -136,6 +146,20 @@ export const windowGridReducer = (prevState: WindowGridState, action: WindowGrid
 
       break;
     }
+    case "updateFillMode": {
+      newCurrentLayout.layout = prevCurrentLayout.layout.map((l) => {
+        if (l.id !== action.id) {
+          return l;
+        }
+
+        return {
+          ...l,
+          fillMode: action.fillMode,
+        };
+      });
+
+      break;
+    }
     case "updateDimension": {
       newCurrentLayout.layout = prevCurrentLayout.layout.map((l) => {
         if (l.id !== action.id) {
@@ -143,12 +167,12 @@ export const windowGridReducer = (prevState: WindowGridState, action: WindowGrid
         }
 
         return {
+          ...l,
           width: action.dimensions.width,
           height: action.dimensions.height,
           x: action.dimensions.x,
           y: action.dimensions.y,
           id: action.id,
-          zIndex: l.zIndex,
         };
       });
 
@@ -195,6 +219,8 @@ export const windowGridReducer = (prevState: WindowGridState, action: WindowGrid
       const layout: GridLayout = {
         id,
         ...action.dimensions,
+        fillMode: "fit",
+        // fillMode: "fill",
         zIndex: 1,
       };
 
@@ -329,6 +355,7 @@ const getInitialLayout = (windows: GridWindow[]): GridLayout[] => {
       y: row * rowHeight,
       x: column * columnWidth,
       zIndex: i + 1,
+      fillMode: "fill",
     };
   });
 };

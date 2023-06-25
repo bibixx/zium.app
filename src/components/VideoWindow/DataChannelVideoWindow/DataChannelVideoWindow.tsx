@@ -1,19 +1,17 @@
 import { forwardRef, useRef } from "react";
 import { PlayerAPI } from "bitmovin-player";
-import { XMarkIcon } from "@heroicons/react/20/solid";
-import { useStreamVideo } from "../../hooks/useStreamVideo/useStreamVideo";
-import { BaseGridWindow } from "../../types/GridWindow";
-import { VideoWindowProps } from "../../types/VideoWindowBaseProps";
-import { onVideoWindowReadyBase } from "../../utils/onVideoWindowReady";
-import { setRef } from "../../utils/setRef";
-// import { attachUseBestQuality } from "../../utils/attachUseBestQuality";
-import { AdditionalVideoJSOptions, VideoJS } from "../VideoJS/VideoJS";
-import { Button } from "../Button/Button";
-import { StreamVideoError } from "../../hooks/useStreamVideo/useStreamVideo.utils";
-import { VideoWindowWrapper } from "./VideoWindowWrapper/VideoWindowWrapper";
-import styles from "./VideoWindow.module.scss";
-import { NoFeed } from "./NoFeed/NoFeed";
-import { FeedError } from "./FeedError/FeedError";
+import { useStreamVideo } from "../../../hooks/useStreamVideo/useStreamVideo";
+import { BaseGridWindow } from "../../../types/GridWindow";
+import { VideoWindowProps } from "../../../types/VideoWindowBaseProps";
+import { onVideoWindowReadyBase } from "../../../utils/onVideoWindowReady";
+import { setRef } from "../../../utils/setRef";
+import { AdditionalVideoJSOptions, VideoJS } from "../../VideoJS/VideoJS";
+import { StreamVideoError } from "../../../hooks/useStreamVideo/useStreamVideo.utils";
+import { VideoWindowWrapper } from "../VideoWindowWrapper/VideoWindowWrapper";
+import { NoFeed } from "../NoFeed/NoFeed";
+import { FeedError } from "../FeedError/FeedError";
+import { VideoWindowButtons } from "../VideoWindowButtons/VideoWindowButtons";
+import { useUserOffsets } from "../../../hooks/useUserOffests";
 
 interface DataChannelVideoWindowProps extends VideoWindowProps {
   gridWindow: BaseGridWindow;
@@ -21,9 +19,10 @@ interface DataChannelVideoWindowProps extends VideoWindowProps {
 }
 
 export const DataChannelVideoWindow = forwardRef<PlayerAPI | null, DataChannelVideoWindowProps>(
-  ({ isPaused, streamUrl, onDelete }, forwardedRef) => {
+  ({ gridWindow, isPaused, streamUrl, onDelete, fillMode, updateFillMode }, forwardedRef) => {
     const playerRef = useRef<PlayerAPI | null>(null);
     const streamVideoState = useStreamVideo(streamUrl);
+    const { updateOffset } = useUserOffsets();
 
     const ref = (r: PlayerAPI | null) => {
       setRef(forwardedRef, r);
@@ -58,10 +57,16 @@ export const DataChannelVideoWindow = forwardRef<PlayerAPI | null, DataChannelVi
           ref={ref}
           onReady={onReady}
           isPaused={isPaused}
+          fillMode={fillMode}
         />
-        <div className={styles.closeButtonWrapper} onMouseDown={(e) => e.stopPropagation()}>
-          <Button variant="SecondaryInverted" onClick={onDelete} iconLeft={XMarkIcon} />
-        </div>
+        <VideoWindowButtons
+          onOffsetChange={(value) => {
+            updateOffset(gridWindow.id, value);
+          }}
+          updateFillMode={() => updateFillMode(fillMode === "fill" ? "fit" : "fill")}
+          fillMode={fillMode}
+          onClose={onDelete}
+        />
       </VideoWindowWrapper>
     );
   },

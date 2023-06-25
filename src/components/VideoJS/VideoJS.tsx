@@ -1,6 +1,6 @@
 import { forwardRef, useEffect, useRef, useState } from "react";
 import objectMerge from "object-merge";
-import { BufferingOverlay, UIContainer, UIFactory, UIManager } from "bitmovin-player-ui";
+import { BufferingOverlay, SubtitleOverlay, UIContainer, UIFactory, UIManager } from "bitmovin-player-ui";
 import { UIConfig } from "bitmovin-player-ui/dist/js/framework/uiconfig";
 // import "bitmovin-player-ui/dist/css/bitmovinplayer-ui.min.css";
 
@@ -8,6 +8,7 @@ import { Player, PlayerAPI, PlayerConfig, PlayerEvent, SourceConfig } from "bitm
 import classNames from "classnames";
 import { setRef } from "../../utils/setRef";
 import { VideoStreamInfo } from "../../hooks/useStreamVideo/useStreamVideo.api";
+import { GridLayoutFillMode } from "../../views/Viewer/hooks/useViewerState/useViewerState.utils";
 import styles from "./VideoJS.module.scss";
 
 export interface VideoJSOptions extends PlayerConfig {
@@ -22,12 +23,26 @@ interface VideoJSProps {
   options: AdditionalVideoJSOptions;
   onReady: (player: PlayerAPI) => void;
   isPaused: boolean;
+  areClosedCaptionsOn?: boolean;
   isMuted?: boolean;
   volume?: number;
+  fillMode?: GridLayoutFillMode;
 }
 
 export const VideoJS = forwardRef<PlayerAPI | null, VideoJSProps>(
-  ({ videoStreamInfo, options: overwrittenOptions, onReady, isPaused, volume = 0, isMuted = false }, ref) => {
+  (
+    {
+      videoStreamInfo,
+      options: overwrittenOptions,
+      onReady,
+      isPaused,
+      volume = 0,
+      isMuted = false,
+      areClosedCaptionsOn = false,
+      fillMode = "fill",
+    },
+    ref,
+  ) => {
     const placeholderRef = useRef<HTMLDivElement>(null);
     const playerRef = useRef<PlayerAPI | null>(null);
     const uiManagerRef = useRef<UIManager | null>(null);
@@ -60,7 +75,14 @@ export const VideoJS = forwardRef<PlayerAPI | null, VideoJSProps>(
           uiManagerRef.current = UIFactory.buildDefaultUI(player, options.ui);
         } else if (!options.noBufferUI) {
           const myUi = new UIContainer({
-            components: [new BufferingOverlay({ showDelayMs: 10 })],
+            components: [new BufferingOverlay({ showDelayMs: 10 }), new SubtitleOverlay()],
+            hideDelay: -1,
+          });
+
+          uiManagerRef.current = new UIManager(player, myUi);
+        } else {
+          const myUi = new UIContainer({
+            components: [new SubtitleOverlay()],
             hideDelay: -1,
           });
 
@@ -77,6 +99,7 @@ export const VideoJS = forwardRef<PlayerAPI | null, VideoJSProps>(
         });
 
         player.setVolume(volume);
+        setSubtitles(player, areClosedCaptionsOn);
 
         if (isMuted) {
           playerRef.current?.mute();
@@ -114,6 +137,12 @@ export const VideoJS = forwardRef<PlayerAPI | null, VideoJSProps>(
     }, [volume]);
 
     useEffect(() => {
+      console.log(areClosedCaptionsOn);
+
+      setSubtitles(playerRef.current, areClosedCaptionsOn);
+    }, [areClosedCaptionsOn]);
+
+    useEffect(() => {
       if (isMuted) {
         playerRef.current?.mute();
       } else {
@@ -121,7 +150,16 @@ export const VideoJS = forwardRef<PlayerAPI | null, VideoJSProps>(
       }
     }, [isMuted]);
 
-    return <div ref={placeholderRef} className={classNames(styles.videoWrapper, { [styles.isVisible]: isVisible })} />;
+    return (
+      <div
+        ref={placeholderRef}
+        className={classNames(styles.videoWrapper, {
+          [styles.isVisible]: isVisible,
+          [styles.isFit]: fillMode === "fit",
+          [styles.isFill]: fillMode === "fill",
+        })}
+      />
+    );
   },
 );
 
@@ -140,4 +178,23 @@ function getSourceConfig(videoStreamInfo: VideoStreamInfo): SourceConfig {
       },
     },
   };
+}
+
+function setSubtitles(player: PlayerAPI | null, enabled: boolean) {
+  if (player == null) {
+    return;
+  }
+
+  const [firstSubtitle] = player.subtitles.list();
+
+  if (firstSubtitle == null) {
+    return;
+  }
+
+  if (!enabled) {
+    player.subtitles.disable(firstSubtitle.id);
+    return;
+  }
+
+  player.subtitles.enable(firstSubtitle.id, true);
 }

@@ -1,0 +1,11 @@
+.image {
+  width: 100%;
+  height: 100%;
+  opacity: 1;
+  transition: var(--transition-medium);
+  transition-property: opacity;
+
+  &.isLoading {
+    opacity: 0;
+  }
+}

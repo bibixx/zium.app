@@ -1,7 +1,5 @@
 import { forwardRef, useRef } from "react";
 import { PlayerAPI } from "bitmovin-player";
-import { SpeakerWaveIcon, XMarkIcon } from "@heroicons/react/20/solid";
-import cn from "classnames";
 import { useStreamVideo } from "../../../hooks/useStreamVideo/useStreamVideo";
 import { DriverGridWindow } from "../../../types/GridWindow";
 import { VideoWindowProps } from "../../../types/VideoWindowBaseProps";
@@ -11,12 +9,14 @@ import { AdditionalVideoJSOptions, VideoJS } from "../../VideoJS/VideoJS";
 import { VideoWindowWrapper } from "../VideoWindowWrapper/VideoWindowWrapper";
 import { DriverData } from "../../../views/Viewer/Viewer.utils";
 import { useStreamPicker } from "../../../hooks/useStreamPicker/useStreamPicker";
-import { VideoFeedContent } from "../../VideoFeedContent/VideoFeedContent";
-import closeButtonStyles from "../VideoWindow.module.scss";
-import { Button } from "../../Button/Button";
+import commonStyles from "../VideoWindow.module.scss";
 import { StreamVideoError } from "../../../hooks/useStreamVideo/useStreamVideo.utils";
 import { NoFeed } from "../NoFeed/NoFeed";
 import { FeedError } from "../FeedError/FeedError";
+import { DriverImage } from "../../DriverImage/DriverImage";
+import { WithVariables } from "../../WithVariables/WithVariables";
+import { useUserOffsets } from "../../../hooks/useUserOffests";
+import { VideoWindowButtons } from "../VideoWindowButtons/VideoWindowButtons";
 import styles from "./DriverVideoWindow.module.scss";
 
 interface DriverVideoWindowProps extends VideoWindowProps {
@@ -45,12 +45,15 @@ export const DriverVideoWindow = forwardRef<PlayerAPI | null, DriverVideoWindowP
       volume,
       onDelete,
       hasOnlyOneStream,
+      fillMode,
+      updateFillMode,
     },
     forwardedRef,
   ) => {
     const playerRef = useRef<PlayerAPI | null>(null);
     const streamVideoState = useStreamVideo(streamUrl);
     const currentDriver = availableDrivers.find((driver) => driver.id === gridWindow.driverId);
+    const { updateOffset } = useUserOffsets();
 
     const ref = (r: PlayerAPI | null) => {
       setRef(forwardedRef, r);
@@ -90,7 +93,7 @@ export const DriverVideoWindow = forwardRef<PlayerAPI | null, DriverVideoWindowP
     }
 
     return (
-      <VideoWindowWrapper className={closeButtonStyles.bitmovinWrapper}>
+      <VideoWindowWrapper className={commonStyles.bitmovinWrapper}>
         <VideoJS
           videoStreamInfo={streamVideoState.data}
           options={ADDITIONAL_OPTIONS}
@@ -98,19 +101,20 @@ export const DriverVideoWindow = forwardRef<PlayerAPI | null, DriverVideoWindowP
           onReady={onReady}
           isPaused={isPaused}
           volume={isAudioFocused ? volume : 0}
+          fillMode={fillMode}
         />
         {!hasOnlyOneStream && <DriverPickerButton currentDriver={currentDriver} onDriverChange={onDriverChange} />}
-        <div className={styles.focusAudioButtonWrapper} onMouseDown={(e) => e.stopPropagation()}>
-          <Button
-            variant="SecondaryInverted"
-            className={cn({ [styles.isAudioFocused]: isAudioFocused })}
-            onClick={onAudioFocusClick}
-            iconLeft={SpeakerWaveIcon}
-          />
-        </div>
-        <div className={closeButtonStyles.closeButtonWrapper} onMouseDown={(e) => e.stopPropagation()}>
-          <Button variant="SecondaryInverted" onClick={onDelete} iconLeft={XMarkIcon} />
-        </div>
+
+        <VideoWindowButtons
+          onOffsetChange={(value) => {
+            updateOffset(gridWindow.driverId, value);
+          }}
+          updateFillMode={() => updateFillMode(fillMode === "fill" ? "fit" : "fill")}
+          fillMode={fillMode}
+          onAudioFocusClick={onAudioFocusClick}
+          isAudioFocused={isAudioFocused}
+          onClose={onDelete}
+        />
       </VideoWindowWrapper>
     );
   },
@@ -131,15 +135,15 @@ const DriverPickerButton = ({ currentDriver, onDriverChange }: DriverPickerButto
   const { requestStream } = useStreamPicker();
 
   const currentDriverId = currentDriver?.id;
-  const lastName = currentDriver?.lastName ?? (
+  const lastName = currentDriver?.lastName.slice(0, 3) ?? (
     <>
       Select
       <br />
       source
     </>
   );
-  const firstName = currentDriver?.firstName ?? "";
-  const imageUrls = currentDriver?.imageUrls;
+  // TODO: Placeholder
+  const imageUrls = currentDriver?.imageUrls ?? [];
 
   const onClick = async () => {
     const chosenDriverData = await requestStream("drivers", currentDriverId === undefined ? [] : [currentDriverId]);
@@ -157,13 +161,11 @@ const DriverPickerButton = ({ currentDriver, onDriverChange }: DriverPickerButto
   };
 
   return (
-    <button className={styles.driverName} onClick={onClick} onMouseDown={(e) => e.stopPropagation()}>
-      <VideoFeedContent
-        label={lastName}
-        topLabel={firstName}
-        srcList={imageUrls}
-        showPlaceholder={imageUrls === undefined}
-      />
+    <button className={styles.driverNameWrapper} onClick={onClick} onMouseDown={(e) => e.stopPropagation()}>
+      <WithVariables className={styles.driverImageWrapper} variables={{ teamColor: currentDriver?.color }}>
+        <DriverImage srcList={imageUrls} />
+      </WithVariables>
+      <div className={styles.driverName}>{lastName}</div>
     </button>
   );
 };

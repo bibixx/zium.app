@@ -11,6 +11,10 @@ import { ReactComponent as SprintSvg } from "../../assets/custom-icons/sprint.sv
 import { ReactComponent as FigmaSvg } from "../../assets/custom-icons/figma.svg";
 import { ReactComponent as GitHubSvg } from "../../assets/custom-icons/github.svg";
 import { ReactComponent as TwitterSvg } from "../../assets/custom-icons/twitter.svg";
+import { ReactComponent as AspectRatioOffSvg } from "../../assets/custom-icons/aspect-ratio-off.svg";
+import { ReactComponent as AspectRatioOnSvg } from "../../assets/custom-icons/aspect-ratio-on.svg";
+import { ReactComponent as ClosedCaptionsOffSvg } from "../../assets/custom-icons/closed-captions-off.svg";
+import { ReactComponent as ClosedCaptionsOnSvg } from "../../assets/custom-icons/closed-captions-on.svg";
 import styles from "./CustomIcons.module.scss";
 
 export const ArrowLeft30Icon = (props: React.SVGProps<SVGSVGElement>) => {
@@ -63,4 +67,20 @@ export const GitHubIcon = (props: React.SVGProps<SVGSVGElement>) => {
 
 export const TwitterIcon = (props: React.SVGProps<SVGSVGElement>) => {
   return <TwitterSvg className={styles.wrapper} {...props} />;
+};
+
+export const AspectRatioOffIcon = (props: React.SVGProps<SVGSVGElement>) => {
+  return <AspectRatioOffSvg className={styles.wrapper} {...props} />;
+};
+
+export const AspectRatioOnIcon = (props: React.SVGProps<SVGSVGElement>) => {
+  return <AspectRatioOnSvg className={styles.wrapper} {...props} />;
+};
+
+export const ClosedCaptionsOffIcon = (props: React.SVGProps<SVGSVGElement>) => {
+  return <ClosedCaptionsOffSvg className={styles.wrapper} {...props} />;
+};
+
+export const ClosedCaptionsOnIcon = (props: React.SVGProps<SVGSVGElement>) => {
+  return <ClosedCaptionsOnSvg className={styles.wrapper} {...props} />;
 };

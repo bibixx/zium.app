@@ -2,6 +2,7 @@ import { PlayerAPI, PlayerEvent, TimeMode } from "bitmovin-player";
 import { MutableRefObject, useEffect } from "react";
 import { PlaybackOffsets } from "../../../hooks/useVideoRaceDetails/useVideoRaceDetails.types";
 import { GridWindow } from "../../../types/GridWindow";
+import { UserOffsets, useUserOffsets } from "../../../hooks/useUserOffests";
 
 interface UseSyncVideosArguments {
   windows: GridWindow[];
@@ -10,6 +11,8 @@ interface UseSyncVideosArguments {
   playbackOffsets: PlaybackOffsets;
 }
 export const useSyncVideos = ({ windows, windowVideojsRefMapRef, isLive, playbackOffsets }: UseSyncVideosArguments) => {
+  const { offsets: userOffsetsRef, offsetEmitter } = useUserOffsets();
+
   useEffect(() => {
     const syncVideos = (forceSync = false) => {
       const mainWindow = windows.find((w) => w.type === "main");
@@ -35,9 +38,9 @@ export const useSyncVideos = ({ windows, windowVideojsRefMapRef, isLive, playbac
           return;
         }
 
-        const offset = getOffset(playbackOffsets, w, mainWindow);
+        const offset = getOffset(playbackOffsets, userOffsetsRef.current, w, mainWindow);
         if (isLive) {
-          const diff = Math.abs(player.getTimeShift() - -offset);
+          const diff = Math.abs(player.getTimeShift() + offset);
 
           if (diff < 1 && !forceSync) {
             return;
@@ -75,10 +78,12 @@ export const useSyncVideos = ({ windows, windowVideojsRefMapRef, isLive, playbac
       const forceSync = () => syncVideos(true);
       mainWindowPlayer.on(PlayerEvent.Seek, forceSync);
       mainWindowPlayer.on(PlayerEvent.TimeShift, forceSync);
+      offsetEmitter.addEventListener("change", forceSync);
 
       cleanupFunction = () => {
         mainWindowPlayer.off(PlayerEvent.Seek, forceSync);
         mainWindowPlayer.off(PlayerEvent.TimeShift, forceSync);
+        offsetEmitter.removeEventListener("change", forceSync);
       };
     };
 
@@ -105,9 +110,23 @@ export const useSyncVideos = ({ windows, windowVideojsRefMapRef, isLive, playbac
       document.removeEventListener("visibilitychange", onVisibilityChange);
       cleanupFunction?.();
     };
-  }, [isLive, playbackOffsets, windowVideojsRefMapRef, windows]);
+  }, [isLive, offsetEmitter, playbackOffsets, userOffsetsRef, windowVideojsRefMapRef, windows]);
 };
 
-const getOffset = (playbackOffsets: PlaybackOffsets, w: GridWindow, mainWindow: GridWindow): number => {
-  return playbackOffsets.f1[w.type]?.[mainWindow.type] ?? 0;
+const getOffset = (
+  playbackOffsets: PlaybackOffsets,
+  userOffsets: UserOffsets,
+  w: GridWindow,
+  mainWindow: GridWindow,
+): number => {
+  let userOffset = 0;
+  if (w.type === "driver") {
+    userOffset = userOffsets[w.driverId] ?? 0;
+  } else {
+    userOffset = userOffsets[w.type] ?? 0;
+  }
+
+  const f1Offset = playbackOffsets.f1[w.type]?.[mainWindow.type] ?? 0;
+
+  return f1Offset + userOffset;
 };

@@ -1,8 +1,7 @@
-import classNames from "classnames";
 import { ReactNode } from "react";
-import { useImage } from "react-image";
 import { SquaresPlusIcon } from "@heroicons/react/24/outline";
 import { IconComponent } from "../../types/Icon";
+import { DriverImage } from "../DriverImage/DriverImage";
 import styles from "./VideoFeedContent.module.scss";
 
 interface VideoFeedContentProps {
@@ -18,7 +17,7 @@ export const VideoFeedContent = ({ label, srcList, icon: Icon, topLabel, showPla
     <div className={styles.wrapper}>
       {srcList && (
         <div className={styles.imageWrapper}>
-          <Img srcList={srcList} />
+          <DriverImage srcList={srcList} />
         </div>
       )}
       {showPlaceholder && (
@@ -36,19 +35,5 @@ export const VideoFeedContent = ({ label, srcList, icon: Icon, topLabel, showPla
         <div className={styles.label}>{label}</div>
       </div>
     </div>
-  );
-};
-
-interface ImgProps {
-  srcList: string[];
-}
-const Img = ({ srcList }: ImgProps) => {
-  const { src, isLoading } = useImage({
-    srcList,
-    useSuspense: false,
-  });
-
-  return (
-    <img src={src} alt="" draggable={false} className={classNames(styles.image, { [styles.isLoading]: isLoading })} />
   );
 };

@@ -13,4 +13,31 @@
   video:focus {
     outline: none;
   }
+
+  video {
+    width: 100%;
+    height: 100%;
+  }
+
+  &.isFit video {
+    object-fit: contain !important;
+  }
+
+  &.isFill video {
+    object-fit: cover !important;
+  }
+
+  :global(.bmpui-ui-subtitle-label) {
+    @include typography(text, 400, regular);
+
+    position: absolute;
+    display: inline;
+    bottom: 24px !important;
+    left: 50% !important;
+    width: auto !important;
+    transform: translateX(-50%);
+    max-width: 75%;
+    background: var(--color-core-neutral-darken-600);
+    color: var(--color-text-strong);
+  }
 }

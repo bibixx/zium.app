@@ -27,17 +27,8 @@
   }
 }
 
-.bitmovinWrapper {
-  :global(.bmpui-ui-settingstogglebutton),
-  :global(.bmpui-ui-fullscreentogglebutton),
-  :global(.bmpui-ui-volumetogglebutton) {
-    display: none;
-  }
-
-  :global(.bmpui-ui-volumeslider) {
-    &,
-    * {
-      pointer-events: none !important;
-    }
+.focusAudioButton {
+  &.isAudioFocused {
+    box-shadow: 0 0 0 2px var(--color-border-accent);
   }
 }

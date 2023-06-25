@@ -1,45 +1,41 @@
 import { forwardRef, useRef } from "react";
 import { PlayerAPI, PlayerEvent } from "bitmovin-player";
-import { SpeakerWaveIcon } from "@heroicons/react/20/solid";
-import cn from "classnames";
 import { useStreamVideo } from "../../../hooks/useStreamVideo/useStreamVideo";
-import { MainGridWindow } from "../../../types/GridWindow";
 import { VideoWindowProps } from "../../../types/VideoWindowBaseProps";
 import { onVideoWindowReadyBase } from "../../../utils/onVideoWindowReady";
 import { setRef } from "../../../utils/setRef";
-// import { attachUseBestQuality } from "../../../utils/attachUseBestQuality";
-// import { attachStartAt } from "../../../utils/attachStartAt";
 import { AdditionalVideoJSOptions, VideoJS } from "../../VideoJS/VideoJS";
 import { VideoWindowWrapper } from "../VideoWindowWrapper/VideoWindowWrapper";
-import { Button } from "../../Button/Button";
 import { NoFeed } from "../NoFeed/NoFeed";
 import { FeedError } from "../FeedError/FeedError";
 import { StreamVideoError } from "../../../hooks/useStreamVideo/useStreamVideo.utils";
-import styles from "./MainVideoWindow.module.scss";
+import { VideoWindowButtons } from "../VideoWindowButtons/VideoWindowButtons";
 
 interface MainVideoWindowProps extends VideoWindowProps {
-  gridWindow: MainGridWindow;
   onPlayingChange: (isPaused: boolean) => void;
   onWindowAudioFocus: () => void;
   isAudioFocused: boolean;
   volume: number;
   setVolume: (newVolume: number) => void;
-  executeOnAll: (cb: (player: PlayerAPI) => void, callerId: string) => void;
   onLoaded: (player: PlayerAPI) => void;
+  areClosedCaptionsOn: boolean;
+  setAreClosedCaptionsOn: (value: boolean) => void;
 }
 
 export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps>(
   (
     {
-      gridWindow,
       streamUrl,
-      executeOnAll,
       onPlayingChange,
       isPaused,
       isAudioFocused,
       onWindowAudioFocus,
       volume,
       onLoaded,
+      fillMode,
+      updateFillMode,
+      areClosedCaptionsOn,
+      setAreClosedCaptionsOn,
     },
     forwardedRef,
   ) => {
@@ -52,22 +48,8 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
     };
 
     const onReady = (player: PlayerAPI) => {
-      const callerId = gridWindow.id;
       onVideoWindowReadyBase(player);
       onLoaded(player);
-
-      // player.mute();
-      // attachStartAt(player);
-
-      // player.on(PlayerEvent.Seek, () => {
-      //   onPlayingChange(true);
-      // });
-
-      // player.on(PlayerEvent.Seeked, () => {
-      //   onPlayingChange(false);
-      //   // const currentTime = player.getCurrentTime(TimeMode.AbsoluteTime);
-      //   // executeOnAll((p) => p.seek(currentTime), callerId);
-      // });
 
       player.on(PlayerEvent.Paused, () => {
         onPlayingChange(true);
@@ -106,15 +88,17 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
           onReady={onReady}
           isPaused={isPaused}
           volume={isAudioFocused ? volume : 0}
+          fillMode={fillMode}
+          areClosedCaptionsOn={areClosedCaptionsOn}
         />
-        <div className={styles.focusAudioButtonWrapper} onMouseDown={(e) => e.stopPropagation()}>
-          <Button
-            variant="SecondaryInverted"
-            className={cn({ [styles.isAudioFocused]: isAudioFocused })}
-            onClick={onWindowAudioFocus}
-            iconLeft={SpeakerWaveIcon}
-          />
-        </div>
+        <VideoWindowButtons
+          updateFillMode={() => updateFillMode(fillMode === "fill" ? "fit" : "fill")}
+          fillMode={fillMode}
+          onAudioFocusClick={onWindowAudioFocus}
+          isAudioFocused={isAudioFocused}
+          toggleClosedCaptions={() => setAreClosedCaptionsOn(!areClosedCaptionsOn)}
+          areClosedCaptionsOn={areClosedCaptionsOn}
+        />
       </VideoWindowWrapper>
     );
   },

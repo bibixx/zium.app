@@ -114,11 +114,15 @@
     color: var(--color-text-strong);
 
     .iconWrapper {
-      color: var(--color-text-strong);
+      color: var(--color-text-default);
     }
 
     &:hover {
       background: var(--color-core-neutral-darken-500);
+
+      .iconWrapper {
+        color: var(--color-text-strong);
+      }
     }
 
     &:active,

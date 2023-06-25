@@ -8,9 +8,9 @@ import { GridWindow } from "../../types/GridWindow";
 import { MainVideoWindow } from "../../components/VideoWindow/MainVideoWindow/MainVideoWindow";
 import { DriverVideoWindow } from "../../components/VideoWindow/DriverVideoWindow/DriverVideoWindow";
 import { assertNever } from "../../utils/assertNever";
-import { DataChannelVideoWindow } from "../../components/VideoWindow/DataChannelVideoWindow";
+import { DataChannelVideoWindow } from "../../components/VideoWindow/DataChannelVideoWindow/DataChannelVideoWindow";
 import { PlaybackOffsets, RaceInfo, StreamsStateData } from "../../hooks/useVideoRaceDetails/useVideoRaceDetails.types";
-import { DriverTrackerVideoWindow } from "../../components/VideoWindow/DriverTrackerVideoWindow";
+import { DriverTrackerVideoWindow } from "../../components/VideoWindow/DriverTrackerVideoWindow/DriverTrackerVideoWindow";
 import { useVideoRaceDetails } from "../../hooks/useVideoRaceDetails/useVideoRaceDetails";
 import { RnDWindow } from "../../components/RnDWindow/RnDWindow";
 import { Dimensions } from "../../types/Dimensions";
@@ -28,6 +28,7 @@ import { TimedOutWrapper } from "../../components/TimedOutWrapper/TimedOutWrappe
 import { useTrackWithTitle } from "../../hooks/useAnalytics/useAnalytics";
 import { isNotNullable } from "../../utils/isNotNullable";
 import { CookieBanner } from "../../components/CookieBanner/CookieBanner";
+import { UserOffsetsProvider } from "../../hooks/useUserOffests";
 import { getWindowStreamMap, getAvailableDrivers } from "./Viewer.utils";
 import { useGrid } from "./hooks/useGrid";
 import styles from "./Viewer.module.scss";
@@ -37,6 +38,7 @@ import { BackgroundDots } from "./BackgroundDots/BackgroundDots";
 import { useViewerState } from "./hooks/useViewerState/useViewerState";
 import { useGlobalShortcuts } from "./hooks/useGlobalShortcuts";
 import { useCmdTutorial } from "./hooks/useCmdTutorial";
+import { GridLayoutFillMode } from "./hooks/useViewerState/useViewerState.utils";
 
 interface ViewerProps {
   streams: StreamsStateData;
@@ -55,6 +57,7 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
   );
 
   const [areVideosPaused, setAreVideosPaused] = useState(false);
+  const [areClosedCaptionsOn, setAreClosedCaptionsOn] = useState(false);
   const { audioFocusedWindow, onWindowAudioFocus, setVolume, volume, internalVolume, setIsMuted, isMuted } =
     useVideoAudio({
       windows,
@@ -125,21 +128,6 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
     [dispatch],
   );
 
-  const executeOnAll = useCallback(
-    (cb: (player: PlayerAPI) => void, callerId: string) => {
-      windows.forEach((w) => {
-        const player = windowVideojsRefMapRef.current[w.id];
-
-        if (w.id === callerId || player == null) {
-          return;
-        }
-
-        cb(player);
-      });
-    },
-    [windows],
-  );
-
   const availableDrivers = useMemo(() => getAvailableDrivers(streams, season), [season, streams]);
   const usedWindows = useMemo(
     () =>
@@ -166,7 +154,7 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
   }, [streams]);
 
   const getLayoutChild = useCallback(
-    (gridWindow: GridWindow) => {
+    (gridWindow: GridWindow, fillMode: GridLayoutFillMode) => {
       const setRef = (video: PlayerAPI | null) => {
         windowVideojsRefMapRef.current[gridWindow.id] = video;
       };
@@ -178,12 +166,18 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
         });
       };
 
+      const updateFillMode = (fillMode: GridLayoutFillMode) => {
+        dispatch({
+          type: "updateFillMode",
+          id: gridWindow.id,
+          fillMode,
+        });
+      };
+
       if (gridWindow.type === "main") {
         return (
           <MainVideoWindow
-            gridWindow={gridWindow}
             ref={setRef}
-            executeOnAll={executeOnAll}
             onPlayingChange={(isPaused: boolean) => setAreVideosPaused(isPaused)}
             isPaused={areVideosPaused}
             isAudioFocused={audioFocusedWindow === gridWindow.id}
@@ -192,6 +186,10 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
             setVolume={setVolume}
             streamUrl={windowStreamMap[gridWindow.id]}
             onLoaded={setMainVideoPlayer}
+            fillMode={fillMode}
+            updateFillMode={updateFillMode}
+            areClosedCaptionsOn={areClosedCaptionsOn}
+            setAreClosedCaptionsOn={setAreClosedCaptionsOn}
           />
         );
       }
@@ -228,6 +226,8 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
             streamUrl={windowStreamMap[gridWindow.id]}
             onDelete={onDelete}
             hasOnlyOneStream={hasOnlyOneStream}
+            fillMode={fillMode}
+            updateFillMode={updateFillMode}
           />
         );
       }
@@ -240,6 +240,8 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
             isPaused={areVideosPaused}
             streamUrl={windowStreamMap[gridWindow.id]}
             onDelete={onDelete}
+            fillMode={fillMode}
+            updateFillMode={updateFillMode}
           />
         );
       }
@@ -252,6 +254,8 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
             isPaused={areVideosPaused}
             streamUrl={windowStreamMap[gridWindow.id]}
             onDelete={onDelete}
+            fillMode={fillMode}
+            updateFillMode={updateFillMode}
           />
         );
       }
@@ -260,12 +264,12 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
     },
     [
       dispatch,
-      executeOnAll,
       areVideosPaused,
       audioFocusedWindow,
       volume,
       setVolume,
       windowStreamMap,
+      areClosedCaptionsOn,
       onWindowAudioFocus,
       availableDrivers,
       hasOnlyOneStream,
@@ -305,7 +309,7 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
                     transitionStatus={transitionStatus}
                     onResize={onResize}
                   >
-                    {getLayoutChild(gridWindow)}
+                    {getLayoutChild(gridWindow, l.fillMode)}
                   </RnDWindow>
                 )}
               </Transition>
@@ -355,19 +359,21 @@ export const ViewerWithState = () => {
 
   return (
     <ViewerUIVisibilityContext.Provider value={viewerUIVisibilityState}>
-      <div
-        className={cn(styles.cursorWrapper, {
-          [GLOBAL_UI_VISIBILITY_CLASS_NAME]: viewerUIVisibilityState.isUIVisible,
-        })}
-      >
-        <Viewer
-          streams={state.streams}
-          season={state.season}
-          isLive={state.isLive}
-          raceInfo={state.raceInfo}
-          playbackOffsets={state.playbackOffsets}
-        />
-      </div>
+      <UserOffsetsProvider>
+        <div
+          className={cn(styles.cursorWrapper, {
+            [GLOBAL_UI_VISIBILITY_CLASS_NAME]: viewerUIVisibilityState.isUIVisible,
+          })}
+        >
+          <Viewer
+            streams={state.streams}
+            season={state.season}
+            isLive={state.isLive}
+            raceInfo={state.raceInfo}
+            playbackOffsets={state.playbackOffsets}
+          />
+        </div>
+      </UserOffsetsProvider>
     </ViewerUIVisibilityContext.Provider>
   );
 };
