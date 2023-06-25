@@ -16,6 +16,7 @@ import { Dropdown, DropdownSection, DropdownSectionElement } from "../../Dropdow
 import { sizePxToPercent } from "../../RnDWindow/RnDWindow.utils";
 import { LayoutDialogs } from "../LayoutDialogs/LayoutDialogs";
 import { LayoutDialogState } from "../LayoutDialogs/LayoutDialogs.types";
+import { isValidGridWindowType } from "../../../utils/isValidGridWindowType";
 import styles from "./LayoutButtons.module.scss";
 
 interface LayoutButtonsProps {
@@ -186,10 +187,6 @@ export const LayoutButtons = ({
     </div>
   );
 };
-
-function isValidGridWindowType(chosenId: string): chosenId is GridWindow["type"] {
-  return ["main", "driver-tracker", "data-channel", "driver"].includes(chosenId);
-}
 
 const getNewWindow = (chosenId: string, chosenType: ChosenValueType): GridWindow | null => {
   if (chosenType === "driver") {

@@ -41,3 +41,13 @@
     }
   }
 }
+
+.hideWhenUiHidden {
+  opacity: 0;
+  transition: var(--transition-slow);
+  transition-property: opacity;
+
+  :global(.uiVisible) & {
+    opacity: 1;
+  }
+}

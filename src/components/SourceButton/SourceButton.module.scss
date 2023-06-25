@@ -1,4 +1,4 @@
-.driverNameWrapper {
+.wrapper {
   appearance: none;
   border: none;
   top: 8px;
@@ -32,32 +32,20 @@
   }
 }
 
-.driverName {
+.label {
   color: var(--color-text-strong);
   padding: 0 8px;
   @include typography(heading, 300, display);
 }
 
-.driverImageWrapper {
+.imageWrapper {
   @include inner-border(var(--color-border-muted-alpha));
   border-radius: var(--radii-rounded);
-  background-color: var(--teamColor);
+  background-color: var(--color-background-muted-alpha);
+  color: var(--color-text-default);
   width: 28px;
   height: 28px;
-}
-
-.errorContent {
-  color: var(--color-text-default);
-  width: 100%;
-  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  text-align: center;
-  flex-direction: column;
-  @include typography(text, 300, regular);
-}
-
-.errorIconContainer {
-  color: var(--color-background-accent-strong);
 }

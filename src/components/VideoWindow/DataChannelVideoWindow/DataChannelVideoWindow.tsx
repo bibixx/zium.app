@@ -12,18 +12,36 @@ import { NoFeed } from "../NoFeed/NoFeed";
 import { FeedError } from "../FeedError/FeedError";
 import { VideoWindowButtons } from "../VideoWindowButtons/VideoWindowButtons";
 import { useReactiveUserOffsets, useUserOffsets } from "../../../hooks/useUserOffests";
+import { SourceButton } from "../../SourceButton/SourceButton";
+import { getIconForStreamInfo } from "../../../utils/getIconForStreamInfo";
+import { useStreamPicker } from "../../../hooks/useStreamPicker/useStreamPicker";
+import commonStyles from "../VideoWindow.module.scss";
 
 interface DataChannelVideoWindowProps extends VideoWindowProps {
   gridWindow: BaseGridWindow;
   onDelete: () => void;
+  onSourceChange: (streamId: string) => void;
 }
 
 export const DataChannelVideoWindow = forwardRef<PlayerAPI | null, DataChannelVideoWindowProps>(
-  ({ isPaused, streamUrl, onDelete, fillMode, updateFillMode }, forwardedRef) => {
+  ({ isPaused, streamUrl, onDelete, fillMode, updateFillMode, onSourceChange }, forwardedRef) => {
     const playerRef = useRef<PlayerAPI | null>(null);
     const streamVideoState = useStreamVideo(streamUrl);
     const { updateOffset } = useUserOffsets();
     const offsets = useReactiveUserOffsets();
+
+    const { requestStream } = useStreamPicker();
+    const onRequestSourceChange = async () => {
+      const chosenDriverData = await requestStream("all", ["data-channel"]);
+
+      if (chosenDriverData == null) {
+        return;
+      }
+
+      const [chosenStreamId] = chosenDriverData;
+
+      onSourceChange(chosenStreamId);
+    };
 
     const ref = (r: PlayerAPI | null) => {
       setRef(forwardedRef, r);
@@ -69,6 +87,14 @@ export const DataChannelVideoWindow = forwardRef<PlayerAPI | null, DataChannelVi
           fillMode={fillMode}
           onClose={onDelete}
         />
+        <div className={commonStyles.hideWhenUiHidden}>
+          <SourceButton
+            onClick={onRequestSourceChange}
+            onMouseDown={(e) => e.stopPropagation()}
+            label="Data"
+            icon={getIconForStreamInfo("data-channel", "mini")}
+          />
+        </div>
       </VideoWindowWrapper>
     );
   },

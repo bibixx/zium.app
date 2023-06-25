@@ -184,14 +184,9 @@ export const windowGridReducer = (prevState: WindowGridState, action: WindowGrid
       const indexOfReplacedWindow = prevCurrentLayout.windows.findIndex((w) => w.id === newWindow.id);
       const replacedWindow = prevCurrentLayout.windows[indexOfReplacedWindow];
 
-      if (newWindow.type !== "driver" || replacedWindow.type !== "driver") {
-        newCurrentLayout.windows.splice(indexOfReplacedWindow, 1, newWindow);
-        break;
-      }
-
       const oldWindowOfNewDriverIndex = prevCurrentLayout.windows.findIndex((w) => {
         if (w.type !== "driver" || newWindow.type !== "driver") {
-          return false;
+          return w.type === newWindow.type;
         }
 
         return w.driverId === newWindow.driverId;
@@ -219,8 +214,7 @@ export const windowGridReducer = (prevState: WindowGridState, action: WindowGrid
       const layout: GridLayout = {
         id,
         ...action.dimensions,
-        fillMode: "fit",
-        // fillMode: "fill",
+        fillMode: "fill",
         zIndex: 1,
       };
 

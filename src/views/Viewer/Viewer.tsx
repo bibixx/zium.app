@@ -29,6 +29,7 @@ import { useTrackWithTitle } from "../../hooks/useAnalytics/useAnalytics";
 import { isNotNullable } from "../../utils/isNotNullable";
 import { CookieBanner } from "../../components/CookieBanner/CookieBanner";
 import { UserOffsetsProvider } from "../../hooks/useUserOffests";
+import { isValidGridWindowType } from "../../utils/isValidGridWindowType";
 import { getWindowStreamMap, getAvailableDrivers } from "./Viewer.utils";
 import { useGrid } from "./hooks/useGrid";
 import styles from "./Viewer.module.scss";
@@ -174,6 +175,28 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
         });
       };
 
+      const onSourceChange = (streamIdentifier: string) => {
+        if (isValidGridWindowType(streamIdentifier) && streamIdentifier !== "driver") {
+          dispatch({
+            type: "updateWindow",
+            window: {
+              type: streamIdentifier,
+              id: gridWindow.id,
+            },
+          });
+          return;
+        }
+
+        dispatch({
+          type: "updateWindow",
+          window: {
+            type: "driver",
+            id: gridWindow.id,
+            driverId: streamIdentifier,
+          },
+        });
+      };
+
       if (gridWindow.type === "main") {
         return (
           <MainVideoWindow
@@ -195,23 +218,12 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
       }
 
       if (gridWindow.type === "driver") {
-        const onDriverChange = (streamIdentifier: string) => {
-          dispatch({
-            type: "updateWindow",
-            window: {
-              type: "driver",
-              id: gridWindow.id,
-              driverId: streamIdentifier,
-            },
-          });
-        };
-
         return (
           <DriverVideoWindow
             gridWindow={gridWindow}
             ref={setRef}
             availableDrivers={availableDrivers}
-            onDriverChange={onDriverChange}
+            onDriverChange={onSourceChange}
             isPaused={areVideosPaused}
             isAudioFocused={audioFocusedWindow === gridWindow.id}
             onWindowAudioFocus={() => onWindowAudioFocus(gridWindow.id)}
@@ -236,6 +248,7 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
         return (
           <DriverTrackerVideoWindow
             gridWindow={gridWindow}
+            onSourceChange={onSourceChange}
             ref={setRef}
             isPaused={areVideosPaused}
             streamUrl={windowStreamMap[gridWindow.id]}
@@ -250,6 +263,7 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
         return (
           <DataChannelVideoWindow
             gridWindow={gridWindow}
+            onSourceChange={onSourceChange}
             ref={setRef}
             isPaused={areVideosPaused}
             streamUrl={windowStreamMap[gridWindow.id]}

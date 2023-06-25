@@ -12,14 +12,19 @@ import { NoFeed } from "../NoFeed/NoFeed";
 import { FeedError } from "../FeedError/FeedError";
 import { VideoWindowButtons } from "../VideoWindowButtons/VideoWindowButtons";
 import { useReactiveUserOffsets, useUserOffsets } from "../../../hooks/useUserOffests";
+import { SourceButton } from "../../SourceButton/SourceButton";
+import { getIconForStreamInfo } from "../../../utils/getIconForStreamInfo";
+import { useStreamPicker } from "../../../hooks/useStreamPicker/useStreamPicker";
+import commonStyles from "../VideoWindow.module.scss";
 
 interface DriverTrackerVideoWindowProps extends VideoWindowProps {
   gridWindow: BaseGridWindow;
   onDelete: () => void;
+  onSourceChange: (streamId: string) => void;
 }
 
 export const DriverTrackerVideoWindow = forwardRef<PlayerAPI | null, DriverTrackerVideoWindowProps>(
-  ({ isPaused, streamUrl, onDelete, fillMode, updateFillMode }, forwardedRef) => {
+  ({ isPaused, streamUrl, onDelete, fillMode, updateFillMode, onSourceChange }, forwardedRef) => {
     const playerRef = useRef<PlayerAPI | null>(null);
     const streamVideoState = useStreamVideo(streamUrl);
     const { updateOffset } = useUserOffsets();
@@ -32,6 +37,19 @@ export const DriverTrackerVideoWindow = forwardRef<PlayerAPI | null, DriverTrack
 
     const onReady = (player: PlayerAPI) => {
       onVideoWindowReadyBase(player);
+    };
+
+    const { requestStream } = useStreamPicker();
+    const onRequestSourceChange = async () => {
+      const chosenDriverData = await requestStream("all", ["driver-tracker"]);
+
+      if (chosenDriverData == null) {
+        return;
+      }
+
+      const [chosenStreamId] = chosenDriverData;
+
+      onSourceChange(chosenStreamId);
     };
 
     if (streamVideoState.state === "loading") {
@@ -69,6 +87,14 @@ export const DriverTrackerVideoWindow = forwardRef<PlayerAPI | null, DriverTrack
           fillMode={fillMode}
           onClose={onDelete}
         />
+        <div className={commonStyles.hideWhenUiHidden}>
+          <SourceButton
+            onClick={onRequestSourceChange}
+            onMouseDown={(e) => e.stopPropagation()}
+            label="Tracker"
+            icon={getIconForStreamInfo("driver-tracker", "mini")}
+          />
+        </div>
       </VideoWindowWrapper>
     );
   },

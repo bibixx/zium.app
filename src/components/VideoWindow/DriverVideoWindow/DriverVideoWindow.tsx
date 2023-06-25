@@ -1,7 +1,7 @@
 import { forwardRef, useRef } from "react";
 import { PlayerAPI } from "bitmovin-player";
 import { useStreamVideo } from "../../../hooks/useStreamVideo/useStreamVideo";
-import { DriverGridWindow } from "../../../types/GridWindow";
+import { DriverGridWindow, GridWindowType } from "../../../types/GridWindow";
 import { VideoWindowProps } from "../../../types/VideoWindowBaseProps";
 import { onVideoWindowReadyBase } from "../../../utils/onVideoWindowReady";
 import { setRef } from "../../../utils/setRef";
@@ -13,11 +13,9 @@ import commonStyles from "../VideoWindow.module.scss";
 import { StreamVideoError } from "../../../hooks/useStreamVideo/useStreamVideo.utils";
 import { NoFeed } from "../NoFeed/NoFeed";
 import { FeedError } from "../FeedError/FeedError";
-import { DriverImage } from "../../DriverImage/DriverImage";
-import { WithVariables } from "../../WithVariables/WithVariables";
 import { useReactiveUserOffsets, useUserOffsets } from "../../../hooks/useUserOffests";
 import { VideoWindowButtons } from "../VideoWindowButtons/VideoWindowButtons";
-import styles from "./DriverVideoWindow.module.scss";
+import { SourceButton } from "../../SourceButton/SourceButton";
 
 interface DriverVideoWindowProps extends VideoWindowProps {
   gridWindow: DriverGridWindow;
@@ -137,37 +135,28 @@ const DriverPickerButton = ({ currentDriver, onDriverChange }: DriverPickerButto
   const { requestStream } = useStreamPicker();
 
   const currentDriverId = currentDriver?.id;
-  const lastName = currentDriver?.lastName.slice(0, 3) ?? (
-    <>
-      Select
-      <br />
-      source
-    </>
-  );
-  // TODO: Placeholder
-  const imageUrls = currentDriver?.imageUrls ?? [];
+  const lastName = currentDriver?.lastName.slice(0, 3) ?? "Select source";
+  const imageUrls = currentDriver?.imageUrls;
 
   const onClick = async () => {
-    const chosenDriverData = await requestStream("drivers", currentDriverId === undefined ? [] : [currentDriverId]);
+    const chosenDriverData = await requestStream("all", currentDriverId === undefined ? [] : [currentDriverId]);
 
     if (chosenDriverData == null) {
       return;
     }
 
-    const [chosenDriverId, chosenType] = chosenDriverData;
-    if (chosenType !== "driver") {
-      return;
-    }
-
+    const [chosenDriverId] = chosenDriverData;
     onDriverChange(chosenDriverId);
   };
 
   return (
-    <button className={styles.driverNameWrapper} onClick={onClick} onMouseDown={(e) => e.stopPropagation()}>
-      <WithVariables className={styles.driverImageWrapper} variables={{ teamColor: currentDriver?.color }}>
-        <DriverImage srcList={imageUrls} />
-      </WithVariables>
-      <div className={styles.driverName}>{lastName}</div>
-    </button>
+    <SourceButton
+      onClick={onClick}
+      onMouseDown={(e) => e.stopPropagation()}
+      label={lastName}
+      srcList={imageUrls}
+      showPlaceholder={imageUrls === undefined}
+      color={currentDriver?.color}
+    />
   );
 };

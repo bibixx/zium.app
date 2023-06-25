@@ -1,7 +1,6 @@
 import { useCallback, useMemo, useRef, useState } from "react";
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 import { Key } from "ts-key-enum";
-import { ChartBarIcon, MapIcon, TvIcon } from "@heroicons/react/24/outline";
 import { useStreamPicker } from "../../hooks/useStreamPicker/useStreamPicker";
 import { DriverData } from "../../views/Viewer/Viewer.utils";
 import { Input } from "../Input/Input";
@@ -14,6 +13,7 @@ import { StreamInfo } from "../../hooks/useVideoRaceDetails/useVideoRaceDetails.
 import { isNotNullable } from "../../utils/isNotNullable";
 import { useHotkeysStack } from "../../hooks/useHotkeysStack/useHotkeysStack";
 import { useLaggedBehindData } from "../../hooks/useLaggedBehindData/useLaggedBehindData";
+import { getIconForStreamInfo } from "../../utils/getIconForStreamInfo";
 import styles from "./StreamPicker.module.scss";
 import { StreamPickerEntry } from "./StreamPicker.types";
 
@@ -29,13 +29,19 @@ export const StreamPicker = ({ availableDrivers, globalFeeds }: StreamPickerProp
   const listItemsRefs = useRef<(HTMLElement | null)[]>([]);
 
   const streamPickerEntries: StreamPickerEntry[] = useMemo(() => {
-    const globalEntries = globalFeeds.filter(isNotNullable).map(
-      (streamInfo): StreamPickerEntry => ({
-        id: streamInfo.type,
-        type: "global",
-        streamInfo,
-      }),
-    );
+    const globalEntries = globalFeeds
+      .filter(isNotNullable)
+      .map((streamInfo): StreamPickerEntry | null => {
+        if (streamInfo.type === "main") {
+          return null;
+        }
+        return {
+          id: streamInfo.type,
+          type: "global",
+          streamInfo,
+        };
+      })
+      .filter(isNotNullable);
 
     const driverEntries = availableDrivers.map(
       (driver): StreamPickerEntry => ({
@@ -183,7 +189,7 @@ export const StreamPicker = ({ availableDrivers, globalFeeds }: StreamPickerProp
                     listItemsRefs.current[i] = ref;
                   }}
                 >
-                  <VideoFeedContent label={stream.title} icon={getIconForStreamInfo(stream)} />
+                  <VideoFeedContent label={stream.title} icon={getIconForStreamInfo(stream.type, "outline")} />
                 </ListItem>
               );
             }
@@ -211,18 +217,3 @@ function loopSelection(n: number, max: number) {
 
   return n;
 }
-
-const getIconForStreamInfo = (streamInfo: StreamInfo) => {
-  switch (streamInfo.type) {
-    case "main":
-      return TvIcon;
-    case "data-channel":
-      return ChartBarIcon;
-    case "driver-tracker":
-      return MapIcon;
-    case "other":
-      return TvIcon;
-  }
-
-  return assertNever(streamInfo.type);
-};
