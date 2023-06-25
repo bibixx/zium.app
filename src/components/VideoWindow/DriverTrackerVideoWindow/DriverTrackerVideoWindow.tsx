@@ -15,7 +15,6 @@ import { useReactiveUserOffsets, useUserOffsets } from "../../../hooks/useUserOf
 import { SourceButton } from "../../SourceButton/SourceButton";
 import { getIconForStreamInfo } from "../../../utils/getIconForStreamInfo";
 import { useStreamPicker } from "../../../hooks/useStreamPicker/useStreamPicker";
-import commonStyles from "../VideoWindow.module.scss";
 
 interface DriverTrackerVideoWindowProps extends VideoWindowProps {
   gridWindow: BaseGridWindow;
@@ -87,14 +86,14 @@ export const DriverTrackerVideoWindow = forwardRef<PlayerAPI | null, DriverTrack
           fillMode={fillMode}
           onClose={onDelete}
         />
-        <div className={commonStyles.hideWhenUiHidden}>
-          <SourceButton
-            onClick={onRequestSourceChange}
-            onMouseDown={(e) => e.stopPropagation()}
-            label="Tracker"
-            icon={getIconForStreamInfo("driver-tracker", "mini")}
-          />
-        </div>
+
+        <SourceButton
+          onClick={onRequestSourceChange}
+          onMouseDown={(e) => e.stopPropagation()}
+          label="Tracker"
+          icon={getIconForStreamInfo("driver-tracker", "mini")}
+          hideWhenUiHidden
+        />
       </VideoWindowWrapper>
     );
   },

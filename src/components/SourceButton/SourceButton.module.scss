@@ -14,9 +14,17 @@
   @include inner-border(var(--color-border-muted-alpha));
   position: absolute;
 
-  transition: var(--transition-fast);
-  transition-property: transform, background, box-shadow;
+  transition: var(--transition-fast) transform, var(--transition-fast) background, var(--transition-fast) box-shadow,
+    var(--transition-slow) opacity;
   outline-offset: 1px;
+
+  &.hideWhenUiHidden {
+    opacity: 0;
+
+    :global(.uiVisible) & {
+      opacity: 1;
+    }
+  }
 
   &:hover {
     transform: scale(1.0333);

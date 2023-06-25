@@ -1,5 +1,6 @@
 import { MouseEventHandler, ReactNode } from "react";
 import { SquaresPlusIcon } from "@heroicons/react/24/outline";
+import classNames from "classnames";
 import { IconComponent } from "../../types/Icon";
 import { DriverImage } from "../DriverImage/DriverImage";
 import styles from "./SourceButton.module.scss";
@@ -10,6 +11,7 @@ interface SourceButtonProps {
   srcList?: string[];
   icon?: IconComponent | null;
   showPlaceholder?: boolean;
+  hideWhenUiHidden?: boolean;
   onClick: MouseEventHandler;
   onMouseDown?: MouseEventHandler;
 }
@@ -22,9 +24,14 @@ export const SourceButton = ({
   showPlaceholder,
   onClick,
   onMouseDown,
+  hideWhenUiHidden,
 }: SourceButtonProps) => {
   return (
-    <button className={styles.wrapper} onClick={onClick} onMouseDown={onMouseDown}>
+    <button
+      className={classNames(styles.wrapper, { [styles.hideWhenUiHidden]: hideWhenUiHidden })}
+      onClick={onClick}
+      onMouseDown={onMouseDown}
+    >
       {srcList && (
         <div className={styles.imageWrapper} style={{ backgroundColor: color }}>
           <DriverImage srcList={srcList} />

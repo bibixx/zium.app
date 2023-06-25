@@ -1,9 +1,7 @@
-import { XMarkIcon } from "@heroicons/react/24/outline";
 import { EyeSlashIcon } from "@heroicons/react/20/solid";
 import { ReactNode } from "react";
 import { VideoWindowWrapper } from "../VideoWindowWrapper/VideoWindowWrapper";
-import closeButtonStyles from "../VideoWindow.module.scss";
-import { Button } from "../../Button/Button";
+import { VideoWindowButtons } from "../VideoWindowButtons/VideoWindowButtons";
 import styles from "./NoFeed.module.scss";
 
 interface NoFeedProps {
@@ -12,16 +10,12 @@ interface NoFeedProps {
 }
 export const NoFeed = ({ children, onDelete }: NoFeedProps) => {
   return (
-    <VideoWindowWrapper className={closeButtonStyles.bitmovinWrapper}>
+    <VideoWindowWrapper>
       <div className={styles.noFeedIconWrapper}>
         <EyeSlashIcon height={36} width={36} />
       </div>
       {children}
-      {onDelete && (
-        <div className={closeButtonStyles.closeButtonWrapper}>
-          <Button variant="SecondaryInverted" onClick={onDelete} iconLeft={XMarkIcon} />
-        </div>
-      )}
+      <VideoWindowButtons onClose={onDelete} />
     </VideoWindowWrapper>
   );
 };

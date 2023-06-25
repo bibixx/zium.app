@@ -1,7 +1,7 @@
 import { forwardRef, useRef } from "react";
 import { PlayerAPI } from "bitmovin-player";
 import { useStreamVideo } from "../../../hooks/useStreamVideo/useStreamVideo";
-import { DriverGridWindow, GridWindowType } from "../../../types/GridWindow";
+import { DriverGridWindow } from "../../../types/GridWindow";
 import { VideoWindowProps } from "../../../types/VideoWindowBaseProps";
 import { onVideoWindowReadyBase } from "../../../utils/onVideoWindowReady";
 import { setRef } from "../../../utils/setRef";
@@ -9,7 +9,6 @@ import { AdditionalVideoJSOptions, VideoJS } from "../../VideoJS/VideoJS";
 import { VideoWindowWrapper } from "../VideoWindowWrapper/VideoWindowWrapper";
 import { DriverData } from "../../../views/Viewer/Viewer.utils";
 import { useStreamPicker } from "../../../hooks/useStreamPicker/useStreamPicker";
-import commonStyles from "../VideoWindow.module.scss";
 import { StreamVideoError } from "../../../hooks/useStreamVideo/useStreamVideo.utils";
 import { NoFeed } from "../NoFeed/NoFeed";
 import { FeedError } from "../FeedError/FeedError";
@@ -92,7 +91,7 @@ export const DriverVideoWindow = forwardRef<PlayerAPI | null, DriverVideoWindowP
     }
 
     return (
-      <VideoWindowWrapper className={commonStyles.bitmovinWrapper}>
+      <VideoWindowWrapper>
         <VideoJS
           videoStreamInfo={streamVideoState.data}
           options={ADDITIONAL_OPTIONS}

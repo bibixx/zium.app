@@ -15,7 +15,6 @@ import { useReactiveUserOffsets, useUserOffsets } from "../../../hooks/useUserOf
 import { SourceButton } from "../../SourceButton/SourceButton";
 import { getIconForStreamInfo } from "../../../utils/getIconForStreamInfo";
 import { useStreamPicker } from "../../../hooks/useStreamPicker/useStreamPicker";
-import commonStyles from "../VideoWindow.module.scss";
 
 interface DataChannelVideoWindowProps extends VideoWindowProps {
   gridWindow: BaseGridWindow;
@@ -87,14 +86,13 @@ export const DataChannelVideoWindow = forwardRef<PlayerAPI | null, DataChannelVi
           fillMode={fillMode}
           onClose={onDelete}
         />
-        <div className={commonStyles.hideWhenUiHidden}>
-          <SourceButton
-            onClick={onRequestSourceChange}
-            onMouseDown={(e) => e.stopPropagation()}
-            label="Data"
-            icon={getIconForStreamInfo("data-channel", "mini")}
-          />
-        </div>
+        <SourceButton
+          onClick={onRequestSourceChange}
+          onMouseDown={(e) => e.stopPropagation()}
+          label="Data"
+          icon={getIconForStreamInfo("data-channel", "mini")}
+          hideWhenUiHidden
+        />
       </VideoWindowWrapper>
     );
   },
