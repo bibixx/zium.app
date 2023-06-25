@@ -14,10 +14,9 @@
 .heroImage {
   width: 100%;
   height: 100%;
-  opacity: 0.5;
+  opacity: 0.75;
   transition: var(--transition-medium);
-  transition-property: opacity, filter, transform;
-  filter: grayscale(1);
+  transition-property: opacity, transform;
   object-fit: cover;
   transform: scale(1);
   aspect-ratio: 33 / 16;
@@ -99,7 +98,6 @@
 
     .heroImage {
       opacity: 1;
-      filter: grayscale(0);
       transform: scale(1.05);
     }
 
