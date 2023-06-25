@@ -1,4 +1,4 @@
-import { MutableRefObject, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { MutableRefObject, useCallback, useEffect, useRef, useState } from "react";
 
 export const SPRING_CONSTANT = 100;
 interface UseSnackbarDragArguments {
@@ -101,8 +101,8 @@ export const useSnackbarDrag = ({ elementRef, onDragStart, onDragEnd }: UseSnack
 };
 
 export const useSnackbarTime = (totalTime: number, isPaused: boolean, onClose: () => void) => {
-  const [timeProgress, setTimeProgress] = useState(0);
   const timeProgressRef = useRef(0);
+  const timeIndicatorRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     let start: number | undefined = undefined;
@@ -115,10 +115,11 @@ export const useSnackbarTime = (totalTime: number, isPaused: boolean, onClose: (
       }
 
       if (!isPaused && previousTimeStamp !== undefined && previousTimeStamp !== timeStamp) {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const diff = timeStamp - previousTimeStamp!;
-        setTimeProgress((p) => p + diff);
+        const diff = timeStamp - previousTimeStamp;
         timeProgressRef.current += diff;
+
+        const progress = 1 - timeProgressRef.current / totalTime;
+        timeIndicatorRef.current?.style.setProperty("--progress", String(progress));
       }
 
       if (done) {
@@ -140,8 +141,7 @@ export const useSnackbarTime = (totalTime: number, isPaused: boolean, onClose: (
     };
   }, [isPaused, onClose, totalTime]);
 
-  const progress = useMemo(() => 1 - timeProgress / totalTime, [timeProgress, totalTime]);
-  return progress;
+  return timeIndicatorRef;
 };
 
 export const useSnackbarHeight = (

@@ -87,12 +87,12 @@ interface TimeIndicatorProps {
   onClose: () => void;
 }
 const TimeIndicator = ({ isPaused, onClose, time }: TimeIndicatorProps) => {
-  const progress = useSnackbarTime(time, isPaused, onClose);
+  const timeIndicatorRef = useSnackbarTime(time, isPaused, onClose);
 
   return (
     <div className={styles.timeIndicatorWrapper}>
       <div className={styles.timeIndicatorTrack}>
-        <WithVariables className={styles.timeIndicator} variables={{ progress }} />
+        <div className={styles.timeIndicator} ref={timeIndicatorRef} />
       </div>
     </div>
   );
