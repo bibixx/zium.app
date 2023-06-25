@@ -22,40 +22,28 @@ export const useGlobalShortcuts = (player: PlayerAPI | null) => {
     }
   }, [player]);
 
-  const onSkipAhead = useCallback(() => {
-    player?.seek(player.getCurrentTime() + 30);
-  }, [player]);
-
-  const onSkipBackwards = useCallback(() => {
-    player?.seek(player.getCurrentTime() - 30);
-  }, [player]);
-
-  const onSmallSkipAhead = useCallback(
+  const onSkipAhead = useCallback(
     (e: KeyboardEvent) => {
       const meta = isWindows ? e.ctrlKey : e.metaKey;
+      const timeDiff = meta ? 1 : 30;
 
-      if (!meta) {
-        player?.seek(player.getCurrentTime() + 1);
-      }
+      player?.seek(player.getCurrentTime() + timeDiff);
     },
     [player],
   );
 
-  const onSmallSkipBackwards = useCallback(
+  const onSkipBackwards = useCallback(
     (e: KeyboardEvent) => {
       const meta = isWindows ? e.ctrlKey : e.metaKey;
+      const timeDiff = meta ? 1 : 30;
 
-      if (meta) {
-        player?.seek(player.getCurrentTime() - 1);
-      }
+      player?.seek(player.getCurrentTime() - timeDiff);
     },
     [player],
   );
 
   const scope = useHotkeysStack(true, true, "Global");
   useScopedHotkeys("space", scope, onPlayClick);
-  useScopedHotkeys(Key.ArrowRight, scope, onSkipAhead);
-  useScopedHotkeys(Key.ArrowLeft, scope, onSkipBackwards);
-  useScopedHotkeys(".", scope, onSmallSkipBackwards, { ignoreModifiers: true });
-  useScopedHotkeys(".", scope, onSmallSkipAhead, { ignoreModifiers: true });
+  useScopedHotkeys(Key.ArrowRight, scope, onSkipAhead, { ignoreModifiers: true, preventDefault: true });
+  useScopedHotkeys(Key.ArrowLeft, scope, onSkipBackwards, { ignoreModifiers: true, preventDefault: true });
 };
