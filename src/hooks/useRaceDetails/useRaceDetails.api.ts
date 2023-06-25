@@ -1,5 +1,5 @@
 import { isValid } from "date-fns";
-import { EventGenre, EVENT_GENRES } from "../../constants/races";
+import { EventGenre, EVENT_GENRES, isRaceGenre } from "../../constants/races";
 import { fetchJSON } from "../../utils/api";
 import { uniqueById } from "../../utils/uniqueById";
 import { RaceDetailsData } from "./useRacesDetails.types";
@@ -71,6 +71,8 @@ const getDates = (event: any) => {
 const mapEventToRaceDetailsData = (event: any, isReplay: boolean): RaceDetailsData => {
   const { startDate, endDate } = getDates(event);
 
+  const rawGenre = event.metadata.genres[0]?.toLowerCase() as EventGenre;
+
   return {
     title: event.metadata.titleBrief,
     id: event.metadata.contentId,
@@ -85,9 +87,6 @@ const mapEventToRaceDetailsData = (event: any, isReplay: boolean): RaceDetailsDa
     endDate,
     roundNumber: +event.metadata.emfAttributes.Meeting_Number,
     isSingleEvent: false,
-    genre:
-      event.metadata.contentSubtype !== "REPLAY" && event.metadata.contentSubtype !== "LIVE_EVENT"
-        ? "show"
-        : (event.metadata.genres[0]?.toLowerCase() as EventGenre),
+    genre: !isRaceGenre(rawGenre) || event.metadata.emfAttributes.ContentCategory === "EPISODIC" ? "show" : rawGenre,
   };
 };
