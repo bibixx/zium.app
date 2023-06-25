@@ -110,7 +110,7 @@
 
   &.secondaryInverted {
     @include inner-border(var(--color-border-muted-alpha));
-    background: var(--color-background-default-inverted-alpha);
+    background: var(--color-core-neutral-darken-400);
     color: var(--color-text-strong);
 
     .iconWrapper {
@@ -120,7 +120,7 @@
     &:active,
     &.isPressed,
     &.isPressed:hover {
-      background: var(--color-background-muted-inverted-alpha);
+      background: var(--color-core-neutral-darken-500);
       color: var(--color-text-strong);
 
       .iconWrapper {
@@ -129,7 +129,7 @@
     }
 
     &:active {
-      background: var(--color-background-strong-inverted-alpha);
+      background: var(--color-core-neutral-darken-300);
       color: var(--color-text-strong);
 
       .iconWrapper {
