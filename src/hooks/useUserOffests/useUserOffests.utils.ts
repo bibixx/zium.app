@@ -1,9 +1,9 @@
 import { UserOffsets } from "./useUserOffests";
 import { localStorageOffsetsValidator } from "./useUserOffests.validator";
 
-const OFFSETS_LOCAL_STORAGE_KEY_SUFFIX = "_offsets";
+const OFFSETS_LOCAL_STORAGE_KEY_PREFIX = "offsets_";
 
-const getStorageKey = (raceId: string) => `${raceId}${OFFSETS_LOCAL_STORAGE_KEY_SUFFIX}`;
+const getStorageKey = (raceId: string) => `${OFFSETS_LOCAL_STORAGE_KEY_PREFIX}${raceId}`;
 
 export const getInitialOffsets = (raceId: string | undefined) => {
   if (raceId == null) {
