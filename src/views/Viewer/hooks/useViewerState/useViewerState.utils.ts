@@ -3,10 +3,11 @@ import { Dimensions } from "../../../../types/Dimensions";
 import { generateUID } from "../../../../utils/generateUID";
 import { assertNever } from "../../../../utils/assertNever";
 import { clone } from "../../../../utils/clone";
+import { localStorageViewerStateValidator } from "./useViewerState.validator";
 
 export type GridLayoutFillMode = "fit" | "fill";
 
-interface GridLayout {
+export interface GridLayout {
   width: number;
   height: number;
   x: number;
@@ -94,14 +95,12 @@ type WindowGridActions =
   | DuplicateLayoutAction
   | DeleteLayoutAction;
 
-export const CURRENT_STORE_VERSION = "3";
 const withLocalStorage =
   (reducer: (prevState: WindowGridState, action: WindowGridActions) => WindowGridState) =>
   (prevState: WindowGridState, action: WindowGridActions) => {
     const newState = reducer(prevState, action);
 
     localStorage.setItem("store", JSON.stringify(newState));
-    localStorage.setItem("storeVersion", CURRENT_STORE_VERSION);
 
     return newState;
   };
@@ -273,17 +272,19 @@ export const windowGridReducerWithStorage = withLocalStorage(windowGridReducer);
 
 export const getInitialState = (): WindowGridState => {
   const layoutFromStorage = localStorage.getItem("store") as string | null;
-  const storeVersion = localStorage.getItem("storeVersion") as string | null;
 
-  if (layoutFromStorage != null && storeVersion === CURRENT_STORE_VERSION) {
-    return JSON.parse(layoutFromStorage);
+  if (layoutFromStorage != null) {
+    const data = safeJSONParse(layoutFromStorage);
+    const parsedData = localStorageViewerStateValidator.safeParse(data);
+
+    if (parsedData.success) {
+      localStorage.setItem("store", JSON.stringify(parsedData.data));
+
+      return parsedData.data;
+    }
   }
 
-  if (storeVersion !== CURRENT_STORE_VERSION) {
-    localStorage.removeItem("store");
-    localStorage.removeItem("storeVersion");
-  }
-
+  localStorage.removeItem("store");
   const windows: GridWindow[] = [
     {
       type: "main",
@@ -353,3 +354,11 @@ const getInitialLayout = (windows: GridWindow[]): GridLayout[] => {
     };
   });
 };
+
+function safeJSONParse(data: string): unknown | null {
+  try {
+    return JSON.parse(data);
+  } catch (error) {
+    return null;
+  }
+}
