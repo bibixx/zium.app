@@ -1,6 +1,6 @@
 import { forwardRef, useRef } from "react";
 import { PlayerAPI } from "bitmovin-player";
-import { SpeakerWaveIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { SpeakerWaveIcon, XMarkIcon } from "@heroicons/react/20/solid";
 import cn from "classnames";
 import { useStreamVideo } from "../../../hooks/useStreamVideo/useStreamVideo";
 import { DriverGridWindow } from "../../../types/GridWindow";
