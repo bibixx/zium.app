@@ -114,27 +114,21 @@
     color: var(--color-text-strong);
 
     .iconWrapper {
-      color: var(--color-text-default);
+      color: var(--color-text-strong);
+    }
+
+    &:hover {
+      background: var(--color-core-neutral-darken-500);
     }
 
     &:active,
     &.isPressed,
     &.isPressed:hover {
       background: var(--color-core-neutral-darken-500);
-      color: var(--color-text-strong);
-
-      .iconWrapper {
-        color: var(--color-text-strong);
-      }
     }
 
     &:active {
       background: var(--color-core-neutral-darken-300);
-      color: var(--color-text-strong);
-
-      .iconWrapper {
-        color: var(--color-text-default);
-      }
     }
 
     &.disabled {
