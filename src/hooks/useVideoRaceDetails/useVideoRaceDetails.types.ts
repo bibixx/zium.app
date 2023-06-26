@@ -65,8 +65,6 @@ export interface DriverStreamInfo extends BaseStreamInfo {
 export type StreamInfoWithDriver = StreamInfo | DriverStreamInfo;
 
 export interface BaseStreamDataDTO {
-  racingNumber: number;
-  teamName: string;
   type: string;
   playbackUrl: string;
   channelId: number;
@@ -75,7 +73,9 @@ export interface BaseStreamDataDTO {
   default: boolean;
 }
 
-interface DriverStreamDataDTO extends BaseStreamDataDTO {
+export interface DriverStreamDataDTO extends BaseStreamDataDTO {
+  teamName: string;
+  racingNumber: number;
   identifier: "OBC";
   driverImg: string;
   teamImg: string;
@@ -85,7 +85,7 @@ interface DriverStreamDataDTO extends BaseStreamDataDTO {
   hex: string;
 }
 interface OtherStreamDataDTO extends BaseStreamDataDTO {
-  identifier: "PRES" | "WIF" | "TRACKER" | "DATA";
+  identifier: string;
 }
 export type StreamDataDTO = DriverStreamDataDTO | OtherStreamDataDTO;
 

@@ -1,17 +1,31 @@
-export const RACE_GENRES = ["race", "qualifying", "practice", "sprint qualifying", "sprint race", "sprint"] as const;
-export const EVENT_GENRES = [
-  ...RACE_GENRES,
-  "post-race show",
-  "pre-race show",
-  "weekend warm-up",
-  "post-qualifying show",
-  "pre-qualifying show",
-  "post-sprint show",
-  "pre-sprint show",
-  "show",
+import { z } from "zod";
+
+const raceGenresValidatorLiterals = [
+  z.literal("race"),
+  z.literal("qualifying"),
+  z.literal("practice"),
+  z.literal("sprint qualifying"),
+  z.literal("sprint race"),
+  z.literal("sprint"),
 ] as const;
 
-export type EventGenre = (typeof EVENT_GENRES)[number];
-export type RaceGenre = (typeof RACE_GENRES)[number];
+const raceGenresValidator = z.preprocess((val) => String(val).toLowerCase(), z.union(raceGenresValidatorLiterals));
+export const eventGenresValidator = z.preprocess(
+  (val) => String(val).toLowerCase(),
+  z.union([
+    ...raceGenresValidatorLiterals,
+    z.literal("post-race show"),
+    z.literal("pre-race show"),
+    z.literal("weekend warm-up"),
+    z.literal("post-qualifying show"),
+    z.literal("pre-qualifying show"),
+    z.literal("post-sprint show"),
+    z.literal("pre-sprint show"),
+    z.literal("show"),
+  ]),
+);
 
-export const isRaceGenre = (genre: string) => (RACE_GENRES as readonly string[]).includes(genre);
+export type RaceGenre = z.output<typeof raceGenresValidator>;
+export type EventGenre = z.output<typeof eventGenresValidator>;
+
+export const isRaceGenre = (genre: string) => raceGenresValidator.safeParse(genre).success;

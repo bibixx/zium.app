@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { eventGenresValidator } from "../../constants/races";
 
 export const videoRaceStreamsRootBodyValidator = z.object({
   resultObj: z.object({
@@ -6,30 +7,7 @@ export const videoRaceStreamsRootBodyValidator = z.object({
   }),
 });
 
-// TODO: Have shared genres validator
-const eventGenresUnionValidator = z.preprocess(
-  (val) => String(val).toLowerCase(),
-  z.union([
-    z.literal("race"),
-    z.literal("qualifying"),
-    z.literal("practice"),
-    z.literal("sprint qualifying"),
-    z.literal("sprint race"),
-    z.literal("sprint"),
-    z.literal("post-race show"),
-    z.literal("pre-race show"),
-    z.literal("weekend warm-up"),
-    z.literal("post-qualifying show"),
-    z.literal("pre-qualifying show"),
-    z.literal("post-sprint show"),
-    z.literal("pre-sprint show"),
-    z.literal("show"),
-  ]),
-);
-
 export const baseStreamDataValidator = z.object({
-  racingNumber: z.number(),
-  teamName: z.string(),
   type: z.string(),
   playbackUrl: z.string(),
   channelId: z.number(),
@@ -37,10 +15,11 @@ export const baseStreamDataValidator = z.object({
   reportingName: z.string(),
   default: z.boolean(),
 });
-export const streamDataValidator = z.discriminatedUnion("identifier", [
+export const streamDataValidator = z.union([
   baseStreamDataValidator.extend({
     identifier: z.literal("OBC"),
-
+    racingNumber: z.number(),
+    teamName: z.string(),
     driverImg: z.string(),
     teamImg: z.string(),
     driverFirstName: z.string(),
@@ -48,18 +27,8 @@ export const streamDataValidator = z.discriminatedUnion("identifier", [
     constructorName: z.string(),
     hex: z.string(),
   }),
-  // TODO: figure out how to make it z.string()
   baseStreamDataValidator.extend({
-    identifier: z.literal("PRES"),
-  }),
-  baseStreamDataValidator.extend({
-    identifier: z.literal("WIF"),
-  }),
-  baseStreamDataValidator.extend({
-    identifier: z.literal("TRACKER"),
-  }),
-  baseStreamDataValidator.extend({
-    identifier: z.literal("DATA"),
+    identifier: z.string(),
   }),
 ]);
 
@@ -76,7 +45,7 @@ export const videoRaceStreamsContainerValidator = z.object({
     contentSubtype: z.string(),
     titleBrief: z.string(),
     meetingKey: z.string(),
-    genres: eventGenresUnionValidator.array(),
+    genres: eventGenresValidator.array(),
     additionalStreams: z.unknown().array().optional(),
     emfAttributes: z.object({
       Meeting_Country_Name: z.string(),

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { eventGenresValidator } from "../../constants/races";
 
 export const bodyRootValidator = z.object({
   resultObj: z.object({
@@ -23,26 +24,6 @@ export const scheduledContainerValidator = z.object({
   events: z.unknown().array(),
 });
 
-const eventGenresUnionValidator = z.preprocess(
-  (val) => String(val).toLowerCase(),
-  z.union([
-    z.literal("race"),
-    z.literal("qualifying"),
-    z.literal("practice"),
-    z.literal("sprint qualifying"),
-    z.literal("sprint race"),
-    z.literal("sprint"),
-    z.literal("post-race show"),
-    z.literal("pre-race show"),
-    z.literal("weekend warm-up"),
-    z.literal("post-qualifying show"),
-    z.literal("pre-qualifying show"),
-    z.literal("post-sprint show"),
-    z.literal("pre-sprint show"),
-    z.literal("show"),
-  ]),
-);
-
 export const eventValidator = z.object({
   id: z.string(),
   metadata: z.object({
@@ -50,7 +31,7 @@ export const eventValidator = z.object({
     contentId: z.number(),
     pictureUrl: z.string(),
     contentSubtype: z.string(),
-    genres: eventGenresUnionValidator.array(),
+    genres: eventGenresValidator.array(),
     emfAttributes: z.object({
       Series: z.string(),
       Global_Title: z.string(),

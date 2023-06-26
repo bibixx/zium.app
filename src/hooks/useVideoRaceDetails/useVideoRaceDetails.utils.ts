@@ -1,5 +1,6 @@
 import {
   BaseStreamInfo,
+  DriverStreamDataDTO,
   DriverStreamInfo,
   F1PlaybackOffsetsApiResponse,
   F1PlaybackOffsetsData,
@@ -107,7 +108,7 @@ export const collectStreams = (streams: StreamDataDTO[] | undefined, season: num
       continue;
     }
 
-    if (stream.identifier === "OBC") {
+    if (isDriverStream(stream, streamType)) {
       const driverStreamInfo: DriverStreamInfo = {
         ...baseStreamInfo,
         type: "driver",
@@ -168,3 +169,7 @@ export const createF1OffsetsMap = (
 
   return data;
 };
+
+function isDriverStream(stream: StreamDataDTO, streamType: string): stream is DriverStreamDataDTO {
+  return streamType === "driver";
+}
