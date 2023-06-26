@@ -40,6 +40,7 @@ import { useViewerState } from "./hooks/useViewerState/useViewerState";
 import { useGlobalShortcuts } from "./hooks/useGlobalShortcuts";
 import { useCmdTutorial } from "./hooks/useCmdTutorial";
 import { GridLayoutFillMode } from "./hooks/useViewerState/useViewerState.utils";
+import { useZiumOffsets } from "./hooks/useZiumOffsets/useZiumOffsets";
 
 interface ViewerProps {
   streams: StreamsStateData;
@@ -47,15 +48,18 @@ interface ViewerProps {
   isLive: boolean;
   raceInfo: RaceInfo;
   playbackOffsets: PlaybackOffsets;
+  raceId: string;
 }
 
-export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets }: ViewerProps) => {
+export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets, raceId }: ViewerProps) => {
   const { baseGrid, grid } = useGrid();
   const [viewerState, dispatch] = useViewerState();
   const { layout, windows } = useMemo(
     () => viewerState.savedLayouts[viewerState.currentLayoutIndex],
     [viewerState.currentLayoutIndex, viewerState.savedLayouts],
   );
+
+  useZiumOffsets(raceId);
 
   const [areVideosPaused, setAreVideosPaused] = useState(false);
   const [areClosedCaptionsOn, setAreClosedCaptionsOn] = useState(false);
@@ -363,6 +367,10 @@ export const ViewerWithState = () => {
   const state = useVideoRaceDetails(raceId as string);
   const viewerUIVisibilityState = useViewerUIVisibilityState();
 
+  if (raceId == null) {
+    return <FullScreenError error={null} />;
+  }
+
   if (state.state === "error") {
     return <FullScreenError error={state.error} />;
   }
@@ -385,6 +393,7 @@ export const ViewerWithState = () => {
             isLive={state.isLive}
             raceInfo={state.raceInfo}
             playbackOffsets={state.playbackOffsets}
+            raceId={raceId}
           />
         </div>
       </UserOffsetsProvider>

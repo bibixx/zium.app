@@ -111,6 +111,7 @@ export const SnackbarsProvider = ({ children }: SnackbarsProviderProps) => {
                 ref={(ref) => {
                   snackbar.nodeRef.current = ref ?? undefined;
                 }}
+                time={snackbar.time}
                 offsetY={getPreviousHeights(reversedSnackbars, i, snackbarHeights) + i * 8}
                 onHeightChange={(height) => {
                   setSnackbarHeights((heights) => ({
