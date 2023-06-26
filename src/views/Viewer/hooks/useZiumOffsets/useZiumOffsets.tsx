@@ -7,7 +7,7 @@ import { useAnalytics } from "../../../../hooks/useAnalytics/useAnalytics";
 import { fetchZiumOffsets } from "./useZiumOffsets.api";
 import styles from "./useZiumOffsets.module.scss";
 
-export const useZiumOffsets = (raceId: string) => {
+export const useZiumOffsets = (raceId: string, hasOnlyOneStream: boolean) => {
   const lastFoundOffsetTimestampRef = useRef<number>(0);
   const isFirstSuccessfulFetchRef = useRef(true);
   const { openSnackbar, closeSnackbar } = useSnackbars();
@@ -65,6 +65,10 @@ export const useZiumOffsets = (raceId: string) => {
   );
 
   useEffect(() => {
+    if (hasOnlyOneStream) {
+      return;
+    }
+
     const abortController = new AbortController();
     fetchData(abortController.signal);
 
@@ -76,5 +80,5 @@ export const useZiumOffsets = (raceId: string) => {
       clearInterval(interval);
       abortController.abort();
     };
-  }, [fetchData]);
+  }, [fetchData, hasOnlyOneStream]);
 };

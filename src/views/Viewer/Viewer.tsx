@@ -59,8 +59,6 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
     [viewerState.currentLayoutIndex, viewerState.savedLayouts],
   );
 
-  useZiumOffsets(raceId);
-
   const [areVideosPaused, setAreVideosPaused] = useState(false);
   const [areClosedCaptionsOn, setAreClosedCaptionsOn] = useState(false);
   const { audioFocusedWindow, onWindowAudioFocus, setVolume, volume, internalVolume, setIsMuted, isMuted } =
@@ -157,6 +155,8 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
 
     return allStreams.length === 1;
   }, [streams]);
+
+  useZiumOffsets(raceId, hasOnlyOneStream);
 
   const getLayoutChild = useCallback(
     (gridWindow: GridWindow, fillMode: GridLayoutFillMode) => {
