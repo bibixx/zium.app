@@ -181,8 +181,8 @@ You should have received a copy of the GNU General Public License along with ziu
 <!-- CONTACT -->
 ## Contact
 
-* Bartosz Legięć - [@bibix1999](https://twitter.com/bibix1999)
-* Adam Ruthendorf-Przewoski - [@AdamPrzewoski](https://twitter.com/AdamPrzewoski)
+* Bartek Legięć — [@bibix1999](https://twitter.com/bibix1999)
+* Adam Ruthendorf-Przewoski — [@AdamPrzewoski](https://twitter.com/AdamPrzewoski)
 
 Project Link: [https://github.com/bibixx/zium.app](https://github.com/bibixx/zium.app)
 
