@@ -26,8 +26,12 @@ export const useAnalytics = () => {
   const setUserId = useCallback((...args: Parameters<PiwikSetUserId>) => piwik?.setUserId(...args), [piwik]);
 
   const trackError = useCallback(
-    (e: Error, eventName?: string) => {
-      push(["trackEvent", eventName ?? "JavaScript Error", e.message, e.stack]);
+    (e: Error | unknown, eventName?: string) => {
+      if (e instanceof Error) {
+        push(["trackEvent", eventName ?? "JavaScript Error", e.message, e.stack]);
+      } else {
+        push(["trackEvent", eventName ?? "JavaScript Error", e]);
+      }
     },
     [push],
   );

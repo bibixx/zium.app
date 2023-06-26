@@ -1,9 +1,6 @@
-interface ZiumOffsetsDTO {
-  timestamp: number;
-  data: Record<string, number>;
-}
+import { ziumOffsetsValidator } from "./useZiumOffsets.validator";
 
-export const fetchZiumOffsets = async (raceId: string, signal: AbortSignal): Promise<ZiumOffsetsDTO | null> => {
+export const fetchZiumOffsets = async (raceId: string, signal: AbortSignal) => {
   const response = await fetch(`${import.meta.env.VITE_OFFSETS_BASE_URL}/${raceId}.json`, { signal });
 
   if (!response.ok) {
@@ -11,5 +8,11 @@ export const fetchZiumOffsets = async (raceId: string, signal: AbortSignal): Pro
   }
 
   const body = await response.json();
-  return body;
+  const parsedBody = ziumOffsetsValidator.safeParse(body);
+
+  if (!parsedBody.success) {
+    return null;
+  }
+
+  return parsedBody.data;
 };
