@@ -1,9 +1,11 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { isValid } from "date-fns";
-import { EventGenre, EVENT_GENRES, isRaceGenre } from "../../constants/races";
+import { z } from "zod";
+import { isRaceGenre } from "../../constants/races";
 import { fetchJSON } from "../../utils/api";
 import { uniqueById } from "../../utils/uniqueById";
+import { validateArray } from "../../utils/validators";
 import { RaceDetailsData } from "./useRacesDetails.types";
+import { bodyRootValidator, eventValidator, scheduledContainerValidator, Event } from "./useRaceDetails.validator";
 
 export const fetchRaceDetailsId = async (raceId: string, signal: AbortSignal): Promise<RaceDetailsData[]> => {
   const url = `/2.0/R/ENG/WEB_DASH/ALL/PAGE/${raceId}/F1_TV_Pro_Annual/14`;
@@ -12,13 +14,8 @@ export const fetchRaceDetailsId = async (raceId: string, signal: AbortSignal): P
   const liveAndReplayEvents = getReplayEvents(body);
   const scheduledEvents = getScheduledEvents(body);
 
-  const liveAndReplayDetails = liveAndReplayEvents
-    .filter((r: any) => EVENT_GENRES.includes(r.metadata.genres[0]?.toLowerCase()))
-    .map((e) => mapEventToRaceDetailsData(e, true));
-
-  const scheduledDetails = scheduledEvents
-    .filter((r: any) => EVENT_GENRES.includes(r.metadata.genres[0]?.toLowerCase()))
-    .map((e) => mapEventToRaceDetailsData(e, false));
+  const liveAndReplayDetails = liveAndReplayEvents.map((e) => mapEventToRaceDetailsData(e, true));
+  const scheduledDetails = scheduledEvents.map((e) => mapEventToRaceDetailsData(e, false));
 
   const raceDetails = uniqueById([...liveAndReplayDetails, ...scheduledDetails]).sort(
     (a, b) => (a.startDate?.getTime() ?? 0) - (b.startDate?.getTime() ?? 0),
@@ -27,26 +24,33 @@ export const fetchRaceDetailsId = async (raceId: string, signal: AbortSignal): P
   return raceDetails;
 };
 
-const getReplayEvents = (body: any): any[] => {
-  const replays = body.resultObj.containers
-    .filter((c: any) => c.metadata.label?.includes("Replays") || c.metadata.label?.includes("Weekend Sessions"))
-    .flatMap((c: any) => c.retrieveItems.resultObj.containers)
-    .filter((c: any) => c.metadata.emfAttributes.Series === "FORMULA 1");
+const getReplayEvents = (body: unknown) => {
+  const parsedBody = bodyRootValidator.parse(body);
+
+  const replays = parsedBody.resultObj.containers
+    .filter((c) => c.metadata.label?.includes("Replays") || c.metadata.label?.includes("Weekend Sessions"))
+    .flatMap((c) => c.retrieveItems.resultObj.containers)
+    .reduce(validateArray(eventValidator), [] as z.output<typeof eventValidator>[])
+    .filter((c) => c.metadata.emfAttributes.Series === "FORMULA 1");
 
   return replays ?? [];
 };
 
-const getScheduledEvents = (body: any): any[] => {
-  const scheduled = body.resultObj.containers
-    .filter((c: any) => c.layout === "schedule")
-    .flatMap((c: any) => c.retrieveItems.resultObj.containers);
+const getScheduledEvents = (body: unknown) => {
+  const parsedBody = bodyRootValidator.parse(body);
 
-  const f1Scheduled = scheduled.find((s: any) => s.eventName === "FORMULA 1");
+  const scheduled = parsedBody.resultObj.containers
+    .filter((c) => c.layout === "schedule")
+    .flatMap((c) => c.retrieveItems.resultObj.containers)
+    .reduce(validateArray(scheduledContainerValidator), [] as z.output<typeof scheduledContainerValidator>[]);
 
-  return f1Scheduled?.events ?? [];
+  const f1Scheduled = scheduled.find((s) => s.eventName === "FORMULA 1");
+  const events = f1Scheduled?.events ?? [];
+
+  return events.reduce(validateArray(eventValidator), [] as z.output<typeof eventValidator>[]);
 };
 
-const getDates = (event: any) => {
+const getDates = (event: Event) => {
   // let startDate = null;
   let startDate = new Date(0);
 
@@ -69,14 +73,13 @@ const getDates = (event: any) => {
   return { startDate, endDate };
 };
 
-const mapEventToRaceDetailsData = (event: any, isReplay: boolean): RaceDetailsData => {
+const mapEventToRaceDetailsData = (event: Event, isReplay: boolean): RaceDetailsData => {
   const { startDate, endDate } = getDates(event);
 
-  const rawGenre = event.metadata.genres[0]?.toLowerCase() as EventGenre;
-
+  const [firstGenre] = event.metadata.genres;
   return {
     title: event.metadata.titleBrief,
-    id: event.metadata.contentId,
+    id: String(event.metadata.contentId),
     pictureUrl: event.metadata.pictureUrl,
     isLive: event.metadata.contentSubtype === "LIVE",
     hasMedia: isReplay,
@@ -86,8 +89,9 @@ const mapEventToRaceDetailsData = (event: any, isReplay: boolean): RaceDetailsDa
     countryId: event.metadata.emfAttributes.MeetingCountryKey,
     startDate,
     endDate,
-    roundNumber: +event.metadata.emfAttributes.Meeting_Number,
+    roundNumber: event.metadata.emfAttributes.Meeting_Number,
     isSingleEvent: false,
-    genre: !isRaceGenre(rawGenre) || event.metadata.emfAttributes.ContentCategory === "EPISODIC" ? "show" : rawGenre,
+    genre:
+      !isRaceGenre(firstGenre) || event.metadata.emfAttributes.ContentCategory === "EPISODIC" ? "show" : firstGenre,
   };
 };

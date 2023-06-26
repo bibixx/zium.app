@@ -1,11 +1,6 @@
 import { z } from "zod";
-import { validateZodValidator } from "../../../../utils/validateZodValidator";
-import {
-  DataChannelGridWindow,
-  DriverGridWindow,
-  DriverTrackerGridWindow,
-  MainGridWindow,
-} from "../../../../types/GridWindow";
+import { validateZodValidator } from "../../../../utils/validators";
+import { GridWindow } from "../../../../types/GridWindow";
 import type { GridLayout, WindowGridState, WindowGridSavedLayout } from "./useViewerState.utils";
 
 const gridLayoutValidator = z.object({
@@ -19,39 +14,26 @@ const gridLayoutValidator = z.object({
 });
 validateZodValidator<GridLayout, typeof gridLayoutValidator>(gridLayoutValidator);
 
-const mainGridWindowValidator = z.object({
-  id: z.string(),
-  type: z.literal("main"),
-});
-validateZodValidator<MainGridWindow, typeof mainGridWindowValidator>(mainGridWindowValidator);
-
-const driverTrackerGridWindowValidator = z.object({
-  id: z.string(),
-  type: z.literal("driver-tracker"),
-});
-validateZodValidator<DriverTrackerGridWindow, typeof driverTrackerGridWindowValidator>(
-  driverTrackerGridWindowValidator,
-);
-
-const dataChannelGridWindowValidator = z.object({
-  id: z.string(),
-  type: z.literal("data-channel"),
-});
-validateZodValidator<DataChannelGridWindow, typeof dataChannelGridWindowValidator>(dataChannelGridWindowValidator);
-
-const driverGridWindowValidator = z.object({
-  id: z.string(),
-  type: z.literal("driver"),
-  driverId: z.string(),
-});
-validateZodValidator<DriverGridWindow, typeof driverGridWindowValidator>(driverGridWindowValidator);
-
-const gridWindowValidator = z.union([
-  mainGridWindowValidator,
-  driverTrackerGridWindowValidator,
-  dataChannelGridWindowValidator,
-  driverGridWindowValidator,
+const gridWindowValidator = z.discriminatedUnion("type", [
+  z.object({
+    id: z.string(),
+    type: z.literal("main"),
+  }),
+  z.object({
+    id: z.string(),
+    type: z.literal("driver-tracker"),
+  }),
+  z.object({
+    id: z.string(),
+    type: z.literal("data-channel"),
+  }),
+  z.object({
+    id: z.string(),
+    type: z.literal("driver"),
+    driverId: z.string(),
+  }),
 ]);
+validateZodValidator<GridWindow, typeof gridWindowValidator>(gridWindowValidator);
 
 const windowGridSavedLayoutValidator = z.object({
   name: z.string(),

@@ -1,26 +1,36 @@
-import { EventGenre } from "../../constants/races";
+import { z } from "zod";
 import { fetchJSON } from "../../utils/api";
+import { validateArray } from "../../utils/validators";
+import { StreamDataDTO } from "./useVideoRaceDetails.types";
 import {
-  F1PlaybackOffsetsApiResponse,
-  MultiViewerSyncOffsetsResponse,
-  StreamDataDTO,
-} from "./useVideoRaceDetails.types";
+  streamDataValidator,
+  videoRaceStreamsContainerValidator,
+  videoRaceStreamsRootBodyValidator,
+} from "./useVideoRaceDetails.validator";
 
 export const fetchRaceStreams = async (raceId: string, signal: AbortSignal) => {
   const url = `/3.0/R/ENG/BIG_SCREEN_HLS/ALL/CONTENT/VIDEO/${raceId}/F1_TV_Pro_Annual/14`;
   const body = await fetchJSON(url, undefined, signal);
+  const parsedBody = videoRaceStreamsRootBodyValidator.parse(body);
 
-  const container = body.resultObj.containers[0];
-  const streams = container.metadata.additionalStreams as StreamDataDTO[];
+  const [container] = parsedBody.resultObj.containers.reduce(
+    validateArray(videoRaceStreamsContainerValidator),
+    [] as z.output<typeof videoRaceStreamsContainerValidator>[],
+  );
+
+  const streams: StreamDataDTO[] | undefined = container.metadata.additionalStreams?.reduce(
+    validateArray(streamDataValidator),
+    [] as z.output<typeof streamDataValidator>[],
+  );
   const season = container.metadata.season;
   const isLive = container.metadata.contentSubtype === "LIVE";
   const countryName = container.metadata.emfAttributes.Meeting_Country_Name;
   const countryId = container.metadata.emfAttributes.MeetingCountryKey;
   const title = container.metadata.titleBrief;
-  const playbackOffsets = container.playbackOffsets as F1PlaybackOffsetsApiResponse[];
-  const meetingKey = container.metadata.meetingKey as string;
-  const meetingSessionKey = container.metadata.emfAttributes.MeetingSessionKey as string;
-  const genre = container.metadata.genres[0]?.toLowerCase() as EventGenre;
+  const playbackOffsets = container.playbackOffsets;
+  const meetingKey = container.metadata.meetingKey;
+  const meetingSessionKey = container.metadata.emfAttributes.MeetingSessionKey;
+  const genre = container.metadata.genres[0];
 
   return {
     streams,
@@ -34,24 +44,4 @@ export const fetchRaceStreams = async (raceId: string, signal: AbortSignal) => {
     meetingSessionKey,
     genre,
   };
-};
-
-export const fetchMultiViewerOffsets = async (meetingKey: string, meetingSessionKey: string, signal: AbortSignal) => {
-  try {
-    const url = `https://api.multiviewer.dev/api/v1/meetings/${meetingKey}/sessions/${meetingSessionKey}`;
-    const body = await fetch(url, { signal }).then((res) => res.json());
-
-    if (
-      String(body?.session_info?.Key) !== meetingSessionKey ||
-      String(body?.session_info?.Meeting?.Key) !== meetingKey
-    ) {
-      return null;
-    }
-
-    return (body?.sync_offsets?.sync_offsets ?? null) as MultiViewerSyncOffsetsResponse[] | null;
-  } catch (error) {
-    console.error("fetchMultiViewerOffsets", error);
-
-    return undefined;
-  }
 };

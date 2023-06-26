@@ -107,7 +107,7 @@ export const collectStreams = (streams: StreamDataDTO[] | undefined, season: num
       continue;
     }
 
-    if (streamType === "driver") {
+    if (stream.identifier === "OBC") {
       const driverStreamInfo: DriverStreamInfo = {
         ...baseStreamInfo,
         type: "driver",

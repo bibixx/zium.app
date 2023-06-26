@@ -64,23 +64,30 @@ export interface DriverStreamInfo extends BaseStreamInfo {
 
 export type StreamInfoWithDriver = StreamInfo | DriverStreamInfo;
 
-export interface StreamDataDTO {
+export interface BaseStreamDataDTO {
   racingNumber: number;
   teamName: string;
   type: string;
   playbackUrl: string;
-  driverImg: string;
-  teamImg: string;
   channelId: number;
   title: string;
   reportingName: string;
   default: boolean;
-  identifier: string;
+}
+
+interface DriverStreamDataDTO extends BaseStreamDataDTO {
+  identifier: "OBC";
+  driverImg: string;
+  teamImg: string;
   driverFirstName: string;
   driverLastName: string;
   constructorName: string;
   hex: string;
 }
+interface OtherStreamDataDTO extends BaseStreamDataDTO {
+  identifier: "PRES" | "WIF" | "TRACKER" | "DATA";
+}
+export type StreamDataDTO = DriverStreamDataDTO | OtherStreamDataDTO;
 
 export interface F1PlaybackOffsetsApiResponse {
   channels: [string, string];
@@ -89,31 +96,6 @@ export interface F1PlaybackOffsetsApiResponse {
 }
 
 export type F1PlaybackOffsetsData = Partial<Record<StreamInfoWithDriver["type"], Record<string, number | undefined>>>;
-
-export interface MultiViewerSyncOffsetsResponse {
-  diff: 0;
-  playbackData: {
-    currentTime: number;
-    paused: boolean;
-    startTimestamp: string;
-    ts: number;
-  };
-  streamData: {
-    channelId: number;
-    contentId: string;
-    meetingKey: string;
-    sessionKey: string;
-    title: string;
-    type: string;
-  };
-  driverData?: {
-    driverNumber: number;
-    firstName: string;
-    lastName: string;
-    teamName: string;
-    tla: string;
-  };
-}
 
 export interface PlaybackOffsets {
   f1: F1PlaybackOffsetsData;
