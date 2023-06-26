@@ -24,4 +24,8 @@ export class EventEmitter<
   emit<E extends Events>(type: E, ...data: Parameters<Handlers[E]>) {
     this.emitter.emit(type, ...data);
   }
+
+  setMaxListeners(n: number) {
+    this.emitter.setMaxListeners(n);
+  }
 }

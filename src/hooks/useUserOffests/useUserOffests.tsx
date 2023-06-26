@@ -21,7 +21,12 @@ interface UserOffsetsEmitterHandlers {
 
 export const useUserOffsetsState = (raceId: string | undefined) => {
   const offsets = useRef<UserOffsets | null>(getInitialOffsets(raceId));
-  const offsetEmitter = useMemo(() => new EventEmitter<UserOffsetsEmitterHandlers>(), []);
+  const offsetEmitter = useMemo(() => {
+    const emitter = new EventEmitter<UserOffsetsEmitterHandlers>();
+    emitter.setMaxListeners(30);
+
+    return emitter;
+  }, []);
 
   useEffect(() => {
     offsets.current = getInitialOffsets(raceId);

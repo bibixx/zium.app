@@ -134,7 +134,7 @@ const DriverPickerButton = ({ currentDriver, onDriverChange }: DriverPickerButto
   const { requestStream } = useStreamPicker();
 
   const currentDriverId = currentDriver?.id;
-  const lastName = currentDriver?.lastName.slice(0, 3) ?? "Select source";
+  const lastName = currentDriver?.id;
   const imageUrls = currentDriver?.imageUrls;
 
   const onClick = async () => {
