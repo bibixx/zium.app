@@ -10,6 +10,7 @@ const DEFAULT_SNACKBAR_TIME = 4_000;
 interface SnackbarProps {
   title: ReactNode;
   content: ReactNode;
+  actions?: ReactNode;
   time?: number;
   offsetY: number;
   onClose: () => void;
@@ -19,7 +20,7 @@ interface SnackbarProps {
 
 export const Snackbar = forwardRef<HTMLDivElement | null, SnackbarProps>(
   (
-    { title, content, offsetY, time = DEFAULT_SNACKBAR_TIME, onClose, setShowDraggingOverlay, onHeightChange },
+    { title, content, actions, offsetY, time = DEFAULT_SNACKBAR_TIME, onClose, setShowDraggingOverlay, onHeightChange },
     forwardedRef,
   ) => {
     const [isHovering, setIsHovering] = useState(false);
@@ -63,7 +64,7 @@ export const Snackbar = forwardRef<HTMLDivElement | null, SnackbarProps>(
             data-css-transition
           >
             <div className={styles.mainWrapper}>
-              <div className={styles.content}>
+              <div className={cn(styles.content, { [styles.hasActions]: actions != null })}>
                 <div className={styles.title}>{title}</div>
                 <div className={styles.textContent}>{content}</div>
               </div>
@@ -72,6 +73,7 @@ export const Snackbar = forwardRef<HTMLDivElement | null, SnackbarProps>(
                   <Button variant="Tertiary" iconLeft={XMarkIcon} onClick={onClose} />
                 </div>
               </div>
+              {actions && <div className={styles.actions}>{actions}</div>}
             </div>
             <TimeIndicator isPaused={isHovering || isDragging} onClose={onClose} time={time} />
           </div>

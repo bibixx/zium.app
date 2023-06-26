@@ -14,13 +14,13 @@ import { EventEmitter } from "../../utils/EventEmitter";
 import { StreamInfo } from "../useVideoRaceDetails/useVideoRaceDetails.types";
 import { getInitialOffsets, saveOffsets } from "./useUserOffests.utils";
 
-export type UserOffsets = Partial<Record<AutoComplete<StreamInfo["type"]>, number>>;
+export type UserOffsets = { additionalStreams: Partial<Record<AutoComplete<StreamInfo["type"]>, number>> };
 interface UserOffsetsEmitterHandlers {
   change: () => void;
 }
 
 export const useUserOffsetsState = (raceId: string | undefined) => {
-  const offsets = useRef<UserOffsets>(getInitialOffsets(raceId));
+  const offsets = useRef<UserOffsets | null>(getInitialOffsets(raceId));
   const offsetEmitter = useMemo(() => new EventEmitter<UserOffsetsEmitterHandlers>(), []);
 
   useEffect(() => {
@@ -29,23 +29,39 @@ export const useUserOffsetsState = (raceId: string | undefined) => {
   }, [offsetEmitter, raceId]);
 
   const updateOffset = useCallback(
-    (key: keyof UserOffsets, value: number) => {
-      offsets.current = {
-        ...offsets.current,
+    (key: keyof UserOffsets["additionalStreams"], value: number) => {
+      const oldOffsets: UserOffsets = offsets.current ?? { additionalStreams: {} };
+
+      oldOffsets.additionalStreams = {
+        ...oldOffsets.additionalStreams,
         [key]: value,
       };
+
+      offsets.current = oldOffsets;
+
       offsetEmitter.emit("change");
       saveOffsets(raceId, offsets.current);
     },
     [offsetEmitter, raceId],
   );
 
-  return { offsets, offsetEmitter, updateOffset };
+  const overrideOffsets = useCallback(
+    (value: UserOffsets) => {
+      offsets.current = value;
+
+      offsetEmitter.emit("change");
+      saveOffsets(raceId, offsets.current);
+    },
+    [offsetEmitter, raceId],
+  );
+
+  return { offsets, offsetEmitter, updateOffset, overrideOffsets };
 };
 
 interface UserOffsetsContextType {
-  offsets: MutableRefObject<UserOffsets>;
-  updateOffset: (key: keyof UserOffsets, value: number) => void;
+  offsets: MutableRefObject<UserOffsets | null>;
+  updateOffset: (key: keyof UserOffsets["additionalStreams"], value: number) => void;
+  overrideOffsets: (value: UserOffsets) => void;
   offsetEmitter: EventEmitter<UserOffsetsEmitterHandlers>;
 }
 const UserOffsetsContext = createContext<UserOffsetsContextType | null>(null);

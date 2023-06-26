@@ -9,44 +9,48 @@ import styles from "./useZiumOffsets.module.scss";
 
 export const useZiumOffsets = (raceId: string) => {
   const lastFoundOffsetTimestampRef = useRef<number>(0);
+  const isFirstSuccessfulFetchRef = useRef(true);
   const { openSnackbar, closeSnackbar } = useSnackbars();
-  const { updateOffset, offsets } = useUserOffsets();
+  const { overrideOffsets, offsets } = useUserOffsets();
   const { trackError } = useAnalytics();
 
   const fetchData = useCallback(
     async (signal: AbortSignal) => {
       try {
         const data = await fetchZiumOffsets(raceId, signal);
+        const isFirstSuccessfulFetch = isFirstSuccessfulFetchRef.current;
+        isFirstSuccessfulFetchRef.current = false;
 
         if (
           data == null ||
           data.timestamp <= lastFoundOffsetTimestampRef.current ||
-          equal(data.data, offsets.current)
+          equal(data.additionalStreams, offsets.current?.additionalStreams)
         ) {
           return;
         }
 
-        const onApply = (snackbarId: string) => {
-          Object.entries(data.data).map(([key, value]) => {
-            updateOffset(key, value);
-          });
+        if (offsets.current == null && isFirstSuccessfulFetch) {
+          overrideOffsets({ additionalStreams: data.additionalStreams });
+          lastFoundOffsetTimestampRef.current = data.timestamp;
+          return;
+        }
 
+        const onApply = (snackbarId: string) => {
+          overrideOffsets({ additionalStreams: data.additionalStreams });
           closeSnackbar(snackbarId);
         };
 
         const id = openSnackbar({
           title: "New offsets available",
-          content: (
-            <div>
-              <div>Do you want to apply them?</div>
-              <div className={styles.buttonsWrapper}>
-                <Button variant="Primary" fluid onClick={() => onApply(id)}>
-                  Yes
-                </Button>
-                <Button variant="Secondary" fluid onClick={() => closeSnackbar(id)}>
-                  No
-                </Button>
-              </div>
+          content: "Do you want to apply them?",
+          actions: (
+            <div className={styles.buttonsWrapper}>
+              <Button variant="Primary" fluid onClick={() => onApply(id)}>
+                Yes
+              </Button>
+              <Button variant="Secondary" fluid onClick={() => closeSnackbar(id)}>
+                No
+              </Button>
             </div>
           ),
           time: 10_000,
@@ -57,7 +61,7 @@ export const useZiumOffsets = (raceId: string) => {
         trackError(error);
       }
     },
-    [closeSnackbar, offsets, openSnackbar, raceId, trackError, updateOffset],
+    [closeSnackbar, offsets, openSnackbar, overrideOffsets, raceId, trackError],
   );
 
   useEffect(() => {
@@ -66,7 +70,7 @@ export const useZiumOffsets = (raceId: string) => {
 
     const interval = setInterval(() => {
       fetchData(abortController.signal);
-    }, 10_000);
+    }, 60_000);
 
     return () => {
       clearInterval(interval);

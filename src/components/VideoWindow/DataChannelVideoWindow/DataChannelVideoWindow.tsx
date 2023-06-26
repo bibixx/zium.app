@@ -88,7 +88,7 @@ export const DataChannelVideoWindow = forwardRef<PlayerAPI | null, DataChannelVi
           onOffsetChange={(value) => {
             updateOffset("data-channel", value);
           }}
-          currentOffset={offsets["data-channel"] ?? 0}
+          currentOffset={offsets?.additionalStreams["data-channel"] ?? 0}
           updateFillMode={() => updateFillMode(fillMode === "fill" ? "fit" : "fill")}
           fillMode={fillMode}
           onClose={onDelete}

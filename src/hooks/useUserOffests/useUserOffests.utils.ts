@@ -7,7 +7,7 @@ const getStorageKey = (raceId: string) => `${OFFSETS_LOCAL_STORAGE_KEY_PREFIX}${
 
 export const getInitialOffsets = (raceId: string | undefined) => {
   if (raceId == null) {
-    return {};
+    return null;
   }
 
   const storageKey = getStorageKey(raceId);
@@ -25,7 +25,7 @@ export const getInitialOffsets = (raceId: string | undefined) => {
   }
 
   localStorage.removeItem(storageKey);
-  return {};
+  return null;
 };
 
 export const saveOffsets = (raceId: string | undefined, offsets: UserOffsets) => {

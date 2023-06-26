@@ -116,15 +116,15 @@ export const useSyncVideos = ({ windows, windowVideojsRefMapRef, isLive, playbac
 
 const getOffset = (
   playbackOffsets: PlaybackOffsets,
-  userOffsets: UserOffsets,
+  userOffsets: UserOffsets | null,
   w: GridWindow,
   mainWindow: GridWindow,
 ): number => {
   let userOffset = 0;
   if (w.type === "driver") {
-    userOffset = userOffsets[w.driverId] ?? 0;
+    userOffset = userOffsets?.additionalStreams[w.driverId] ?? 0;
   } else {
-    userOffset = userOffsets[w.type] ?? 0;
+    userOffset = userOffsets?.additionalStreams[w.type] ?? 0;
   }
 
   const f1Offset = playbackOffsets.f1[w.type]?.[mainWindow.type] ?? 0;

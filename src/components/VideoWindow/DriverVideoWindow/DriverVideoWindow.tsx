@@ -107,7 +107,7 @@ export const DriverVideoWindow = forwardRef<PlayerAPI | null, DriverVideoWindowP
           onOffsetChange={(value) => {
             updateOffset(gridWindow.driverId, value);
           }}
-          currentOffset={offsets[gridWindow.driverId] ?? 0}
+          currentOffset={offsets?.additionalStreams[gridWindow.driverId] ?? 0}
           updateFillMode={() => updateFillMode(fillMode === "fill" ? "fit" : "fill")}
           fillMode={fillMode}
           onAudioFocusClick={onAudioFocusClick}

@@ -98,6 +98,16 @@
   gap: 4px;
   padding: 12px;
   flex: 1;
+
+  &.hasActions {
+    padding-bottom: 0;
+  }
+}
+
+.actions {
+  padding: 12px;
+  padding-top: 0;
+  grid-column: -1 / 1;
 }
 
 .title {
@@ -113,7 +123,8 @@
 }
 
 .mainWrapper {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto;
   gap: 8px;
 }
 

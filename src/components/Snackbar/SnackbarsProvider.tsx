@@ -17,6 +17,7 @@ interface SnackbarData {
   id: string;
   title: ReactNode;
   content: ReactNode;
+  actions?: ReactNode;
   time?: number;
   nodeRef: MutableRefObject<HTMLElement | undefined>;
 }
@@ -112,6 +113,7 @@ export const SnackbarsProvider = ({ children }: SnackbarsProviderProps) => {
                   snackbar.nodeRef.current = ref ?? undefined;
                 }}
                 time={snackbar.time}
+                actions={snackbar.actions}
                 offsetY={getPreviousHeights(reversedSnackbars, i, snackbarHeights) + i * 8}
                 onHeightChange={(height) => {
                   setSnackbarHeights((heights) => ({

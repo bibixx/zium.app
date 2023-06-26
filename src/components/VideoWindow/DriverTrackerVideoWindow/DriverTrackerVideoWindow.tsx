@@ -88,7 +88,7 @@ export const DriverTrackerVideoWindow = forwardRef<PlayerAPI | null, DriverTrack
           onOffsetChange={(value) => {
             updateOffset("driver-tracker", value);
           }}
-          currentOffset={offsets["driver-tracker"] ?? 0}
+          currentOffset={offsets?.additionalStreams["driver-tracker"] ?? 0}
           updateFillMode={() => updateFillMode(fillMode === "fill" ? "fit" : "fill")}
           fillMode={fillMode}
           onClose={onDelete}
