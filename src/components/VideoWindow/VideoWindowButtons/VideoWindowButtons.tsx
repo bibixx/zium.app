@@ -59,7 +59,7 @@ type VideoWindowButtonsProps = {
 export const VideoWindowButtons = (props: VideoWindowButtonsProps) => {
   return (
     <>
-      <div className={styles.topLeftWrapper}>
+      <div className={styles.topLeftWrapper} onMouseDown={(e) => e.stopPropagation()}>
         {props.streamPill}
         {props.onOffsetChange && (
           <div className={styles.hideWhenUiHidden}>

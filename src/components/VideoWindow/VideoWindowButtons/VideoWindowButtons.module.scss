@@ -2,6 +2,7 @@
   position: absolute;
   top: 8px;
   right: 8px;
+  cursor: default;
 }
 
 .bottomRightWrapper {
@@ -11,6 +12,7 @@
   position: absolute;
   bottom: 8px;
   right: 8px;
+  cursor: default;
 }
 
 .focusAudioButton {
@@ -25,6 +27,7 @@
   left: 8px;
   display: flex;
   gap: 8px;
+  cursor: default;
 }
 
 .hideWhenUiHidden {

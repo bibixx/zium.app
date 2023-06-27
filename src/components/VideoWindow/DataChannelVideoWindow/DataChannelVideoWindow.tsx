@@ -88,7 +88,6 @@ export const DataChannelVideoWindow = forwardRef<PlayerAPI | null, DataChannelVi
           streamPill={
             <SourceButton
               onClick={onRequestSourceChange}
-              onMouseDown={(e) => e.stopPropagation()}
               label="Data"
               icon={getIconForStreamInfo("data-channel", "mini")}
               hideWhenUiHidden

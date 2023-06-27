@@ -101,7 +101,6 @@ export const DriverVideoWindow = forwardRef<PlayerAPI | null, DriverVideoWindowP
           volume={isAudioFocused ? volume : 0}
           fillMode={fillMode}
         />
-        {!hasOnlyOneStream && <DriverPickerButton currentDriver={currentDriver} onDriverChange={onDriverChange} />}
 
         <VideoWindowButtons
           onOffsetChange={(value) => {
@@ -154,7 +153,6 @@ const DriverPickerButton = ({ currentDriver, onDriverChange }: DriverPickerButto
   return (
     <SourceButton
       onClick={onClick}
-      onMouseDown={(e) => e.stopPropagation()}
       label={lastName}
       srcList={imageUrls}
       showPlaceholder={imageUrls === undefined}

@@ -88,7 +88,6 @@ export const DriverTrackerVideoWindow = forwardRef<PlayerAPI | null, DriverTrack
           streamPill={
             <SourceButton
               onClick={onRequestSourceChange}
-              onMouseDown={(e) => e.stopPropagation()}
               label="Tracker"
               icon={getIconForStreamInfo("driver-tracker", "mini")}
               hideWhenUiHidden
