@@ -113,6 +113,9 @@ export const DriverVideoWindow = forwardRef<PlayerAPI | null, DriverVideoWindowP
           onAudioFocusClick={onAudioFocusClick}
           isAudioFocused={isAudioFocused}
           onClose={onDelete}
+          streamPill={
+            !hasOnlyOneStream && <DriverPickerButton currentDriver={currentDriver} onDriverChange={onDriverChange} />
+          }
         />
       </VideoWindowWrapper>
     );

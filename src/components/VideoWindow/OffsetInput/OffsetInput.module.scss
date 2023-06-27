@@ -1,6 +1,7 @@
 .wrapper {
   padding: 4px;
   display: flex;
+  align-items: center;
   gap: 4px;
   background: var(--color-core-neutral-darken-400);
   @include inner-border(var(--color-border-default-alpha));
@@ -12,11 +13,16 @@
 }
 
 .inputLabel {
-  padding-top: 8px;
-  padding-bottom: 8px;
+  padding: 8px;
   width: 80px;
 }
 
 .button {
   padding: 8px;
+}
+
+.divider {
+  width: 1px;
+  height: 24px;
+  background: var(--color-border-muted-alpha);
 }

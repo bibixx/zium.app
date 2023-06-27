@@ -12,7 +12,7 @@ interface SourceButtonProps {
   icon?: IconComponent | null;
   showPlaceholder?: boolean;
   hideWhenUiHidden?: boolean;
-  onClick: MouseEventHandler;
+  onClick?: MouseEventHandler;
   onMouseDown?: MouseEventHandler;
 }
 
@@ -26,8 +26,10 @@ export const SourceButton = ({
   onMouseDown,
   hideWhenUiHidden,
 }: SourceButtonProps) => {
+  const Component = onClick == null ? "div" : "button";
+
   return (
-    <button
+    <Component
       className={classNames(styles.wrapper, { [styles.hideWhenUiHidden]: hideWhenUiHidden })}
       onClick={onClick}
       onMouseDown={onMouseDown}
@@ -48,6 +50,6 @@ export const SourceButton = ({
         </div>
       )}
       <div className={styles.label}>{label}</div>
-    </button>
+    </Component>
   );
 };

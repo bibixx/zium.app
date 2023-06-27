@@ -1,5 +1,6 @@
 import cn from "classnames";
 import { SpeakerWaveIcon, XMarkIcon } from "@heroicons/react/20/solid";
+import { ReactNode } from "react";
 import { GridLayoutFillMode } from "../../../views/Viewer/hooks/useViewerState/useViewerState.utils";
 import { Button } from "../../Button/Button";
 import {
@@ -49,6 +50,7 @@ type OffsetProps =
 
 type VideoWindowButtonsProps = {
   onClose?: () => void;
+  streamPill?: ReactNode;
 } & AudioFocusProps &
   FillModeProps &
   ClosedCaptionsProps &
@@ -57,13 +59,20 @@ type VideoWindowButtonsProps = {
 export const VideoWindowButtons = (props: VideoWindowButtonsProps) => {
   return (
     <>
+      <div className={styles.topLeftWrapper}>
+        {props.streamPill}
+        {props.onOffsetChange && (
+          <div className={styles.hideWhenUiHidden}>
+            <OffsetInput onChange={props.onOffsetChange} initialValue={props.currentOffset} />
+          </div>
+        )}
+      </div>
       {props.onClose && (
-        <div className={styles.closeButtonWrapper} onMouseDown={(e) => e.stopPropagation()}>
+        <div className={cn(styles.topRightWrapper, styles.hideWhenUiHidden)} onMouseDown={(e) => e.stopPropagation()}>
           <Button variant="SecondaryInverted" onClick={props.onClose} iconLeft={XMarkIcon} />
         </div>
       )}
-      <div className={styles.optionsButtonsWrapper} onMouseDown={(e) => e.stopPropagation()}>
-        {props.onOffsetChange && <OffsetInput onChange={props.onOffsetChange} initialValue={props.currentOffset} />}
+      <div className={cn(styles.bottomRightWrapper, styles.hideWhenUiHidden)} onMouseDown={(e) => e.stopPropagation()}>
         {props.updateFillMode && (
           <Button
             variant="SecondaryInverted"

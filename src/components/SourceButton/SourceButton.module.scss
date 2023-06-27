@@ -1,18 +1,15 @@
 .wrapper {
   appearance: none;
   border: none;
-  top: 8px;
-  left: 8px;
   height: 44px;
   background: var(--color-core-neutral-darken-400);
   padding: 0 8px;
   border-radius: var(--radii-rounded);
-  cursor: pointer;
   display: flex;
   align-items: center;
+  user-select: none;
 
   @include inner-border(var(--color-border-muted-alpha));
-  position: absolute;
 
   transition: var(--transition-fast) transform, var(--transition-fast) background, var(--transition-fast) box-shadow,
     var(--transition-slow) opacity;
@@ -26,17 +23,24 @@
     }
   }
 
-  &:hover {
-    transform: scale(1.0333);
-    background: var(--color-core-neutral-darken-500);
-
-    @include inner-border(var(--color-border-default-alpha));
-    position: absolute;
+  &:not(:is(button)) {
+    pointer-events: none;
   }
 
-  &:active {
-    transform: scale(1);
-    background: var(--color-core-neutral-darken-300);
+  &:is(button) {
+    cursor: pointer;
+
+    &:hover {
+      transform: scale(1.0333);
+      background: var(--color-core-neutral-darken-500);
+
+      @include inner-border(var(--color-border-default-alpha));
+    }
+
+    &:active {
+      transform: scale(1);
+      background: var(--color-core-neutral-darken-300);
+    }
   }
 }
 

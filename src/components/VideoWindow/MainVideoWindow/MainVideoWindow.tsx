@@ -1,5 +1,6 @@
 import { forwardRef, useRef } from "react";
 import { PlayerAPI, PlayerEvent } from "bitmovin-player";
+import { TvIcon } from "@heroicons/react/20/solid";
 import { useStreamVideo } from "../../../hooks/useStreamVideo/useStreamVideo";
 import { VideoWindowProps } from "../../../types/VideoWindowBaseProps";
 import { onVideoWindowReadyBase } from "../../../utils/onVideoWindowReady";
@@ -10,6 +11,7 @@ import { NoFeed } from "../NoFeed/NoFeed";
 import { FeedError } from "../FeedError/FeedError";
 import { StreamVideoError } from "../../../hooks/useStreamVideo/useStreamVideo.utils";
 import { VideoWindowButtons } from "../VideoWindowButtons/VideoWindowButtons";
+import { SourceButton } from "../../SourceButton/SourceButton";
 
 interface MainVideoWindowProps extends VideoWindowProps {
   onPlayingChange: (isPaused: boolean) => void;
@@ -98,6 +100,7 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
           isAudioFocused={isAudioFocused}
           toggleClosedCaptions={() => setAreClosedCaptionsOn(!areClosedCaptionsOn)}
           areClosedCaptionsOn={areClosedCaptionsOn}
+          streamPill={<SourceButton label="F1 Live" icon={TvIcon} hideWhenUiHidden />}
         />
       </VideoWindowWrapper>
     );

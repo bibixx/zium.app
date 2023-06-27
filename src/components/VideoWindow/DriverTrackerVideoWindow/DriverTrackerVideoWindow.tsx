@@ -77,13 +77,6 @@ export const DriverTrackerVideoWindow = forwardRef<PlayerAPI | null, DriverTrack
           isPaused={isPaused}
           fillMode={fillMode}
         />
-        <SourceButton
-          onClick={onRequestSourceChange}
-          onMouseDown={(e) => e.stopPropagation()}
-          label="Tracker"
-          icon={getIconForStreamInfo("driver-tracker", "mini")}
-          hideWhenUiHidden
-        />
         <VideoWindowButtons
           onOffsetChange={(value) => {
             updateOffset("driver-tracker", value);
@@ -92,6 +85,15 @@ export const DriverTrackerVideoWindow = forwardRef<PlayerAPI | null, DriverTrack
           updateFillMode={() => updateFillMode(fillMode === "fill" ? "fit" : "fill")}
           fillMode={fillMode}
           onClose={onDelete}
+          streamPill={
+            <SourceButton
+              onClick={onRequestSourceChange}
+              onMouseDown={(e) => e.stopPropagation()}
+              label="Tracker"
+              icon={getIconForStreamInfo("driver-tracker", "mini")}
+              hideWhenUiHidden
+            />
+          }
         />
       </VideoWindowWrapper>
     );

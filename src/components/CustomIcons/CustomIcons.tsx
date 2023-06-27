@@ -15,6 +15,8 @@ import { ReactComponent as AspectRatioOffSvg } from "../../assets/custom-icons/a
 import { ReactComponent as AspectRatioOnSvg } from "../../assets/custom-icons/aspect-ratio-on.svg";
 import { ReactComponent as ClosedCaptionsOffSvg } from "../../assets/custom-icons/closed-captions-off.svg";
 import { ReactComponent as ClosedCaptionsOnSvg } from "../../assets/custom-icons/closed-captions-on.svg";
+import { ReactComponent as TimeOffsetOnSvg } from "../../assets/custom-icons/time-offset-on.svg";
+import { ReactComponent as TimeOffsetOffSvg } from "../../assets/custom-icons/time-offset-off.svg";
 import styles from "./CustomIcons.module.scss";
 
 export const ArrowLeft30Icon = (props: React.SVGProps<SVGSVGElement>) => {
@@ -83,4 +85,12 @@ export const ClosedCaptionsOffIcon = (props: React.SVGProps<SVGSVGElement>) => {
 
 export const ClosedCaptionsOnIcon = (props: React.SVGProps<SVGSVGElement>) => {
   return <ClosedCaptionsOnSvg className={styles.wrapper} {...props} />;
+};
+
+export const TimeOffsetOnIcon = (props: React.SVGProps<SVGSVGElement>) => {
+  return <TimeOffsetOnSvg className={styles.wrapper} {...props} />;
+};
+
+export const TimeOffsetOffIcon = (props: React.SVGProps<SVGSVGElement>) => {
+  return <TimeOffsetOffSvg className={styles.wrapper} {...props} />;
 };

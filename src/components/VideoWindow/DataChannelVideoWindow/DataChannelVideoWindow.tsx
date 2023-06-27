@@ -77,13 +77,6 @@ export const DataChannelVideoWindow = forwardRef<PlayerAPI | null, DataChannelVi
           isPaused={isPaused}
           fillMode={fillMode}
         />
-        <SourceButton
-          onClick={onRequestSourceChange}
-          onMouseDown={(e) => e.stopPropagation()}
-          label="Data"
-          icon={getIconForStreamInfo("data-channel", "mini")}
-          hideWhenUiHidden
-        />
         <VideoWindowButtons
           onOffsetChange={(value) => {
             updateOffset("data-channel", value);
@@ -92,6 +85,15 @@ export const DataChannelVideoWindow = forwardRef<PlayerAPI | null, DataChannelVi
           updateFillMode={() => updateFillMode(fillMode === "fill" ? "fit" : "fill")}
           fillMode={fillMode}
           onClose={onDelete}
+          streamPill={
+            <SourceButton
+              onClick={onRequestSourceChange}
+              onMouseDown={(e) => e.stopPropagation()}
+              label="Data"
+              icon={getIconForStreamInfo("data-channel", "mini")}
+              hideWhenUiHidden
+            />
+          }
         />
       </VideoWindowWrapper>
     );
