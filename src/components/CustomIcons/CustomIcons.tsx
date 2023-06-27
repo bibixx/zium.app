@@ -1,3 +1,4 @@
+import cn from "classnames";
 import { ReactComponent as ArrowLeft30Svg } from "../../assets/custom-icons/arrow-left-30.svg";
 import { ReactComponent as ArrowRight30Svg } from "../../assets/custom-icons/arrow-right-30.svg";
 import { ReactComponent as DoubleEllipsisSvg } from "../../assets/custom-icons/double-ellipsis.svg";
@@ -20,77 +21,77 @@ import { ReactComponent as TimeOffsetOffSvg } from "../../assets/custom-icons/ti
 import styles from "./CustomIcons.module.scss";
 
 export const ArrowLeft30Icon = (props: React.SVGProps<SVGSVGElement>) => {
-  return <ArrowLeft30Svg className={styles.wrapper} {...props} />;
+  return <ArrowLeft30Svg {...props} className={cn(styles.wrapper, props.className)} />;
 };
 
 export const ArrowRight30Icon = (props: React.SVGProps<SVGSVGElement>) => {
-  return <ArrowRight30Svg className={styles.wrapper} {...props} />;
+  return <ArrowRight30Svg {...props} className={cn(styles.wrapper, props.className)} />;
 };
 
 export const DoubleEllipsisIcon = (props: React.SVGProps<SVGSVGElement>) => {
-  return <DoubleEllipsisSvg className={styles.wrapper} {...props} />;
+  return <DoubleEllipsisSvg {...props} className={cn(styles.wrapper, props.className)} />;
 };
 
 export const Practice1Icon = (props: React.SVGProps<SVGSVGElement>) => {
-  return <Practice1Svg className={styles.wrapper} {...props} />;
+  return <Practice1Svg {...props} className={cn(styles.wrapper, props.className)} />;
 };
 
 export const Practice2Icon = (props: React.SVGProps<SVGSVGElement>) => {
-  return <Practice2Svg className={styles.wrapper} {...props} />;
+  return <Practice2Svg {...props} className={cn(styles.wrapper, props.className)} />;
 };
 
 export const Practice3Icon = (props: React.SVGProps<SVGSVGElement>) => {
-  return <Practice3Svg className={styles.wrapper} {...props} />;
+  return <Practice3Svg {...props} className={cn(styles.wrapper, props.className)} />;
 };
 
 export const QualificationsIcon = (props: React.SVGProps<SVGSVGElement>) => {
-  return <QualificationsSvg className={styles.wrapper} {...props} />;
+  return <QualificationsSvg {...props} className={cn(styles.wrapper, props.className)} />;
 };
 
 export const RaceIcon = (props: React.SVGProps<SVGSVGElement>) => {
-  return <RaceSvg className={styles.wrapper} {...props} />;
+  return <RaceSvg {...props} className={cn(styles.wrapper, props.className)} />;
 };
 
 export const SprintShootoutIcon = (props: React.SVGProps<SVGSVGElement>) => {
-  return <SprintShootoutSvg className={styles.wrapper} {...props} />;
+  return <SprintShootoutSvg {...props} className={cn(styles.wrapper, props.className)} />;
 };
 
 export const SprintIcon = (props: React.SVGProps<SVGSVGElement>) => {
-  return <SprintSvg className={styles.wrapper} {...props} />;
+  return <SprintSvg {...props} className={cn(styles.wrapper, props.className)} />;
 };
 
 export const FigmaIcon = (props: React.SVGProps<SVGSVGElement>) => {
-  return <FigmaSvg className={styles.wrapper} {...props} />;
+  return <FigmaSvg {...props} className={cn(styles.wrapper, props.className)} />;
 };
 
 export const GitHubIcon = (props: React.SVGProps<SVGSVGElement>) => {
-  return <GitHubSvg className={styles.wrapper} {...props} />;
+  return <GitHubSvg {...props} className={cn(styles.wrapper, props.className)} />;
 };
 
 export const TwitterIcon = (props: React.SVGProps<SVGSVGElement>) => {
-  return <TwitterSvg className={styles.wrapper} {...props} />;
+  return <TwitterSvg {...props} className={cn(styles.wrapper, props.className)} />;
 };
 
 export const AspectRatioOffIcon = (props: React.SVGProps<SVGSVGElement>) => {
-  return <AspectRatioOffSvg className={styles.wrapper} {...props} />;
+  return <AspectRatioOffSvg {...props} className={cn(styles.wrapper, props.className)} />;
 };
 
 export const AspectRatioOnIcon = (props: React.SVGProps<SVGSVGElement>) => {
-  return <AspectRatioOnSvg className={styles.wrapper} {...props} />;
+  return <AspectRatioOnSvg {...props} className={cn(styles.wrapper, props.className)} />;
 };
 
 export const ClosedCaptionsOffIcon = (props: React.SVGProps<SVGSVGElement>) => {
-  return <ClosedCaptionsOffSvg className={styles.wrapper} {...props} />;
+  return <ClosedCaptionsOffSvg {...props} className={cn(styles.wrapper, props.className)} />;
 };
 
 export const ClosedCaptionsOnIcon = (props: React.SVGProps<SVGSVGElement>) => {
-  return <ClosedCaptionsOnSvg className={styles.wrapper} {...props} />;
+  return <ClosedCaptionsOnSvg {...props} className={cn(styles.wrapper, props.className)} />;
 };
 
 export const TimeOffsetOnIcon = (props: React.SVGProps<SVGSVGElement>) => {
-  return <TimeOffsetOnSvg className={styles.wrapper} {...props} />;
+  return <TimeOffsetOnSvg {...props} className={cn(styles.wrapper, props.className)} />;
 };
 
 export const TimeOffsetOffIcon = (props: React.SVGProps<SVGSVGElement>) => {
-  return <TimeOffsetOffSvg className={styles.wrapper} {...props} />;
+  return <TimeOffsetOffSvg {...props} className={cn(styles.wrapper, props.className)} />;
 };

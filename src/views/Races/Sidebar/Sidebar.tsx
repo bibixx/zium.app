@@ -5,7 +5,7 @@ import { SupportedSeasons } from "../../../constants/seasons";
 import { isSeasonComingSoon } from "../../../utils/SeasonUtils";
 import { WithVariables } from "../../../components/WithVariables/WithVariables";
 import { FigmaIcon, GitHubIcon, TwitterIcon } from "../../../components/CustomIcons/CustomIcons";
-import { BULLET } from "../../../utils/text";
+import { MIDDLE_DOT } from "../../../utils/text";
 import styles from "./Sidebar.module.scss";
 
 interface SidebarSeason {
@@ -94,7 +94,7 @@ export const Sidebar = ({ visibleSeasonId, seasons, overwriteVisibleSeason }: Si
           <Link to="/privacy-policy" className={styles.footerLink}>
             Privacy policy
           </Link>
-          <span>{BULLET}</span>
+          <span>{MIDDLE_DOT}</span>
           <a href="mailto:zium@zium.app" className={styles.footerLink}>
             Contact us
           </a>

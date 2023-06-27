@@ -1,11 +1,12 @@
 import { PlayCircleIcon } from "@heroicons/react/24/solid";
 import cn from "classnames";
+import { ReactNode } from "react";
 import { IconComponent } from "../../../../types/Icon";
 import styles from "./EventSession.module.scss";
 
 interface EventSessionProps {
   title: string;
-  subtitle: string | null;
+  subtitle: ReactNode;
   rightIconWrapperClassName?: string;
   isLive?: boolean;
   disabled?: boolean;

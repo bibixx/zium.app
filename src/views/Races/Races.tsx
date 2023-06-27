@@ -23,6 +23,7 @@ import {
   serachRacePredicate,
 } from "./Races.utils";
 import { ZeroState } from "./ZeroState/ZeroState";
+import { useZiumOffsetsInfo } from "./hooks/useZiumOffsetsInfo/useZiumOffsetsInfo";
 
 export const Races = () => {
   useTrackWithTitle("Races");
@@ -34,6 +35,7 @@ export const Races = () => {
   const [searchQuery, setSearchQuery] = useState("");
 
   const { racesState: seasonsList } = useRacesList(seasonsToRender);
+  const ziumOffsetsInfo = useZiumOffsetsInfo();
 
   const fallbackRaceId = useMemo(() => {
     const latestSeason = seasonsList[0];
@@ -129,7 +131,7 @@ export const Races = () => {
                     wrapperRefs.current[i] = ref;
                   }}
                 >
-                  <Season season={season} />
+                  <Season season={season} ziumOffsetsInfo={ziumOffsetsInfo} />
                 </div>
               </Fragment>
             );

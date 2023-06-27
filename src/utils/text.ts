@@ -7,7 +7,7 @@ export const CLOSE_QUOTE = "\u201d";
 export const APOSTROPHE = "\u2019";
 export const NON_BREAKING_HYPHEN = "\u2011";
 export const TM_SIGN = "\u2122";
-export const BULLET = "\u30fb";
+export const MIDDLE_DOT = "\u30fb";
 
 export const quote = (text: string) => `${OPEN_QUOTE}${text}${CLOSE_QUOTE}`;
 
