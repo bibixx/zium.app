@@ -14,13 +14,18 @@ import { EventEmitter } from "../../utils/EventEmitter";
 import { StreamInfo } from "../useVideoRaceDetails/useVideoRaceDetails.types";
 import { getInitialOffsets, saveOffsets } from "./useUserOffests.utils";
 
-export type UserOffsets = { additionalStreams: Partial<Record<AutoComplete<StreamInfo["type"]>, number>> };
+export type UserOffsets = {
+  isUserDefined: boolean;
+  additionalStreams: Partial<Record<AutoComplete<StreamInfo["type"]>, number>>;
+};
+
 interface UserOffsetsEmitterHandlers {
   change: () => void;
 }
 
 export const useUserOffsetsState = (raceId: string | undefined) => {
   const offsets = useRef<UserOffsets | null>(getInitialOffsets(raceId));
+
   const offsetEmitter = useMemo(() => {
     const emitter = new EventEmitter<UserOffsetsEmitterHandlers>();
     emitter.setMaxListeners(30);
@@ -34,9 +39,10 @@ export const useUserOffsetsState = (raceId: string | undefined) => {
   }, [offsetEmitter, raceId]);
 
   const updateOffset = useCallback(
-    (key: keyof UserOffsets["additionalStreams"], value: number) => {
-      const oldOffsets: UserOffsets = offsets.current ?? { additionalStreams: {} };
+    (key: keyof UserOffsets["additionalStreams"], value: number, isUserDefined = true) => {
+      const oldOffsets: UserOffsets = offsets.current ?? { isUserDefined, additionalStreams: {} };
 
+      oldOffsets.isUserDefined = isUserDefined;
       oldOffsets.additionalStreams = {
         ...oldOffsets.additionalStreams,
         [key]: value,

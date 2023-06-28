@@ -1,55 +1,48 @@
 import { useCallback, useEffect, useRef } from "react";
-import equal from "fast-deep-equal";
 import { useSnackbars } from "../../../../components/Snackbar/SnackbarsProvider";
 import { Button } from "../../../../components/Button/Button";
-import { useUserOffsets } from "../../../../hooks/useUserOffests/useUserOffests";
+import { UserOffsets, useUserOffsets } from "../../../../hooks/useUserOffests/useUserOffests";
 import { useAnalytics } from "../../../../hooks/useAnalytics/useAnalytics";
 import { fetchZiumOffsets } from "./useZiumOffsets.api";
 import styles from "./useZiumOffsets.module.scss";
 
 export const useZiumOffsets = (raceId: string, hasOnlyOneStream: boolean) => {
   const lastFoundOffsetTimestampRef = useRef<number>(0);
-  const isFirstSuccessfulFetchRef = useRef(true);
   const { openSnackbar, closeSnackbar } = useSnackbars();
-  const { overrideOffsets, offsets } = useUserOffsets();
+  const { overrideOffsets, offsets: userOffsets } = useUserOffsets();
   const { trackError } = useAnalytics();
 
   const fetchData = useCallback(
     async (signal: AbortSignal) => {
       try {
         const data = await fetchZiumOffsets(raceId, signal);
-        const isFirstSuccessfulFetch = isFirstSuccessfulFetchRef.current;
-        isFirstSuccessfulFetchRef.current = false;
 
-        if (
-          data == null ||
-          data.timestamp <= lastFoundOffsetTimestampRef.current ||
-          equal(data.additionalStreams, offsets.current?.additionalStreams)
-        ) {
+        if (data == null || data.timestamp <= lastFoundOffsetTimestampRef.current) {
           return;
         }
 
-        if (offsets.current == null && isFirstSuccessfulFetch) {
-          overrideOffsets({ additionalStreams: data.additionalStreams });
+        const offsets: UserOffsets = { isUserDefined: false, additionalStreams: data.additionalStreams };
+        if (userOffsets.current == null || !userOffsets.current.isUserDefined) {
+          overrideOffsets(offsets);
           lastFoundOffsetTimestampRef.current = data.timestamp;
           return;
         }
 
         const onApply = (snackbarId: string) => {
-          overrideOffsets({ additionalStreams: data.additionalStreams });
+          overrideOffsets(offsets);
           closeSnackbar(snackbarId);
         };
 
         const id = openSnackbar({
-          title: "New offsets available",
-          content: "Do you want to apply them?",
+          title: "Update time offsets?",
+          content: "We have updated time offsets for this session. Would you like to load them?",
           actions: (
             <div className={styles.buttonsWrapper}>
               <Button variant="Primary" fluid onClick={() => onApply(id)}>
-                Yes
+                Yes, update
               </Button>
               <Button variant="Secondary" fluid onClick={() => closeSnackbar(id)}>
-                No
+                Dismiss
               </Button>
             </div>
           ),
@@ -61,7 +54,7 @@ export const useZiumOffsets = (raceId: string, hasOnlyOneStream: boolean) => {
         trackError(error);
       }
     },
-    [closeSnackbar, offsets, openSnackbar, overrideOffsets, raceId, trackError],
+    [closeSnackbar, userOffsets, openSnackbar, overrideOffsets, raceId, trackError],
   );
 
   useEffect(() => {
