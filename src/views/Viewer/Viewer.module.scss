@@ -7,7 +7,7 @@
   background-color: var(--color-background-surface);
   --dotColor: var(--color-core-neutral-lighten-300);
 
-  :global(.debug) & {
+  @include feature-flag("increase-background-contrast", "true") {
     background-color: #154415;
     --dotColor: white;
   }

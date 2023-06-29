@@ -1,3 +1,4 @@
+import { safeJSONParse } from "../../utils/safeJSONParse";
 import { UserOffsets } from "./useUserOffests";
 import { localStorageOffsetsValidator } from "./useUserOffests.validator";
 
@@ -35,11 +36,3 @@ export const saveOffsets = (raceId: string | undefined, offsets: UserOffsets) =>
 
   localStorage.setItem(getStorageKey(raceId), JSON.stringify(offsets));
 };
-
-function safeJSONParse(data: string): unknown | null {
-  try {
-    return JSON.parse(data);
-  } catch (error) {
-    return null;
-  }
-}

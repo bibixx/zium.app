@@ -52,13 +52,13 @@ export const Button = withAs("button")<ButtonProps>(
       >
         {IconLeft && (
           <div className={styles.iconWrapper}>
-            <IconLeft width={20} height={20} fill="currentColor" />
+            <IconLeft width={20} height={20} />
           </div>
         )}
         {children && <div className={styles.content}>{children}</div>}
         {IconRight && (
           <div className={styles.iconWrapper}>
-            <IconRight width={20} height={20} fill="currentColor" />
+            <IconRight width={20} height={20} />
           </div>
         )}
       </Component>

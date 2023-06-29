@@ -1,0 +1,76 @@
+.buttonsWrapper {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.header {
+  @include typography(heading, 500, default);
+  color: var(--color-text-strong);
+  user-select: none;
+}
+
+.section {
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 8px;
+  @include typography(text, 300, regular);
+  color: var(--color-text-default);
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.sectionHeader {
+  @include typography(text, 400, strong);
+  user-select: none;
+  margin-bottom: 4px;
+  color: var(--color-text-strong);
+}
+
+.checkboxRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  user-select: none;
+  cursor: pointer;
+  color: var(--color-text-default);
+  transition: var(--transition-fast);
+  transition-property: color;
+
+  &:hover {
+    color: var(--color-text-strong);
+  }
+
+  &:active {
+    color: var(--color-text-default);
+  }
+}
+
+.checkboxButton {
+  padding: 6px;
+}
+
+.checkboxInput {
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+
+  &:focus-visible + .checkboxButton {
+    outline: 2px solid var(--color-border-accent);
+    outline-offset: 2px;
+  }
+}
+
+.buttonsRow {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}

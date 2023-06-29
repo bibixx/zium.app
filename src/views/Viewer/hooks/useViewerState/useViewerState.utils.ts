@@ -3,6 +3,7 @@ import { Dimensions } from "../../../../types/Dimensions";
 import { generateUID } from "../../../../utils/generateUID";
 import { assertNever } from "../../../../utils/assertNever";
 import { clone } from "../../../../utils/clone";
+import { safeJSONParse } from "../../../../utils/safeJSONParse";
 import { localStorageViewerStateValidator } from "./useViewerState.validator";
 
 export type GridLayoutFillMode = "fit" | "fill";
@@ -95,12 +96,18 @@ type WindowGridActions =
   | DuplicateLayoutAction
   | DeleteLayoutAction;
 
+export const STORE_LOCAL_STORAGE_KEY = "store";
+
+export const saveStore = (store: WindowGridState) => localStorage.setItem("store", JSON.stringify(store));
+export const loadStore = () => localStorage.getItem("store");
+export const clearStore = () => localStorage.removeItem("store");
+
 const withLocalStorage =
   (reducer: (prevState: WindowGridState, action: WindowGridActions) => WindowGridState) =>
   (prevState: WindowGridState, action: WindowGridActions) => {
     const newState = reducer(prevState, action);
 
-    localStorage.setItem("store", JSON.stringify(newState));
+    saveStore(newState);
 
     return newState;
   };
@@ -271,20 +278,20 @@ export const windowGridReducer = (prevState: WindowGridState, action: WindowGrid
 export const windowGridReducerWithStorage = withLocalStorage(windowGridReducer);
 
 export const getInitialState = (): WindowGridState => {
-  const layoutFromStorage = localStorage.getItem("store") as string | null;
+  const layoutFromStorage = loadStore();
 
   if (layoutFromStorage != null) {
     const data = safeJSONParse(layoutFromStorage);
     const parsedData = localStorageViewerStateValidator.safeParse(data);
 
     if (parsedData.success) {
-      localStorage.setItem("store", JSON.stringify(parsedData.data));
+      saveStore(parsedData.data);
 
       return parsedData.data;
     }
   }
 
-  localStorage.removeItem("store");
+  clearStore();
   const windows: GridWindow[] = [
     {
       type: "main",
@@ -354,11 +361,3 @@ const getInitialLayout = (windows: GridWindow[]): GridLayout[] => {
     };
   });
 };
-
-function safeJSONParse(data: string): unknown | null {
-  try {
-    return JSON.parse(data);
-  } catch (error) {
-    return null;
-  }
-}

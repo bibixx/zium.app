@@ -32,3 +32,14 @@
     @content;
   }
 }
+
+@mixin feature-flag($flag, $value) {
+  $open: "[data-ff-";
+  $v: "=#{$value}";
+  $close: "]";
+  $selector: #{$open}#{$flag}#{$v}#{$close};
+
+  :global(#{$selector}) & {
+    @content;
+  }
+}

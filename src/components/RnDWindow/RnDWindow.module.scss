@@ -74,7 +74,7 @@
   user-select: none;
   --handleSize: 5px;
 
-  :global(.debug) & {
+  @include feature-flag("show-window-borders", "true") {
     &.rndHandleN,
     &.rndHandleE,
     &.rndHandleW,

@@ -27,7 +27,7 @@
   --translate-x: var(--drag-translate-x);
 
   background: var(--color-background-default-default);
-  @include inner-border(var(--color-border-default-default));
+  @include inner-border(var(--color-border-default-alpha));
   position: absolute;
   border-radius: var(--radii-medium);
   width: 360px;

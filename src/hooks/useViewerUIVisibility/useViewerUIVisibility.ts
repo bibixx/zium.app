@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
-import { useDebug } from "../useDebug/useDebug";
+import { useFeatureFlags } from "../useFeatureFlags/useFeatureFlags";
 import { useStateWithRef } from "../useStateWithRef/useStateWithRef";
 
 const UI_VISIBILITY_TIMEOUT = 1_000;
@@ -12,7 +12,8 @@ interface ViewerUIVisibilityContextState {
 }
 export const useViewerUIVisibilityState = (): ViewerUIVisibilityContextState => {
   const [isUIVisible, isUIVisibleRef, setIsUIVisible] = useStateWithRef(true);
-  const isDebugMode = useDebug();
+  const { flags } = useFeatureFlags();
+  const isDebugMode = flags.forceUiVisibility;
   const [shouldPreventHiding, setShouldPreventHiding] = useState(false);
 
   const preventHiding = useCallback(

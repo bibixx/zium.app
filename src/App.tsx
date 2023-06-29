@@ -9,17 +9,17 @@ import { assertNever } from "./utils/assertNever";
 import { useLoggedInState } from "./hooks/useLoggedInState";
 import { LogIn } from "./views/LogIn/LogIn";
 import { Races } from "./views/Races/Races";
-import { DebugWindow } from "./components/DebugWindow/DebugWindow";
 import { OVERLAYS_PORTAL_ID } from "./constants/portals";
 import { HotkeysStackWithinHotkeysProvider } from "./hooks/useHotkeysStack/useHotkeysStack";
 import { DEFAULT_SCOPE } from "./hooks/useScopedHotkeys/useScopedHotkeys";
-import { DebugProvider } from "./hooks/useDebug/useDebug";
+import { FeatureFlagsProvider } from "./hooks/useFeatureFlags/useFeatureFlags";
 import { ErrorBoundary } from "./components/ErrorBoundary/ErrorBoundary";
 import { NotSupported } from "./views/NotSupported/NotSupported";
 import { isSupportedBrowser } from "./utils/platform";
 import { SnackbarsProvider } from "./components/Snackbar/SnackbarsProvider";
 import { AnalyticsContextProvider } from "./hooks/useAnalytics/useAnalytics";
 import { PrivacyPolicy } from "./views/PrivacyPolicy/PrivacyPolicy";
+import { DebugPanel } from "./components/DebugPanel/DebugPanel";
 
 const WithCompanion = ({ children }: React.PropsWithChildren<unknown>) => {
   const companionState = useHasCompanion();
@@ -65,8 +65,7 @@ export default function App() {
           <HotkeysStackWithinHotkeysProvider>
             <BrowserRouter>
               <SnackbarsProvider>
-                <DebugProvider>
-                  <DebugWindow />
+                <FeatureFlagsProvider>
                   <Routes>
                     <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                     {isSupportedBrowser ? (
@@ -75,6 +74,7 @@ export default function App() {
                         element={
                           <WithCompanion>
                             <WithLoggedIn />
+                            <DebugPanel />
                           </WithCompanion>
                         }
                       >
@@ -86,7 +86,7 @@ export default function App() {
                     )}
                   </Routes>
                   <div id={OVERLAYS_PORTAL_ID} />
-                </DebugProvider>
+                </FeatureFlagsProvider>
               </SnackbarsProvider>
             </BrowserRouter>
           </HotkeysStackWithinHotkeysProvider>
