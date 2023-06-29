@@ -7,7 +7,7 @@ import { fetchZiumOffsets } from "./useZiumOffsets.api";
 import styles from "./useZiumOffsets.module.scss";
 
 export const useZiumOffsets = (raceId: string, hasOnlyOneStream: boolean) => {
-  const lastFoundOffsetTimestampRef = useRef<number>(0);
+  const lastFetchedOffsetTimestampRef = useRef<number | null>(null);
   const { openSnackbar, closeSnackbar } = useSnackbars();
   const { overrideOffsets, offsets: userOffsets } = useUserOffsets();
   const { trackError } = useAnalytics();
@@ -16,16 +16,18 @@ export const useZiumOffsets = (raceId: string, hasOnlyOneStream: boolean) => {
     async (signal: AbortSignal) => {
       try {
         const data = await fetchZiumOffsets(raceId, signal);
-        const doesUserHaveOverridesOverLastZiumOffsets =
-          data != null && userOffsets.current?.lastAppliedZiumOffsets != null
-            ? data.timestamp <= userOffsets.current?.lastAppliedZiumOffsets
-            : false;
+        if (data == null) {
+          return;
+        }
 
-        if (
-          data == null ||
-          data.timestamp <= lastFoundOffsetTimestampRef.current ||
-          doesUserHaveOverridesOverLastZiumOffsets
-        ) {
+        const shouldTryToApplyOffset = getShouldTryToApplyOffset(
+          data.timestamp,
+          lastFetchedOffsetTimestampRef.current,
+          userOffsets.current?.lastAppliedZiumOffsets ?? null,
+        );
+        lastFetchedOffsetTimestampRef.current = data.timestamp;
+
+        if (!shouldTryToApplyOffset) {
           return;
         }
 
@@ -34,9 +36,11 @@ export const useZiumOffsets = (raceId: string, hasOnlyOneStream: boolean) => {
           additionalStreams: data.additionalStreams,
           lastAppliedZiumOffsets: data.timestamp,
         };
-        if (userOffsets.current == null || !userOffsets.current.isUserDefined) {
+
+        const shouldAskForPermission = userOffsets.current !== null && userOffsets.current.isUserDefined;
+
+        if (!shouldAskForPermission) {
           overrideOffsets(offsets);
-          lastFoundOffsetTimestampRef.current = data.timestamp;
           return;
         }
 
@@ -60,8 +64,6 @@ export const useZiumOffsets = (raceId: string, hasOnlyOneStream: boolean) => {
           ),
           time: 10_000,
         });
-
-        lastFoundOffsetTimestampRef.current = data.timestamp;
       } catch (error) {
         trackError(error);
       }
@@ -79,12 +81,27 @@ export const useZiumOffsets = (raceId: string, hasOnlyOneStream: boolean) => {
 
     const interval = setInterval(() => {
       fetchData(abortController.signal);
-    }, 5000);
-    // }, 60_000);
+    }, 60_000);
 
     return () => {
       clearInterval(interval);
       abortController.abort();
     };
   }, [fetchData, hasOnlyOneStream]);
+};
+
+const getShouldTryToApplyOffset = (
+  dataTimestamp: number,
+  lastFetchedOffsetTimestamp: number | null,
+  lastAppliedZiumOffsets: number | null,
+) => {
+  if (lastFetchedOffsetTimestamp !== null && dataTimestamp <= lastFetchedOffsetTimestamp) {
+    return false;
+  }
+
+  if (lastAppliedZiumOffsets === null) {
+    return true;
+  }
+
+  return dataTimestamp > lastAppliedZiumOffsets;
 };
