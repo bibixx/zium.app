@@ -18,7 +18,9 @@ To get a local copy up and running follow these steps.
    ```sh
    yarn install
    ```
-3. Run app in the development mode
+3. Duplicate `.env.example` and rename it to `.env`. Adjust values as needed
+
+4. Run app in the development mode
    ```sh
    yarn dev
    ```
