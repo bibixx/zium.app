@@ -22,6 +22,7 @@ interface MainVideoWindowProps extends VideoWindowProps {
   onLoaded: (player: PlayerAPI) => void;
   areClosedCaptionsOn: boolean;
   setAreClosedCaptionsOn: (value: boolean) => void;
+  hasOnlyOneStream: boolean;
 }
 
 export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps>(
@@ -38,6 +39,7 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
       updateFillMode,
       areClosedCaptionsOn,
       setAreClosedCaptionsOn,
+      hasOnlyOneStream,
     },
     forwardedRef,
   ) => {
@@ -100,7 +102,7 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
           isAudioFocused={isAudioFocused}
           toggleClosedCaptions={() => setAreClosedCaptionsOn(!areClosedCaptionsOn)}
           areClosedCaptionsOn={areClosedCaptionsOn}
-          streamPill={<SourceButton label="F1 Live" icon={TvIcon} hideWhenUiHidden />}
+          streamPill={!hasOnlyOneStream && <SourceButton label="F1 Live" icon={TvIcon} hideWhenUiHidden />}
         />
       </VideoWindowWrapper>
     );

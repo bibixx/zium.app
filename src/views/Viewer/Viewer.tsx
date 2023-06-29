@@ -218,6 +218,7 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
             updateFillMode={updateFillMode}
             areClosedCaptionsOn={areClosedCaptionsOn}
             setAreClosedCaptionsOn={setAreClosedCaptionsOn}
+            hasOnlyOneStream={hasOnlyOneStream}
           />
         );
       }
