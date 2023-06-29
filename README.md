@@ -85,7 +85,7 @@ Don't forget to give the project a star! Thanks again!
 
 ### Design
 
-As the aim of this project is to be built fully in public our designs are also fully available on [Figma Community](https://www.figma.com/community/file/1250905585551204036/Zium.app). If you wish to contribute to the designs, take a look at [GitHub issues with a `design` label](https://github.com/bibixx/zium.app/issues?q=is%3Aopen+is%3Aissue+label%3Adesign) to get started.
+As the aim of this project is to be built fully in public our designs are also fully available on [Figma Community](https://www.figma.com/community/file/1250905585551204036/Zium.app). If you wish to contribute to the designs, take a look at [`CONTRIBUTING.md`](CONTRIBUTING.md) or at [GitHub issues with a `design` label](https://github.com/bibixx/zium.app/issues?q=is%3Aopen+is%3Aissue+label%3Adesign) to get started.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
