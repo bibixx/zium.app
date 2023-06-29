@@ -1,15 +1,12 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { useLiveEvents } from "../../../../hooks/useLiveEvents/useLiveEvents";
 import { findEndingLastEvent } from "../../../../utils/findEndingLastEvent";
 import { useSnackbars } from "../../../../components/Snackbar/SnackbarsProvider";
-import { Button } from "../../../../components/Button/Button";
 import { isRaceGenre } from "../../../../constants/races";
 import { fixEmDashes, formatRaceName, toTitleCase } from "../../../../utils/text";
 import { useCloseAllSnackbarsOnUnmount } from "../../../../hooks/useCloseAllSnackbarsOnUnmount/useCloseAllSnackbarsOnUnmount";
-import { addQueryParams } from "../../../../utils/addQueryParams";
 import { useDevicePixelRatio } from "../../../../hooks/useDevicePixelRatio/useDevicePixelRatio";
-import styles from "./useNotifyAboutNewEvent.module.scss";
+import { getNewEventSnackbarData } from "./useNotifyAboutNewEvent.utils";
 
 export const useNotifyAboutNewEvent = (currentRaceId: string) => {
   const liveEvents = useLiveEvents(30_000);
@@ -35,27 +32,9 @@ export const useNotifyAboutNewEvent = (currentRaceId: string) => {
       ? formatRaceName(latestEvent.description, false)
       : fixEmDashes(toTitleCase(latestEvent.description));
 
-    const id = openSnackbar({
-      title: eventDescription,
-      content: "New event is live now",
-      image: addQueryParams(`https://f1tv.formula1.com/image-resizer/image/${latestEvent.pictureUrl}`, {
-        w: 360 * devicePixelRatio,
-        h: 180 * devicePixelRatio,
-        q: "HI",
-        o: "L",
-      }),
-      actions: (
-        <div className={styles.buttonsWrapper}>
-          <Button variant="Primary" fluid as={Link} onClick={() => closeSnackbar(id)} to={`/race/${latestEvent.id}`}>
-            Watch now
-          </Button>
-          <Button variant="Secondary" fluid onClick={() => closeSnackbar(id)}>
-            Dismiss
-          </Button>
-        </div>
-      ),
-      time: 60_000,
-    });
+    const id = openSnackbar(
+      getNewEventSnackbarData(eventDescription, latestEvent.id, latestEvent.pictureUrl, () => closeSnackbar(id)),
+    );
     registerSnackbarForUnmount(id);
   }, [
     closeSnackbar,

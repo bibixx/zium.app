@@ -23,7 +23,7 @@ interface SnackbarData {
   nodeRef: MutableRefObject<HTMLElement | undefined>;
 }
 
-type ArgumentSnackbarData = Omit<SnackbarData, "id" | "nodeRef"> & { id?: string };
+export type ArgumentSnackbarData = Omit<SnackbarData, "id" | "nodeRef"> & { id?: string };
 
 const useSnackbarsState = () => {
   const [snackbars, setSnackbars] = useState<SnackbarData[]>([]);

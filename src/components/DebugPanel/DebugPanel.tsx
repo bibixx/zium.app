@@ -5,10 +5,10 @@ import { Link } from "react-router-dom";
 import { Dialog } from "../Dialog/Dialog";
 import { DialogContent, DialogContentAlert, DialogContentButtonFooter } from "../Dialog/DialogContent/DialogContent";
 import { Button } from "../Button/Button";
-import { addQueryParams } from "../../utils/addQueryParams";
 import { useSnackbars } from "../Snackbar/SnackbarsProvider";
 import { useFeatureFlags } from "../../hooks/useFeatureFlags/useFeatureFlags";
 import { saveStore } from "../../views/Viewer/hooks/useViewerState/useViewerState.utils";
+import { getNewEventSnackbarData } from "../../views/Viewer/hooks/useNotifyAboutNewEvent/useNotifyAboutNewEvent.utils";
 import styles from "./DebugPanel.module.scss";
 import { debugStore, getLorem } from "./DebugPanel.utils";
 
@@ -73,30 +73,14 @@ const DebugSnackbars = () => {
         <Button
           variant="Secondary"
           onClick={() => {
-            const id = openSnackbar({
-              title: "Weekend Warm-Up — Austria",
-              content: "New event is live now",
-              image: addQueryParams(
-                `https://f1tv.formula1.com/image-resizer/image/1000007241-9dda9a2d-b17d-4b87-9432-3cab3171889e/landscape_hero_web`,
-                {
-                  w: 360 * devicePixelRatio,
-                  h: 180 * devicePixelRatio,
-                  q: "HI",
-                  o: "L",
-                },
+            const id = openSnackbar(
+              getNewEventSnackbarData(
+                "Weekend Warm-Up — Austria",
+                "1000007241",
+                "1000007241-9dda9a2d-b17d-4b87-9432-3cab3171889e/landscape_hero_web",
+                () => closeSnackbar(id),
               ),
-              actions: (
-                <div className={styles.buttonsWrapper}>
-                  <Button variant="Primary" fluid onClick={() => closeSnackbar(id)}>
-                    Watch now
-                  </Button>
-                  <Button variant="Secondary" fluid onClick={() => closeSnackbar(id)}>
-                    Dismiss
-                  </Button>
-                </div>
-              ),
-              time: 60000,
-            });
+            );
           }}
         >
           Live event
