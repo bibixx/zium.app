@@ -18,6 +18,7 @@ export const bodyRootValidator = z.object({
 export const containerValidator = z.object({
   id: z.string(),
   metadata: z.object({
+    title: z.string(),
     shortDescription: z.string(),
     pictureUrl: z.string(),
     contentId: z.number(),

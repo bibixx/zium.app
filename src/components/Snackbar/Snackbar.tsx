@@ -11,6 +11,7 @@ interface SnackbarProps {
   title: ReactNode;
   content: ReactNode;
   actions?: ReactNode;
+  image?: string;
   time?: number;
   offsetY: number;
   onClose: () => void;
@@ -20,7 +21,17 @@ interface SnackbarProps {
 
 export const Snackbar = forwardRef<HTMLDivElement | null, SnackbarProps>(
   (
-    { title, content, actions, offsetY, time = DEFAULT_SNACKBAR_TIME, onClose, setShowDraggingOverlay, onHeightChange },
+    {
+      title,
+      content,
+      actions,
+      offsetY,
+      time = DEFAULT_SNACKBAR_TIME,
+      image,
+      onClose,
+      setShowDraggingOverlay,
+      onHeightChange,
+    },
     forwardedRef,
   ) => {
     const [isHovering, setIsHovering] = useState(false);
@@ -64,6 +75,7 @@ export const Snackbar = forwardRef<HTMLDivElement | null, SnackbarProps>(
             data-css-transition
           >
             <div className={styles.mainWrapper}>
+              {image && <img src={image} alt="" className={styles.image} />}
               <div className={cn(styles.content, { [styles.hasActions]: actions != null })}>
                 <div className={styles.title}>{title}</div>
                 <div className={styles.textContent}>{content}</div>

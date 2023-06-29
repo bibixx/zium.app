@@ -19,6 +19,7 @@ interface SnackbarData {
   content: ReactNode;
   actions?: ReactNode;
   time?: number;
+  image?: string;
   nodeRef: MutableRefObject<HTMLElement | undefined>;
 }
 
@@ -107,6 +108,7 @@ export const SnackbarsProvider = ({ children }: SnackbarsProviderProps) => {
               <Snackbar
                 title={snackbar.title}
                 content={snackbar.content}
+                image={snackbar.image}
                 onClose={() => closeSnackbar(snackbar.id)}
                 setShowDraggingOverlay={setShowDraggingOverlay}
                 ref={(ref) => {
