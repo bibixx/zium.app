@@ -27,7 +27,7 @@
     ·
     <a href="https://github.com/bibixx/zium.app/issues">Request Feature</a>
     ·
-    <a href="https://www.craft.do/s/fffYcaZcBCUEFK">Features Roadmap</a>
+    <a href="https://github.com/users/bibixx/projects/1">Roadmap</a>
   </p>
 </div>
 
@@ -41,19 +41,14 @@
       <a href="#about-the-project">About The Project</a>
     </li>
     <li>
-      <a href="#getting-started">Getting Started</a>
+      <a href="#contributing">Contributing</a>
       <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
         <li>
-          <a href="#installation">Installation</a>
-          <ul>
-            <li><a href="#ziumapp">zium.app</a></li>
-          </ul>
+          <a href="#design">Design</a>
         </li>
       </ul>
     </li>
-    <li><a href="#roadmap">Roadmap</a></li>
-    <li><a href="#contributing">Contributing</a></li>
+    <li><a href="#roadmap-and-issue-tracking">Roadmap and issue tracking</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
     <li><a href="#acknowledgements">Acknowledgements</a></li>
@@ -68,7 +63,7 @@
 
 <div align="center">
   <a href="https://zium.app">
-    <img src=".github/readme/screenshot.png" alt="" height="500">
+    <img src=".github/readme/screenshot.png" alt="" />
   </a>
 </div>
 
@@ -80,93 +75,35 @@ Want to feel like you're a race engineer during a Formula 1 race? With zium.app 
 
 
 
-<!-- GETTING STARTED -->
-## Getting Started
-
-To get a local copy up and running follow these steps.
-
-### Prerequisites
-
-* [Node.js 16.18+](https://nodejs.org/en/download)
-* [Yarn](https://yarnpkg.com/getting-started/install)
-
-### Installation
-
-#### zium.app
-1. Clone the repo
-   ```sh
-   git clone https://github.com/bibixx/zium.app.git
-   ```
-2. Install NPM packages
-   ```sh
-   yarn install
-   ```
-3. Run app in the development mode
-   ```sh
-   yarn dev
-   ```
-
-#### Chrome Extension
-1. Clone the repo
-   ```sh
-   git clone https://github.com/bibixx/zium.app.git
-   ```
-2. Enter the `extension` folder
-   ```sh
-   cd extension
-   ```
-2. Install NPM packages
-   ```sh
-   yarn install
-   ```
-3. Run extension in the development mode
-   ```sh
-   yarn dev
-   ```
-4. [Load the unpacked extension from the `extension/dist` folder](https://developer.chrome.com/docs/extensions/mv3/getstarted/development-basics/#load-unpacked)
-
-> Domains that the **dev** extension considers the app to be in is: `localhost`, `*.zium.app`, `*.vercel.app`\
-> Domains that the **production** (the one in Chrome store) extension considers the app to be in is: `*.zium.app`
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-<!-- ROADMAP -->
-## Roadmap
-
-<a href="https://www.craft.do/s/fffYcaZcBCUEFK">
-  <div align="center">
-    <img src="https://api.craft.do/render/preview/fffYcaZcBCUEFK" alt="zium.app Features Roadmap" width="500" />
-  </div>
-</a>
-
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
 <!-- CONTRIBUTING -->
 ## Contributing
 
 Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
-If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
+If you have a suggestion that would make this app better, please fork the repo and create a pull request. For more information see [`CONTRIBUTING.md`](CONTRIBUTING.md). You can also simply open an issue with the tag "enhancement".
 Don't forget to give the project a star! Thanks again!
 
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request to the `dev` branch
+### Design
+
+As the aim of this project is to be built fully in public our designs are also fully available on [Figma Community](https://www.figma.com/community/file/1250905585551204036/Zium.app). If you wish to contribute to the designs, take a look at [GitHub issues with a `design` label](https://github.com/bibixx/zium.app/issues?q=is%3Aopen+is%3Aissue+label%3Adesign) to get started.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+
+<!-- ROADMAP -->
+## Roadmap and issue tracking
+
+All of the upcoming features, known issues and bugs are being tracked using [GitHub issues](https://github.com/bibixx/zium.app/issues).
+
+Additionally we're using a [GitHub project](https://github.com/users/bibixx/projects/1/views/1) for tracking progress, status and complexity of tasks.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
 <!-- LICENSE -->
 ## License
 
-Copyright © 2023 Bartosz Legięć, Adam Ruthendorf-Przewoski
+Copyright 2023 Bartosz Legięć, Adam Ruthendorf-Przewoski
 
 zium.app is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
@@ -181,10 +118,13 @@ You should have received a copy of the GNU General Public License along with ziu
 <!-- CONTACT -->
 ## Contact
 
-* Bartek Legięć — [@bibix1999](https://twitter.com/bibix1999)
-* Adam Ruthendorf-Przewoski — [@AdamPrzewoski](https://twitter.com/AdamPrzewoski)
+To contact us please use the [zium@zium.app](mailto:zium@zium.app) email address.
 
 Project Link: [https://github.com/bibixx/zium.app](https://github.com/bibixx/zium.app)
+
+### Authors
+* Bartosz Legięć (development 👨🏻‍💻) — [@bibix1999](https://twitter.com/bibix1999)
+* Adam Ruthendorf-Przewoski (design 👨🏻‍🎨) — [@AdamPrzewoski](https://twitter.com/AdamPrzewoski)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -195,10 +135,13 @@ Project Link: [https://github.com/bibixx/zium.app](https://github.com/bibixx/ziu
 
 * Great appreciation goes to the creator of the [MultiViewer app](https://multiviewer.app/) which was a great inspiration during development of this project.
 
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
 <!-- DISCLAIMERS -->
 ## Disclaimers
 
-* This website is unofficial and is not associated in any way with the Formula 1 companies. F1, FORMULA ONE, FORMULA 1, FIA FORMULA ONE WORLD CHAMPIONSHIP, GRAND PRIX and related marks are trade marks of Formula One Licensing B.V.
+* This project is unofficial and is not associated in any way with the Formula 1 companies. F1, FORMULA ONE, FORMULA 1, FIA FORMULA ONE WORLD CHAMPIONSHIP, GRAND PRIX and related marks are trade marks of Formula One Licensing B.V.
 * Login information is stored and used solely on your device. No passwords, personal data, or payment information is sent to zium.app servers.
 * You must have an active F1 TV subscription to access video streams. zium.app doesn’t allow you to watch Formula 1 for free.
 
