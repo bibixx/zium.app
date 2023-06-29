@@ -16,12 +16,24 @@ export const useZiumOffsets = (raceId: string, hasOnlyOneStream: boolean) => {
     async (signal: AbortSignal) => {
       try {
         const data = await fetchZiumOffsets(raceId, signal);
+        const doesUserHaveOverridesOverLastZiumOffsets =
+          data != null && userOffsets.current?.lastAppliedZiumOffsets != null
+            ? data.timestamp <= userOffsets.current?.lastAppliedZiumOffsets
+            : false;
 
-        if (data == null || data.timestamp <= lastFoundOffsetTimestampRef.current) {
+        if (
+          data == null ||
+          data.timestamp <= lastFoundOffsetTimestampRef.current ||
+          doesUserHaveOverridesOverLastZiumOffsets
+        ) {
           return;
         }
 
-        const offsets: UserOffsets = { isUserDefined: false, additionalStreams: data.additionalStreams };
+        const offsets: UserOffsets = {
+          isUserDefined: false,
+          additionalStreams: data.additionalStreams,
+          lastAppliedZiumOffsets: data.timestamp,
+        };
         if (userOffsets.current == null || !userOffsets.current.isUserDefined) {
           overrideOffsets(offsets);
           lastFoundOffsetTimestampRef.current = data.timestamp;
@@ -67,7 +79,8 @@ export const useZiumOffsets = (raceId: string, hasOnlyOneStream: boolean) => {
 
     const interval = setInterval(() => {
       fetchData(abortController.signal);
-    }, 60_000);
+    }, 5000);
+    // }, 60_000);
 
     return () => {
       clearInterval(interval);

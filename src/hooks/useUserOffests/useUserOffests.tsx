@@ -16,6 +16,7 @@ import { getInitialOffsets, saveOffsets } from "./useUserOffests.utils";
 
 export type UserOffsets = {
   isUserDefined: boolean;
+  lastAppliedZiumOffsets: number | null;
   additionalStreams: Partial<Record<AutoComplete<StreamInfo["type"]>, number>>;
 };
 
@@ -40,7 +41,11 @@ export const useUserOffsetsState = (raceId: string | undefined) => {
 
   const updateOffset = useCallback(
     (key: keyof UserOffsets["additionalStreams"], value: number, isUserDefined = true) => {
-      const oldOffsets: UserOffsets = offsets.current ?? { isUserDefined, additionalStreams: {} };
+      const oldOffsets: UserOffsets = offsets.current ?? {
+        isUserDefined,
+        additionalStreams: {},
+        lastAppliedZiumOffsets: null,
+      };
 
       oldOffsets.isUserDefined = isUserDefined;
       oldOffsets.additionalStreams = {
