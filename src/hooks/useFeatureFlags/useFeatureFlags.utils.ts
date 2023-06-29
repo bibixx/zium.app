@@ -25,5 +25,9 @@ export const saveFlags = (flags: FlagsObject) => {
   localStorage.setItem(FLAGS_LOCAL_STORAGE_KEY, JSON.stringify(flags));
 };
 
+export const clearFlags = () => {
+  localStorage.removeItem(FLAGS_LOCAL_STORAGE_KEY);
+};
+
 export const toKebabCase = (text: string) =>
   text.replace(/^[A-Z]/, (match) => match.toLowerCase()).replace(/[A-Z]/g, (match) => `-${match.toLowerCase()}`);

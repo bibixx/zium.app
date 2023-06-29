@@ -1,5 +1,5 @@
 import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { getInitialFlags, saveFlags, toKebabCase } from "./useFeatureFlags.utils";
+import { clearFlags, getInitialFlags, saveFlags, toKebabCase } from "./useFeatureFlags.utils";
 import { FlagKeys, FlagsObject } from "./useFeatureFlags.types";
 
 const useFeatureFlagsState = () => {
@@ -21,12 +21,19 @@ const useFeatureFlagsState = () => {
     };
   }, []);
 
-  return { flags, updateFlag };
+  const resetFlags = useCallback(() => {
+    clearFlags();
+    setFlags(getInitialFlags());
+    isFirstRenderRef.current = true;
+  }, []);
+
+  return { flags, updateFlag, resetFlags };
 };
 
 interface FeatureFlagsContextType {
   flags: FlagsObject;
   updateFlag: <T extends FlagKeys>(key: T) => (value: FlagsObject[T]) => void;
+  resetFlags: () => void;
 }
 
 const FeatureFlagsContext = createContext<FeatureFlagsContextType | null>(null);

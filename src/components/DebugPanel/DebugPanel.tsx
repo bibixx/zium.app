@@ -7,7 +7,6 @@ import { DialogContent, DialogContentAlert, DialogContentButtonFooter } from "..
 import { Button } from "../Button/Button";
 import { addQueryParams } from "../../utils/addQueryParams";
 import { useSnackbars } from "../Snackbar/SnackbarsProvider";
-import { useWindowSize } from "../../hooks/useWindowSize";
 import { useFeatureFlags } from "../../hooks/useFeatureFlags/useFeatureFlags";
 import { saveStore } from "../../views/Viewer/hooks/useViewerState/useViewerState.utils";
 import styles from "./DebugPanel.module.scss";
@@ -46,7 +45,7 @@ const DebugPanelContents = (props: DebugPanelContentsProps) => {
   return (
     <>
       <div className={styles.header}>Debug options 🥚</div>
-      <DebugWindowSize />
+      <DebugGeneralSection />
       <DebugSnackbars />
       <DebugRaceSettings {...props} />
     </>
@@ -130,19 +129,22 @@ const ClearStorageDialog = ({ onCancel, onConfirm }: ClearStorageDialogProps) =>
   );
 };
 
-const DebugWindowSize = () => {
-  const { width, height } = useWindowSize();
+const DebugGeneralSection = () => {
   const [isClearStorageDialogOpen, setIsClearStorageDialogOpen] = useState(false);
+  const { resetFlags } = useFeatureFlags();
 
   return (
     <>
       <div className={styles.section}>
         <div className={styles.sectionHeader}>General</div>
-        <div>Width: {width}</div>
-        <div>Height: {height}</div>
-        <Button variant="Secondary" onClick={() => setIsClearStorageDialogOpen(true)}>
-          Clear localStorage
-        </Button>
+        <div className={styles.buttonsRow}>
+          <Button variant="Secondary" onClick={() => setIsClearStorageDialogOpen(true)}>
+            Clear localStorage
+          </Button>
+          <Button variant="Secondary" onClick={resetFlags}>
+            Reset flags
+          </Button>
+        </div>
       </div>
 
       <Dialog isOpen={isClearStorageDialogOpen} onClose={() => setIsClearStorageDialogOpen(false)}>
@@ -186,6 +188,20 @@ const DebugRaceSettings = ({ closePanel }: DebugPanelContentsProps) => {
   return (
     <div className={styles.section}>
       <div className={styles.sectionHeader}>Race</div>
+      <div className={styles.buttonsRow}>
+        <Button variant={"Secondary"} as={Link} to="/race/__DEBUG__" onClick={closePanel}>
+          Open debug live stream
+        </Button>
+        <Button
+          variant={"Secondary"}
+          onClick={() => {
+            saveStore(debugStore);
+            window.location.reload();
+          }}
+        >
+          Load debug store
+        </Button>
+      </div>
       <CheckboxRow
         label="Increase background contrast"
         checked={flags.increaseBackgroundContrast}
@@ -197,18 +213,6 @@ const DebugRaceSettings = ({ closePanel }: DebugPanelContentsProps) => {
         onChange={updateFlag("showWindowBorders")}
       />
       <CheckboxRow label="Never hide UI" checked={flags.forceUiVisibility} onChange={updateFlag("forceUiVisibility")} />
-      <Button variant={"Secondary"} as={Link} to="/race/__DEBUG__" onClick={closePanel}>
-        Open debug live stream
-      </Button>
-      <Button
-        variant={"Secondary"}
-        onClick={() => {
-          saveStore(debugStore);
-          window.location.reload();
-        }}
-      >
-        Load debug store
-      </Button>
     </div>
   );
 };
