@@ -6,7 +6,6 @@ import { Link } from "react-router-dom";
 import { isRaceGenre } from "../../constants/races";
 import { useActiveAlarms } from "../../hooks/useActiveAlarms";
 import { useDevicePixelRatio } from "../../hooks/useDevicePixelRatio/useDevicePixelRatio";
-import { LiveEventState } from "../../hooks/useLiveEvent/useLiveEvent.types";
 import { RaceData } from "../../hooks/useRacesList/useRacesList.types";
 import { addQueryParams } from "../../utils/addQueryParams";
 import { createAlarm, deleteAlarm } from "../../utils/extensionApi";
@@ -14,12 +13,13 @@ import { fixEmDashes, formatRaceName, toTitleCase } from "../../utils/text";
 import { Button } from "../Button/Button";
 import { CountryImage } from "../CountryImage/CountryImage";
 import { EventCardTag } from "../EventCardTag/EventCardTag";
-import styles from "./LiveCard.module.scss";
+import { HeaderCardDataState } from "../../hooks/useHeaderCardData/useHeaderCardData.types";
+import styles from "./HeaderCard.module.scss";
 
-interface LiveCardWithZeroStateProps {
-  liveEventState: LiveEventState;
+interface HeaderCardWithZeroStateProps {
+  eventState: HeaderCardDataState;
 }
-export const LiveCardWithZeroState = ({ liveEventState }: LiveCardWithZeroStateProps) => {
+export const HeaderCardWithZeroState = ({ eventState: liveEventState }: HeaderCardWithZeroStateProps) => {
   const activeAlarms = useActiveAlarms();
 
   if (liveEventState.state === "loading") {
@@ -32,16 +32,16 @@ export const LiveCardWithZeroState = ({ liveEventState }: LiveCardWithZeroStateP
 
   return (
     <div className={styles.marginWrapper}>
-      <LiveCard raceDetails={liveEventState.data} activeAlarms={activeAlarms} />
+      <HeaderCard raceDetails={liveEventState.data} activeAlarms={activeAlarms} />
     </div>
   );
 };
 
-interface LiveCardProps {
+interface HeaderCardProps {
   raceDetails: RaceData;
   activeAlarms: string[];
 }
-const LiveCard = ({ raceDetails, activeAlarms }: LiveCardProps) => {
+const HeaderCard = ({ raceDetails, activeAlarms }: HeaderCardProps) => {
   const devicePixelRatio = useDevicePixelRatio();
   const pictureUrl = addQueryParams(`https://f1tv.formula1.com/image-resizer/image/${raceDetails.pictureUrl}`, {
     w: 1920 * devicePixelRatio,

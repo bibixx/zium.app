@@ -63,10 +63,10 @@ export default function App() {
       <ErrorBoundary>
         <HotkeysProvider initiallyActiveScopes={[DEFAULT_SCOPE]}>
           <HotkeysStackWithinHotkeysProvider>
-            <SnackbarsProvider>
-              <DebugProvider>
-                <DebugWindow />
-                <BrowserRouter>
+            <BrowserRouter>
+              <SnackbarsProvider>
+                <DebugProvider>
+                  <DebugWindow />
                   <Routes>
                     <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                     {isSupportedBrowser ? (
@@ -85,10 +85,10 @@ export default function App() {
                       <Route path="/" element={<NotSupported />} />
                     )}
                   </Routes>
-                </BrowserRouter>
-                <div id={OVERLAYS_PORTAL_ID} />
-              </DebugProvider>
-            </SnackbarsProvider>
+                  <div id={OVERLAYS_PORTAL_ID} />
+                </DebugProvider>
+              </SnackbarsProvider>
+            </BrowserRouter>
           </HotkeysStackWithinHotkeysProvider>
         </HotkeysProvider>
       </ErrorBoundary>

@@ -3,13 +3,13 @@ import { Fragment, useCallback, useMemo, useRef, useState } from "react";
 import { differenceInDays } from "date-fns";
 import { SupportedSeasons, SUPPORTED_SEASONS } from "../../constants/seasons";
 import { isSeasonComingSoon } from "../../utils/SeasonUtils";
-import { LiveCardWithZeroState } from "../../components/LiveCard/LiveCard";
-import { useLiveEvent } from "../../hooks/useLiveEvent/useLiveEvent";
+import { HeaderCardWithZeroState } from "../../components/HeaderCard/HeaderCard";
 import { useRacesList } from "../../hooks/useRacesList/useRacesList";
 import { RacesState } from "../../hooks/useRacesList/useRacesList.types";
 import { WithVariables } from "../../components/WithVariables/WithVariables";
 import { useTrackWithTitle } from "../../hooks/useAnalytics/useAnalytics";
 import { CookieBanner } from "../../components/CookieBanner/CookieBanner";
+import { useHeaderCardData } from "../../hooks/useHeaderCardData/useHeaderCardData";
 import { Season } from "./Season/Season";
 import styles from "./Races.module.scss";
 import { Sidebar } from "./Sidebar/Sidebar";
@@ -60,7 +60,7 @@ export const Races = () => {
 
     return upcomingRace.id;
   }, [seasonsList]);
-  const liveEvent = useLiveEvent(fallbackRaceId);
+  const headerCardData = useHeaderCardData(fallbackRaceId);
 
   const filteredRacesState = useMemo((): RacesState[] => {
     const transliteratedSearchQuery = prepareForSearch(searchQuery);
@@ -107,7 +107,7 @@ export const Races = () => {
           overwriteVisibleSeason={overwriteVisibleSeason}
         />
         <div className={styles.seasons}>
-          <LiveCardWithZeroState liveEventState={liveEvent} />
+          <HeaderCardWithZeroState eventState={headerCardData} />
           {!wasSearchSuccessful && <ZeroState />}
           {filteredRacesState.map((season, i) => {
             const prevSeason = filteredRacesState[i - 1];

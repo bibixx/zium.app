@@ -5,10 +5,11 @@ interface LiveEventStateLoading {
 }
 interface LiveEventStateError {
   state: "error";
+  error: Error;
 }
 interface LiveEventStateLoaded {
   state: "done";
-  data: RaceData | null;
+  data: RaceData[];
 }
 
 export type LiveEventState = LiveEventStateLoading | LiveEventStateLoaded | LiveEventStateError;

@@ -3,6 +3,7 @@ import { useSnackbars } from "../../../../components/Snackbar/SnackbarsProvider"
 import { Button } from "../../../../components/Button/Button";
 import { UserOffsets, useUserOffsets } from "../../../../hooks/useUserOffests/useUserOffests";
 import { useAnalytics } from "../../../../hooks/useAnalytics/useAnalytics";
+import { useCloseAllSnackbarsOnUnmount } from "../../../../hooks/useCloseAllSnackbarsOnUnmount/useCloseAllSnackbarsOnUnmount";
 import { fetchZiumOffsets } from "./useZiumOffsets.api";
 import styles from "./useZiumOffsets.module.scss";
 
@@ -11,6 +12,7 @@ export const useZiumOffsets = (raceId: string, hasOnlyOneStream: boolean) => {
   const { openSnackbar, closeSnackbar } = useSnackbars();
   const { overrideOffsets, offsets: userOffsets } = useUserOffsets();
   const { trackError } = useAnalytics();
+  const registerSnackbarForUnmount = useCloseAllSnackbarsOnUnmount();
 
   const fetchData = useCallback(
     async (signal: AbortSignal) => {
@@ -64,11 +66,13 @@ export const useZiumOffsets = (raceId: string, hasOnlyOneStream: boolean) => {
           ),
           time: 10_000,
         });
+
+        registerSnackbarForUnmount(id);
       } catch (error) {
         trackError(error);
       }
     },
-    [closeSnackbar, userOffsets, openSnackbar, overrideOffsets, raceId, trackError],
+    [raceId, userOffsets, openSnackbar, registerSnackbarForUnmount, overrideOffsets, closeSnackbar, trackError],
   );
 
   useEffect(() => {

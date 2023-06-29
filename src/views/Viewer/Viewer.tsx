@@ -41,6 +41,7 @@ import { useGlobalShortcuts } from "./hooks/useGlobalShortcuts";
 import { useCmdTutorial } from "./hooks/useCmdTutorial";
 import { GridLayoutFillMode } from "./hooks/useViewerState/useViewerState.utils";
 import { useZiumOffsets } from "./hooks/useZiumOffsets/useZiumOffsets";
+import { useNotifyAboutNewEvent } from "./hooks/useNotifyAboutNewEvent/useNotifyAboutNewEvent";
 
 interface ViewerProps {
   streams: StreamsStateData;
@@ -297,6 +298,7 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
 
   useSyncVideos({ windows, windowVideojsRefMapRef, isLive, playbackOffsets });
   useGlobalShortcuts(mainVideoPlayer);
+  useNotifyAboutNewEvent(raceId);
 
   return (
     <StreamPickerProvider>
