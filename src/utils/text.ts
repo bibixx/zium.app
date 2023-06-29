@@ -58,6 +58,8 @@ const applyTitleCaseToWord = (text: string): string => {
 
 export const toTitleCase = (text: string) => applyToTextParts(text, " ", applyTitleCaseToWord);
 
+const removeDateFromStart = (text: string) => text.replace(/^[\d ]+/, "");
+
 const raceApostrophesSet: Record<string, string | undefined> = {
   "dell'Emilia-Romagna": `dell${APOSTROPHE}Emilia-Romagna`,
   "dell'Emilia": `dell${APOSTROPHE}Emilia`,
@@ -66,6 +68,7 @@ export const formatRaceName = (text: string, addTm: boolean) => {
   return pipe(
     toTitleCase,
     fixEmDashes,
+    removeDateFromStart,
     (text) => applyToTextParts(text, " ", (w) => raceApostrophesSet[w] ?? w),
     (text) => text.replace(/Prix /, `Prix${NBSP}`),
     addTm ? (text) => text + TM_SIGN : (text) => text,

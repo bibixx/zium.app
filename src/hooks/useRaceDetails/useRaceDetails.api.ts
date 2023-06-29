@@ -77,13 +77,15 @@ const mapEventToRaceDetailsData = (event: Event, isReplay: boolean): RaceDetails
   const { startDate, endDate } = getDates(event);
 
   const [firstGenre] = event.metadata.genres;
+  const isRace = isRaceGenre(firstGenre);
+
   return {
     title: event.metadata.titleBrief,
     id: String(event.metadata.contentId),
     pictureUrl: event.metadata.pictureUrl,
     isLive: event.metadata.contentSubtype === "LIVE",
     hasMedia: isReplay,
-    description: event.metadata.emfAttributes.Global_Title,
+    description: isRace ? event.metadata.emfAttributes.Global_Title : event.metadata.title,
     contentId: event.metadata.contentId,
     countryName: event.metadata.emfAttributes.Meeting_Country_Name,
     countryId: event.metadata.emfAttributes.MeetingCountryKey,
@@ -91,7 +93,6 @@ const mapEventToRaceDetailsData = (event: Event, isReplay: boolean): RaceDetails
     endDate,
     roundNumber: event.metadata.emfAttributes.Meeting_Number,
     isSingleEvent: false,
-    genre:
-      !isRaceGenre(firstGenre) || event.metadata.emfAttributes.ContentCategory === "EPISODIC" ? "show" : firstGenre,
+    genre: !isRace || event.metadata.emfAttributes.ContentCategory === "EPISODIC" ? "show" : firstGenre,
   };
 };

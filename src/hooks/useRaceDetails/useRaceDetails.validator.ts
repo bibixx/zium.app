@@ -27,6 +27,7 @@ export const scheduledContainerValidator = z.object({
 export const eventValidator = z.object({
   id: z.string(),
   metadata: z.object({
+    title: z.string(),
     titleBrief: z.string(),
     contentId: z.number(),
     pictureUrl: z.string(),
