@@ -42,17 +42,8 @@ export const useGlobalShortcuts = (player: PlayerAPI | null) => {
     [player],
   );
 
-  const toggleFullScreen = useCallback(() => {
-    if (document.fullscreenElement) {
-      document.exitFullscreen();
-    } else {
-      document.documentElement.requestFullscreen();
-    }
-  }, []);
-
   const scope = useHotkeysStack(true, true, "Global");
   useScopedHotkeys("space", scope, onPlayClick);
-  useScopedHotkeys("f", scope, toggleFullScreen);
   useScopedHotkeys(Key.ArrowRight, scope, onSkipAhead, { ignoreModifiers: true, preventDefault: true });
   useScopedHotkeys(Key.ArrowLeft, scope, onSkipBackwards, { ignoreModifiers: true, preventDefault: true });
 };
