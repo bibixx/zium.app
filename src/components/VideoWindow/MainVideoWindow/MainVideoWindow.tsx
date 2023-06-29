@@ -83,6 +83,13 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
       return <FeedError error={streamVideoState.error} />;
     }
 
+    const audioFocusProps = hasOnlyOneStream
+      ? {}
+      : ({
+          onAudioFocusClick: onWindowAudioFocus,
+          isAudioFocused: isAudioFocused,
+        } as const);
+
     return (
       <VideoWindowWrapper>
         <VideoJS
@@ -98,8 +105,7 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
         <VideoWindowButtons
           updateFillMode={() => updateFillMode(fillMode === "fill" ? "fit" : "fill")}
           fillMode={fillMode}
-          onAudioFocusClick={onWindowAudioFocus}
-          isAudioFocused={isAudioFocused}
+          {...audioFocusProps}
           toggleClosedCaptions={() => setAreClosedCaptionsOn(!areClosedCaptionsOn)}
           areClosedCaptionsOn={areClosedCaptionsOn}
           streamPill={!hasOnlyOneStream && <SourceButton label="F1 Live" icon={TvIcon} hideWhenUiHidden />}
