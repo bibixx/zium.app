@@ -1,4 +1,7 @@
+import { output } from "zod";
+import { getInitialOffsets } from "../../hooks/useUserOffests/useUserOffests.utils";
 import { WindowGridState } from "../../views/Viewer/hooks/useViewerState/useViewerState.utils";
+import { ziumOffsetsValidator } from "../../views/Viewer/hooks/useZiumOffsets/useZiumOffsets.validator";
 
 export function getLorem(max = Infinity) {
   const fullLorem =
@@ -401,4 +404,35 @@ export const debugStore: WindowGridState = {
       ],
     },
   ],
+};
+
+function downloadFile(filename: string, text: string) {
+  const element = document.createElement("a");
+  element.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent(text));
+  element.setAttribute("download", filename);
+
+  element.style.display = "none";
+  document.body.appendChild(element);
+
+  element.click();
+
+  document.body.removeChild(element);
+}
+
+type ZiumOffsetsResponse = output<typeof ziumOffsetsValidator>;
+export const downloadOffsetsForCurrentRace = (raceId: string, showErrorSnackbar: () => void) => {
+  const offsets = getInitialOffsets(raceId);
+  if (offsets == null) {
+    showErrorSnackbar();
+    return;
+  }
+
+  const data: ZiumOffsetsResponse = {
+    additionalStreams: offsets.additionalStreams,
+    timestamp: Date.now(),
+  };
+
+  const output = JSON.stringify(data);
+
+  downloadFile(`${raceId}.json`, output);
 };

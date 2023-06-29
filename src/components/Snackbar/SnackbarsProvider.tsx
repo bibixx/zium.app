@@ -16,7 +16,7 @@ import styles from "./Snackbar.module.scss";
 interface SnackbarData {
   id: string;
   title: ReactNode;
-  content: ReactNode;
+  content?: ReactNode;
   actions?: ReactNode;
   time?: number;
   image?: string;

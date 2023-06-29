@@ -9,7 +9,7 @@ import styles from "./Snackbar.module.scss";
 const DEFAULT_SNACKBAR_TIME = 4_000;
 interface SnackbarProps {
   title: ReactNode;
-  content: ReactNode;
+  content?: ReactNode;
   actions?: ReactNode;
   image?: string;
   time?: number;
@@ -78,7 +78,7 @@ export const Snackbar = forwardRef<HTMLDivElement | null, SnackbarProps>(
               {image && <img src={image} alt="" className={styles.image} />}
               <div className={cn(styles.content, { [styles.hasActions]: actions != null })}>
                 <div className={styles.title}>{title}</div>
-                <div className={styles.textContent}>{content}</div>
+                {content && <div className={styles.textContent}>{content}</div>}
               </div>
               <div>
                 <div onMouseDown={(e) => e.stopPropagation()}>

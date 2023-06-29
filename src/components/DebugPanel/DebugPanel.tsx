@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { CheckIcon } from "@heroicons/react/24/solid";
 import { StopIcon } from "@heroicons/react/24/outline";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Dialog } from "../Dialog/Dialog";
 import { DialogContent, DialogContentAlert, DialogContentButtonFooter } from "../Dialog/DialogContent/DialogContent";
 import { Button } from "../Button/Button";
@@ -10,7 +10,7 @@ import { useFeatureFlags } from "../../hooks/useFeatureFlags/useFeatureFlags";
 import { saveStore } from "../../views/Viewer/hooks/useViewerState/useViewerState.utils";
 import { getNewEventSnackbarData } from "../../views/Viewer/hooks/useNotifyAboutNewEvent/useNotifyAboutNewEvent.utils";
 import styles from "./DebugPanel.module.scss";
-import { debugStore, getLorem } from "./DebugPanel.utils";
+import { debugStore, downloadOffsetsForCurrentRace, getLorem } from "./DebugPanel.utils";
 
 export const DebugPanel = () => {
   const [isDebugPanelOpen, setIsDebugPanelOpen] = useState(false);
@@ -169,10 +169,29 @@ const CheckboxRow = ({ label, checked, onChange }: CheckboxRowProps) => (
 
 const DebugRaceSettings = ({ closePanel }: DebugPanelContentsProps) => {
   const { flags, updateFlag } = useFeatureFlags();
+  const { raceId } = useParams();
+  const { openSnackbar } = useSnackbars();
+
   return (
     <div className={styles.section}>
       <div className={styles.sectionHeader}>Race</div>
       <div className={styles.buttonsRow}>
+        <Button
+          variant={"Secondary"}
+          onClick={
+            raceId
+              ? () =>
+                  downloadOffsetsForCurrentRace(raceId, () =>
+                    openSnackbar({
+                      title: "No offsets set for the current race",
+                    }),
+                  )
+              : undefined
+          }
+          disabled={raceId == null}
+        >
+          Download offsets for current event
+        </Button>
         <Button variant={"Secondary"} as={Link} to="/race/__DEBUG__" onClick={closePanel}>
           Open debug live stream
         </Button>
