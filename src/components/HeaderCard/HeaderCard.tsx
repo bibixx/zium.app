@@ -134,7 +134,7 @@ const HeaderCard = ({ raceDetails, activeAlarms }: HeaderCardProps) => {
         <div className={styles.imageBlur}>
           <div className={styles.imageWrapper}>
             <div className={styles.shadow}></div>
-            <div className={styles.imageTrimAdjustment}>
+            <div className={cn({ [styles.imageTrimAdjustment]: isRaceEvent })}>
               <img src={pictureUrl} className={cn(styles.image, styles.isLive)} alt="" />
             </div>
           </div>
@@ -142,7 +142,7 @@ const HeaderCard = ({ raceDetails, activeAlarms }: HeaderCardProps) => {
       )}
       <div className={styles.imageWrapper}>
         <div className={styles.shadow}></div>
-        <div className={styles.imageTrimAdjustment}>
+        <div className={cn({ [styles.imageTrimAdjustment]: isRaceEvent })}>
           <img src={pictureUrl} className={cn(styles.image, { [styles.isLive]: isLive })} alt="" />
         </div>
       </div>
