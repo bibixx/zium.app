@@ -45,6 +45,9 @@ export const getRaceIcon = (raceDetails: RaceDetailsData, seasonId: string) => {
       if (raceDetails.genre === "sprint qualifying" && seasonIdAsNumber < 2023) {
         return raceDetailsTypeToIconMap["sprint race"];
       }
+      if (raceDetails.genre === "sprint") {
+        return raceDetailsTypeToIconMap["sprint race"];
+      }
 
       if (raceDetails.genre === "sprint race") {
         return raceDetailsTypeToIconMap[raceDetails.genre];
