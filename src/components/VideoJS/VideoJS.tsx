@@ -9,6 +9,7 @@ import classNames from "classnames";
 import { setRef } from "../../utils/setRef";
 import { VideoStreamInfo } from "../../hooks/useStreamVideo/useStreamVideo.api";
 import { GridLayoutFillMode } from "../../views/Viewer/hooks/useViewerState/useViewerState.utils";
+import { useAnalytics } from "../../hooks/useAnalytics/useAnalytics";
 import styles from "./VideoJS.module.scss";
 
 export interface VideoJSOptions extends PlayerConfig {
@@ -47,6 +48,7 @@ export const VideoJS = forwardRef<PlayerAPI | null, VideoJSProps>(
     const playerRef = useRef<PlayerAPI | null>(null);
     const uiManagerRef = useRef<UIManager | null>(null);
     const [isVisible, setIsVisible] = useState(false);
+    const { push } = useAnalytics();
 
     useEffect(() => {
       async function run() {
@@ -94,6 +96,7 @@ export const VideoJS = forwardRef<PlayerAPI | null, VideoJSProps>(
         await player.load(sourceConfig);
 
         player.on(PlayerEvent.Ready, () => {
+          push(["trackEvent", "impression", "impression count"]);
           setIsVisible(true);
           onReady(player);
         });
