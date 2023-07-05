@@ -25,7 +25,17 @@ If you spot a problem, [search if an issue already exists](https://docs.github.c
 
 Scan through our [existing issues](https://github.com/bibixx/zium.app/issues) to find one that interests you. You can narrow down the search using `labels` as filters. As a general rule, we try not to assign issues to anyone. If you find an issue to work on, you are welcome to open a PR with a fix.
 
-### Make Changes
+### Design changes
+
+If you found an issue with a `design` label, or would like to propose a change but have no coding skills:
+1. Head over to Figma Community to duplicate [the official Zium.app Figma file](https://www.figma.com/community/file/1250905585551204036) into your Drafts.
+2. In the file, create a new page called `Contribution (#ISSUE_NUMBER)` where `#ISSUE_NUMBER` is replaced with a number of your GitHub issue. Put the page at the top of the document, so that it's easy to find.
+3. Put all of your design changes and/or any new designs on the above-mentioned page exclusively.
+4. When happy with your designs paste a link to your Figma file in your GitHub issue and apply a `pending design review` label on your issue.
+    - When sharing a link to your Figma file, make sure to set its visibility to `Anyone with a link`.
+5. If your designs are approved, a core design contributor will merge them with the official Figma file and mark your GitHub issue as ready to be picked up for implementation.
+
+### Make changes
 
 1. Fork the repository.
 - Using GitHub Desktop:
