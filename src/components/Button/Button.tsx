@@ -7,6 +7,7 @@ import styles from "./Button.module.scss";
 interface ButtonProps {
   children?: ReactNode;
   variant?: "Primary" | "Secondary" | "SecondaryInverted" | "Tertiary";
+  size?: "Default" | "Action";
   fluid?: boolean;
   disabledState?: boolean;
   isPressed?: boolean;
@@ -20,6 +21,7 @@ export const Button = withAs("button")<ButtonProps>(
       as: Component,
       children,
       variant = "Primary",
+      size = "Default",
       iconLeft: IconLeft,
       iconRight: IconRight,
       fluid = false,
@@ -40,6 +42,7 @@ export const Button = withAs("button")<ButtonProps>(
             [styles.secondary]: variant === "Secondary",
             [styles.secondaryInverted]: variant === "SecondaryInverted",
             [styles.tertiary]: variant === "Tertiary",
+            [styles.action]: size === "Action",
             [styles.disabled]: disabled || disabledState,
             [styles.fluid]: fluid,
             [styles.isPressed]: isPressed,

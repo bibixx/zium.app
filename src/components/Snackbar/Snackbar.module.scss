@@ -27,7 +27,7 @@
   --translate-x: var(--drag-translate-x);
 
   background: var(--color-background-default-default);
-  @include inner-border(var(--color-border-default-alpha));
+  @include inner-border(var(--color-border-default-default));
   position: absolute;
   border-radius: var(--radii-medium);
   width: 360px;
@@ -98,16 +98,14 @@
   gap: 4px;
   padding: 12px;
   flex: 1;
-
-  &.hasActions {
-    padding-bottom: 0;
-  }
 }
 
 .actions {
-  padding: 12px;
+  padding: 8px;
   padding-top: 0;
   grid-column: -1 / 1;
+  display: flex;
+  gap: 8px;
 }
 
 .title {
@@ -123,9 +121,13 @@
 }
 
 .mainWrapper {
+  background: transparent;
+}
+
+.textContentWrapper {
   display: grid;
   grid-template-columns: 1fr auto;
-  gap: 8px;
+  gap: 0px 8px;
 }
 
 .buttonWrapper {
@@ -149,9 +151,10 @@
 
 .image {
   width: calc(100% + 8px);
+  height: 200px;
   margin: -4px;
   margin-bottom: 0;
-  grid-column: -1 / 1;
   user-select: none;
+  object-fit: cover;
   pointer-events: none;
 }

@@ -5,15 +5,14 @@ import { ReactNode, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { isRaceGenre } from "../../constants/races";
 import { useActiveAlarms } from "../../hooks/useActiveAlarms";
-import { useDevicePixelRatio } from "../../hooks/useDevicePixelRatio/useDevicePixelRatio";
 import { RaceData } from "../../hooks/useRacesList/useRacesList.types";
-import { addQueryParams } from "../../utils/addQueryParams";
 import { createAlarm, deleteAlarm } from "../../utils/extensionApi";
 import { fixEmDashes, formatRaceName, toTitleCase } from "../../utils/text";
 import { Button } from "../Button/Button";
 import { CountryImage } from "../CountryImage/CountryImage";
 import { EventCardTag } from "../EventCardTag/EventCardTag";
 import { HeaderCardDataState } from "../../hooks/useHeaderCardData/useHeaderCardData.types";
+import { useFormulaImage } from "../../hooks/useFormulaImage/useFormulaImage";
 import styles from "./HeaderCard.module.scss";
 
 interface HeaderCardWithZeroStateProps {
@@ -42,13 +41,7 @@ interface HeaderCardProps {
   activeAlarms: string[];
 }
 const HeaderCard = ({ raceDetails, activeAlarms }: HeaderCardProps) => {
-  const devicePixelRatio = useDevicePixelRatio();
-  const pictureUrl = addQueryParams(`https://f1tv.formula1.com/image-resizer/image/${raceDetails.pictureUrl}`, {
-    w: 1920 * devicePixelRatio,
-    h: 800 * devicePixelRatio,
-    q: "HI",
-    o: "L",
-  });
+  const pictureUrl = useFormulaImage(raceDetails.pictureUrl, 1920, 800);
   const countryName = raceDetails.countryName;
   const caption = `Round ${raceDetails.roundNumber}`;
   const isRaceEvent = isRaceGenre(raceDetails.genre);

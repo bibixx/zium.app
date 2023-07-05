@@ -1,9 +1,8 @@
 import { useState } from "react";
-import { useDevicePixelRatio } from "../../hooks/useDevicePixelRatio/useDevicePixelRatio";
-import { addQueryParams } from "../../utils/addQueryParams";
 import { withAs } from "../../utils/withAs";
 import { CountryImage } from "../CountryImage/CountryImage";
 import { WithVariables } from "../WithVariables/WithVariables";
+import { useFormulaImage } from "../../hooks/useFormulaImage/useFormulaImage";
 import styles from "./EventCard.module.scss";
 
 interface EventCardProps {
@@ -16,7 +15,7 @@ interface EventCardProps {
 }
 export const EventCard = withAs("button")<EventCardProps>(
   ({ as: Component, pictureUrl, countryName, countryId, displayDate, caption, description, ...props }, ref) => {
-    const devicePixelRatio = useDevicePixelRatio();
+    const fullPictureUrl = useFormulaImage(pictureUrl, 400, 195);
     const [cursorPosition, setCursorPosition] = useState<{ x: number | undefined; y: number | undefined }>({
       x: undefined,
       y: undefined,
@@ -48,17 +47,7 @@ export const EventCard = withAs("button")<EventCardProps>(
       >
         <Component className={styles.wrapper} {...props} ref={ref}>
           <div className={styles.heroImageWrapper}>
-            <img
-              src={addQueryParams(`https://f1tv.formula1.com/image-resizer/image/${pictureUrl}`, {
-                w: 400 * devicePixelRatio,
-                h: 195 * devicePixelRatio,
-                q: "HI",
-                o: "L",
-              })}
-              alt=""
-              className={styles.heroImage}
-              draggable={false}
-            />
+            <img src={fullPictureUrl} alt="" className={styles.heroImage} draggable={false} />
           </div>
           <main className={styles.contentWrapper}>
             <div className={styles.header}>

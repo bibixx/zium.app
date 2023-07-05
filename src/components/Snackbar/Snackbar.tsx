@@ -75,19 +75,21 @@ export const Snackbar = forwardRef<HTMLDivElement | null, SnackbarProps>(
             data-css-transition
           >
             <div className={styles.mainWrapper}>
-              {image && <img src={image} alt="" className={styles.image} />}
-              <div className={cn(styles.content, { [styles.hasActions]: actions != null })}>
-                <div className={styles.title}>{title}</div>
-                {content && <div className={styles.textContent}>{content}</div>}
-              </div>
-              <div>
-                <div onMouseDown={(e) => e.stopPropagation()}>
-                  <Button variant="Tertiary" iconLeft={XMarkIcon} onClick={onClose} />
+              {image && <img alt="" src={image} className={styles.image} />}
+              <div className={styles.textContentWrapper}>
+                <div className={cn(styles.content)}>
+                  <div className={styles.title}>{title}</div>
+                  {content && <div className={styles.textContent}>{content}</div>}
                 </div>
+                <div>
+                  <div onMouseDown={(e) => e.stopPropagation()}>
+                    <Button variant="Tertiary" iconLeft={XMarkIcon} onClick={onClose} />
+                  </div>
+                </div>
+                {actions && <div className={styles.actions}>{actions}</div>}
               </div>
-              {actions && <div className={styles.actions}>{actions}</div>}
             </div>
-            <TimeIndicator isPaused={isHovering || isDragging} onClose={onClose} time={time} />
+            {time !== Infinity && <TimeIndicator isPaused={isHovering || isDragging} onClose={onClose} time={time} />}
           </div>
         </WithVariables>
       </>
