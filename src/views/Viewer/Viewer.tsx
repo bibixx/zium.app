@@ -85,13 +85,16 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
     });
   };
 
-  const createWindow = (newWindow: GridWindow, dimensions: Dimensions) => {
-    dispatch({
-      type: "createWindow",
-      window: newWindow,
-      dimensions,
-    });
-  };
+  const createWindow = useCallback(
+    (newWindow: GridWindow, dimensions: Dimensions) => {
+      dispatch({
+        type: "createWindow",
+        window: newWindow,
+        dimensions,
+      });
+    },
+    [dispatch],
+  );
 
   const loadLayout = useCallback(
     (selectedLayoutIndex: number) => {
@@ -301,6 +304,11 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
   useGlobalShortcuts(mainVideoPlayer);
   useNotifyAboutNewEvent(raceId);
 
+  const globalFeeds = useMemo(
+    () => [streams.defaultStream, streams.driverTrackerStream, streams.dataChannelStream],
+    [streams.dataChannelStream, streams.defaultStream, streams.driverTrackerStream],
+  );
+
   return (
     <StreamPickerProvider>
       <div className={styles.backgroundWrapper}>
@@ -337,10 +345,7 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
             );
           })}
         </TransitionGroup>
-        <StreamPicker
-          availableDrivers={availableDrivers}
-          globalFeeds={[streams.defaultStream, streams.driverTrackerStream, streams.dataChannelStream]}
-        />
+        <StreamPicker availableDrivers={availableDrivers} globalFeeds={globalFeeds} />
         <Player
           player={mainVideoPlayer}
           raceInfo={raceInfo}

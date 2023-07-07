@@ -1,6 +1,7 @@
 import { ArrowLeftOnRectangleIcon } from "@heroicons/react/20/solid";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
+import { Key } from "ts-key-enum";
 import { Button } from "../../components/Button/Button";
 import { Dialog } from "../../components/Dialog/Dialog";
 import {
@@ -11,9 +12,9 @@ import {
 import { OnboardingLayout } from "../../components/OnboardingLayout/OnboardingLayout";
 import { Spinner } from "../../components/Spinner/Spinner";
 import { useTrackWithTitle } from "../../hooks/useAnalytics/useAnalytics";
-import { useHotkeysStack } from "../../hooks/useHotkeysStack/useHotkeysStack";
-import { useScopedHotkeys } from "../../hooks/useScopedHotkeys/useScopedHotkeys";
 import { requestLogin } from "../../utils/extensionApi";
+import { useHotkeys } from "../../hooks/useHotkeys/useHotkeys";
+import { SHORTCUTS } from "../../hooks/useHotkeys/useHotkeys.keys";
 import styles from "./LogIn.module.scss";
 
 export const LogIn = () => {
@@ -21,11 +22,19 @@ export const LogIn = () => {
   const [isOpening, setIsOpening] = useState(false);
   const [isLearnMoreOpen, setIsLearnMoreOpen] = useState(false);
 
-  const scope = useHotkeysStack(isLearnMoreOpen, false);
-  useScopedHotkeys(
-    "esc",
-    scope,
-    useCallback(() => setIsLearnMoreOpen(false), []),
+  useHotkeys(
+    () => ({
+      id: "LogIn",
+      allowPropagation: false,
+      enabled: isLearnMoreOpen,
+      hotkeys: [
+        {
+          action: () => setIsLearnMoreOpen(false),
+          keys: SHORTCUTS.CLOSE,
+        },
+      ],
+    }),
+    [isLearnMoreOpen],
   );
 
   return (

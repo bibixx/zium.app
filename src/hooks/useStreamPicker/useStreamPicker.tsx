@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useContext, useState } from "react";
+import { createContext, ReactNode, useCallback, useContext, useMemo, useState } from "react";
 
 type PickerType = "all" | "drivers";
 export type ChosenValueType = "driver" | "global";
@@ -35,40 +35,54 @@ export const useStreamPicker = () => {
 const useStreamPickerData = (): StreamPickerContextType => {
   const [state, setState] = useState<StreamPickerDataState>({ isOpen: false });
 
-  const requestStream = (pickerType: PickerType = "all", hiddenEntries: string[] = []) =>
-    new Promise<[string, ChosenValueType] | null>((resolve) => {
-      setState({
-        isOpen: true,
-        allowDnD: false,
-        hiddenEntries,
-        pickerType,
-        requestModeResolveFunction: resolve,
-      });
-    });
+  const requestStream = useCallback(
+    (pickerType: PickerType = "all", hiddenEntries: string[] = []) =>
+      new Promise<[string, ChosenValueType] | null>((resolve) => {
+        setState({
+          isOpen: true,
+          allowDnD: false,
+          hiddenEntries,
+          pickerType,
+          requestModeResolveFunction: resolve,
+        });
+      }),
+    [],
+  );
 
-  const onClose = () => {
+  const onClose = useCallback(() => {
     setState({
       isOpen: false,
     });
-  };
+  }, []);
 
-  const onChoice = (chosenValue: string, elementType: ChosenValueType) => {
-    if (state.isOpen && state.requestModeResolveFunction != null) {
-      state.requestModeResolveFunction([chosenValue, elementType]);
-      onClose();
-      return;
-    }
-  };
+  const onChoice = useCallback(
+    (chosenValue: string, elementType: ChosenValueType) => {
+      if (state.isOpen && state.requestModeResolveFunction != null) {
+        state.requestModeResolveFunction([chosenValue, elementType]);
+        onClose();
+        return;
+      }
+    },
+    [onClose, state],
+  );
 
-  const onCancel = () => {
+  const onCancel = useCallback(() => {
     if (state.isOpen && state.requestModeResolveFunction != null) {
       state.requestModeResolveFunction(null);
       onClose();
       return;
     }
-  };
+  }, [onClose, state]);
 
-  return { state, requestStream, onCancel, onChoice };
+  return useMemo(
+    () => ({
+      state,
+      requestStream,
+      onCancel,
+      onChoice,
+    }),
+    [onCancel, onChoice, requestStream, state],
+  );
 };
 
 interface StreamPickerProviderProps {

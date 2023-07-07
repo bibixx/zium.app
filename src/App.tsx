@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
-import { HotkeysProvider } from "react-hotkeys-hook";
+import { HotkeysProvider } from "./hooks/useHotkeys/useHotkeys";
 import { ViewerWithState } from "./views/Viewer/Viewer";
 
 import { useHasCompanion } from "./hooks/useHasCompanion";
@@ -10,8 +10,6 @@ import { useLoggedInState } from "./hooks/useLoggedInState";
 import { LogIn } from "./views/LogIn/LogIn";
 import { Races } from "./views/Races/Races";
 import { OVERLAYS_PORTAL_ID } from "./constants/portals";
-import { HotkeysStackWithinHotkeysProvider } from "./hooks/useHotkeysStack/useHotkeysStack";
-import { DEFAULT_SCOPE } from "./hooks/useScopedHotkeys/useScopedHotkeys";
 import { FeatureFlagsProvider } from "./hooks/useFeatureFlags/useFeatureFlags";
 import { ErrorBoundary } from "./components/ErrorBoundary/ErrorBoundary";
 import { NotSupported } from "./views/NotSupported/NotSupported";
@@ -61,35 +59,33 @@ export default function App() {
   return (
     <AnalyticsContextProvider>
       <ErrorBoundary>
-        <HotkeysProvider initiallyActiveScopes={[DEFAULT_SCOPE]}>
-          <HotkeysStackWithinHotkeysProvider>
-            <BrowserRouter>
-              <SnackbarsProvider>
-                <FeatureFlagsProvider>
-                  <Routes>
-                    <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-                    {isSupportedBrowser ? (
-                      <Route
-                        path="/"
-                        element={
-                          <WithCompanion>
-                            <WithLoggedIn />
-                            <DebugPanel />
-                          </WithCompanion>
-                        }
-                      >
-                        <Route path="/" element={<Races />} />
-                        <Route path="/race/:raceId" element={<ViewerWithState />} />
-                      </Route>
-                    ) : (
-                      <Route path="/" element={<NotSupported />} />
-                    )}
-                  </Routes>
-                  <div id={OVERLAYS_PORTAL_ID} />
-                </FeatureFlagsProvider>
-              </SnackbarsProvider>
-            </BrowserRouter>
-          </HotkeysStackWithinHotkeysProvider>
+        <HotkeysProvider>
+          <BrowserRouter>
+            <SnackbarsProvider>
+              <FeatureFlagsProvider>
+                <Routes>
+                  <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                  {isSupportedBrowser ? (
+                    <Route
+                      path="/"
+                      element={
+                        <WithCompanion>
+                          <WithLoggedIn />
+                          <DebugPanel />
+                        </WithCompanion>
+                      }
+                    >
+                      <Route path="/" element={<Races />} />
+                      <Route path="/race/:raceId" element={<ViewerWithState />} />
+                    </Route>
+                  ) : (
+                    <Route path="/" element={<NotSupported />} />
+                  )}
+                </Routes>
+                <div id={OVERLAYS_PORTAL_ID} />
+              </FeatureFlagsProvider>
+            </SnackbarsProvider>
+          </BrowserRouter>
         </HotkeysProvider>
       </ErrorBoundary>
     </AnalyticsContextProvider>

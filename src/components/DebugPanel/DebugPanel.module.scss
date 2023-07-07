@@ -8,6 +8,9 @@
   @include typography(heading, 500, default);
   color: var(--color-text-strong);
   user-select: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .section {

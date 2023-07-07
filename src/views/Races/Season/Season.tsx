@@ -1,16 +1,17 @@
 import { useCallback, useState } from "react";
+import { Key } from "ts-key-enum";
 import { ErrorMessage } from "../../../components/ErrorMessage/ErrorMessage";
 import { EventCard } from "../../../components/EventCard/EventCard";
 import { EventCardSkeleton } from "../../../components/EventCardSkeleton/EventCardSkeleton";
 import { Sheet } from "../../../components/Sheet/Sheet";
 import { TimedOutWrapper } from "../../../components/TimedOutWrapper/TimedOutWrapper";
-import { useHotkeysStack } from "../../../hooks/useHotkeysStack/useHotkeysStack";
 import { useLaggedBehindData } from "../../../hooks/useLaggedBehindData/useLaggedBehindData";
 import { RacesState } from "../../../hooks/useRacesList/useRacesList.types";
-import { useScopedHotkeys } from "../../../hooks/useScopedHotkeys/useScopedHotkeys";
 import { formatDateRange } from "../../../utils/date";
 import { formatRaceName } from "../../../utils/text";
 import { RaceDetails } from "../RaceDetails/RaceDetails";
+import { useHotkeys } from "../../../hooks/useHotkeys/useHotkeys";
+import { SHORTCUTS } from "../../../hooks/useHotkeys/useHotkeys.keys";
 import styles from "./Season.module.scss";
 
 interface SelectedRaceEvent {
@@ -27,8 +28,19 @@ export const Season = ({ season, ziumOffsetsInfo }: SeasonProps) => {
   const [selectedRaceEvent, setSelectedRaceEvent] = useState<SelectedRaceEvent | null>(null);
 
   const onSheetClose = useCallback(() => setSelectedRaceEvent(null), []);
-  const scope = useHotkeysStack(selectedRaceEvent != null, false);
-  useScopedHotkeys("esc", scope, onSheetClose);
+  useHotkeys(
+    () => ({
+      allowPropagation: false,
+      enabled: selectedRaceEvent != null,
+      hotkeys: [
+        {
+          keys: SHORTCUTS.CLOSE,
+          action: onSheetClose,
+        },
+      ],
+    }),
+    [onSheetClose, selectedRaceEvent],
+  );
 
   const heading = (
     <h2 className={styles.heading} id={`season-${season.seasonId}`} tabIndex={-1}>

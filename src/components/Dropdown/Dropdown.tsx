@@ -6,10 +6,10 @@ import { usePopper } from "react-popper";
 import { CSSTransition } from "react-transition-group";
 import { Key } from "ts-key-enum";
 import { OVERLAYS_PORTAL_ID } from "../../constants/portals";
-import { useHotkeysStack } from "../../hooks/useHotkeysStack/useHotkeysStack";
-import { useScopedHotkeys } from "../../hooks/useScopedHotkeys/useScopedHotkeys";
 import { ListItem } from "../ListItem/ListItem";
 import { WithVariables } from "../WithVariables/WithVariables";
+import { useHotkeys } from "../../hooks/useHotkeys/useHotkeys";
+import { SHORTCUTS } from "../../hooks/useHotkeys/useHotkeys.keys";
 import { usePopperAnchorRef } from "./Dropdown.hooks";
 import styles from "./Dropdown.module.scss";
 
@@ -65,8 +65,19 @@ export const Dropdown = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
 
-  const scope = useHotkeysStack(isOpen, false);
-  useScopedHotkeys(Key.Escape, scope, toggleOpen);
+  useHotkeys(
+    () => ({
+      enabled: isOpen,
+      allowPropagation: false,
+      hotkeys: [
+        {
+          action: toggleOpen,
+          keys: SHORTCUTS.CLOSE,
+        },
+      ],
+    }),
+    [isOpen, toggleOpen],
+  );
 
   const $portalContainer = useMemo(() => document.getElementById(OVERLAYS_PORTAL_ID), []);
   const backgroundWrapperRef = useRef<HTMLDivElement>(null);

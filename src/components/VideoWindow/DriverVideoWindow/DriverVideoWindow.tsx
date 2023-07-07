@@ -1,4 +1,4 @@
-import { forwardRef, useRef } from "react";
+import { forwardRef, useCallback, useRef } from "react";
 import { PlayerAPI } from "bitmovin-player";
 import { useStreamVideo } from "../../../hooks/useStreamVideo/useStreamVideo";
 import { DriverGridWindow } from "../../../types/GridWindow";
@@ -70,6 +70,13 @@ export const DriverVideoWindow = forwardRef<PlayerAPI | null, DriverVideoWindowP
       onVideoWindowReadyBase(player);
     };
 
+    const onOffsetChange = useCallback(
+      (value: number) => {
+        updateOffset(gridWindow.driverId, value);
+      },
+      [gridWindow.driverId, updateOffset],
+    );
+
     if (streamVideoState.state === "loading") {
       return null;
     }
@@ -103,9 +110,7 @@ export const DriverVideoWindow = forwardRef<PlayerAPI | null, DriverVideoWindowP
         />
 
         <VideoWindowButtons
-          onOffsetChange={(value) => {
-            updateOffset(gridWindow.driverId, value);
-          }}
+          onOffsetChange={onOffsetChange}
           currentOffset={offsets?.additionalStreams[gridWindow.driverId] ?? 0}
           updateFillMode={() => updateFillMode(fillMode === "fill" ? "fit" : "fill")}
           fillMode={fillMode}

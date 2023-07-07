@@ -1,7 +1,5 @@
 import { PlusCircleIcon, RectangleGroupIcon } from "@heroicons/react/20/solid";
 import { useCallback, useMemo, useState } from "react";
-import { useHotkeysStack } from "../../../hooks/useHotkeysStack/useHotkeysStack";
-import { useScopedHotkeys } from "../../../hooks/useScopedHotkeys/useScopedHotkeys";
 import { ChosenValueType, useStreamPicker } from "../../../hooks/useStreamPicker/useStreamPicker";
 import { useViewerUIVisibility } from "../../../hooks/useViewerUIVisibility/useViewerUIVisibility";
 import { Dimensions } from "../../../types/Dimensions";
@@ -17,6 +15,8 @@ import { sizePxToPercent } from "../../RnDWindow/RnDWindow.utils";
 import { LayoutDialogs } from "../LayoutDialogs/LayoutDialogs";
 import { LayoutDialogState } from "../LayoutDialogs/LayoutDialogs.types";
 import { isValidGridWindowType } from "../../../utils/isValidGridWindowType";
+import { useHotkeys } from "../../../hooks/useHotkeys/useHotkeys";
+import { SHORTCUTS } from "../../../hooks/useHotkeys/useHotkeys.keys";
 import styles from "./LayoutButtons.module.scss";
 
 interface LayoutButtonsProps {
@@ -46,7 +46,7 @@ export const LayoutButtons = ({
 
   const selectedLayoutIndex = useMemo(() => viewerState.currentLayoutIndex, [viewerState.currentLayoutIndex]);
 
-  const onAddClick = async () => {
+  const onAddClick = useCallback(async () => {
     const chosenData = await requestStream("all", usedWindows);
     if (chosenData == null) {
       return;
@@ -74,10 +74,21 @@ export const LayoutButtons = ({
     };
 
     createWindow(newWindow, dimensions);
-  };
+  }, [createWindow, requestStream, usedWindows]);
 
-  const scope = useHotkeysStack(true, true, "LayoutButtons");
-  useScopedHotkeys("shift+n", scope, onAddClick);
+  useHotkeys(
+    () => ({
+      id: "LayoutButtons",
+      allowPropagation: true,
+      hotkeys: [
+        {
+          keys: SHORTCUTS.OPEN_LAYOUTS,
+          action: onAddClick,
+        },
+      ],
+    }),
+    [onAddClick],
+  );
 
   const dropdownOptions = useCallback(
     (toggleOpen: () => void): (DropdownSection | false)[] => {

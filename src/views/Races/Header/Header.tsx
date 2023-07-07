@@ -3,9 +3,9 @@ import { useRef } from "react";
 import { Button } from "../../../components/Button/Button";
 import { Input } from "../../../components/Input/Input";
 import { Logo } from "../../../components/Logo/Logo";
-import { useHotkeysStack } from "../../../hooks/useHotkeysStack/useHotkeysStack";
-import { useScopedHotkeys } from "../../../hooks/useScopedHotkeys/useScopedHotkeys";
 import { logOut } from "../../../utils/extensionApi";
+import { useHotkeys } from "../../../hooks/useHotkeys/useHotkeys";
+import { SHORTCUTS } from "../../../hooks/useHotkeys/useHotkeys.keys";
 import styles from "./Header.module.scss";
 
 export const HEADER_HEIGHT = 92;
@@ -36,8 +36,20 @@ export const Header = ({ searchQuery, setSearchQuery, overwriteVisibleSeason }: 
     });
   };
 
-  const scope = useHotkeysStack(true, true);
-  useScopedHotkeys("/", scope, () => inputRef.current?.focus(), { enableOnFormTags: false, preventDefault: true });
+  useHotkeys(
+    () => ({
+      id: "Header",
+      allowPropagation: true,
+      hotkeys: [
+        {
+          keys: SHORTCUTS.SEARCH_RACES,
+          action: () => inputRef.current?.focus(),
+          preventDefault: true,
+        },
+      ],
+    }),
+    [],
+  );
 
   return (
     <>

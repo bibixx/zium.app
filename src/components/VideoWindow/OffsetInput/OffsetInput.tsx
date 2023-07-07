@@ -1,13 +1,12 @@
 import { CheckIcon, ClockIcon, MinusIcon, PlusIcon } from "@heroicons/react/20/solid";
-import React, { useEffect, useState } from "react";
-import { Key } from "ts-key-enum";
+import React, { useCallback, useEffect, useState } from "react";
 import { Button } from "../../Button/Button";
 import { Input } from "../../Input/Input";
-import { useHotkeysStack } from "../../../hooks/useHotkeysStack/useHotkeysStack";
-import { useScopedHotkeys } from "../../../hooks/useScopedHotkeys/useScopedHotkeys";
 import { useViewerUIVisibility } from "../../../hooks/useViewerUIVisibility/useViewerUIVisibility";
 import { isWindows } from "../../../utils/platform";
 import { TimeOffsetOffIcon, TimeOffsetOnIcon } from "../../CustomIcons/CustomIcons";
+import { useHotkeys } from "../../../hooks/useHotkeys/useHotkeys";
+import { SHORTCUTS } from "../../../hooks/useHotkeys/useHotkeys.keys";
 import styles from "./OffsetInput.module.scss";
 
 interface OffsetInputProps {
@@ -54,31 +53,72 @@ export const OffsetInput = ({ onChange: onExternalChange, initialValue }: Offset
     setIsFocused(false);
   };
 
-  const onDecrease = (e: React.MouseEvent | KeyboardEvent) => {
-    const newValue = numberValue - getValueDelta(e);
-    setNumberValue(roundNumberValue(newValue));
-    setValue(formatValue(newValue));
-    onExternalChange(newValue);
-  };
+  const onDecrease = useCallback(
+    (e: React.MouseEvent | KeyboardEvent) => {
+      const newValue = numberValue - getValueDelta(e);
+      setNumberValue(roundNumberValue(newValue));
+      setValue(formatValue(newValue));
+      onExternalChange(newValue);
+    },
+    [numberValue, onExternalChange],
+  );
 
-  const onIncrease = (e: React.MouseEvent | KeyboardEvent) => {
-    const newValue = numberValue + getValueDelta(e);
-    setNumberValue(roundNumberValue(newValue));
-    setValue(formatValue(newValue));
-    onExternalChange(newValue);
-  };
+  const onIncrease = useCallback(
+    (e: React.MouseEvent | KeyboardEvent) => {
+      const newValue = numberValue + getValueDelta(e);
+      setNumberValue(roundNumberValue(newValue));
+      setValue(formatValue(newValue));
+      onExternalChange(newValue);
+    },
+    [numberValue, onExternalChange],
+  );
 
-  const scope = useHotkeysStack(isFocused, false);
-  useScopedHotkeys(Key.ArrowUp, scope, onIncrease, {
-    ignoreModifiers: true,
-    enableOnFormTags: true,
-    preventDefault: true,
-  });
-  useScopedHotkeys(Key.ArrowDown, scope, onDecrease, {
-    ignoreModifiers: true,
-    enableOnFormTags: true,
-    preventDefault: true,
-  });
+  useHotkeys(
+    () => ({
+      allowPropagation: false,
+      enabled: isFocused,
+      hotkeys: [
+        {
+          keys: SHORTCUTS.OFFSET_INPUT_INCREASE_SMALL,
+          enableOnFormTags: true,
+          preventDefault: true,
+          action: onIncrease,
+        },
+        {
+          keys: SHORTCUTS.OFFSET_INPUT_INCREASE_MEDIUM,
+          enableOnFormTags: true,
+          preventDefault: true,
+          action: onIncrease,
+        },
+        {
+          keys: SHORTCUTS.OFFSET_INPUT_INCREASE_BIG,
+          enableOnFormTags: true,
+          preventDefault: true,
+          action: onIncrease,
+        },
+
+        {
+          keys: SHORTCUTS.OFFSET_INPUT_DECREASE_SMALL,
+          enableOnFormTags: true,
+          preventDefault: true,
+          action: onDecrease,
+        },
+        {
+          keys: SHORTCUTS.OFFSET_INPUT_DECREASE_MEDIUM,
+          enableOnFormTags: true,
+          preventDefault: true,
+          action: onDecrease,
+        },
+        {
+          keys: SHORTCUTS.OFFSET_INPUT_DECREASE_BIG,
+          enableOnFormTags: true,
+          preventDefault: true,
+          action: onDecrease,
+        },
+      ],
+    }),
+    [isFocused, onDecrease, onIncrease],
+  );
 
   if (isContracted) {
     return (

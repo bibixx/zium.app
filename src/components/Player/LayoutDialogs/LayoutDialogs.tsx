@@ -1,8 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Key } from "ts-key-enum";
-import { useHotkeysStack } from "../../../hooks/useHotkeysStack/useHotkeysStack";
 import { useLaggedBehindData } from "../../../hooks/useLaggedBehindData/useLaggedBehindData";
-import { useScopedHotkeys } from "../../../hooks/useScopedHotkeys/useScopedHotkeys";
 import { assertNever } from "../../../utils/assertNever";
 import { quote } from "../../../utils/text";
 import { Button } from "../../Button/Button";
@@ -14,6 +11,8 @@ import {
   DialogContentCustom,
 } from "../../Dialog/DialogContent/DialogContent";
 import { Input } from "../../Input/Input";
+import { useHotkeys } from "../../../hooks/useHotkeys/useHotkeys";
+import { SHORTCUTS } from "../../../hooks/useHotkeys/useHotkeys.keys";
 import { LayoutDialogState } from "./LayoutDialogs.types";
 
 interface LayoutDialogsProps {
@@ -75,8 +74,20 @@ export const LayoutDialogs = ({ state }: LayoutDialogsProps) => {
     return laggedState.onCancel;
   }, [laggedState]);
 
-  const scope = useHotkeysStack(isOpen, false);
-  useScopedHotkeys(Key.Escape, scope, onClose, { enableOnFormTags: true });
+  useHotkeys(
+    () => ({
+      id: "LayoutDialogs",
+      enabled: isOpen,
+      hotkeys: [
+        {
+          keys: SHORTCUTS.CLOSE,
+          action: onClose,
+          enableOnFormTags: true,
+        },
+      ],
+    }),
+    [isOpen, onClose],
+  );
 
   return (
     <Dialog isOpen={isOpen} onClose={onClose} onClosed={() => resetLaggedState()} width={400}>

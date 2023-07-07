@@ -1,4 +1,4 @@
-import { forwardRef, useRef } from "react";
+import { forwardRef, useCallback, useRef } from "react";
 import { PlayerAPI } from "bitmovin-player";
 import { useStreamVideo } from "../../../hooks/useStreamVideo/useStreamVideo";
 import { BaseGridWindow } from "../../../types/GridWindow";
@@ -51,6 +51,13 @@ export const DataChannelVideoWindow = forwardRef<PlayerAPI | null, DataChannelVi
       onVideoWindowReadyBase(player);
     };
 
+    const onOffsetChange = useCallback(
+      (value: number) => {
+        updateOffset("data-channel", value);
+      },
+      [updateOffset],
+    );
+
     if (streamVideoState.state === "loading") {
       return null;
     }
@@ -78,9 +85,7 @@ export const DataChannelVideoWindow = forwardRef<PlayerAPI | null, DataChannelVi
           fillMode={fillMode}
         />
         <VideoWindowButtons
-          onOffsetChange={(value) => {
-            updateOffset("data-channel", value);
-          }}
+          onOffsetChange={onOffsetChange}
           currentOffset={offsets?.additionalStreams["data-channel"] ?? 0}
           updateFillMode={() => updateFillMode(fillMode === "fill" ? "fit" : "fill")}
           fillMode={fillMode}

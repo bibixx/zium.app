@@ -1,6 +1,8 @@
 import { z } from "zod";
 
 export const toggleFullScreen = () => {
+  console.trace("toggleFullScreen");
+
   const navigatorKeyboard = canLock(navigator) ? navigator.keyboard : null;
 
   if (document.fullscreenElement) {

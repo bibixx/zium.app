@@ -1,19 +1,18 @@
 import { useCallback, useMemo, useRef, useState } from "react";
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
-import { Key } from "ts-key-enum";
 import { useStreamPicker } from "../../hooks/useStreamPicker/useStreamPicker";
 import { DriverData } from "../../views/Viewer/Viewer.utils";
 import { Input } from "../Input/Input";
 import { ListItem } from "../ListItem/ListItem";
 import { Sheet } from "../Sheet/Sheet";
 import { VideoFeedContent } from "../VideoFeedContent/VideoFeedContent";
-import { useScopedHotkeys } from "../../hooks/useScopedHotkeys/useScopedHotkeys";
 import { assertNever } from "../../utils/assertNever";
 import { StreamInfo } from "../../hooks/useVideoRaceDetails/useVideoRaceDetails.types";
 import { isNotNullable } from "../../utils/isNotNullable";
-import { useHotkeysStack } from "../../hooks/useHotkeysStack/useHotkeysStack";
 import { useLaggedBehindData } from "../../hooks/useLaggedBehindData/useLaggedBehindData";
 import { getIconForStreamInfo } from "../../utils/getIconForStreamInfo";
+import { useHotkeys } from "../../hooks/useHotkeys/useHotkeys";
+import { SHORTCUTS } from "../../hooks/useHotkeys/useHotkeys.keys";
 import styles from "./StreamPicker.module.scss";
 import { StreamPickerEntry } from "./StreamPicker.types";
 
@@ -98,8 +97,6 @@ export const StreamPicker = ({ availableDrivers, globalFeeds }: StreamPickerProp
   }, []);
 
   const onArrowDown = useCallback(() => {
-    console.log("onArrowDown");
-
     const newFakeSelection = loopSelection(fakeSelection + 1, streamPickerEntries.length - 1);
     setFakeSelection(newFakeSelection);
     scrollListItemIntoView(newFakeSelection);
@@ -123,12 +120,36 @@ export const StreamPicker = ({ availableDrivers, globalFeeds }: StreamPickerProp
     return;
   }, [fakeSelection, streamPickerEntries, onChoice]);
 
-  const scope = useHotkeysStack(state.isOpen, false);
-  const commonOptions = { enableOnFormTags: true };
-  useScopedHotkeys(Key.Escape, scope, onCancel, commonOptions);
-  useScopedHotkeys(Key.ArrowDown, scope, onArrowDown, commonOptions);
-  useScopedHotkeys(Key.ArrowUp, scope, onArrowUp, commonOptions);
-  useScopedHotkeys(Key.Enter, scope, onEnter, commonOptions);
+  useHotkeys(
+    () => ({
+      id: "StreamPicker",
+      enabled: state.isOpen,
+      allowPropagation: false,
+      hotkeys: [
+        {
+          keys: SHORTCUTS.CLOSE,
+          action: onCancel,
+          enableOnFormTags: false,
+        },
+        {
+          keys: SHORTCUTS.STREAM_PICKER_NEXT,
+          action: onArrowDown,
+          enableOnFormTags: false,
+        },
+        {
+          keys: SHORTCUTS.STREAM_PICKER_PREV,
+          action: onArrowUp,
+          enableOnFormTags: false,
+        },
+        {
+          keys: SHORTCUTS.STREAM_PICKER_SELECT,
+          action: onEnter,
+          enableOnFormTags: false,
+        },
+      ],
+    }),
+    [onCancel, onArrowDown, onArrowUp, onEnter, state.isOpen],
+  );
 
   return (
     <Sheet

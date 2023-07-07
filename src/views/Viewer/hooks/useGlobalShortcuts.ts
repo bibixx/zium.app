@@ -1,10 +1,8 @@
 import { PlayerAPI } from "bitmovin-player";
 import { useCallback } from "react";
-import { Key } from "ts-key-enum";
-import { useHotkeysStack } from "../../../hooks/useHotkeysStack/useHotkeysStack";
-import { useScopedHotkeys } from "../../../hooks/useScopedHotkeys/useScopedHotkeys";
-import { isWindows } from "../../../utils/platform";
 import { toggleFullScreen } from "../../../utils/toggleFullScreen";
+import { useHotkeys } from "../../../hooks/useHotkeys/useHotkeys";
+import { SHORTCUTS } from "../../../hooks/useHotkeys/useHotkeys.keys";
 
 export const useGlobalShortcuts = (player: PlayerAPI | null) => {
   const onPlayClick = useCallback(() => {
@@ -23,33 +21,69 @@ export const useGlobalShortcuts = (player: PlayerAPI | null) => {
     }
   }, [player]);
 
-  const onSkipAhead = useCallback(
-    (e: KeyboardEvent) => {
-      const meta = isWindows ? e.ctrlKey : e.metaKey;
-      const timeDiff = meta ? 1 : 30;
+  const onBigSkipAhead = useCallback(() => {
+    const timeDiff = 30;
 
-      player?.seek(player.getCurrentTime() + timeDiff);
-    },
-    [player],
-  );
+    player?.seek(player.getCurrentTime() + timeDiff);
+  }, [player]);
 
-  const onSkipBackwards = useCallback(
-    (e: KeyboardEvent) => {
-      const meta = isWindows ? e.ctrlKey : e.metaKey;
-      const timeDiff = meta ? 1 : 30;
+  const onSmallSkipAhead = useCallback(() => {
+    const timeDiff = 1;
 
-      player?.seek(player.getCurrentTime() - timeDiff);
-    },
-    [player],
-  );
+    player?.seek(player.getCurrentTime() + timeDiff);
+  }, [player]);
+
+  const onBigSkipBackwards = useCallback(() => {
+    const timeDiff = 30;
+
+    player?.seek(player.getCurrentTime() - timeDiff);
+  }, [player]);
+
+  const onSmallSkipBackwards = useCallback(() => {
+    const timeDiff = 1;
+
+    player?.seek(player.getCurrentTime() - timeDiff);
+  }, [player]);
 
   const onToggleFullScreen = useCallback(() => {
     toggleFullScreen();
   }, []);
 
-  const scope = useHotkeysStack(true, true, "Global");
-  useScopedHotkeys("space", scope, onPlayClick);
-  useScopedHotkeys(Key.ArrowRight, scope, onSkipAhead, { ignoreModifiers: true, preventDefault: true });
-  useScopedHotkeys(Key.ArrowLeft, scope, onSkipBackwards, { ignoreModifiers: true, preventDefault: true });
-  useScopedHotkeys("f", scope, onToggleFullScreen);
+  useHotkeys(
+    () => ({
+      id: "global",
+      allowPropagation: true,
+      hotkeys: [
+        {
+          keys: SHORTCUTS.PLAY_PAUSE,
+          action: onPlayClick,
+        },
+        {
+          keys: SHORTCUTS.BIG_SKIP_AHEAD,
+          action: onBigSkipAhead,
+          preventDefault: true,
+        },
+        {
+          keys: SHORTCUTS.SMALL_SKIP_AHEAD,
+          action: onSmallSkipAhead,
+          preventDefault: true,
+        },
+        {
+          keys: SHORTCUTS.BIG_SKIP_BACKWARDS,
+          action: onBigSkipBackwards,
+          preventDefault: true,
+        },
+        {
+          keys: SHORTCUTS.SMALL_SKIP_BACKWARDS,
+          action: onSmallSkipBackwards,
+          preventDefault: true,
+        },
+        {
+          keys: SHORTCUTS.TOGGLE_FULL_SCREEN,
+          action: onToggleFullScreen,
+        },
+      ],
+    }),
+    [onBigSkipAhead, onBigSkipBackwards, onPlayClick, onSmallSkipAhead, onSmallSkipBackwards, onToggleFullScreen],
+  );
 };

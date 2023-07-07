@@ -28,7 +28,6 @@
     "piwik-react-router": "^0.12.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-hotkeys-hook": "^4.4.0",
     "react-image": "^4.1.0",
     "react-popper": "^2.3.0",
     "react-router-dom": "^6.13.0",
