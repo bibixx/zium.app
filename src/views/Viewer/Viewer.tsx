@@ -30,6 +30,7 @@ import { isNotNullable } from "../../utils/isNotNullable";
 import { CookieBanner } from "../../components/CookieBanner/CookieBanner";
 import { UserOffsetsProvider } from "../../hooks/useUserOffests/useUserOffests";
 import { isValidGridWindowType } from "../../utils/isValidGridWindowType";
+import { ZiumOffsetsOverwriteOnStartDialog } from "../../components/ZiumOffsetsDialogs/ZiumOffsetsOverwriteOnStartDialog";
 import { getWindowStreamMap, getAvailableDrivers } from "./Viewer.utils";
 import { useGrid } from "./hooks/useGrid";
 import styles from "./Viewer.module.scss";
@@ -160,7 +161,7 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
     return allStreams.length === 1;
   }, [streams]);
 
-  useZiumOffsets(raceId, hasOnlyOneStream);
+  const { dialogState: ziumOffsetsDialogState } = useZiumOffsets(raceId, hasOnlyOneStream, setAreVideosPaused);
 
   const getLayoutChild = useCallback(
     (gridWindow: GridWindow, fillMode: GridLayoutFillMode) => {
@@ -362,6 +363,11 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
           viewerState={viewerState}
           isPaused={areVideosPaused}
           hasOnlyOneStream={hasOnlyOneStream}
+        />
+        <ZiumOffsetsOverwriteOnStartDialog
+          isOpen={ziumOffsetsDialogState.isOpen}
+          onClose={ziumOffsetsDialogState.onClose}
+          onApply={ziumOffsetsDialogState.onApply}
         />
       </div>
     </StreamPickerProvider>

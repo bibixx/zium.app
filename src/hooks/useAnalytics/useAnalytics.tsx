@@ -1,7 +1,7 @@
 import PiwikReactRouter from "piwik-react-router";
 import { Location, useLocation } from "react-router-dom";
 import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { getInitialWasConsentGiven, setInitialWasConsentGiven } from "./useAnalytics.utils";
+import { setInitialWasConsentGiven, wasConsentGivenStorageClient } from "./useAnalytics.utils";
 
 const BASE_URL = import.meta.env.VITE_MATOMO_URL_BASE;
 const SITE_ID = import.meta.env.VITE_MATOMO_SITE_ID;
@@ -98,7 +98,7 @@ interface AnalyticsContextProviderProps {
   children: ReactNode;
 }
 export const AnalyticsContextProvider = ({ children }: AnalyticsContextProviderProps) => {
-  const [wasConsentGiven, setWasConsentGiven] = useState<boolean | null>(getInitialWasConsentGiven());
+  const [wasConsentGiven, setWasConsentGiven] = useState<boolean | null>(wasConsentGivenStorageClient.get());
   const piwik = useMemo(
     () =>
       BASE_URL != null && SITE_ID != null

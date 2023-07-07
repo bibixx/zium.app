@@ -87,6 +87,7 @@ export const DataChannelVideoWindow = forwardRef<PlayerAPI | null, DataChannelVi
         <VideoWindowButtons
           onOffsetChange={onOffsetChange}
           currentOffset={offsets?.additionalStreams["data-channel"] ?? 0}
+          usesZiumOffsets={offsets?.isUserDefined === false}
           updateFillMode={() => updateFillMode(fillMode === "fill" ? "fit" : "fill")}
           fillMode={fillMode}
           onClose={onDelete}

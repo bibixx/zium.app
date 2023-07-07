@@ -89,7 +89,6 @@ const useHotkeysContextState = () => {
             e.preventDefault();
           }
 
-          console.log(scope);
           action(e);
         }
 

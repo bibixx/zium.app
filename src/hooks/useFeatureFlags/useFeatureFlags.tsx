@@ -1,9 +1,9 @@
 import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { clearFlags, getInitialFlags, saveFlags, toKebabCase } from "./useFeatureFlags.utils";
+import { flagsLocalStorageClient, toKebabCase } from "./useFeatureFlags.utils";
 import { FlagKeys, FlagsObject } from "./useFeatureFlags.types";
 
 const useFeatureFlagsState = () => {
-  const [flags, setFlags] = useState(getInitialFlags());
+  const [flags, setFlags] = useState(flagsLocalStorageClient.get());
   const isFirstRenderRef = useRef(true);
 
   useEffect(() => {
@@ -12,7 +12,7 @@ const useFeatureFlagsState = () => {
       return;
     }
 
-    saveFlags(flags);
+    flagsLocalStorageClient.set(flags);
   }, [flags]);
 
   const updateFlag = useCallback(function <T extends FlagKeys>(key: T) {
@@ -22,8 +22,8 @@ const useFeatureFlagsState = () => {
   }, []);
 
   const resetFlags = useCallback(() => {
-    clearFlags();
-    setFlags(getInitialFlags());
+    flagsLocalStorageClient.remove();
+    setFlags(flagsLocalStorageClient.get());
     isFirstRenderRef.current = true;
   }, []);
 

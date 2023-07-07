@@ -3,7 +3,7 @@ import { Dimensions } from "../../../../types/Dimensions";
 import { generateUID } from "../../../../utils/generateUID";
 import { assertNever } from "../../../../utils/assertNever";
 import { clone } from "../../../../utils/clone";
-import { safeJSONParse } from "../../../../utils/safeJSONParse";
+import { LocalStorageClient } from "../../../../utils/localStorageClient";
 import { localStorageViewerStateValidator } from "./useViewerState.validator";
 
 export type GridLayoutFillMode = "fit" | "fill";
@@ -98,16 +98,18 @@ type WindowGridActions =
 
 export const STORE_LOCAL_STORAGE_KEY = "store";
 
-export const saveStore = (store: WindowGridState) => localStorage.setItem("store", JSON.stringify(store));
-export const loadStore = () => localStorage.getItem("store");
-export const clearStore = () => localStorage.removeItem("store");
+export const storeLocalStorageClient = new LocalStorageClient(
+  STORE_LOCAL_STORAGE_KEY,
+  localStorageViewerStateValidator,
+  getInitialState,
+);
 
 const withLocalStorage =
   (reducer: (prevState: WindowGridState, action: WindowGridActions) => WindowGridState) =>
   (prevState: WindowGridState, action: WindowGridActions) => {
     const newState = reducer(prevState, action);
 
-    saveStore(newState);
+    storeLocalStorageClient.set(newState);
 
     return newState;
   };
@@ -277,21 +279,7 @@ export const windowGridReducer = (prevState: WindowGridState, action: WindowGrid
 
 export const windowGridReducerWithStorage = withLocalStorage(windowGridReducer);
 
-export const getInitialState = (): WindowGridState => {
-  const layoutFromStorage = loadStore();
-
-  if (layoutFromStorage != null) {
-    const data = safeJSONParse(layoutFromStorage);
-    const parsedData = localStorageViewerStateValidator.safeParse(data);
-
-    if (parsedData.success) {
-      saveStore(parsedData.data);
-
-      return parsedData.data;
-    }
-  }
-
-  clearStore();
+function getInitialState(): WindowGridState {
   const windows: GridWindow[] = [
     {
       type: "main",
@@ -337,7 +325,7 @@ export const getInitialState = (): WindowGridState => {
       },
     ],
   };
-};
+}
 
 const getInitialLayout = (windows: GridWindow[]): GridLayout[] => {
   const columns = Math.ceil(Math.sqrt(windows.length));

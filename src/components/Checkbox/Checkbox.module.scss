@@ -1,0 +1,81 @@
+.checkboxRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  user-select: none;
+  cursor: pointer;
+}
+
+.textLabel {
+  color: var(--color-text-default);
+  transition: var(--transition-fast);
+  transition-property: color;
+  @include typography(text, 300, regular);
+
+  .checkboxRow:hover & {
+    color: var(--color-text-strong);
+  }
+
+  .checkboxRow:active & {
+    color: var(--color-text-default);
+  }
+}
+
+.checkboxInput {
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
+.checkboxButton {
+  background: var(--color-background-default-alpha);
+  @include inner-border(var(--color-border-muted-alpha));
+  border-radius: var(--radii-xsmall);
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-strong);
+
+  &.isActive {
+    background: var(--color-background-accent-default);
+    @include inner-border(var(--color-border-default-alpha));
+  }
+
+  .checkboxRow:hover & {
+    background: var(--color-background-strong-alpha);
+    @include inner-border(var(--color-border-default-alpha));
+
+    &.isActive {
+      background: var(--color-background-accent-strong);
+      @include inner-border(var(--color-border-strong-alpha));
+    }
+  }
+
+  .checkboxRow:active & {
+    background: var(--color-background-muted-alpha);
+    @include inner-border(var(--color-border-muted-alpha));
+
+    &.isActive {
+      background: var(--color-background-accent-muted);
+      @include inner-border(var(--color-border-default-alpha));
+    }
+  }
+
+  .checkboxInput:focus-visible + & {
+    background: var(--color-background-default-alpha);
+    @include inner-border(var(--color-border-muted-alpha));
+    outline: 2px solid var(--color-border-accent);
+    outline-offset: 2px;
+
+    &.isActive {
+      background: var(--color-background-accent-default);
+      @include inner-border(var(--color-border-default-alpha));
+    }
+  }
+}

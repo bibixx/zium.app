@@ -43,6 +43,7 @@ type OffsetProps =
   | {
       onOffsetChange?: (value: number) => void;
       currentOffset: number;
+      usesZiumOffsets: boolean;
     }
   | {
       onOffsetChange?: never;
@@ -63,7 +64,11 @@ export const VideoWindowButtons = (props: VideoWindowButtonsProps) => {
         {props.streamPill}
         {props.onOffsetChange && (
           <div className={styles.hideWhenUiHidden}>
-            <OffsetInput onChange={props.onOffsetChange} initialValue={props.currentOffset} />
+            <OffsetInput
+              onChange={props.onOffsetChange}
+              initialValue={props.currentOffset}
+              usesZiumOffsets={props.usesZiumOffsets}
+            />
           </div>
         )}
       </div>

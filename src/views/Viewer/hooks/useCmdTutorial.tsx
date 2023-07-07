@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { z } from "zod";
 import { useSnackbars } from "../../../components/Snackbar/SnackbarsProvider";
 import { SHORTCUTS, getNiceShortcutIndicator } from "../../../hooks/useHotkeys/useHotkeys.keys";
+import { LocalStorageClient } from "../../../utils/localStorageClient";
 
 const NUMBER_OF_ADJUSTMENTS = 4;
 const ADJUSTMENTS_TIME = 10_000;
@@ -52,6 +54,6 @@ export const useCmdTutorial = () => {
   return { onResize };
 };
 
-const CAN_USE_CMD_STORAGE_KEY = "canUseCmd";
-export const setCanUseCmd = () => localStorage.setItem(CAN_USE_CMD_STORAGE_KEY, "true");
-export const getCanUseCmd = () => localStorage.getItem(CAN_USE_CMD_STORAGE_KEY) === "true";
+const canUseCmdStorageClient = new LocalStorageClient("canUseCmd", z.boolean(), false);
+export const setCanUseCmd = () => canUseCmdStorageClient.set(true);
+export const getCanUseCmd = () => canUseCmdStorageClient.get();

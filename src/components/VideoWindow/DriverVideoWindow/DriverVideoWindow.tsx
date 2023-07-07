@@ -112,6 +112,7 @@ export const DriverVideoWindow = forwardRef<PlayerAPI | null, DriverVideoWindowP
         <VideoWindowButtons
           onOffsetChange={onOffsetChange}
           currentOffset={offsets?.additionalStreams[gridWindow.driverId] ?? 0}
+          usesZiumOffsets={offsets?.isUserDefined === false}
           updateFillMode={() => updateFillMode(fillMode === "fill" ? "fit" : "fill")}
           fillMode={fillMode}
           onAudioFocusClick={onAudioFocusClick}

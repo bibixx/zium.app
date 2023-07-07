@@ -1,6 +1,4 @@
 import { useState } from "react";
-import { CheckIcon } from "@heroicons/react/24/solid";
-import { StopIcon } from "@heroicons/react/24/outline";
 import { Link, useParams } from "react-router-dom";
 import { XMarkIcon } from "@heroicons/react/20/solid";
 import { Dialog } from "../Dialog/Dialog";
@@ -8,11 +6,12 @@ import { DialogContent, DialogContentAlert, DialogContentButtonFooter } from "..
 import { Button } from "../Button/Button";
 import { useSnackbars } from "../Snackbar/SnackbarsProvider";
 import { useFeatureFlags } from "../../hooks/useFeatureFlags/useFeatureFlags";
-import { saveStore } from "../../views/Viewer/hooks/useViewerState/useViewerState.utils";
+import { storeLocalStorageClient } from "../../views/Viewer/hooks/useViewerState/useViewerState.utils";
 import { getNewEventSnackbarData } from "../../views/Viewer/hooks/useNotifyAboutNewEvent/useNotifyAboutNewEvent.utils";
 import { useFormulaImage } from "../../hooks/useFormulaImage/useFormulaImage";
 import { SHORTCUTS, VISIBLE_SHORTCUTS, getNiceShortcutIndicator } from "../../hooks/useHotkeys/useHotkeys.keys";
 import { useHotkeys } from "../../hooks/useHotkeys/useHotkeys";
+import { Checkbox } from "../Checkbox/Checkbox";
 import styles from "./DebugPanel.module.scss";
 import { debugStore, downloadOffsetsForCurrentRace, getLorem } from "./DebugPanel.utils";
 
@@ -153,29 +152,6 @@ const DebugGeneralSection = () => {
   );
 };
 
-interface CheckboxRowProps {
-  label: string;
-  checked: boolean;
-  onChange: (newValue: boolean) => void;
-}
-const CheckboxRow = ({ label, checked, onChange }: CheckboxRowProps) => (
-  <label className={styles.checkboxRow}>
-    <input
-      className={styles.checkboxInput}
-      type="checkbox"
-      onChange={(e) => onChange(e.target.checked)}
-      checked={checked}
-    />
-    <Button
-      as="div"
-      className={styles.checkboxButton}
-      iconLeft={checked ? CheckIcon : StopIcon}
-      variant={"Secondary"}
-    />
-    {label}
-  </label>
-);
-
 const DebugRaceSettings = ({ closePanel }: DebugPanelContentsProps) => {
   const { flags, updateFlag } = useFeatureFlags();
   const { raceId } = useParams();
@@ -207,24 +183,24 @@ const DebugRaceSettings = ({ closePanel }: DebugPanelContentsProps) => {
         <Button
           variant={"Secondary"}
           onClick={() => {
-            saveStore(debugStore);
+            storeLocalStorageClient.set(debugStore);
             window.location.reload();
           }}
         >
           Load debug store
         </Button>
       </div>
-      <CheckboxRow
+      <Checkbox
         label="Increase background contrast"
         checked={flags.increaseBackgroundContrast}
         onChange={updateFlag("increaseBackgroundContrast")}
       />
-      <CheckboxRow
+      <Checkbox
         label="Show window borders"
         checked={flags.showWindowBorders}
         onChange={updateFlag("showWindowBorders")}
       />
-      <CheckboxRow label="Never hide UI" checked={flags.forceUiVisibility} onChange={updateFlag("forceUiVisibility")} />
+      <Checkbox label="Never hide UI" checked={flags.forceUiVisibility} onChange={updateFlag("forceUiVisibility")} />
     </div>
   );
 };

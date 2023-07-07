@@ -86,6 +86,7 @@ export const DriverTrackerVideoWindow = forwardRef<PlayerAPI | null, DriverTrack
         <VideoWindowButtons
           onOffsetChange={onOffsetChange}
           currentOffset={offsets?.additionalStreams["driver-tracker"] ?? 0}
+          usesZiumOffsets={offsets?.isUserDefined === false}
           updateFillMode={() => updateFillMode(fillMode === "fill" ? "fit" : "fill")}
           fillMode={fillMode}
           onClose={onDelete}

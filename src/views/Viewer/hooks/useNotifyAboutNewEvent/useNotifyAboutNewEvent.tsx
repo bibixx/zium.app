@@ -10,6 +10,7 @@ import { addQueryParams } from "../../../../utils/addQueryParams";
 import { getNewEventSnackbarData } from "./useNotifyAboutNewEvent.utils";
 
 export const useNotifyAboutNewEvent = (currentRaceId: string) => {
+  return;
   const liveEvents = useLiveEvents(30_000);
   const { openSnackbar, closeSnackbar } = useSnackbars();
   const [eventsAlreadyNotifiedAbout, setEventsAlreadyNotifiedAbout] = useState<(string | null)[]>([currentRaceId]);

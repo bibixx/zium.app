@@ -1,5 +1,6 @@
 import { CheckIcon, ClockIcon, MinusIcon, PlusIcon } from "@heroicons/react/20/solid";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { z } from "zod";
 import { Button } from "../../Button/Button";
 import { Input } from "../../Input/Input";
 import { useViewerUIVisibility } from "../../../hooks/useViewerUIVisibility/useViewerUIVisibility";
@@ -7,18 +8,55 @@ import { isWindows } from "../../../utils/platform";
 import { TimeOffsetOffIcon, TimeOffsetOnIcon } from "../../CustomIcons/CustomIcons";
 import { useHotkeys } from "../../../hooks/useHotkeys/useHotkeys";
 import { SHORTCUTS } from "../../../hooks/useHotkeys/useHotkeys.keys";
+import { ZiumOffsetsConfirmOverwriteDialog } from "../../ZiumOffsetsDialogs/ZiumOffsetsConfirmOverwriteDialog";
+import { LocalStorageClient } from "../../../utils/localStorageClient";
 import styles from "./OffsetInput.module.scss";
+
+export const dontAskForOverrideLocalStorageClient = new LocalStorageClient(
+  "dontAskForOffsetOverride",
+  z.boolean(),
+  false,
+);
 
 interface OffsetInputProps {
   onChange: (value: number) => void;
   initialValue: number;
+  usesZiumOffsets: boolean;
 }
-export const OffsetInput = ({ onChange: onExternalChange, initialValue }: OffsetInputProps) => {
+export const OffsetInput = ({ onChange: onExternalChange, initialValue, usesZiumOffsets }: OffsetInputProps) => {
   const [isContracted, setIsContracted] = useState(true);
   const [isFocused, setIsFocused] = useState(false);
   const [numberValue, setNumberValue] = useState(initialValue);
   const [value, setValue] = useState(formatValue(numberValue));
   const { preventHiding } = useViewerUIVisibility();
+
+  const { setState: setDialogState, state: dialogState } = useOffsetInputDialogState();
+  const withConfirmation = useCallback(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    <T extends (...args: any[]) => void>(fn: T) =>
+      (...args: Parameters<T>) => {
+        if (usesZiumOffsets && !dontAskForOverrideLocalStorageClient.get()) {
+          const onClose = () => {
+            setDialogState({ isOpen: false });
+          };
+
+          const onApply = (dontAskForOverride: boolean) => {
+            fn(...args);
+            onClose();
+
+            if (dontAskForOverride) {
+              dontAskForOverrideLocalStorageClient.set(true);
+            }
+          };
+
+          setDialogState({ isOpen: true, onApply, onClose });
+          return;
+        }
+
+        fn(...args);
+      },
+    [setDialogState, usesZiumOffsets],
+  );
 
   useEffect(() => {
     preventHiding(isFocused);
@@ -31,7 +69,7 @@ export const OffsetInput = ({ onChange: onExternalChange, initialValue }: Offset
     }
   }, [isFocused, initialValue]);
 
-  const onChange = (value: string, e?: React.ChangeEvent) => {
+  const onChange = withConfirmation((value: string, e?: React.ChangeEvent) => {
     if (!NUMBER_REGEX.test(value)) {
       e?.preventDefault();
       return;
@@ -42,7 +80,7 @@ export const OffsetInput = ({ onChange: onExternalChange, initialValue }: Offset
     const nonNanNumberValue = Number.isNaN(numberValue) ? 0 : numberValue;
     setNumberValue(roundNumberValue(nonNanNumberValue));
     onExternalChange(nonNanNumberValue);
-  };
+  });
 
   const onFocus = () => {
     setIsFocused(true);
@@ -53,24 +91,26 @@ export const OffsetInput = ({ onChange: onExternalChange, initialValue }: Offset
     setIsFocused(false);
   };
 
-  const onDecrease = useCallback(
-    (e: React.MouseEvent | KeyboardEvent) => {
-      const newValue = numberValue - getValueDelta(e);
-      setNumberValue(roundNumberValue(newValue));
-      setValue(formatValue(newValue));
-      onExternalChange(newValue);
-    },
-    [numberValue, onExternalChange],
+  const onDecrease = useMemo(
+    () =>
+      withConfirmation((e: React.MouseEvent | KeyboardEvent) => {
+        const newValue = numberValue - getValueDelta(e);
+        setNumberValue(roundNumberValue(newValue));
+        setValue(formatValue(newValue));
+        onExternalChange(newValue);
+      }),
+    [numberValue, onExternalChange, withConfirmation],
   );
 
-  const onIncrease = useCallback(
-    (e: React.MouseEvent | KeyboardEvent) => {
-      const newValue = numberValue + getValueDelta(e);
-      setNumberValue(roundNumberValue(newValue));
-      setValue(formatValue(newValue));
-      onExternalChange(newValue);
-    },
-    [numberValue, onExternalChange],
+  const onIncrease = useMemo(
+    () =>
+      withConfirmation((e: React.MouseEvent | KeyboardEvent) => {
+        const newValue = numberValue + getValueDelta(e);
+        setNumberValue(roundNumberValue(newValue));
+        setValue(formatValue(newValue));
+        onExternalChange(newValue);
+      }),
+    [numberValue, onExternalChange, withConfirmation],
   );
 
   useHotkeys(
@@ -133,26 +173,38 @@ export const OffsetInput = ({ onChange: onExternalChange, initialValue }: Offset
   }
 
   return (
-    <div
-      className={styles.wrapper}
-      onMouseEnter={() => preventHiding(true)}
-      onMouseLeave={() => preventHiding(isFocused)}
-    >
-      <Button className={styles.button} variant="Tertiary" iconLeft={CheckIcon} onClick={() => setIsContracted(true)} />
-      <div className={styles.divider}></div>
-      <Button className={styles.button} variant="Tertiary" iconLeft={MinusIcon} onClick={onDecrease} />
-      <Input
-        isRounded
-        onChange={onChange}
-        value={value}
-        onBlur={onBlur}
-        onFocus={onFocus}
-        className={styles.input}
-        labelClassName={styles.inputLabel}
-        icon={ClockIcon}
+    <>
+      <div
+        className={styles.wrapper}
+        onMouseEnter={() => preventHiding(true)}
+        onMouseLeave={() => preventHiding(isFocused)}
+      >
+        <Button
+          className={styles.button}
+          variant="Tertiary"
+          iconLeft={CheckIcon}
+          onClick={() => setIsContracted(true)}
+        />
+        <div className={styles.divider}></div>
+        <Button className={styles.button} variant="Tertiary" iconLeft={MinusIcon} onClick={onDecrease} />
+        <Input
+          isRounded
+          onChange={onChange}
+          value={value}
+          onBlur={onBlur}
+          onFocus={onFocus}
+          className={styles.input}
+          labelClassName={styles.inputLabel}
+          icon={ClockIcon}
+        />
+        <Button className={styles.button} variant="Tertiary" iconLeft={PlusIcon} onClick={onIncrease} />
+      </div>
+      <ZiumOffsetsConfirmOverwriteDialog
+        isOpen={dialogState.isOpen}
+        onClose={dialogState.onClose}
+        onApply={dialogState.onApply}
       />
-      <Button className={styles.button} variant="Tertiary" iconLeft={PlusIcon} onClick={onIncrease} />
-    </div>
+    </>
   );
 };
 
@@ -210,4 +262,21 @@ const findAccuracy = (n: number) => {
   }
 
   return currentAccuracy;
+};
+
+type UseOffsetInputDialogState =
+  | {
+      isOpen: true;
+      onApply: (dontAskForOverride: boolean) => void;
+      onClose: () => void;
+    }
+  | {
+      isOpen: false;
+      onApply?: undefined;
+      onClose?: undefined;
+    };
+const useOffsetInputDialogState = () => {
+  const [state, setState] = useState<UseOffsetInputDialogState>({ isOpen: false });
+
+  return { state, setState };
 };

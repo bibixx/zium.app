@@ -1,5 +1,4 @@
 import { useCallback, useState } from "react";
-import { Key } from "ts-key-enum";
 import { ErrorMessage } from "../../../components/ErrorMessage/ErrorMessage";
 import { EventCard } from "../../../components/EventCard/EventCard";
 import { EventCardSkeleton } from "../../../components/EventCardSkeleton/EventCardSkeleton";

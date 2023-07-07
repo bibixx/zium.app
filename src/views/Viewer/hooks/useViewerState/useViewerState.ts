@@ -1,6 +1,6 @@
 import { useReducer } from "react";
-import { getInitialState, windowGridReducerWithStorage } from "./useViewerState.utils";
+import { storeLocalStorageClient, windowGridReducerWithStorage } from "./useViewerState.utils";
 
 export const useViewerState = () => {
-  return useReducer(windowGridReducerWithStorage, getInitialState());
+  return useReducer(windowGridReducerWithStorage, storeLocalStorageClient.get());
 };
