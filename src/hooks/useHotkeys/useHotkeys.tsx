@@ -65,9 +65,9 @@ const useHotkeysContextState = () => {
           const control = keys.includes(Key.Control);
           const meta = keys.includes(Key.Meta);
 
-          const isKeyPressed = keys.some((key) => {
+          const isKeyPressed = keys.every((key) => {
             if (MODIFIER_KEYS.includes(key)) {
-              return false;
+              return true;
             }
 
             const mappedKey = mappedKeys[key];
