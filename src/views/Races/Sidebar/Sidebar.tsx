@@ -1,11 +1,13 @@
 import cn from "classnames";
 import { Link } from "react-router-dom";
+import { useCallback, useState } from "react";
 import { ListItem } from "../../../components/ListItem/ListItem";
 import { SupportedSeasons } from "../../../constants/seasons";
 import { isSeasonComingSoon } from "../../../utils/SeasonUtils";
 import { WithVariables } from "../../../components/WithVariables/WithVariables";
 import { FigmaIcon, GitHubIcon, TwitterIcon } from "../../../components/CustomIcons/CustomIcons";
 import { MIDDLE_DOT } from "../../../utils/text";
+import { ShortcutsSnackbar } from "../../../components/ShortcutsSnackbar/ShortcutsSnackbar";
 import styles from "./Sidebar.module.scss";
 
 interface SidebarSeason {
@@ -21,6 +23,10 @@ interface SidebarProps {
 export const Sidebar = ({ visibleSeasonId, seasons, overwriteVisibleSeason }: SidebarProps) => {
   const seasonIds = seasons.map((season) => season.seasonId);
   const visibleSeasonIndex = seasonIds.indexOf(visibleSeasonId);
+  const [isShortcutsSidebarOpen, setIsShortcutsSidebarOpen] = useState(false);
+  const onShortcutsSidebarClose = useCallback(() => {
+    setIsShortcutsSidebarOpen(false);
+  }, []);
 
   const onSidebarElementClick = (season: SupportedSeasons) => (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (e.metaKey) {
@@ -91,6 +97,11 @@ export const Sidebar = ({ visibleSeasonId, seasons, overwriteVisibleSeason }: Si
           </a>
         </div>
         <div className={styles.footerText}>
+          <button className={styles.footerLink} onClick={() => setIsShortcutsSidebarOpen(true)}>
+            Keyboard shortcuts
+          </button>
+          <ShortcutsSnackbar isOpen={isShortcutsSidebarOpen} onClose={onShortcutsSidebarClose} />
+          <span>{MIDDLE_DOT}</span>
           <Link to="/privacy-policy" className={styles.footerLink}>
             Privacy policy
           </Link>

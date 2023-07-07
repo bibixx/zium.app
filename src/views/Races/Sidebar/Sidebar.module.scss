@@ -60,6 +60,11 @@
   transition-property: color;
   border-radius: var(--radii-xsmall);
   outline-offset: 4px;
+  appearance: none;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
 
   &:hover,
   &:focus-visible {

@@ -3,8 +3,11 @@ import { useCallback } from "react";
 import { toggleFullScreen } from "../../../utils/toggleFullScreen";
 import { useHotkeys } from "../../../hooks/useHotkeys/useHotkeys";
 import { SHORTCUTS } from "../../../hooks/useHotkeys/useHotkeys.keys";
+import { useEasterEgg } from "../../../hooks/useEasterEgg/useEasterEgg";
 
 export const useGlobalShortcuts = (player: PlayerAPI | null) => {
+  useEasterEgg();
+
   const onPlayClick = useCallback(() => {
     if (document.activeElement != null && document.activeElement !== document.body) {
       return;

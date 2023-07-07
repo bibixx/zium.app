@@ -9,7 +9,7 @@ import { useFeatureFlags } from "../../hooks/useFeatureFlags/useFeatureFlags";
 import { storeLocalStorageClient } from "../../views/Viewer/hooks/useViewerState/useViewerState.utils";
 import { getNewEventSnackbarData } from "../../views/Viewer/hooks/useNotifyAboutNewEvent/useNotifyAboutNewEvent.utils";
 import { useFormulaImage } from "../../hooks/useFormulaImage/useFormulaImage";
-import { SHORTCUTS, VISIBLE_SHORTCUTS, getNiceShortcutIndicator } from "../../hooks/useHotkeys/useHotkeys.keys";
+import { SHORTCUTS } from "../../hooks/useHotkeys/useHotkeys.keys";
 import { useHotkeys } from "../../hooks/useHotkeys/useHotkeys";
 import { Checkbox } from "../Checkbox/Checkbox";
 import styles from "./DebugPanel.module.scss";
@@ -53,12 +53,11 @@ const DebugPanelContents = (props: DebugPanelContentsProps) => {
   return (
     <>
       <div className={styles.header}>
-        <span>Debug options 🥚</span>
+        <span>Debug options</span>
         <Button variant="Tertiary" iconLeft={XMarkIcon} onClick={props.closePanel} />
       </div>
       <DebugGeneralSection />
       <DebugSnackbars />
-      <DebugShortcuts />
       <DebugRaceSettings {...props} />
     </>
   );
@@ -202,59 +201,5 @@ const DebugRaceSettings = ({ closePanel }: DebugPanelContentsProps) => {
       />
       <Checkbox label="Never hide UI" checked={flags.forceUiVisibility} onChange={updateFlag("forceUiVisibility")} />
     </div>
-  );
-};
-
-const DebugShortcuts = () => {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-
-  useHotkeys(
-    () => ({
-      id: "debug-shortcuts",
-      enabled: isDialogOpen,
-      allowPropagation: false,
-      hotkeys: [
-        {
-          keys: SHORTCUTS.DEBUG,
-          action: () => setIsDialogOpen(false),
-        },
-        {
-          keys: SHORTCUTS.CLOSE,
-          action: () => setIsDialogOpen(false),
-        },
-      ],
-    }),
-    [isDialogOpen],
-  );
-
-  return (
-    <>
-      <div className={styles.section}>
-        <div className={styles.sectionHeader}>Shortcuts</div>
-        <div className={styles.buttonsRow}>
-          <Button variant={"Secondary"} onClick={() => setIsDialogOpen(true)}>
-            Show shortcuts
-          </Button>
-        </div>
-      </div>
-      <Dialog isOpen={isDialogOpen} onClose={() => setIsDialogOpen(false)}>
-        <DialogContent>
-          <div className={styles.header}>
-            <span>Shortcuts</span>
-            <Button variant="Tertiary" iconLeft={XMarkIcon} onClick={() => setIsDialogOpen(false)} />
-          </div>
-          {VISIBLE_SHORTCUTS.map((section) => (
-            <div className={styles.section} key={section.label}>
-              <div className={styles.sectionHeader}>{section.label}</div>
-              {section.shortcuts.map(({ label, shortcut }) => (
-                <div key={label}>
-                  {label}: {getNiceShortcutIndicator(shortcut)}
-                </div>
-              ))}
-            </div>
-          ))}
-        </DialogContent>
-      </Dialog>
-    </>
   );
 };

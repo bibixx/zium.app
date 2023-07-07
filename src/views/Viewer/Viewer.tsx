@@ -31,6 +31,7 @@ import { CookieBanner } from "../../components/CookieBanner/CookieBanner";
 import { UserOffsetsProvider } from "../../hooks/useUserOffests/useUserOffests";
 import { isValidGridWindowType } from "../../utils/isValidGridWindowType";
 import { ZiumOffsetsOverwriteOnStartDialog } from "../../components/ZiumOffsetsDialogs/ZiumOffsetsOverwriteOnStartDialog";
+import { GlobalShortcutsSnackbar } from "../../components/ShortcutsSnackbar/ShortcutsSnackbar";
 import { getWindowStreamMap, getAvailableDrivers } from "./Viewer.utils";
 import { useGrid } from "./hooks/useGrid";
 import styles from "./Viewer.module.scss";
@@ -369,6 +370,7 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
           onClose={ziumOffsetsDialogState.onClose}
           onApply={ziumOffsetsDialogState.onApply}
         />
+        <GlobalShortcutsSnackbar />
       </div>
     </StreamPickerProvider>
   );

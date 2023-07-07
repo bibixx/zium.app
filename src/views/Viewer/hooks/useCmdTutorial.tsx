@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { z } from "zod";
 import { useSnackbars } from "../../../components/Snackbar/SnackbarsProvider";
-import { SHORTCUTS, getNiceShortcutIndicator } from "../../../hooks/useHotkeys/useHotkeys.keys";
+import { SHORTCUTS } from "../../../hooks/useHotkeys/useHotkeys.keys";
 import { LocalStorageClient } from "../../../utils/localStorageClient";
+import { HumanReadableShortcuts } from "../../../components/HumanReadableShortcuts/HumanReadableShortcuts";
 
 const NUMBER_OF_ADJUSTMENTS = 4;
 const ADJUSTMENTS_TIME = 10_000;
@@ -37,8 +38,8 @@ export const useCmdTutorial = () => {
         title: "Pro tip",
         content: (
           <span>
-            To prevent snapping, hold down {getNiceShortcutIndicator(SHORTCUTS.GRID_PRECISE)} command key while
-            resizing.
+            To prevent snapping, hold down <HumanReadableShortcuts withoutClick keys={SHORTCUTS.GRID_PRECISE} /> command
+            key while resizing.
           </span>
         ),
       });
