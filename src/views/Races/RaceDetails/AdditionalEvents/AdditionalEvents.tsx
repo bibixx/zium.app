@@ -2,7 +2,7 @@ import { InformationCircleIcon } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
 import { ListItem } from "../../../../components/ListItem/ListItem";
 import { RaceDetailsData } from "../../../../hooks/useRaceDetails/useRacesDetails.types";
-import { toTitleCase } from "../../../../utils/text";
+import { fixEmDashes, toTitleCase } from "../../../../utils/text";
 import styles from "./AdditionalEvents.module.scss";
 
 interface AdditionalEventsProps {
@@ -37,7 +37,7 @@ export const AdditionalEvents = ({ additionalEvents, areAllEventsFinished }: Add
             as={Link}
             to={`/race/${raceDetails.id}`}
           >
-            {toTitleCase(raceDetails.title)}
+            {fixEmDashes(toTitleCase(raceDetails.title))}
           </ListItem>
         );
       })}
