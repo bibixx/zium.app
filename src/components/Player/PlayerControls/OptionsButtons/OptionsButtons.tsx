@@ -12,6 +12,7 @@ import { Key } from "ts-key-enum";
 import { useHotkeysStack } from "../../../../hooks/useHotkeysStack/useHotkeysStack";
 import { useScopedHotkeys } from "../../../../hooks/useScopedHotkeys/useScopedHotkeys";
 import { Button } from "../../../Button/Button";
+import { toggleFullScreen } from "../../../../utils/toggleFullScreen";
 import { CustomVolumeSlider } from "./CustomVolumeSlider";
 import styles from "./OptionsButtons.module.scss";
 
@@ -33,14 +34,6 @@ export const OptionsButtons = ({ player, volume, setVolume, isMuted, setIsMuted 
 
     return () => document.removeEventListener("fullscreenchange", onFullScreenChange);
   }, []);
-
-  const toggleFullScreen = () => {
-    if (document.fullscreenElement) {
-      document.exitFullscreen();
-    } else {
-      document.documentElement.requestFullscreen();
-    }
-  };
 
   return (
     <div className={styles.buttonsWrapper}>

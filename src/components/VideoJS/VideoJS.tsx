@@ -10,6 +10,7 @@ import { setRef } from "../../utils/setRef";
 import { VideoStreamInfo } from "../../hooks/useStreamVideo/useStreamVideo.api";
 import { GridLayoutFillMode } from "../../views/Viewer/hooks/useViewerState/useViewerState.utils";
 import { useAnalytics } from "../../hooks/useAnalytics/useAnalytics";
+import { toggleFullScreen } from "../../utils/toggleFullScreen";
 import styles from "./VideoJS.module.scss";
 
 export interface VideoJSOptions extends PlayerConfig {
@@ -154,6 +155,7 @@ export const VideoJS = forwardRef<PlayerAPI | null, VideoJSProps>(
     return (
       <div
         ref={placeholderRef}
+        onDoubleClick={toggleFullScreen}
         className={classNames(styles.videoWrapper, {
           [styles.isVisible]: isVisible,
           [styles.isFit]: fillMode === "fit",

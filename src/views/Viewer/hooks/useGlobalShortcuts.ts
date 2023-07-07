@@ -4,6 +4,7 @@ import { Key } from "ts-key-enum";
 import { useHotkeysStack } from "../../../hooks/useHotkeysStack/useHotkeysStack";
 import { useScopedHotkeys } from "../../../hooks/useScopedHotkeys/useScopedHotkeys";
 import { isWindows } from "../../../utils/platform";
+import { toggleFullScreen } from "../../../utils/toggleFullScreen";
 
 export const useGlobalShortcuts = (player: PlayerAPI | null) => {
   const onPlayClick = useCallback(() => {
@@ -42,8 +43,13 @@ export const useGlobalShortcuts = (player: PlayerAPI | null) => {
     [player],
   );
 
+  const onToggleFullScreen = useCallback(() => {
+    toggleFullScreen();
+  }, []);
+
   const scope = useHotkeysStack(true, true, "Global");
   useScopedHotkeys("space", scope, onPlayClick);
   useScopedHotkeys(Key.ArrowRight, scope, onSkipAhead, { ignoreModifiers: true, preventDefault: true });
   useScopedHotkeys(Key.ArrowLeft, scope, onSkipBackwards, { ignoreModifiers: true, preventDefault: true });
+  useScopedHotkeys("f", scope, onToggleFullScreen);
 };
