@@ -7,7 +7,7 @@ import friday from "../../assets/friday.mp3";
 
 const AUDIO_PATHS = [smoothOperator, radioCheck, friday];
 
-export const useEasterEgg = () => {
+export const useEasterEgg = (enabled = true, id = "useEasterEgg") => {
   const [availableAudioPaths, setAvailableAudioPaths] = useState(AUDIO_PATHS);
   const onEasterEgg = useCallback(() => {
     const i = Math.floor(Math.random() * availableAudioPaths.length);
@@ -25,8 +25,9 @@ export const useEasterEgg = () => {
 
   useHotkeys(
     () => ({
-      id: "useEasterEgg",
+      id,
       allowPropagation: true,
+      enabled,
       hotkeys: [
         {
           keys: SHORTCUTS.EASTER_EGG,
@@ -34,7 +35,7 @@ export const useEasterEgg = () => {
         },
       ],
     }),
-    [onEasterEgg],
+    [id, enabled, onEasterEgg],
   );
 };
 

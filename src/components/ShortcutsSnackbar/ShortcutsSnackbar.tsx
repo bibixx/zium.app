@@ -3,6 +3,7 @@ import { useHotkeys } from "../../hooks/useHotkeys/useHotkeys";
 import { SHORTCUTS } from "../../hooks/useHotkeys/useHotkeys.keys";
 import { HumanReadableShortcuts } from "../HumanReadableShortcuts/HumanReadableShortcuts";
 import { Sheet } from "../Sheet/Sheet";
+import { useEasterEgg } from "../../hooks/useEasterEgg/useEasterEgg";
 import { VISIBLE_SHORTCUTS } from "./ShortcutsSnackbar.constant";
 import styles from "./ShortcutsSnackbar.module.scss";
 
@@ -30,6 +31,7 @@ export const ShortcutsSnackbar = ({ onClose, isOpen }: ShortcutsSnackbarProps) =
     }),
     [isOpen, onClose],
   );
+  useEasterEgg(isOpen, "ShortcutsSnackbarEasterEgg");
 
   return (
     <Sheet isOpen={isOpen} onClose={onClose}>
