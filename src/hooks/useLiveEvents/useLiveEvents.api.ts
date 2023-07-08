@@ -31,8 +31,12 @@ export const fetchLiveEvents = async (signal: AbortSignal): Promise<RaceData[]> 
     const title = racePage.metadata.shortDescription;
     const pictureUrl = racePage.metadata.pictureUrl;
     const countryName = racePage.metadata.emfAttributes.Meeting_Country_Name;
-    const startDate = new Date(racePage.metadata.emfAttributes.Meeting_Start_Date);
-    const endDate = new Date(racePage.metadata.emfAttributes.Meeting_End_Date);
+    const startDate = new Date(
+      racePage.metadata.emfAttributes.Meeting_Start_Date || racePage.metadata.emfAttributes.sessionStartDate,
+    );
+    const endDate = new Date(
+      racePage.metadata.emfAttributes.Meeting_End_Date || racePage.metadata.emfAttributes.sessionEndDate,
+    );
     const roundNumber = racePage.metadata.emfAttributes.Meeting_Number;
     const description = isRace ? racePage.metadata.emfAttributes.Global_Title : racePage.metadata.title;
     const countryId = racePage.metadata.emfAttributes.MeetingCountryKey;

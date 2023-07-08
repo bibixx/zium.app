@@ -23,7 +23,7 @@ export const useNotifyAboutNewEvent = (currentRaceId: string) => {
       return;
     }
 
-    const latestEvent = findEndingLastEvent(liveEvents.data);
+    const latestEvent = findEndingLastEvent(liveEvents.data, currentRaceId);
 
     if (latestEvent == null || eventsAlreadyNotifiedAbout.includes(latestEvent.id)) {
       return;

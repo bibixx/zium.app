@@ -29,6 +29,8 @@ export const containerValidator = z.object({
       Meeting_Country_Name: z.string(),
       Meeting_Start_Date: z.string(),
       Meeting_End_Date: z.string(),
+      sessionStartDate: z.number(),
+      sessionEndDate: z.number(),
       Meeting_Number: z.coerce.number(),
       Global_Title: z.string(),
       MeetingCountryKey: z.string(),
