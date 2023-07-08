@@ -5,6 +5,7 @@ import { assertNever } from "../../../../utils/assertNever";
 import { clone } from "../../../../utils/clone";
 import { LocalStorageClient } from "../../../../utils/localStorageClient";
 import { localStorageViewerStateValidator } from "./useViewerState.validator";
+import { getDefaultState } from "./useViewerState.defaultState";
 
 export type GridLayoutFillMode = "fit" | "fill";
 
@@ -101,7 +102,7 @@ export const STORE_LOCAL_STORAGE_KEY = "store";
 export const storeLocalStorageClient = new LocalStorageClient(
   STORE_LOCAL_STORAGE_KEY,
   localStorageViewerStateValidator,
-  getInitialState,
+  getDefaultState,
 );
 
 const withLocalStorage =
@@ -278,74 +279,3 @@ export const windowGridReducer = (prevState: WindowGridState, action: WindowGrid
 };
 
 export const windowGridReducerWithStorage = withLocalStorage(windowGridReducer);
-
-function getInitialState(): WindowGridState {
-  const windows: GridWindow[] = [
-    {
-      type: "main",
-      id: generateUID(),
-    },
-    {
-      type: "driver-tracker",
-      id: generateUID(),
-    },
-    {
-      type: "data-channel",
-      id: generateUID(),
-    },
-    {
-      type: "driver",
-      id: generateUID(),
-      driverId: "ALO",
-    },
-    {
-      type: "driver",
-      id: generateUID(),
-      driverId: "LEC",
-    },
-    // {
-    //   type: "driver",
-    //   id: generateUID(),
-    //   driverId: "PER",
-    // },
-    // {
-    //   type: "driver",
-    //   id: generateUID(),
-    //   driverId: "RIC",
-    // },
-  ];
-
-  return {
-    currentLayoutIndex: 0,
-    savedLayouts: [
-      {
-        name: "Layout 1",
-        layout: getInitialLayout(windows),
-        windows,
-      },
-    ],
-  };
-}
-
-const getInitialLayout = (windows: GridWindow[]): GridLayout[] => {
-  const columns = Math.ceil(Math.sqrt(windows.length));
-  const rows = Math.ceil(Math.sqrt(windows.length));
-
-  const columnWidth = 100 / columns;
-  const rowHeight = 100 / rows;
-
-  return windows.map((w, i): GridLayout => {
-    const column = i % columns;
-    const row = Math.floor(i / columns);
-
-    return {
-      id: w.id,
-      width: columnWidth,
-      height: rowHeight,
-      y: row * rowHeight,
-      x: column * columnWidth,
-      zIndex: i + 1,
-      fillMode: "fill",
-    };
-  });
-};
