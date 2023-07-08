@@ -35,6 +35,7 @@ export const SHORTCUTS = {
   BIG_SKIP_BACKWARDS: brandShortcut([Key.ArrowLeft]),
   SMALL_SKIP_BACKWARDS: brandShortcut([Key.ArrowLeft, CmdOrControl]),
   TOGGLE_FULL_SCREEN: brandShortcut(["f"]),
+  TOGGLE_CLOSED_CAPTIONS: brandShortcut(["c"]),
 
   OFFSET_INPUT_INCREASE_SMALL: brandShortcut([CmdOrControl, Key.ArrowUp]),
   OFFSET_INPUT_INCREASE_MEDIUM: brandShortcut([Key.ArrowUp]),

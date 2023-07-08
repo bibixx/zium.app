@@ -5,7 +5,11 @@ import { useHotkeys } from "../../../hooks/useHotkeys/useHotkeys";
 import { SHORTCUTS } from "../../../hooks/useHotkeys/useHotkeys.keys";
 import { useEasterEgg } from "../../../hooks/useEasterEgg/useEasterEgg";
 
-export const useGlobalShortcuts = (player: PlayerAPI | null) => {
+export const useGlobalShortcuts = (
+  player: PlayerAPI | null,
+  setAreVideosPaused: (fn: (oldValue: boolean) => boolean) => void,
+  setAreClosedCaptionsOn: (fn: (oldValue: boolean) => boolean) => void,
+) => {
   useEasterEgg();
 
   const onPlayClick = useCallback(() => {
@@ -13,16 +17,8 @@ export const useGlobalShortcuts = (player: PlayerAPI | null) => {
       return;
     }
 
-    if (player == null) {
-      return;
-    }
-
-    if (player.isPlaying()) {
-      player.pause("ui");
-    } else {
-      player.play("ui");
-    }
-  }, [player]);
+    setAreVideosPaused((isPaused) => !isPaused);
+  }, [setAreVideosPaused]);
 
   const onBigSkipAhead = useCallback(() => {
     const timeDiff = 30;
@@ -47,6 +43,10 @@ export const useGlobalShortcuts = (player: PlayerAPI | null) => {
 
     player?.seek(player.getCurrentTime() - timeDiff);
   }, [player]);
+
+  const onToggleClosedCaptions = useCallback(() => {
+    setAreClosedCaptionsOn((areClosedCaptionsOn) => !areClosedCaptionsOn);
+  }, [setAreClosedCaptionsOn]);
 
   const onToggleFullScreen = useCallback(() => {
     toggleFullScreen();
@@ -85,8 +85,20 @@ export const useGlobalShortcuts = (player: PlayerAPI | null) => {
           keys: SHORTCUTS.TOGGLE_FULL_SCREEN,
           action: onToggleFullScreen,
         },
+        {
+          keys: SHORTCUTS.TOGGLE_CLOSED_CAPTIONS,
+          action: onToggleClosedCaptions,
+        },
       ],
     }),
-    [onBigSkipAhead, onBigSkipBackwards, onPlayClick, onSmallSkipAhead, onSmallSkipBackwards, onToggleFullScreen],
+    [
+      onBigSkipAhead,
+      onBigSkipBackwards,
+      onPlayClick,
+      onSmallSkipAhead,
+      onSmallSkipBackwards,
+      onToggleClosedCaptions,
+      onToggleFullScreen,
+    ],
   );
 };

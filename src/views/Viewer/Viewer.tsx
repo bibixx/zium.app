@@ -303,7 +303,7 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
   );
 
   useSyncVideos({ windows, windowVideojsRefMapRef, isLive, playbackOffsets });
-  useGlobalShortcuts(mainVideoPlayer);
+  useGlobalShortcuts(mainVideoPlayer, setAreVideosPaused, setAreClosedCaptionsOn);
   useNotifyAboutNewEvent(raceId);
 
   const globalFeeds = useMemo(

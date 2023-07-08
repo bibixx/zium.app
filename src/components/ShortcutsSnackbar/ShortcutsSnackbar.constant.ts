@@ -55,6 +55,7 @@ export const VISIBLE_SHORTCUTS: VisibleShortcutSection[] = [
           { label: "Open layouts", shortcut: SHORTCUTS.OPEN_LAYOUTS },
           { label: "Play / Pause", shortcut: SHORTCUTS.PLAY_PAUSE },
           { label: "Toggle full screen", shortcut: SHORTCUTS.TOGGLE_FULL_SCREEN },
+          { label: "Toggle closed captions", shortcut: SHORTCUTS.TOGGLE_CLOSED_CAPTIONS },
           { label: "Precise resizing", shortcut: SHORTCUTS.GRID_SMALL },
           { label: "Freeform resizing", shortcut: SHORTCUTS.GRID_PRECISE },
         ],
