@@ -7,18 +7,19 @@ import { fixEmDashes, formatRaceName, toTitleCase } from "../../../../utils/text
 import { useCloseAllSnackbarsOnUnmount } from "../../../../hooks/useCloseAllSnackbarsOnUnmount/useCloseAllSnackbarsOnUnmount";
 import { useDevicePixelRatio } from "../../../../hooks/useDevicePixelRatio/useDevicePixelRatio";
 import { addQueryParams } from "../../../../utils/addQueryParams";
+import { useFeatureFlags } from "../../../../hooks/useFeatureFlags/useFeatureFlags";
 import { getNewEventSnackbarData } from "./useNotifyAboutNewEvent.utils";
 
 export const useNotifyAboutNewEvent = (currentRaceId: string) => {
-  return;
   const liveEvents = useLiveEvents(30_000);
   const { openSnackbar, closeSnackbar } = useSnackbars();
   const [eventsAlreadyNotifiedAbout, setEventsAlreadyNotifiedAbout] = useState<(string | null)[]>([currentRaceId]);
   const registerSnackbarForUnmount = useCloseAllSnackbarsOnUnmount();
   const devicePixelRatio = useDevicePixelRatio();
+  const { flags } = useFeatureFlags();
 
   useEffect(() => {
-    if (liveEvents.state !== "done") {
+    if (liveEvents.state !== "done" || flags.disableLiveNotifications) {
       return;
     }
 
@@ -48,6 +49,7 @@ export const useNotifyAboutNewEvent = (currentRaceId: string) => {
     currentRaceId,
     devicePixelRatio,
     eventsAlreadyNotifiedAbout,
+    flags.disableLiveNotifications,
     liveEvents,
     openSnackbar,
     registerSnackbarForUnmount,

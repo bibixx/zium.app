@@ -14,10 +14,12 @@ export const debugFlagTypes = {
   increaseBackgroundContrast: BOOLEAN_TYPE,
   showWindowBorders: BOOLEAN_TYPE,
   forceUiVisibility: BOOLEAN_TYPE,
+  disableLiveNotifications: BOOLEAN_TYPE,
 } satisfies Record<string, DebugFlagTypes>;
 
 export const defaultFlags = {
   increaseBackgroundContrast: false,
   showWindowBorders: false,
   forceUiVisibility: false,
+  disableLiveNotifications: false,
 } satisfies FlagsObject;

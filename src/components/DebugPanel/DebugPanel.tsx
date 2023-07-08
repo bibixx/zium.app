@@ -200,6 +200,11 @@ const DebugRaceSettings = ({ closePanel }: DebugPanelContentsProps) => {
         onChange={updateFlag("showWindowBorders")}
       />
       <Checkbox label="Never hide UI" checked={flags.forceUiVisibility} onChange={updateFlag("forceUiVisibility")} />
+      <Checkbox
+        label="Disable live notifications"
+        checked={flags.disableLiveNotifications}
+        onChange={updateFlag("disableLiveNotifications")}
+      />
     </div>
   );
 };
