@@ -1,6 +1,6 @@
 import cn from "classnames";
 import { Link } from "react-router-dom";
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { ListItem } from "../../../components/ListItem/ListItem";
 import { SupportedSeasons } from "../../../constants/seasons";
 import { isSeasonComingSoon } from "../../../utils/SeasonUtils";
@@ -8,6 +8,7 @@ import { WithVariables } from "../../../components/WithVariables/WithVariables";
 import { FigmaIcon, GitHubIcon, TwitterIcon } from "../../../components/CustomIcons/CustomIcons";
 import { MIDDLE_DOT } from "../../../utils/text";
 import { ShortcutsSnackbar } from "../../../components/ShortcutsSnackbar/ShortcutsSnackbar";
+import { useElementHeight } from "../../../hooks/useElementHeight/useElementHeight";
 import styles from "./Sidebar.module.scss";
 
 interface SidebarSeason {
@@ -47,6 +48,7 @@ export const Sidebar = ({ visibleSeasonId, seasons, overwriteVisibleSeason }: Si
     });
   };
 
+  const { isVisible: isLonelyMiddleDotVisible, middleDotWrapperRef } = useLonelyMiddleDot();
   return (
     <div className={styles.wrapper}>
       <div className={styles.elementsWrapper}>
@@ -96,19 +98,25 @@ export const Sidebar = ({ visibleSeasonId, seasons, overwriteVisibleSeason }: Si
             <FigmaIcon height={20} />
           </a>
         </div>
-        <div className={styles.footerText}>
-          <button className={styles.footerLink} onClick={() => setIsShortcutsSidebarOpen(true)}>
-            Keyboard shortcuts
-          </button>
-          <ShortcutsSnackbar isOpen={isShortcutsSidebarOpen} onClose={onShortcutsSidebarClose} />
-          <span>{MIDDLE_DOT}</span>
-          <Link to="/privacy-policy" className={styles.footerLink}>
-            Privacy policy
-          </Link>
-          <span>{MIDDLE_DOT}</span>
-          <a href="mailto:zium@zium.app" className={styles.footerLink}>
-            Contact us
-          </a>
+        <div className={styles.footerText} ref={middleDotWrapperRef}>
+          <div className={styles.footerTextSection}>
+            <button className={styles.footerLink} onClick={() => setIsShortcutsSidebarOpen(true)}>
+              Keyboard shortcuts
+            </button>
+            <ShortcutsSnackbar isOpen={isShortcutsSidebarOpen} onClose={onShortcutsSidebarClose} />
+            <span className={cn(styles.lonelyMiddleDot, { [styles.isHidden]: !isLonelyMiddleDotVisible })}>
+              {MIDDLE_DOT}
+            </span>
+          </div>
+          <div className={styles.footerTextSection}>
+            <Link to="/privacy-policy" className={styles.footerLink}>
+              Privacy policy
+            </Link>
+            <span>{MIDDLE_DOT}</span>
+            <a href="mailto:zium@zium.app" className={styles.footerLink}>
+              Contact us
+            </a>
+          </div>
         </div>
       </footer>
     </div>
@@ -144,4 +152,12 @@ const SidebarElement = ({
       </ListItem>
     </div>
   );
+};
+
+const useLonelyMiddleDot = () => {
+  const [isVisible, setIsVisible] = useState(true);
+  const middleDotWrapperRef = useRef<HTMLDivElement>(null);
+  useElementHeight((height) => setIsVisible(height < 24), middleDotWrapperRef);
+
+  return { isVisible, middleDotWrapperRef };
 };

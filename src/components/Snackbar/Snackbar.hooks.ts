@@ -143,26 +143,3 @@ export const useSnackbarTime = (totalTime: number, isPaused: boolean, onClose: (
 
   return timeIndicatorRef;
 };
-
-export const useSnackbarHeight = (
-  onHeightChange: (height: number) => void,
-  ref: MutableRefObject<HTMLElement | null>,
-) => {
-  useEffect(() => {
-    const $element = ref.current;
-
-    if ($element == null) {
-      return;
-    }
-
-    const resizeObserver = new ResizeObserver(([entry]) => {
-      const [borderBoxSize] = entry.borderBoxSize;
-      onHeightChange(borderBoxSize.blockSize);
-    });
-
-    resizeObserver.observe($element);
-
-    return () => resizeObserver.disconnect();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ref]);
-};

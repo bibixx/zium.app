@@ -3,7 +3,8 @@ import cn from "classnames";
 import { forwardRef, ReactNode, useCallback, useRef, useState } from "react";
 import { Button } from "../Button/Button";
 import { WithVariables } from "../WithVariables/WithVariables";
-import { useSnackbarDrag, useSnackbarHeight, useSnackbarTime } from "./Snackbar.hooks";
+import { useElementHeight } from "../../hooks/useElementHeight/useElementHeight";
+import { useSnackbarDrag, useSnackbarTime } from "./Snackbar.hooks";
 import styles from "./Snackbar.module.scss";
 
 const DEFAULT_SNACKBAR_TIME = 4_000;
@@ -57,7 +58,7 @@ export const Snackbar = forwardRef<HTMLDivElement | null, SnackbarProps>(
       onDragEnd,
     });
 
-    useSnackbarHeight(onHeightChange, wrapperRef);
+    useElementHeight(onHeightChange, wrapperRef);
 
     return (
       <>

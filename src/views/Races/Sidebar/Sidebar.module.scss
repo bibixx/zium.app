@@ -80,4 +80,18 @@
   color: var(--color-text-muted);
   display: flex;
   gap: 4px;
+  flex-wrap: wrap;
+}
+
+.footerTextSection {
+  display: flex;
+  gap: 4px;
+}
+
+.lonelyMiddleDot {
+  visibility: visible;
+
+  &.isHidden {
+    visibility: hidden;
+  }
 }
