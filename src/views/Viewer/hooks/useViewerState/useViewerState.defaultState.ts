@@ -6,6 +6,7 @@ import {
   MainGridWindow,
 } from "../../../../types/GridWindow";
 import { generateUID } from "../../../../utils/generateUID";
+import { isNotFalse } from "../../../../utils/isNotFalse";
 import { GridLayout, GridLayoutFillMode, WindowGridSavedLayout, WindowGridState } from "./useViewerState.utils";
 
 interface WindowGridSavedLayoutBase {
@@ -280,7 +281,71 @@ const fullScreen: LayoutBase = {
   ],
 };
 
-const defaultLayouts: LayoutBase[] = [race16_10, race21_9, quali16_10, quali21_9, fullScreen];
+const offsetsDriversIds = [
+  "ALB",
+  "ALO",
+  "BOT",
+  "DEV",
+  "GAS",
+  "HAM",
+  "HUL",
+  "LEC",
+  "MAG",
+  "NOR",
+  "OCO",
+  "PER",
+  "PIA",
+  "RUS",
+  "SAI",
+  "SAR",
+  "STR",
+  "TSU",
+  "VER",
+  "ZHO",
+];
+const firstRowWidth = 28;
+const columnsInRow = 5;
+const columnWidth = (100 - firstRowWidth) / 5;
+const rowHeight = 100 / Math.ceil(offsetsDriversIds.length / columnsInRow);
+
+const offsets: LayoutBase = {
+  name: "Offsets",
+  data: [
+    { width: firstRowWidth, height: 100 / 3, x: 0, y: 0, zIndex: 0, fillMode: "fill", window: { type: "main" } },
+    ...offsetsDriversIds.map((driverId, i): WindowGridSavedLayoutBase => {
+      const y = Math.floor(i / columnsInRow);
+      const x = (i - y * columnsInRow) % columnsInRow;
+
+      return {
+        width: columnWidth,
+        height: rowHeight,
+        x: firstRowWidth + x * columnWidth,
+        y: y * rowHeight,
+        zIndex: i + 1,
+        fillMode: "fit",
+        window: { type: "driver", driverId },
+      };
+    }),
+    {
+      width: firstRowWidth,
+      height: 100 / 3,
+      x: 0,
+      y: 100 / 3,
+      zIndex: offsetsDriversIds.length + 1,
+      fillMode: "fit",
+      window: { type: "driver-tracker" },
+    },
+    {
+      width: firstRowWidth,
+      height: 100 / 3,
+      x: 0,
+      y: 200 / 3,
+      zIndex: offsetsDriversIds.length + 1,
+      fillMode: "fit",
+      window: { type: "data-channel" },
+    },
+  ],
+};
 
 const getLayout = (baseLayout: LayoutBase, mainId: string): WindowGridSavedLayout => {
   const layouts: GridLayout[] = [];
@@ -308,8 +373,16 @@ const getLayout = (baseLayout: LayoutBase, mainId: string): WindowGridSavedLayou
   };
 };
 
-export const getDefaultState = (): WindowGridState => {
+export const getDefaultState = (includeOffsets = false): WindowGridState => {
   const mainId = generateUID();
+  const defaultLayouts: LayoutBase[] = [
+    includeOffsets && offsets,
+    race16_10,
+    race21_9,
+    quali16_10,
+    quali21_9,
+    fullScreen,
+  ].filter(isNotFalse);
 
   return {
     currentLayoutIndex: 0,

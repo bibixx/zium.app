@@ -10,6 +10,7 @@ import { ListItem } from "../ListItem/ListItem";
 import { WithVariables } from "../WithVariables/WithVariables";
 import { useHotkeys } from "../../hooks/useHotkeys/useHotkeys";
 import { SHORTCUTS } from "../../hooks/useHotkeys/useHotkeys.keys";
+import { isNotFalse } from "../../utils/isNotFalse";
 import { usePopperAnchorRef } from "./Dropdown.hooks";
 import styles from "./Dropdown.module.scss";
 
@@ -214,8 +215,4 @@ function transformOptionsToSections(
       options: options.filter(isNotFalse),
     },
   ];
-}
-
-function isNotFalse<T>(o: T | false): o is T {
-  return o !== false;
 }

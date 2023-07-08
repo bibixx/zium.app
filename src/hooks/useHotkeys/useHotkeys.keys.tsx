@@ -32,8 +32,10 @@ export const SHORTCUTS = {
   PLAY_PAUSE: brandShortcut(["space"]),
   BIG_SKIP_AHEAD: brandShortcut([Key.ArrowRight]),
   SMALL_SKIP_AHEAD: brandShortcut([Key.ArrowRight, CmdOrControl]),
+  SUPER_SMALL_SKIP_AHEAD: brandShortcut(["."]),
   BIG_SKIP_BACKWARDS: brandShortcut([Key.ArrowLeft]),
   SMALL_SKIP_BACKWARDS: brandShortcut([Key.ArrowLeft, CmdOrControl]),
+  SUPER_SMALL_SKIP_BACKWARDS: brandShortcut([","]),
   TOGGLE_FULL_SCREEN: brandShortcut(["f"]),
   TOGGLE_CLOSED_CAPTIONS: brandShortcut(["c"]),
 

@@ -32,6 +32,12 @@ export const useGlobalShortcuts = (
     player?.seek(player.getCurrentTime() + timeDiff);
   }, [player]);
 
+  const onSuperSmallSkipAhead = useCallback(() => {
+    const timeDiff = 0.1;
+
+    player?.seek(player.getCurrentTime() + timeDiff);
+  }, [player]);
+
   const onBigSkipBackwards = useCallback(() => {
     const timeDiff = 30;
 
@@ -40,6 +46,12 @@ export const useGlobalShortcuts = (
 
   const onSmallSkipBackwards = useCallback(() => {
     const timeDiff = 1;
+
+    player?.seek(player.getCurrentTime() - timeDiff);
+  }, [player]);
+
+  const onSuperSmallSkipBackwards = useCallback(() => {
+    const timeDiff = 0.1;
 
     player?.seek(player.getCurrentTime() - timeDiff);
   }, [player]);
@@ -72,6 +84,11 @@ export const useGlobalShortcuts = (
           preventDefault: true,
         },
         {
+          keys: SHORTCUTS.SUPER_SMALL_SKIP_AHEAD,
+          action: onSuperSmallSkipAhead,
+          preventDefault: true,
+        },
+        {
           keys: SHORTCUTS.BIG_SKIP_BACKWARDS,
           action: onBigSkipBackwards,
           preventDefault: true,
@@ -79,6 +96,11 @@ export const useGlobalShortcuts = (
         {
           keys: SHORTCUTS.SMALL_SKIP_BACKWARDS,
           action: onSmallSkipBackwards,
+          preventDefault: true,
+        },
+        {
+          keys: SHORTCUTS.SUPER_SMALL_SKIP_BACKWARDS,
+          action: onSuperSmallSkipBackwards,
           preventDefault: true,
         },
         {
@@ -97,6 +119,8 @@ export const useGlobalShortcuts = (
       onPlayClick,
       onSmallSkipAhead,
       onSmallSkipBackwards,
+      onSuperSmallSkipAhead,
+      onSuperSmallSkipBackwards,
       onToggleClosedCaptions,
       onToggleFullScreen,
     ],
