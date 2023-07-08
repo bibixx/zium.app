@@ -40,5 +40,16 @@
     max-width: 75%;
     background: var(--color-core-neutral-darken-600);
     color: var(--color-text-strong);
+    text-align: center;
+
+    p {
+      margin: 0;
+    }
+
+    * {
+      background: none !important;
+      color: inherit !important;
+      font-size: 1em !important;
+    }
   }
 }

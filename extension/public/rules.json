@@ -54,5 +54,33 @@
       "urlFilter": "f1prodlive.akamaized.net",
       "initiatorDomains": ["__FROM_ENV__"]
     }
+  },
+  {
+    "id": 5,
+    "priority": 1,
+    "action": {
+      "type": "modifyHeaders",
+      "responseHeaders": [
+        {
+          "value": "*",
+          "operation": "set",
+          "header": "Access-Control-Allow-Origin"
+        },
+        {
+          "operation": "set",
+          "value": "PUT, GET, HEAD, POST, DELETE, OPTIONS",
+          "header": "Access-Control-Allow-Methods"
+        },
+        {
+          "value": "*",
+          "operation": "set",
+          "header": "Access-Control-Allow-Headers"
+        }
+      ]
+    },
+    "condition": {
+      "urlFilter": "ott-video-cf.formula1.com",
+      "initiatorDomains": ["__FROM_ENV__"]
+    }
   }
 ]
