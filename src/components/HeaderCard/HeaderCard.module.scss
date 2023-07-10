@@ -134,6 +134,7 @@
 .raceTitle {
   @include typography(heading, 500, default);
   color: var(--color-text-strong);
+  text-wrap: balance;
 }
 
 .raceCountryWrapper {
