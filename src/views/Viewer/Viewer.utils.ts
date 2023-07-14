@@ -1,4 +1,3 @@
-import { LATEST_SEASON } from "../../constants/seasons";
 import { DriverStreamInfo, StreamsStateData } from "../../hooks/useVideoRaceDetails/useVideoRaceDetails.types";
 import { GridWindow } from "../../types/GridWindow";
 import { assertNever } from "../../utils/assertNever";
@@ -52,10 +51,11 @@ export const getAvailableDrivers = (streams: StreamsStateData, season: number) =
       lastName: driverStream.driverLastName,
       team: driverStream.teamName,
       id,
-      imageUrls:
-        season === +LATEST_SEASON
-          ? [getDriverUrl(driverStream, true), `/images/avatars/${season}/${id}.png`, `/images/avatars/default.png`]
-          : [`/images/avatars/${season}/${id}.png`, getDriverUrl(driverStream, true), `/images/avatars/default.png`],
+      imageUrls: [
+        `/images/avatars/${season}/${id}.png`,
+        getDriverUrl(driverStream, true),
+        `/images/avatars/default.png`,
+      ],
     };
   });
 
