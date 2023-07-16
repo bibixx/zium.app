@@ -3,7 +3,6 @@ import { PlayerAPI } from "bitmovin-player";
 import { useStreamVideo } from "../../../hooks/useStreamVideo/useStreamVideo";
 import { DriverGridWindow } from "../../../types/GridWindow";
 import { VideoWindowProps } from "../../../types/VideoWindowBaseProps";
-import { onVideoWindowReadyBase } from "../../../utils/onVideoWindowReady";
 import { setRef } from "../../../utils/setRef";
 import { AdditionalVideoJSOptions, VideoJS } from "../../VideoJS/VideoJS";
 import { VideoWindowWrapper } from "../VideoWindowWrapper/VideoWindowWrapper";
@@ -66,10 +65,6 @@ export const DriverVideoWindow = forwardRef<PlayerAPI | null, DriverVideoWindowP
       }
     };
 
-    const onInitialized = (player: PlayerAPI) => {
-      onVideoWindowReadyBase(player);
-    };
-
     const onOffsetChange = useCallback(
       (value: number) => {
         updateOffset(gridWindow.driverId, value);
@@ -107,7 +102,6 @@ export const DriverVideoWindow = forwardRef<PlayerAPI | null, DriverVideoWindowP
           videoStreamInfo={streamVideoState.data}
           options={ADDITIONAL_OPTIONS}
           ref={ref}
-          onInitialized={onInitialized}
           isPaused={isPaused}
           volume={isAudioFocused ? volume : 0}
           fillMode={fillMode}

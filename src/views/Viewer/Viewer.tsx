@@ -210,7 +210,10 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
       if (gridWindow.type === "main") {
         return (
           <MainVideoWindow
-            ref={setRef}
+            ref={(ref) => {
+              setRef(ref);
+              setMainVideoPlayer(ref);
+            }}
             onPlayingChange={(isPaused: boolean) => setAreVideosPaused(isPaused)}
             isPaused={areVideosPaused}
             isAudioFocused={audioFocusedWindow === gridWindow.id}
@@ -218,7 +221,6 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
             volume={volume}
             setVolume={setVolume}
             streamUrl={windowStreamMap[gridWindow.id]}
-            onInitialized={setMainVideoPlayer}
             fillMode={fillMode}
             updateFillMode={updateFillMode}
             areClosedCaptionsOn={areClosedCaptionsOn}

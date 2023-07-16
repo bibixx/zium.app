@@ -3,7 +3,6 @@ import { PlayerAPI } from "bitmovin-player";
 import { useStreamVideo } from "../../../hooks/useStreamVideo/useStreamVideo";
 import { BaseGridWindow } from "../../../types/GridWindow";
 import { VideoWindowProps } from "../../../types/VideoWindowBaseProps";
-import { onVideoWindowReadyBase } from "../../../utils/onVideoWindowReady";
 import { setRef } from "../../../utils/setRef";
 import { AdditionalVideoJSOptions, VideoJS } from "../../VideoJS/VideoJS";
 import { StreamVideoError } from "../../../hooks/useStreamVideo/useStreamVideo.utils";
@@ -47,10 +46,6 @@ export const DataChannelVideoWindow = forwardRef<PlayerAPI | null, DataChannelVi
       playerRef.current = r;
     };
 
-    const onInitialized = (player: PlayerAPI) => {
-      onVideoWindowReadyBase(player);
-    };
-
     const onOffsetChange = useCallback(
       (value: number) => {
         updateOffset("data-channel", value);
@@ -80,7 +75,6 @@ export const DataChannelVideoWindow = forwardRef<PlayerAPI | null, DataChannelVi
           videoStreamInfo={streamVideoState.data}
           options={ADDITIONAL_OPTIONS}
           ref={ref}
-          onInitialized={onInitialized}
           isPaused={isPaused}
           fillMode={fillMode}
         />

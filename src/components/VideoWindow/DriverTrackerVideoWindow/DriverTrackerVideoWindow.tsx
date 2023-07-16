@@ -3,7 +3,6 @@ import { forwardRef, useCallback, useRef } from "react";
 import { useStreamVideo } from "../../../hooks/useStreamVideo/useStreamVideo";
 import { BaseGridWindow } from "../../../types/GridWindow";
 import { VideoWindowProps } from "../../../types/VideoWindowBaseProps";
-import { onVideoWindowReadyBase } from "../../../utils/onVideoWindowReady";
 import { setRef } from "../../../utils/setRef";
 import { AdditionalVideoJSOptions, VideoJS } from "../../VideoJS/VideoJS";
 import { StreamVideoError } from "../../../hooks/useStreamVideo/useStreamVideo.utils";
@@ -32,10 +31,6 @@ export const DriverTrackerVideoWindow = forwardRef<PlayerAPI | null, DriverTrack
     const ref = (r: PlayerAPI | null) => {
       setRef(forwardedRef, r);
       playerRef.current = r;
-    };
-
-    const onInitialized = (player: PlayerAPI) => {
-      onVideoWindowReadyBase(player);
     };
 
     const { requestStream } = useStreamPicker();
@@ -79,7 +74,6 @@ export const DriverTrackerVideoWindow = forwardRef<PlayerAPI | null, DriverTrack
           videoStreamInfo={streamVideoState.data}
           options={ADDITIONAL_OPTIONS}
           ref={ref}
-          onInitialized={onInitialized}
           isPaused={isPaused}
           fillMode={fillMode}
         />

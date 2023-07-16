@@ -3,7 +3,6 @@ import { PlayerAPI, PlayerEvent } from "bitmovin-player";
 import { TvIcon } from "@heroicons/react/20/solid";
 import { useStreamVideo } from "../../../hooks/useStreamVideo/useStreamVideo";
 import { VideoWindowProps } from "../../../types/VideoWindowBaseProps";
-import { onVideoWindowReadyBase } from "../../../utils/onVideoWindowReady";
 import { setRef } from "../../../utils/setRef";
 import { AdditionalVideoJSOptions, VideoJS } from "../../VideoJS/VideoJS";
 import { VideoWindowWrapper } from "../VideoWindowWrapper/VideoWindowWrapper";
@@ -19,7 +18,6 @@ interface MainVideoWindowProps extends VideoWindowProps {
   isAudioFocused: boolean;
   volume: number;
   setVolume: (newVolume: number) => void;
-  onInitialized: (player: PlayerAPI) => void;
   areClosedCaptionsOn: boolean;
   setAreClosedCaptionsOn: (value: boolean) => void;
   hasOnlyOneStream: boolean;
@@ -34,7 +32,6 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
       isAudioFocused,
       onWindowAudioFocus,
       volume,
-      onInitialized: onExternalInitialized,
       fillMode,
       updateFillMode,
       areClosedCaptionsOn,
@@ -51,10 +48,7 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
       playerRef.current = r;
     };
 
-    const onInitialized = (player: PlayerAPI) => {
-      onVideoWindowReadyBase(player);
-      onExternalInitialized(player);
-
+    const onReady = (player: PlayerAPI) => {
       player.on(PlayerEvent.Paused, () => {
         onPlayingChange(true);
       });
@@ -96,7 +90,7 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
           videoStreamInfo={streamVideoState.data}
           options={ADDITIONAL_OPTIONS}
           ref={ref}
-          onInitialized={onInitialized}
+          onInitialized={onReady}
           isPaused={isPaused}
           volume={isAudioFocused ? volume : 0}
           fillMode={fillMode}
