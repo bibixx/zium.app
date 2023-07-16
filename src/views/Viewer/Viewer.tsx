@@ -1,8 +1,6 @@
 import { memo, useCallback, useMemo, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
 import { PlayerAPI } from "bitmovin-player";
 import deepEqual from "fast-deep-equal/es6";
-import cn from "classnames";
 import { Transition, TransitionGroup } from "react-transition-group";
 import { GridWindow } from "../../types/GridWindow";
 import { MainVideoWindow } from "../../components/VideoWindow/MainVideoWindow/MainVideoWindow";
@@ -11,24 +9,13 @@ import { assertNever } from "../../utils/assertNever";
 import { DataChannelVideoWindow } from "../../components/VideoWindow/DataChannelVideoWindow/DataChannelVideoWindow";
 import { PlaybackOffsets, RaceInfo, StreamsStateData } from "../../hooks/useVideoRaceDetails/useVideoRaceDetails.types";
 import { DriverTrackerVideoWindow } from "../../components/VideoWindow/DriverTrackerVideoWindow/DriverTrackerVideoWindow";
-import { useVideoRaceDetails } from "../../hooks/useVideoRaceDetails/useVideoRaceDetails";
 import { RnDWindow } from "../../components/RnDWindow/RnDWindow";
 import { Dimensions } from "../../types/Dimensions";
 import { StreamPickerProvider } from "../../hooks/useStreamPicker/useStreamPicker";
 import { StreamPicker } from "../../components/StreamPicker/StreamPicker";
 import { Player } from "../../components/Player/Player";
-import {
-  GLOBAL_UI_VISIBILITY_CLASS_NAME,
-  useViewerUIVisibilityState,
-  ViewerUIVisibilityContext,
-} from "../../hooks/useViewerUIVisibility/useViewerUIVisibility";
-import { FullScreenError } from "../../components/FullScreenError/FullScreenError";
-import { Loader } from "../../components/Loader/Loader";
-import { TimedOutWrapper } from "../../components/TimedOutWrapper/TimedOutWrapper";
-import { useTrackWithTitle } from "../../hooks/useAnalytics/useAnalytics";
 import { isNotNullable } from "../../utils/isNotNullable";
 import { CookieBanner } from "../../components/CookieBanner/CookieBanner";
-import { UserOffsetsProvider } from "../../hooks/useUserOffests/useUserOffests";
 import { isValidGridWindowType } from "../../utils/isValidGridWindowType";
 import { ZiumOffsetsOverwriteOnStartDialog } from "../../components/ZiumOffsetsDialogs/ZiumOffsetsOverwriteOnStartDialog";
 import { GlobalShortcutsSnackbar } from "../../components/ShortcutsSnackbar/ShortcutsSnackbar";
@@ -378,61 +365,4 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
   );
 }, deepEqual);
 
-export const ViewerWithState = () => {
-  const { raceId } = useParams();
-  useTrackWithTitle(`Viewer: ${raceId}`);
-
-  const state = useVideoRaceDetails(raceId as string);
-  const viewerUIVisibilityState = useViewerUIVisibilityState();
-
-  if (raceId == null) {
-    return <FullScreenError error={null} />;
-  }
-
-  if (state.state === "error") {
-    return <FullScreenError error={state.error} />;
-  }
-
-  if (state.state === "loading") {
-    return <LoadingState />;
-  }
-
-  return (
-    <ViewerUIVisibilityContext.Provider value={viewerUIVisibilityState}>
-      <UserOffsetsProvider raceId={raceId}>
-        <div
-          className={cn(styles.cursorWrapper, {
-            [GLOBAL_UI_VISIBILITY_CLASS_NAME]: viewerUIVisibilityState.isUIVisible,
-          })}
-        >
-          <Viewer
-            streams={state.streams}
-            season={state.season}
-            isLive={state.isLive}
-            raceInfo={state.raceInfo}
-            playbackOffsets={state.playbackOffsets}
-            raceId={raceId}
-          />
-        </div>
-      </UserOffsetsProvider>
-    </ViewerUIVisibilityContext.Provider>
-  );
-};
-
-const LoadingState = () => {
-  const { baseGrid } = useGrid();
-
-  return (
-    <div className={styles.backgroundWrapper}>
-      <CookieBanner position="top" mode="fixed" />
-
-      <BackgroundDots baseGrid={baseGrid} />
-
-      <TimedOutWrapper timeout={500}>
-        <div className={styles.loaderWrapper}>
-          <Loader width={128} />
-        </div>
-      </TimedOutWrapper>
-    </div>
-  );
-};
+export default Viewer;

@@ -1,0 +1,13 @@
+diff --git a/package.json b/package.json
+index 43cfb6f576cc85b7770cbbb0f418bb9ff050a99e..a610d2842ea814ec763ced02b9348e9206bc7443 100644
+--- a/package.json
++++ b/package.json
+@@ -48,7 +48,7 @@
+     "tsc:compile:watch": "tsc --watch"
+   },
+   "dependencies": {
+-    "lottie-web": "^5.10.2"
++    "lottie-web": "^5.12.2"
+   },
+   "devDependencies": {
+     "@babel/core": "^7.16.7",
