@@ -88,7 +88,11 @@ export const DriverVideoWindow = forwardRef<PlayerAPI | null, DriverVideoWindowP
     ) {
       return (
         <NoFeed onDelete={onDelete}>
-          {!hasOnlyOneStream && <DriverPickerButton currentDriver={currentDriver} onDriverChange={onDriverChange} />}
+          {!hasOnlyOneStream && (
+            <VideoWindowButtons
+              streamPill={<DriverPickerButton currentDriver={currentDriver} onDriverChange={onDriverChange} />}
+            />
+          )}
         </NoFeed>
       );
     }
@@ -142,7 +146,7 @@ const DriverPickerButton = ({ currentDriver, onDriverChange }: DriverPickerButto
   const { requestStream } = useStreamPicker();
 
   const currentDriverId = currentDriver?.id;
-  const lastName = currentDriver?.id;
+  const lastName = currentDriver?.id ?? "Select source";
   const imageUrls = currentDriver?.imageUrls;
 
   const onClick = async () => {

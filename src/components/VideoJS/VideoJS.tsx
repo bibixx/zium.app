@@ -1,9 +1,7 @@
 import { forwardRef, useEffect, useRef, useState } from "react";
 import objectMerge from "object-merge";
-import { BufferingOverlay, SubtitleOverlay, UIContainer, UIFactory, UIManager } from "bitmovin-player-ui";
+import { SubtitleOverlay, UIContainer, UIFactory, UIManager } from "bitmovin-player-ui";
 import { UIConfig } from "bitmovin-player-ui/dist/js/framework/uiconfig";
-// import "bitmovin-player-ui/dist/css/bitmovinplayer-ui.min.css";
-
 import { Player, PlayerAPI, PlayerConfig, PlayerEvent, SourceConfig } from "bitmovin-player";
 import classNames from "classnames";
 import { setRef } from "../../utils/setRef";
@@ -12,6 +10,7 @@ import { GridLayoutFillMode } from "../../views/Viewer/hooks/useViewerState/useV
 import { useAnalytics } from "../../hooks/useAnalytics/useAnalytics";
 import { toggleFullScreen } from "../../utils/toggleFullScreen";
 import styles from "./VideoJS.module.scss";
+import { BufferingOverlay } from "./BufferingOverlay";
 
 export interface VideoJSOptions extends PlayerConfig {
   ui?: UIConfig | false;

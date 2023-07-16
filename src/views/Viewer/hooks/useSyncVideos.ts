@@ -54,8 +54,10 @@ export const useSyncVideos = ({ windows, windowVideojsRefMapRef, isLive, playbac
         const targetTime = mainWindowPlayer.getCurrentTime(TimeMode.AbsoluteTime) - offset;
         const diff = Math.abs(player.getCurrentTime(TimeMode.AbsoluteTime) - targetTime);
 
-        if (diff < 1 && !forceSync) {
-          return;
+        if (!forceSync) {
+          if (diff < 1 || targetTime < 0) {
+            return;
+          }
         }
 
         player.seek(targetTime);
