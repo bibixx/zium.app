@@ -11,6 +11,7 @@ import { FeedError } from "../FeedError/FeedError";
 import { StreamVideoError } from "../../../hooks/useStreamVideo/useStreamVideo.utils";
 import { VideoWindowButtons } from "../VideoWindowButtons/VideoWindowButtons";
 import { SourceButton } from "../../SourceButton/SourceButton";
+import { canAutoplayWithAudio } from "../../../utils/canAutoplayWithAudio";
 
 interface MainVideoWindowProps extends VideoWindowProps {
   onPlayingChange: (isPaused: boolean) => void;
@@ -57,8 +58,10 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
         onPlayingChange(false);
       });
 
-      // Used to bypass Chrome's inability to autoplay non-muted video
-      player.unmute();
+      if (canAutoplayWithAudio()) {
+        // Used to bypass Chrome's inability to autoplay non-muted video
+        player.unmute();
+      }
     };
 
     if (streamVideoState.state === "loading") {
