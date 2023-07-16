@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import cn from "classnames";
-import { lazy, Suspense } from "react";
+import { Suspense } from "react";
 import { useVideoRaceDetails } from "../../hooks/useVideoRaceDetails/useVideoRaceDetails";
 import {
   GLOBAL_UI_VISIBILITY_CLASS_NAME,
@@ -13,12 +13,14 @@ import { TimedOutWrapper } from "../../components/TimedOutWrapper/TimedOutWrappe
 import { useTrackWithTitle } from "../../hooks/useAnalytics/useAnalytics";
 import { CookieBanner } from "../../components/CookieBanner/CookieBanner";
 import { UserOffsetsProvider } from "../../hooks/useUserOffests/useUserOffests";
+import { lazyWithPreload } from "../../utils/lazyWithPreload";
 import { useGrid } from "./hooks/useGrid";
 import styles from "./Viewer.module.scss";
 import { BackgroundDots } from "./BackgroundDots/BackgroundDots";
 
-const Viewer = lazy(() => import("./Viewer"));
+const { Component: Viewer, preload: preloadViewer } = lazyWithPreload(() => import("./Viewer"));
 
+export { preloadViewer };
 export const ViewerWithState = () => {
   const { raceId } = useParams();
   useTrackWithTitle(`Viewer: ${raceId}`);

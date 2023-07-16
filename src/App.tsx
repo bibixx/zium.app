@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
 import { HotkeysProvider } from "./hooks/useHotkeys/useHotkeys";
-import { ViewerWithState } from "./views/Viewer/ViewerWithState";
+import { ViewerWithState, preloadViewer } from "./views/Viewer/ViewerWithState";
 
 import { useHasCompanion } from "./hooks/useHasCompanion";
 import { NoCompanion } from "./views/NoCompanion/NoCompanion";
@@ -56,6 +56,10 @@ const WithLoggedIn = () => {
 };
 
 export default function App() {
+  useEffect(function preloadViewerEffect() {
+    preloadViewer();
+  }, []);
+
   return (
     <AnalyticsContextProvider>
       <ErrorBoundary>
