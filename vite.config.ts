@@ -16,4 +16,25 @@ export default defineConfig(({ mode }) => ({
       },
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: (id) => {
+          const includes = (text: string, search: string) => text.indexOf(search) > 0;
+
+          if (includes(id, "node_modules/bitmovin-player") || includes(id, "node_modules/bitmovin-player-ui")) {
+            return "bitmovin";
+          }
+
+          if (includes(id, "node_modules/lottie-react") || includes(id, "node_modules/lottie-web")) {
+            return "lottie";
+          }
+
+          if (id.indexOf("node_modules") > 0) {
+            return "vendor";
+          }
+        },
+      },
+    },
+  },
 }));
