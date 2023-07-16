@@ -32,6 +32,17 @@
       height: 4px;
       cursor: pointer;
       border-radius: var(--radii-xsmall);
+
+      &.bmpui-disabled {
+        pointer-events: none;
+
+        .bmpui-seekbar-bufferlevel,
+        .bmpui-seekbar-seekposition,
+        .bmpui-seekbar-playbackposition,
+        .bmpui-seekbar-playbackposition-marker {
+          opacity: 0;
+        }
+      }
     }
 
     .bmpui-seekbar {

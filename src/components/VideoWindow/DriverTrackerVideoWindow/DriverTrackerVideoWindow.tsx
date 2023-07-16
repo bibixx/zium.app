@@ -34,7 +34,7 @@ export const DriverTrackerVideoWindow = forwardRef<PlayerAPI | null, DriverTrack
       playerRef.current = r;
     };
 
-    const onReady = (player: PlayerAPI) => {
+    const onInitialized = (player: PlayerAPI) => {
       onVideoWindowReadyBase(player);
     };
 
@@ -79,7 +79,7 @@ export const DriverTrackerVideoWindow = forwardRef<PlayerAPI | null, DriverTrack
           videoStreamInfo={streamVideoState.data}
           options={ADDITIONAL_OPTIONS}
           ref={ref}
-          onReady={onReady}
+          onInitialized={onInitialized}
           isPaused={isPaused}
           fillMode={fillMode}
         />

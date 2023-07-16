@@ -66,7 +66,7 @@ export const DriverVideoWindow = forwardRef<PlayerAPI | null, DriverVideoWindowP
       }
     };
 
-    const onReady = (player: PlayerAPI) => {
+    const onInitialized = (player: PlayerAPI) => {
       onVideoWindowReadyBase(player);
     };
 
@@ -103,7 +103,7 @@ export const DriverVideoWindow = forwardRef<PlayerAPI | null, DriverVideoWindowP
           videoStreamInfo={streamVideoState.data}
           options={ADDITIONAL_OPTIONS}
           ref={ref}
-          onReady={onReady}
+          onInitialized={onInitialized}
           isPaused={isPaused}
           volume={isAudioFocused ? volume : 0}
           fillMode={fillMode}

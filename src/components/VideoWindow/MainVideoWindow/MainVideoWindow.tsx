@@ -19,7 +19,7 @@ interface MainVideoWindowProps extends VideoWindowProps {
   isAudioFocused: boolean;
   volume: number;
   setVolume: (newVolume: number) => void;
-  onLoaded: (player: PlayerAPI) => void;
+  onInitialized: (player: PlayerAPI) => void;
   areClosedCaptionsOn: boolean;
   setAreClosedCaptionsOn: (value: boolean) => void;
   hasOnlyOneStream: boolean;
@@ -34,7 +34,7 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
       isAudioFocused,
       onWindowAudioFocus,
       volume,
-      onLoaded,
+      onInitialized: onExternalInitialized,
       fillMode,
       updateFillMode,
       areClosedCaptionsOn,
@@ -51,9 +51,9 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
       playerRef.current = r;
     };
 
-    const onReady = (player: PlayerAPI) => {
+    const onInitialized = (player: PlayerAPI) => {
       onVideoWindowReadyBase(player);
-      onLoaded(player);
+      onExternalInitialized(player);
 
       player.on(PlayerEvent.Paused, () => {
         onPlayingChange(true);
@@ -96,7 +96,7 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
           videoStreamInfo={streamVideoState.data}
           options={ADDITIONAL_OPTIONS}
           ref={ref}
-          onReady={onReady}
+          onInitialized={onInitialized}
           isPaused={isPaused}
           volume={isAudioFocused ? volume : 0}
           fillMode={fillMode}

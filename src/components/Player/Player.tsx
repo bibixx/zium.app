@@ -92,7 +92,7 @@ export const Player = ({
         onMouseLeave={() => preventHiding(isPaused || isDragging)}
         className={classNames(styles.wrapper, {
           [styles.isCollapsed]: isCollapsed,
-          [styles.isVisible]: isUIVisible,
+          [styles.isVisible]: isUIVisible && player != null,
           [styles.wrapperIsDragging]: isDragging,
           [styles.isSpringing]: isSpringing,
         })}
@@ -125,13 +125,15 @@ export const Player = ({
             <PlayerRaceInfo raceInfo={raceInfo} />
           </div>
           <div className={classNames(styles.section, styles.middle)}>
-            <PlayerControls
-              player={player}
-              setVolume={setVolume}
-              volume={volume}
-              isMuted={isMuted}
-              setIsMuted={setIsMuted}
-            />
+            {player != null && (
+              <PlayerControls
+                player={player}
+                setVolume={setVolume}
+                volume={volume}
+                isMuted={isMuted}
+                setIsMuted={setIsMuted}
+              />
+            )}
           </div>
           <div className={styles.section}>
             <LayoutButtons

@@ -3,6 +3,7 @@ import { PlayerAPI, PlayerEvent, UserInteractionEvent } from "bitmovin-player";
 import {
   Container,
   ControlBar,
+  Label,
   PlaybackTimeLabel,
   PlaybackTimeLabelMode,
   SeekBar,
@@ -22,7 +23,7 @@ import { OptionsButtons } from "./OptionsButtons/OptionsButtons";
 import styles from "./PlayerControls.module.scss";
 
 interface PlayerControlsProps {
-  player: PlayerAPI | null;
+  player: PlayerAPI;
   volume: number;
   setVolume: (newVolume: number) => void;
   isMuted: boolean;
@@ -33,10 +34,11 @@ const OVERLAY_TIMEOUT_DELAY = 100;
 
 export const PlayerControls = ({ player, setVolume, volume, isMuted, setIsMuted }: PlayerControlsProps) => {
   const wrapperRef = useRef<HTMLDivElement | null>(null);
+  const [isReady, setIsReady] = useState(player.getBufferedRanges().length > 0);
 
   useEffect(() => {
     const $wrapper = wrapperRef.current;
-    if (player === null || $wrapper === null) {
+    if ($wrapper === null) {
       return;
     }
 
@@ -48,20 +50,37 @@ export const PlayerControls = ({ player, setVolume, volume, isMuted, setIsMuted 
       },
     });
 
+    const currentTimeLabelWrapper = new Container({
+      components: [
+        new Label({
+          text: "--:--",
+          cssClasses: ["label-placeholder"],
+        }),
+        new PlaybackTimeLabel({
+          timeLabelMode: PlaybackTimeLabelMode.CurrentTime,
+        }),
+      ],
+      cssClasses: ["current-time", "time-wrapper"],
+    });
+
+    const totalTimeLabelWrapper = new Container({
+      components: [
+        new Label({
+          text: "--:--",
+          cssClasses: ["label-placeholder"],
+        }),
+        new PlaybackTimeLabel({
+          timeLabelMode: PlaybackTimeLabelMode.TotalTime,
+          hideInLivePlayback: true,
+        }),
+      ],
+      cssClasses: ["total-time", "time-wrapper"],
+    });
+
     const controlBar = new ControlBar({
       components: [
         new Container({
-          components: [
-            new PlaybackTimeLabel({
-              timeLabelMode: PlaybackTimeLabelMode.CurrentTime,
-              cssClasses: ["current-time"],
-            }),
-            new PlaybackTimeLabel({
-              timeLabelMode: PlaybackTimeLabelMode.TotalTime,
-              cssClasses: ["total-time"],
-              hideInLivePlayback: true,
-            }),
-          ],
+          components: [currentTimeLabelWrapper, totalTimeLabelWrapper],
           cssClasses: ["controlbar-top"],
         }),
         new Container({
@@ -82,27 +101,33 @@ export const PlayerControls = ({ player, setVolume, volume, isMuted, setIsMuted 
 
     const myUiManager = new UIManager(player, myUi, myUiConfig);
 
+    player.on(PlayerEvent.Ready, () => {
+      setIsReady(true);
+    });
+
     return () => {
       myUiManager.release();
     };
   }, [player]);
 
   return (
-    <div
-      className={cn(styles.wrapper, { [styles.isVisible]: player !== null })}
-      inert={player == null ? "" : undefined}
-    >
-      <PlaybackButtons player={player} />
-      <div className={styles.bitmovinWrapper} ref={wrapperRef} />
+    <div className={cn(styles.wrapper)}>
+      <PlaybackButtons player={player} isReady={isReady} />
+      <div
+        className={cn(styles.bitmovinWrapper, { [styles.isReady]: isReady })}
+        ref={wrapperRef}
+        inert={!isReady ? "" : undefined}
+      />
       <OptionsButtons player={player} setVolume={setVolume} volume={volume} isMuted={isMuted} setIsMuted={setIsMuted} />
     </div>
   );
 };
 
 interface PlaybackButtonsProps {
-  player: PlayerAPI | null;
+  player: PlayerAPI;
+  isReady: boolean;
 }
-const PlaybackButtons = ({ player }: PlaybackButtonsProps) => {
+const PlaybackButtons = ({ player, isReady }: PlaybackButtonsProps) => {
   const [isPlaying, isPlayingRef, setIsPlaying] = useStateWithRef(player?.isPlaying() ?? false);
   const [isLoading, setIsLoading] = useState(false);
   const [isOnLiveEdge, setIsOnLiveEdge] = useState(player?.isLive());
@@ -111,10 +136,6 @@ const PlaybackButtons = ({ player }: PlaybackButtonsProps) => {
   const [wasPlayingBeforeSeekStart, setWasPlayingBeforeSeekStart] = useState(false);
 
   useEffect(() => {
-    if (player == null) {
-      return;
-    }
-
     setIsPlaying(player.isPlaying());
     player.on(PlayerEvent.Paused, (event: UserInteractionEvent) => {
       if (event.issuer === "ui-seek") {
@@ -141,10 +162,6 @@ const PlaybackButtons = ({ player }: PlaybackButtonsProps) => {
   }, [isPlayingRef, player, setIsPlaying, setIsSeeking]);
 
   useEffect(() => {
-    if (player == null) {
-      return;
-    }
-
     let overlayTimeout = -1;
     const showOverlay = () => {
       clearTimeout(overlayTimeout);
@@ -171,10 +188,6 @@ const PlaybackButtons = ({ player }: PlaybackButtonsProps) => {
   }, [player]);
 
   useEffect(() => {
-    if (player == null) {
-      return;
-    }
-
     if (!player.isLive()) {
       return;
     }
@@ -196,10 +209,6 @@ const PlaybackButtons = ({ player }: PlaybackButtonsProps) => {
   }, [player]);
 
   const onPlayClick = useCallback(() => {
-    if (player == null) {
-      return;
-    }
-
     if (player.isPlaying()) {
       player.pause("ui");
     } else {
@@ -208,10 +217,6 @@ const PlaybackButtons = ({ player }: PlaybackButtonsProps) => {
   }, [player]);
 
   const onSkipAhead = useCallback(() => {
-    if (player == null) {
-      return;
-    }
-
     if (player.isLive()) {
       player.timeShift(player.getTimeShift() + 30);
     } else {
@@ -220,10 +225,6 @@ const PlaybackButtons = ({ player }: PlaybackButtonsProps) => {
   }, [player]);
 
   const onSkipBackwards = useCallback(() => {
-    if (player == null) {
-      return;
-    }
-
     if (player.isLive()) {
       player.timeShift(player.getTimeShift() - 30);
     } else {
@@ -232,19 +233,24 @@ const PlaybackButtons = ({ player }: PlaybackButtonsProps) => {
   }, [player]);
 
   const PlayPauseIcon = useMemo(() => {
-    if (isLoading) {
+    if (isLoading || !isReady) {
       return Spinner;
     }
 
     const displayedIsPlaying = isSeeking || hasStartedSeeking ? wasPlayingBeforeSeekStart : isPlaying;
     return displayedIsPlaying ? PauseIcon : PlayIcon;
-  }, [hasStartedSeeking, isLoading, isPlaying, isSeeking, wasPlayingBeforeSeekStart]);
+  }, [hasStartedSeeking, isLoading, isPlaying, isReady, isSeeking, wasPlayingBeforeSeekStart]);
 
   return (
     <div className={styles.buttonsWrapper}>
-      <Button iconLeft={ArrowLeft30Icon} variant="Tertiary" onClick={onSkipBackwards} />
+      <Button iconLeft={ArrowLeft30Icon} variant="Tertiary" onClick={onSkipBackwards} disabled={!isReady} />
       <Button iconLeft={PlayPauseIcon} variant="Secondary" onClick={onPlayClick} />
-      <Button iconLeft={ArrowRight30Icon} variant="Tertiary" onClick={onSkipAhead} disabled={isOnLiveEdge} />
+      <Button
+        iconLeft={ArrowRight30Icon}
+        variant="Tertiary"
+        onClick={onSkipAhead}
+        disabled={isOnLiveEdge || !isReady}
+      />
     </div>
   );
 };

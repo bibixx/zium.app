@@ -4,18 +4,46 @@
   display: flex;
   align-items: center;
   gap: 24px;
-  opacity: 0;
-  transition: var(--transition-medium);
-  transition-property: opacity;
-
-  &.isVisible {
-    opacity: 1;
-  }
 }
 
 .bitmovinWrapper {
   flex: 1;
   position: relative;
+
+  &.isReady {
+    :global {
+      .bmpui-label-placeholder {
+        opacity: 0;
+      }
+
+      .bmpui-ui-playbacktimelabel {
+        opacity: 1;
+      }
+    }
+  }
+
+  &:not(.isReady) {
+    :global {
+      .bmpui-label-placeholder {
+        opacity: 1;
+      }
+
+      .bmpui-ui-playbacktimelabel {
+        opacity: 0;
+      }
+
+      .bmpui-ui-seekbar {
+        pointer-events: none;
+
+        .bmpui-seekbar-bufferlevel,
+        .bmpui-seekbar-seekposition,
+        .bmpui-seekbar-playbackposition,
+        .bmpui-seekbar-playbackposition-marker {
+          opacity: 0;
+        }
+      }
+    }
+  }
 
   :global {
     .bmpui-ui-controlbar > .bmpui-container-wrapper {
@@ -34,22 +62,43 @@
         justify-content: space-between;
       }
 
+      .bmpui-label-placeholder,
       .bmpui-ui-playbacktimelabel {
+        display: block;
         height: 20px;
         @include typography(text, 300, regular);
         user-select: none;
+        transition: var(--transition-fast);
+        transition-property: opacity, visibility;
 
         &.bmpui-hidden {
-          display: none;
+          opacity: 0;
+          visibility: hidden;
         }
+      }
+
+      .bmpui-label-placeholder {
+        position: absolute;
+      }
+
+      .bmpui-time-wrapper {
+        position: relative;
       }
 
       .bmpui-current-time {
         color: var(--color-text-strong);
+
+        .bmpui-label-placeholder {
+          left: 0;
+        }
       }
 
       .bmpui-total-time {
         color: var(--color-text-muted);
+
+        .bmpui-label-placeholder {
+          right: 0;
+        }
       }
 
       .bmpui-ui-playbacktimelabel-live {
@@ -76,175 +125,6 @@
       }
     }
   }
-
-  // .bmpui-controlbar-bottom {
-  //   position: relative;
-
-  //   @include slider();
-  // }
-
-  // .bmpui-controlbar-top {
-  //   display: flex;
-  //   width: 100%;
-
-  //   .bmpui-container-wrapper {
-  //     margin: 0;
-  //     width: 100%;
-  //   }
-
-  //   .bmpui-ui-playbacktimelabel {
-  //     margin: 0;
-  //     @include typography(text, 300, regular);
-  //   }
-
-  //   .bmpui-ui-spacer {
-  //     margin: 0;
-  //     flex: 1;
-  //   }
-
-  //   .bmpui-current-time {
-  //     color: var(--color-text-strong);
-  //   }
-
-  //   .bmpui-total-time {
-  //     color: var(--color-text-muted);
-  //   }
-  // }
-  // }
-
-  // :global {
-  //   .bmpui-ui-controlbar {
-  //     background: none;
-  //     padding: 0;
-  //     position: static;
-  //   }
-
-  //   .bmpui-ui-uicontainer {
-  //     overflow: visible;
-  //     position: static;
-  //     height: auto;
-  //   }
-
-  //   .bmpui-controlbar-bottom {
-  //     margin-top: 12px;
-  //     position: relative;
-
-  //     &::after {
-  //       content: "";
-  //       position: absolute;
-  //       display: block;
-  //       width: 100%;
-  //       height: 12px;
-  //       bottom: -12px;
-  //     }
-
-  //     .bmpui-container-wrapper {
-  //       margin: 0;
-  //       width: 100%;
-  //     }
-
-  //     .bmpui-ui-seekbar {
-  //       height: 4px;
-  //       border-radius: var(--radii-xsmall);
-
-  //       &:focus-visible {
-  //         outline: 2px solid var(--color-border-accent);
-  //         box-shadow: none;
-  //       }
-
-  //       &:focus-visible,
-  //       &:hover {
-  //         .bmpui-seekbar-playbackposition-marker {
-  //           opacity: 1;
-  //         }
-
-  //         .bmpui-seekbar-playbackposition {
-  //           background: var(--color-border-accent);
-  //         }
-  //       }
-  //     }
-
-  //     .bmpui-seekbar-markers {
-  //       z-index: 2;
-  //       height: 20px;
-  //     }
-
-  //     .bmpui-ui-seekbar-label > .bmpui-container-wrapper {
-  //       margin-left: -50%;
-  //       margin-right: 50%;
-  //       position: relative;
-  //     }
-
-  //     .bmpui-seekbar-backdrop,
-  //     .bmpui-seekbar-bufferlevel,
-  //     .bmpui-seekbar-seekposition,
-  //     .bmpui-seekbar-playbackposition {
-  //       height: 4px;
-  //       min-width: 4px;
-  //       margin: 0;
-  //       border-radius: var(--radii-rounded);
-  //     }
-
-  //     .bmpui-seekbar-backdrop {
-  //       background: var(--color-background-strong-default);
-  //     }
-
-  //     .bmpui-seekbar-playbackposition {
-  //       background: var(--color-border-strong-inverted-default);
-  //       transition: var(--transition-fast);
-  //       transition-property: background;
-  //     }
-
-  //     .bmpui-seekbar-seekposition {
-  //       background: var(--color-core-neutral-lighten-400);
-  //     }
-
-  //     .bmpui-seekbar-bufferlevel {
-  //       background: var(--color-core-neutral-lighten-400);
-  //     }
-
-  //     .bmpui-seekbar-playbackposition-marker {
-  //       bottom: 0;
-  //       width: 16px;
-  //       height: 16px;
-  //       left: -8px;
-  //       border: none;
-  //       background: var(--color-core-white);
-  //       border-radius: var(--radii-rounded);
-  //       opacity: 0;
-  //       transition: var(--transition-fast);
-  //       transition-property: opacity;
-  //     }
-
-  //     .bmpui-ui-seekbar-label {
-  //       transition: var(--transition-slow);
-  //       transition-property: opacity;
-
-  //       .bmpui-seekbar-label-inner {
-  //         border-bottom: 0;
-
-  //         &::after {
-  //           display: none;
-  //         }
-  //       }
-
-  //       .bmpui-seekbar-label-metadata {
-  //         padding: 8px 12px;
-  //         border-radius: var(--radii-rounded);
-  //         background: var(--color-background-default-default);
-  //         @include inner-border(var(--color-border-default-default));
-
-  //         .bmpui-seekbar-label-title {
-  //           display: none;
-  //         }
-
-  //         .bmpui-seekbar-label-time {
-  //           @include typography(text, 300, regular);
-  //         }
-  //       }
-  //     }
-  //   }
-  // }
 }
 
 .buttonsWrapper {
