@@ -22,7 +22,7 @@ export type AdditionalVideoJSOptions = Partial<VideoJSOptions>;
 interface VideoJSProps {
   videoStreamInfo: VideoStreamInfo;
   options: AdditionalVideoJSOptions;
-  onInitialized?: (player: PlayerAPI) => void;
+  onReady?: (player: PlayerAPI) => void;
   isPaused: boolean;
   areClosedCaptionsOn?: boolean;
   isMuted?: boolean;
@@ -35,7 +35,7 @@ export const VideoJS = forwardRef<PlayerAPI | null, VideoJSProps>(
     {
       videoStreamInfo,
       options: overwrittenOptions,
-      onInitialized: onReady,
+      onReady,
       isPaused,
       volume = 0,
       isMuted = false,

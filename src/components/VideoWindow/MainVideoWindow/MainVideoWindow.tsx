@@ -49,6 +49,8 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
     };
 
     const onReady = (player: PlayerAPI) => {
+      onPlayingChange(false);
+
       player.on(PlayerEvent.Paused, () => {
         onPlayingChange(true);
       });
@@ -87,7 +89,7 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
           videoStreamInfo={streamVideoState.data}
           options={ADDITIONAL_OPTIONS}
           ref={ref}
-          onInitialized={onReady}
+          onReady={onReady}
           isPaused={isPaused}
           volume={isAudioFocused ? volume : 0}
           fillMode={fillMode}
