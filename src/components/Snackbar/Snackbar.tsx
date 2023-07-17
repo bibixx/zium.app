@@ -84,7 +84,7 @@ export const Snackbar = forwardRef<HTMLDivElement | null, SnackbarProps>(
                 </div>
                 <div>
                   <div onMouseDown={(e) => e.stopPropagation()}>
-                    <Button variant="Tertiary" iconLeft={XMarkIcon} onClick={onClose} />
+                    <Button variant="Tertiary" iconLeft={XMarkIcon} onClick={onClose} aria-label="Close" />
                   </div>
                 </div>
                 {actions && <div className={styles.actions}>{actions}</div>}

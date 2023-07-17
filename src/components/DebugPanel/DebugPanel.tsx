@@ -54,7 +54,7 @@ const DebugPanelContents = (props: DebugPanelContentsProps) => {
     <>
       <div className={styles.header}>
         <span>Debug options</span>
-        <Button variant="Tertiary" iconLeft={XMarkIcon} onClick={props.closePanel} />
+        <Button variant="Tertiary" iconLeft={XMarkIcon} onClick={props.closePanel} aria-label="Close" />
       </div>
       <DebugGeneralSection />
       <DebugSnackbars />

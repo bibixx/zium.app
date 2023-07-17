@@ -74,7 +74,7 @@ export const VideoWindowButtons = (props: VideoWindowButtonsProps) => {
       </div>
       {props.onClose && (
         <div className={cn(styles.topRightWrapper, styles.hideWhenUiHidden)} onMouseDown={(e) => e.stopPropagation()}>
-          <Button variant="SecondaryInverted" onClick={props.onClose} iconLeft={XMarkIcon} />
+          <Button variant="SecondaryInverted" onClick={props.onClose} iconLeft={XMarkIcon} aria-label="Close" />
         </div>
       )}
       <div className={cn(styles.bottomRightWrapper, styles.hideWhenUiHidden)} onMouseDown={(e) => e.stopPropagation()}>
@@ -83,6 +83,7 @@ export const VideoWindowButtons = (props: VideoWindowButtonsProps) => {
             variant="SecondaryInverted"
             onClick={() => props.updateFillMode(props.fillMode === "fill" ? "fit" : "fill")}
             iconLeft={props.fillMode === "fill" ? AspectRatioOffIcon : AspectRatioOnIcon}
+            aria-label="Toggle aspect ratio"
           />
         )}
         {props.toggleClosedCaptions && (
@@ -90,6 +91,7 @@ export const VideoWindowButtons = (props: VideoWindowButtonsProps) => {
             variant="SecondaryInverted"
             onClick={props.toggleClosedCaptions}
             iconLeft={props.areClosedCaptionsOn ? ClosedCaptionsOnIcon : ClosedCaptionsOffIcon}
+            aria-label={props.areClosedCaptionsOn ? "Turn off close captions" : "Turn on close captions"}
           />
         )}
         {props.onAudioFocusClick && (
@@ -98,6 +100,7 @@ export const VideoWindowButtons = (props: VideoWindowButtonsProps) => {
             onClick={props.onAudioFocusClick}
             className={cn(styles.focusAudioButton, { [styles.isAudioFocused]: props.isAudioFocused })}
             iconLeft={SpeakerWaveIcon}
+            aria-label={props.isAudioFocused ? "Unfocus audio" : "Focus audio"}
           />
         )}
       </div>

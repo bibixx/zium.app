@@ -15,7 +15,7 @@ export const PlayerRaceInfo = ({ raceInfo }: PlayerRaceInfoProps) => {
 
   return (
     <div className={styles.wrapper}>
-      <Button variant="Tertiary" iconLeft={ArrowLeftIcon} as={Link} to="/" />
+      <Button variant="Tertiary" iconLeft={ArrowLeftIcon} as={Link} to="/" aria-label="Go back" />
       <div className={styles.countryContent}>
         {countryId && <CountryImage countryId={countryId} width={40} height={40} />}
         <div>

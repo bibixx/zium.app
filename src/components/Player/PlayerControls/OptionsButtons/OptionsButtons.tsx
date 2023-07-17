@@ -41,6 +41,7 @@ export const OptionsButtons = ({ player, volume, setVolume, isMuted, setIsMuted 
         iconLeft={isFullScreen ? ArrowsPointingInIcon : ArrowsPointingOutIcon}
         variant="Tertiary"
         onClick={toggleFullScreen}
+        aria-label="Toggle full screen"
       />
     </div>
   );
@@ -153,6 +154,7 @@ const VolumeButton = ({ player, volume, setVolume, isMuted, setIsMuted }: Volume
           iconLeft={isMuted ? SpeakerXMarkIcon : SpeakerWaveIcon}
           variant="Tertiary"
           onClick={() => setIsMuted(!isMuted)}
+          aria-label={isMuted ? "Unmute" : "Mute"}
         />
       </div>
       <div className={styles.volumeSliderContainer}>

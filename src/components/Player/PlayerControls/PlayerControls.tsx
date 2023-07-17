@@ -19,6 +19,7 @@ import { useStateWithRef } from "../../../hooks/useStateWithRef/useStateWithRef"
 import { Button } from "../../Button/Button";
 import { ArrowLeft30Icon, ArrowRight30Icon } from "../../CustomIcons/CustomIcons";
 import { Spinner } from "../../Spinner/Spinner";
+import { assertNever } from "../../../utils/assertNever";
 import { OptionsButtons } from "./OptionsButtons/OptionsButtons";
 import styles from "./PlayerControls.module.scss";
 
@@ -232,24 +233,63 @@ const PlaybackButtons = ({ player, isReady }: PlaybackButtonsProps) => {
     }
   }, [player]);
 
-  const PlayPauseIcon = useMemo(() => {
+  const playPauseState = useMemo(() => {
     if (isLoading || !isReady) {
-      return Spinner;
+      return "buffering";
     }
 
     const displayedIsPlaying = isSeeking || hasStartedSeeking ? wasPlayingBeforeSeekStart : isPlaying;
-    return displayedIsPlaying ? PauseIcon : PlayIcon;
+    return displayedIsPlaying ? "pause" : "play";
   }, [hasStartedSeeking, isLoading, isPlaying, isReady, isSeeking, wasPlayingBeforeSeekStart]);
+
+  const PlayPauseIcon = useMemo(() => {
+    if (playPauseState === "buffering") {
+      return Spinner;
+    }
+
+    if (playPauseState === "pause") {
+      return PauseIcon;
+    }
+
+    if (playPauseState === "play") {
+      return PlayIcon;
+    }
+
+    return assertNever(playPauseState);
+  }, [playPauseState]);
+
+  const playPauseAriaLabel = useMemo(() => {
+    if (playPauseState === "buffering") {
+      return "Buffering";
+    }
+
+    if (playPauseState === "pause") {
+      return "Pause";
+    }
+
+    if (playPauseState === "play") {
+      return "Play";
+    }
+
+    return assertNever(playPauseState);
+  }, [playPauseState]);
 
   return (
     <div className={styles.buttonsWrapper}>
-      <Button iconLeft={ArrowLeft30Icon} variant="Tertiary" onClick={onSkipBackwards} disabled={!isReady} />
-      <Button iconLeft={PlayPauseIcon} variant="Secondary" onClick={onPlayClick} />
+      <Button
+        iconLeft={ArrowLeft30Icon}
+        variant="Tertiary"
+        onClick={onSkipBackwards}
+        disabled={!isReady}
+        aria-label="Skip backward"
+      />
+      <Button iconLeft={PlayPauseIcon} variant="Secondary" onClick={onPlayClick} aria-label={playPauseAriaLabel} />
       <Button
         iconLeft={ArrowRight30Icon}
         variant="Tertiary"
         onClick={onSkipAhead}
         disabled={isOnLiveEdge || !isReady}
+        aria-label="Skip forward"
       />
     </div>
   );
