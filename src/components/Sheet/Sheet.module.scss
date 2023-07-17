@@ -75,12 +75,11 @@
   }
 }
 
-.closeButton {
+.closeButton.closeButton {
   position: absolute;
   top: 8px;
   right: 8px;
   opacity: 0;
-  cursor: cell;
   pointer-events: none;
 
   &:focus {

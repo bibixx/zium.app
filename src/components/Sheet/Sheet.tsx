@@ -3,7 +3,9 @@ import { ReactNode, useEffect, useMemo, useRef } from "react";
 import { createPortal } from "react-dom";
 import { CSSTransition } from "react-transition-group";
 import FocusTrap from "focus-trap-react";
+import { XMarkIcon } from "@heroicons/react/20/solid";
 import { OVERLAYS_PORTAL_ID } from "../../constants/portals";
+import { Button } from "../Button/Button";
 import styles from "./Sheet.module.scss";
 
 interface SheetProps {
@@ -81,9 +83,13 @@ export const Sheet = ({
         >
           <div className={cn(styles.wrapper, { [styles.noPadding]: noPadding })} ref={wrapperRef}>
             <div className={wrapperClassName}>{children}</div>
-            <button className={styles.closeButton} onClick={onClose}>
-              Close
-            </button>
+            <Button
+              className={styles.closeButton}
+              onClick={onClose}
+              variant="Secondary"
+              iconLeft={XMarkIcon}
+              aria-label="Close"
+            />
           </div>
         </FocusTrap>
       </CSSTransition>
