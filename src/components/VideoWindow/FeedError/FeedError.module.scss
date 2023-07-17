@@ -1,15 +1,12 @@
 .errorContent {
-  color: var(--color-text-default);
   width: 100%;
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  text-align: center;
   flex-direction: column;
-  @include typography(text, 300, regular);
 }
 
-.errorIconContainer {
-  color: var(--color-background-accent-strong);
+.errorContentWrapper {
+  width: 352px;
 }

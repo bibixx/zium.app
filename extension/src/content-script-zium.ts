@@ -1,16 +1,25 @@
 import { Alarm } from "./common";
+import { F1TVTier, getF1TVTier } from "./utils/getF1TVTier";
 
 const { version } = chrome.runtime.getManifest();
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const sendMessageToPage = (type: any, data: any) => {
+interface MessagesToPage {
+  LOGGED_IN: { isLoggedIn: boolean; tier: F1TVTier };
+  LOGGED_IN_CHANGED: { isLoggedIn: boolean; tier: F1TVTier };
+  ALARMS: string[];
+  ALARM_CHANGED: string[];
+  VERSION: string;
+}
+
+const sendMessageToPage = <T extends keyof MessagesToPage>(type: T, data: MessagesToPage[T]) => {
   window.postMessage({ type, data, source: "extension" }, "*");
 };
 
 const isLoggedIn = async () => {
   const { token } = await chrome.storage.local.get("token");
+  const tier = getF1TVTier(token);
 
-  return token != null;
+  return { isLoggedIn: token != null, tier };
 };
 
 const getAlarms = async () => {
@@ -39,22 +48,19 @@ window.addEventListener(
 
     const type = event.data.type;
 
-    if (type == null) {
+    if (type == null || typeof type !== "string") {
       return;
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const returnMessage = (data: any) => sendMessageToPage(type, data);
-
     switch (type) {
       case "VERSION":
-        returnMessage(version);
+        sendMessageToPage(type, version);
         break;
       case "LOGGED_IN":
-        returnMessage(await isLoggedIn());
+        sendMessageToPage(type, await isLoggedIn());
         break;
       case "ALARMS":
-        returnMessage(await getAlarms());
+        sendMessageToPage(type, await getAlarms());
         break;
       default: {
         chrome.runtime.sendMessage({
@@ -72,7 +78,9 @@ window.addEventListener(
 chrome.storage.local.onChanged.addListener(async (changes) => {
   if ("token" in changes) {
     const token = changes.token.newValue;
-    sendMessageToPage("LOGGED_IN_CHANGED", token != null);
+    const tier = getF1TVTier(token);
+
+    sendMessageToPage("LOGGED_IN_CHANGED", { isLoggedIn: token != null, tier });
   }
 
   if ("alarms" in changes) {

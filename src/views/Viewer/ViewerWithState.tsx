@@ -14,6 +14,10 @@ import { useTrackWithTitle } from "../../hooks/useAnalytics/useAnalytics";
 import { CookieBanner } from "../../components/CookieBanner/CookieBanner";
 import { UserOffsetsProvider } from "../../hooks/useUserOffests/useUserOffests";
 import { lazyWithPreload } from "../../utils/lazyWithPreload";
+import { assertExistence } from "../../utils/assertExistence";
+import { canAccessEvent } from "../../utils/canAccessEvent";
+import { useCurrentTier } from "../../hooks/useLoggedInState";
+import { NoViewerAccess } from "../../components/NoViewerAccess/NoViewerAccess";
 import { useGrid } from "./hooks/useGrid";
 import styles from "./Viewer.module.scss";
 import { BackgroundDots } from "./BackgroundDots/BackgroundDots";
@@ -23,9 +27,11 @@ const { Component: Viewer, preload: preloadViewer } = lazyWithPreload(() => impo
 export { preloadViewer };
 export const ViewerWithState = () => {
   const { raceId } = useParams();
-  useTrackWithTitle(`Viewer: ${raceId}`);
+  const currentTier = useCurrentTier();
+  assertExistence(raceId);
 
-  const state = useVideoRaceDetails(raceId as string);
+  useTrackWithTitle(`Viewer: ${raceId}`);
+  const state = useVideoRaceDetails(raceId);
   const viewerUIVisibilityState = useViewerUIVisibilityState();
 
   if (raceId == null) {
@@ -38,6 +44,10 @@ export const ViewerWithState = () => {
 
   if (state.state === "loading") {
     return <LoadingState />;
+  }
+
+  if (!canAccessEvent(currentTier, state.entitlement)) {
+    return <NoViewerAccess />;
   }
 
   return (

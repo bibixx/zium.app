@@ -1,16 +1,41 @@
-import { useEffect, useState } from "react";
-import { getIsLoggedIn, listenOnTokenChange } from "../utils/extensionApi";
+import { useEffect } from "react";
+import { create } from "zustand";
+import { F1TVTier, IsLoggedInArgs, getIsLoggedIn, listenOnTokenChange } from "../utils/extensionApi";
+import { useFeatureFlags } from "./useFeatureFlags/useFeatureFlags";
 
-export const useLoggedInState = () => {
-  const [state, setState] = useState<"loading" | "loggedIn" | "loggedOut">("loading");
+type LoggedInState =
+  | {
+      type: "loading";
+    }
+  | {
+      type: "loggedOut";
+    }
+  | {
+      type: "loggedIn";
+      tier: F1TVTier;
+    };
+
+interface LoggedInStore {
+  state: LoggedInState;
+  setState: (state: LoggedInState) => void;
+}
+const useLoggedInStore = create<LoggedInStore>((set) => ({
+  state: { type: "loading" },
+  setState: (state) => {
+    set({ state });
+  },
+}));
+
+export const useLoggedInStateExecutor = () => {
+  const setState = useLoggedInStore((state) => state.setState);
 
   useEffect(() => {
-    getIsLoggedIn().then((isLoggedIn) => {
-      setState(isLoggedIn ? "loggedIn" : "loggedOut");
+    getIsLoggedIn().then(({ isLoggedIn, tier }) => {
+      setState(isLoggedIn ? { type: "loggedIn", tier } : { type: "loggedOut" });
     });
 
-    const onTokenChange = (isLoggedIn: boolean) => {
-      setState(isLoggedIn ? "loggedIn" : "loggedOut");
+    const onTokenChange = ({ isLoggedIn, tier }: IsLoggedInArgs) => {
+      setState(isLoggedIn ? { type: "loggedIn", tier } : { type: "loggedOut" });
     };
 
     const cleanup = listenOnTokenChange(onTokenChange);
@@ -18,7 +43,24 @@ export const useLoggedInState = () => {
     return () => {
       cleanup();
     };
-  }, []);
+  }, [setState]);
+};
 
-  return state;
+export const useLoggedInState = () => {
+  return useLoggedInStore((state) => state.state);
+};
+
+export const useCurrentTier = (): F1TVTier => {
+  const { flags } = useFeatureFlags();
+  return useLoggedInStore((state): F1TVTier => {
+    if (state.state.type !== "loggedIn") {
+      return "None";
+    }
+
+    if (flags.forceTVAccess) {
+      return "Access";
+    }
+
+    return state.state.tier;
+  });
 };

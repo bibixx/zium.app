@@ -31,6 +31,7 @@ export const fetchRaceStreams = async (raceId: string, signal: AbortSignal) => {
   const meetingKey = container.metadata.meetingKey;
   const meetingSessionKey = container.metadata.emfAttributes.MeetingSessionKey;
   const genre = container.metadata.genres[0];
+  const entitlement = container.metadata.entitlement;
 
   return {
     streams,
@@ -43,5 +44,6 @@ export const fetchRaceStreams = async (raceId: string, signal: AbortSignal) => {
     meetingKey,
     meetingSessionKey,
     genre,
+    entitlement,
   };
 };
