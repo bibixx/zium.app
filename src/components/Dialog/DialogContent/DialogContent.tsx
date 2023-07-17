@@ -1,4 +1,4 @@
-import { ExclamationTriangleIcon, InformationCircleIcon, FlagIcon } from "@heroicons/react/24/outline";
+import { ExclamationTriangleIcon, InformationCircleIcon } from "@heroicons/react/24/outline";
 import { ReactNode } from "react";
 import { withAs } from "../../../utils/withAs";
 import styles from "./DialogContent.module.scss";
@@ -25,11 +25,16 @@ export const DialogContent = withAs("div")<DialogContentProps>(
 interface DialogContentInformationProps {
   title: string;
   subtitle: ReactNode;
+  icon?: typeof InformationCircleIcon;
 }
-export const DialogContentInformation = ({ title, subtitle }: DialogContentInformationProps) => {
+export const DialogContentInformation = ({
+  title,
+  subtitle,
+  icon: Icon = ExclamationTriangleIcon,
+}: DialogContentInformationProps) => {
   return (
     <div className={styles.wrapper}>
-      <InformationCircleIcon width={36} height={36} className={styles.infoIcon} />
+      <Icon width={36} height={36} className={styles.infoIcon} />
       <div className={styles.textWrapper}>
         <h2 className={styles.title}>{title}</h2>
         <div className={styles.subtitle}>{subtitle}</div>
@@ -41,27 +46,16 @@ export const DialogContentInformation = ({ title, subtitle }: DialogContentInfor
 interface DialogContentAlertProps {
   title: string;
   subtitle: ReactNode;
+  icon?: typeof ExclamationTriangleIcon;
 }
-export const DialogContentAlert = ({ title, subtitle }: DialogContentAlertProps) => {
+export const DialogContentAlert = ({
+  title,
+  subtitle,
+  icon: Icon = ExclamationTriangleIcon,
+}: DialogContentAlertProps) => {
   return (
     <div className={styles.wrapper}>
-      <ExclamationTriangleIcon width={36} height={36} className={styles.alertIcon} />
-      <div className={styles.textWrapper}>
-        <h2 className={styles.title}>{title}</h2>
-        <div className={styles.subtitle}>{subtitle}</div>
-      </div>
-    </div>
-  );
-};
-
-interface DialogContentFlagProps {
-  title: string;
-  subtitle: ReactNode;
-}
-export const DialogContentFlag = ({ title, subtitle }: DialogContentFlagProps) => {
-  return (
-    <div className={styles.wrapper}>
-      <FlagIcon width={36} height={36} className={styles.alertIcon} />
+      <Icon width={36} height={36} className={styles.alertIcon} />
       <div className={styles.textWrapper}>
         <h2 className={styles.title}>{title}</h2>
         <div className={styles.subtitle}>{subtitle}</div>

@@ -1,6 +1,7 @@
 import { useMemo } from "react";
+import { FlagIcon } from "@heroicons/react/24/outline";
 import { Button } from "../Button/Button";
-import { DialogContentFlag } from "../Dialog/DialogContent/DialogContent";
+import { DialogContentAlert } from "../Dialog/DialogContent/DialogContent";
 import styles from "./ErrorMessage.module.scss";
 
 const EMAIL_ADDRESS = "zium@zium.app";
@@ -40,9 +41,10 @@ ${errorMessage}
 
   return (
     <div>
-      <DialogContentFlag
+      <DialogContentAlert
         title="Red flag! Red flag!"
         subtitle="Looks like we’ve crashed. Please try refreshing the page to see if that gets us back on track, or report the issue using the button below."
+        icon={FlagIcon}
       />
       <div className={styles.buttonWrapper}>
         <Button fluid variant="Secondary" as="a" href={mailtoUrl}>

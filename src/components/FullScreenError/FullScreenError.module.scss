@@ -11,6 +11,8 @@
 }
 
 .wrapper {
+  position: relative;
+  z-index: 2;
   margin: 64px;
   padding: 24px;
   width: 400px;
