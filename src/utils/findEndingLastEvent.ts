@@ -1,7 +1,7 @@
 import { isValid } from "date-fns";
 import { RaceData } from "../hooks/useRacesList/useRacesList.types";
 
-export const findEndingLastEvent = (races: RaceData[], currentRaceId: string): RaceData | null => {
+export const findEndingLastEvent = (races: RaceData[], currentRaceId?: string): RaceData | null => {
   if (races.length === 0) {
     return null;
   }

@@ -205,6 +205,11 @@ const DebugRaceSettings = ({ closePanel }: DebugPanelContentsProps) => {
         checked={flags.disableLiveNotifications}
         onChange={updateFlag("disableLiveNotifications")}
       />
+      <Checkbox
+        label="Force F1 TV Access subscription"
+        checked={flags.forceTVAccess}
+        onChange={updateFlag("forceTVAccess")}
+      />
     </div>
   );
 };

@@ -6,7 +6,7 @@ import { ViewerWithState, preloadViewer } from "./views/Viewer/ViewerWithState";
 import { useHasCompanion } from "./hooks/useHasCompanion";
 import { NoCompanion } from "./views/NoCompanion/NoCompanion";
 import { assertNever } from "./utils/assertNever";
-import { useLoggedInState } from "./hooks/useLoggedInState";
+import { useLoggedInState, useLoggedInStateExecutor } from "./hooks/useLoggedInState";
 import { LogIn } from "./views/LogIn/LogIn";
 import { Races } from "./views/Races/Races";
 import { OVERLAYS_PORTAL_ID } from "./constants/portals";
@@ -40,22 +40,23 @@ const WithCompanion = ({ children }: React.PropsWithChildren<unknown>) => {
 const WithLoggedIn = () => {
   const loggedInState = useLoggedInState();
 
-  if (loggedInState === "loading") {
+  if (loggedInState.type === "loading") {
     return null;
   }
 
-  if (loggedInState === "loggedIn") {
-    return <Outlet />;
+  if (loggedInState.type === "loggedOut") {
+    return <LogIn />;
   }
 
-  if (loggedInState === "loggedOut") {
-    return <LogIn />;
+  if (loggedInState.type === "loggedIn") {
+    return <Outlet />;
   }
 
   return assertNever(loggedInState);
 };
 
 export default function App() {
+  useLoggedInStateExecutor();
   useEffect(function preloadViewerEffect() {
     preloadViewer();
   }, []);

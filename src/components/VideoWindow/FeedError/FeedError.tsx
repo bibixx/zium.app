@@ -1,7 +1,7 @@
-import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
 import { VideoWindowWrapper } from "../VideoWindowWrapper/VideoWindowWrapper";
 
 import { VideoWindowButtons } from "../VideoWindowButtons/VideoWindowButtons";
+import { ErrorMessage } from "../../ErrorMessage/ErrorMessage";
 import styles from "./FeedError.module.scss";
 
 interface FeedErrorProps {
@@ -12,10 +12,9 @@ export const FeedError = ({ error, onDelete }: FeedErrorProps) => {
   return (
     <VideoWindowWrapper>
       <div className={styles.errorContent}>
-        <div className={styles.errorIconContainer}>
-          <ExclamationCircleIcon height={36} width={36} />
+        <div className={styles.errorContentWrapper}>
+          <ErrorMessage error={error} />
         </div>
-        <div>{error.message}</div>
       </div>
       <VideoWindowButtons onClose={onDelete} />
     </VideoWindowWrapper>

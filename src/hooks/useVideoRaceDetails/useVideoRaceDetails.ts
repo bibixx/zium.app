@@ -22,6 +22,7 @@ export const useVideoRaceDetails = (raceId: string): StreamsState => {
           isLive: action.isLive,
           raceInfo: action.raceInfo,
           playbackOffsets: action.playbackOffsets,
+          entitlement: action.entitlement,
         };
       }
 
@@ -35,7 +36,7 @@ export const useVideoRaceDetails = (raceId: string): StreamsState => {
       dispatch({ type: "load" });
 
       try {
-        const { streams, season, isLive, countryId, countryName, title, playbackOffsets, genre } =
+        const { streams, season, isLive, countryId, countryName, title, playbackOffsets, genre, entitlement } =
           await fetchRaceStreams(raceId, signal);
 
         const collectedStreams = collectStreams(streams, season, raceId);
@@ -53,6 +54,7 @@ export const useVideoRaceDetails = (raceId: string): StreamsState => {
           season,
           isLive,
           raceInfo,
+          entitlement,
           playbackOffsets: {
             f1: mappedF1PlaybackOffsets,
           },
@@ -82,6 +84,7 @@ export const useVideoRaceDetails = (raceId: string): StreamsState => {
 
 const debugLiveStreams: StreamsState & { state: "done" } = {
   state: "done",
+  entitlement: "Access",
   streams: {
     defaultStream: {
       type: "main",

@@ -15,6 +15,7 @@ export const debugFlagTypes = {
   showWindowBorders: BOOLEAN_TYPE,
   forceUiVisibility: BOOLEAN_TYPE,
   disableLiveNotifications: BOOLEAN_TYPE,
+  forceTVAccess: BOOLEAN_TYPE,
 } satisfies Record<string, DebugFlagTypes>;
 
 export const defaultFlags = {
@@ -22,4 +23,5 @@ export const defaultFlags = {
   showWindowBorders: false,
   forceUiVisibility: false,
   disableLiveNotifications: false,
+  forceTVAccess: false,
 } satisfies FlagsObject;

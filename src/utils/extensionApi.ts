@@ -40,8 +40,10 @@ export const getVersion = async () => {
   return version;
 };
 
+export type F1TVTier = "Pro" | "Access" | "None";
+export type IsLoggedInArgs = { isLoggedIn: boolean; tier: F1TVTier };
 export const getIsLoggedIn = async () => {
-  const isLoggedIn = await makeRequest<boolean>("LOGGED_IN");
+  const isLoggedIn = await makeRequest<IsLoggedInArgs>("LOGGED_IN");
 
   return isLoggedIn;
 };
@@ -83,8 +85,8 @@ export const getAlarms = async () => {
   return alarms;
 };
 
-export const listenOnTokenChange = (onChanged: (isLoggedIn: boolean) => void) => {
-  const onEvent = (event: MessageEvent<{ type: string; source: string; data: boolean }>) => {
+export const listenOnTokenChange = (onChanged: (data: IsLoggedInArgs) => void) => {
+  const onEvent = (event: MessageEvent<{ type: string; source: string; data: IsLoggedInArgs }>) => {
     if (event.source !== window) {
       return;
     }

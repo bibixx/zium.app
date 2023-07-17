@@ -1,4 +1,4 @@
-import { EventGenre } from "../../constants/races";
+import { EventGenre, RaceEntitlement } from "../../constants/races";
 
 export interface StreamsStateData {
   defaultStream: StreamInfo | null;
@@ -25,6 +25,7 @@ export type StreamsState =
       isLive: boolean;
       raceInfo: RaceInfo;
       playbackOffsets: PlaybackOffsets;
+      entitlement: RaceEntitlement;
     };
 
 export type StreamsStateAction =
@@ -37,6 +38,7 @@ export type StreamsStateAction =
       isLive: boolean;
       raceInfo: RaceInfo;
       playbackOffsets: PlaybackOffsets;
+      entitlement: RaceEntitlement;
     };
 
 export interface BaseStreamInfo {

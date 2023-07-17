@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { eventGenresValidator } from "../../constants/races";
+import { entitlementValidator, eventGenresValidator } from "../../constants/races";
 
 export const videoRaceStreamsRootBodyValidator = z.object({
   resultObj: z.object({
@@ -46,6 +46,7 @@ export const videoRaceStreamsContainerValidator = z.object({
     titleBrief: z.string(),
     meetingKey: z.string(),
     genres: eventGenresValidator.array(),
+    entitlement: entitlementValidator,
     additionalStreams: z.unknown().array().optional(),
     emfAttributes: z.object({
       Meeting_Country_Name: z.string(),

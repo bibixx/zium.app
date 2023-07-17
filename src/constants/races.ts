@@ -29,3 +29,9 @@ export type RaceGenre = z.output<typeof raceGenresValidator>;
 export type EventGenre = z.output<typeof eventGenresValidator>;
 
 export const isRaceGenre = (genre: string) => raceGenresValidator.safeParse(genre).success;
+
+export const entitlementValidator = z
+  .union([z.literal("Pro"), z.literal("Access")])
+  .optional()
+  .default("Access");
+export type RaceEntitlement = z.output<typeof entitlementValidator>;
