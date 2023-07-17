@@ -4,7 +4,7 @@ import { XMarkIcon } from "@heroicons/react/20/solid";
 import { Dialog } from "../Dialog/Dialog";
 import { DialogContent, DialogContentAlert, DialogContentButtonFooter } from "../Dialog/DialogContent/DialogContent";
 import { Button } from "../Button/Button";
-import { useSnackbars } from "../Snackbar/SnackbarsProvider";
+import { useSnackbars } from "../Snackbar/SnackbarsList.hooks";
 import { useFeatureFlags } from "../../hooks/useFeatureFlags/useFeatureFlags";
 import { storeLocalStorageClient } from "../../views/Viewer/hooks/useViewerState/useViewerState.utils";
 import { getNewEventSnackbarData } from "../../views/Viewer/hooks/useNotifyAboutNewEvent/useNotifyAboutNewEvent.utils";

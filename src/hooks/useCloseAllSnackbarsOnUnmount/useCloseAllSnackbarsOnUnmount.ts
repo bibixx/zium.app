@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef } from "react";
-import { useSnackbars } from "../../components/Snackbar/SnackbarsProvider";
+import { useSnackbars } from "../../components/Snackbar/SnackbarsList.hooks";
 
 export const useCloseAllSnackbarsOnUnmount = () => {
   const { closeSnackbar } = useSnackbars();

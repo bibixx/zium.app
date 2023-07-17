@@ -12,8 +12,7 @@ interface ViewerUIVisibilityContextState {
 }
 export const useViewerUIVisibilityState = (): ViewerUIVisibilityContextState => {
   const [isUIVisible, isUIVisibleRef, setIsUIVisible] = useStateWithRef(true);
-  const { flags } = useFeatureFlags();
-  const isDebugMode = flags.forceUiVisibility;
+  const isDebugMode = useFeatureFlags((state) => state.flags.forceUiVisibility);
   const [shouldPreventHiding, setShouldPreventHiding] = useState(false);
 
   const preventHiding = useCallback(

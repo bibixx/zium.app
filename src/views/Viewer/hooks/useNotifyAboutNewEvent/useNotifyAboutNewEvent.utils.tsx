@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ArgumentSnackbarData } from "../../../../components/Snackbar/SnackbarsProvider";
+import { ArgumentSnackbarData } from "../../../../components/Snackbar/SnackbarsList.hooks";
 import { Button } from "../../../../components/Button/Button";
 
 export const getNewEventSnackbarData = (

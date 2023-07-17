@@ -51,13 +51,13 @@ export const useLoggedInState = () => {
 };
 
 export const useCurrentTier = (): F1TVTier => {
-  const { flags } = useFeatureFlags();
+  const forceTVAccess = useFeatureFlags((state) => state.flags.forceTVAccess);
   return useLoggedInStore((state): F1TVTier => {
     if (state.state.type !== "loggedIn") {
       return "None";
     }
 
-    if (flags.forceTVAccess) {
+    if (forceTVAccess) {
       return "Access";
     }
 

@@ -1,22 +1,7 @@
-import { ReactNode, createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
+import { create } from "zustand";
 import { Key } from "ts-key-enum";
 import { BrandedShortcut, MODIFIER_KEYS, mappedKeys } from "./useHotkeys.keys";
-
-interface HotkeysContextType {
-  upsertScope: (scope: Scope) => void;
-  deleteScope: (scopeId: string) => void;
-}
-const HotkeysContext = createContext<HotkeysContextType | null>(null);
-
-const useHotkeysContext = (): HotkeysContextType => {
-  const context = useContext(HotkeysContext);
-
-  if (context === null) {
-    throw new Error("Using uninitialised HotkeysContext");
-  }
-
-  return context;
-};
 
 interface Hotkey {
   keys: BrandedShortcut;
@@ -31,8 +16,37 @@ interface Scope {
   allowPropagation?: boolean;
   enabled?: boolean;
 }
-const useHotkeysContextState = () => {
-  const [scopes, setScopes] = useState<Scope[]>([]);
+
+interface HotkeysStore {
+  scopes: Scope[];
+  upsertScope: (newScope: Scope) => void;
+  deleteScope: (scopeId: string) => void;
+}
+
+const useHotkeysStore = create<HotkeysStore>((set) => ({
+  scopes: [],
+  upsertScope: (newScope) => {
+    set((state) => {
+      const oldScopes = state.scopes;
+      const scopeWithIdExists = oldScopes.some(({ id }) => id === newScope.id);
+
+      if (scopeWithIdExists) {
+        return { scopes: oldScopes.map((oldScope) => (oldScope.id === newScope.id ? newScope : oldScope)) };
+      }
+
+      return { scopes: [...oldScopes, newScope] };
+    });
+  },
+  deleteScope: (scopeId) => {
+    set((state) => ({
+      ...state,
+      scopes: state.scopes.filter((oldScope) => oldScope.id !== scopeId),
+    }));
+  },
+}));
+
+export const useHotkeysExecutor = () => {
+  const scopes = useHotkeysStore((state) => state.scopes);
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
@@ -102,38 +116,11 @@ const useHotkeysContextState = () => {
 
     return () => document.removeEventListener("keydown", onKeyDown);
   }, [scopes]);
-
-  const upsertScope = useCallback((newScope: Scope) => {
-    setScopes((oldScopes) => {
-      const scopeWithIdExists = oldScopes.some(({ id }) => id === newScope.id);
-
-      if (scopeWithIdExists) {
-        return oldScopes.map((oldScope) => (oldScope.id === newScope.id ? newScope : oldScope));
-      }
-
-      return [...oldScopes, newScope];
-    });
-  }, []);
-
-  const deleteScope = useCallback((scopeId: string) => {
-    setScopes((oldScopes) => oldScopes.filter((oldScope) => oldScope.id !== scopeId));
-  }, []);
-
-  return { upsertScope, deleteScope };
-};
-
-interface HotkeysProviderProps {
-  children: ReactNode;
-}
-export const HotkeysProvider = ({ children }: HotkeysProviderProps) => {
-  const state = useHotkeysContextState();
-  const context = useMemo(() => state, [state]);
-
-  return <HotkeysContext.Provider value={context}>{children}</HotkeysContext.Provider>;
 };
 
 export const useHotkeys = (getScope: () => Omit<Scope, "id"> & { id?: Scope["id"] }, deps: unknown[] | undefined) => {
-  const { deleteScope, upsertScope } = useHotkeysContext();
+  const deleteScope = useHotkeysStore((state) => state.deleteScope);
+  const upsertScope = useHotkeysStore((state) => state.upsertScope);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const memoizedScope = useMemo(getScope, deps ?? []);
   const randomId = useMemo(() => String(Math.random()), []);

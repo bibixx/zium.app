@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLiveEvents } from "../../../../hooks/useLiveEvents/useLiveEvents";
 import { findEndingLastEvent } from "../../../../utils/findEndingLastEvent";
-import { useSnackbars } from "../../../../components/Snackbar/SnackbarsProvider";
+import { useSnackbars } from "../../../../components/Snackbar/SnackbarsList.hooks";
 import { isRaceGenre } from "../../../../constants/races";
 import { fixEmDashes, formatRaceName, toTitleCase } from "../../../../utils/text";
 import { useCloseAllSnackbarsOnUnmount } from "../../../../hooks/useCloseAllSnackbarsOnUnmount/useCloseAllSnackbarsOnUnmount";
@@ -16,10 +16,10 @@ export const useNotifyAboutNewEvent = (currentRaceId: string) => {
   const [eventsAlreadyNotifiedAbout, setEventsAlreadyNotifiedAbout] = useState<(string | null)[]>([currentRaceId]);
   const registerSnackbarForUnmount = useCloseAllSnackbarsOnUnmount();
   const devicePixelRatio = useDevicePixelRatio();
-  const { flags } = useFeatureFlags();
+  const disableLiveNotifications = useFeatureFlags((state) => state.flags.disableLiveNotifications);
 
   useEffect(() => {
-    if (liveEvents.state !== "done" || flags.disableLiveNotifications) {
+    if (liveEvents.state !== "done" || disableLiveNotifications) {
       return;
     }
 
@@ -49,7 +49,7 @@ export const useNotifyAboutNewEvent = (currentRaceId: string) => {
     currentRaceId,
     devicePixelRatio,
     eventsAlreadyNotifiedAbout,
-    flags.disableLiveNotifications,
+    disableLiveNotifications,
     liveEvents,
     openSnackbar,
     registerSnackbarForUnmount,

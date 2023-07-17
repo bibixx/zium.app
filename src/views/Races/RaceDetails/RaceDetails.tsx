@@ -10,6 +10,8 @@ import { useRaceDetails } from "../../../hooks/useRaceDetails/useRaceDetails";
 import { RaceDetailsData } from "../../../hooks/useRaceDetails/useRacesDetails.types";
 import { MIDDLE_DOT } from "../../../utils/text";
 import { TimeOffsetOffIcon } from "../../../components/CustomIcons/CustomIcons";
+import { joinReactNodes } from "../../../utils/joinReactNodes";
+import { isNotFalse } from "../../../utils/isNotFalse";
 import { AdditionalEvents } from "./AdditionalEvents/AdditionalEvents";
 import { EventSession } from "./EventSession/EventSession";
 import styles from "./RaceDetails.module.scss";
@@ -145,27 +147,19 @@ const formatDate = (date: Date) =>
   new Intl.DateTimeFormat("en-US", { day: "numeric", month: "short", year: "numeric" }).format(date);
 
 const getSubtitle = (raceDetails: RaceDetailsData, ziumOffsetsInfo: string[]) => {
-  const subtitleDatePart =
-    raceDetails.startDate !== null ? <span>{formatDateRelative(raceDetails.startDate)}</span> : null;
+  const subtitleDatePart = raceDetails.startDate !== null && <span>{formatDateRelative(raceDetails.startDate)}</span>;
 
-  const subtitleZiumInfoPart = ziumOffsetsInfo.includes(raceDetails.id) ? (
+  const subtitleZiumInfoPart = ziumOffsetsInfo.includes(raceDetails.id) && (
     <>
       <TimeOffsetOffIcon className={styles.syncedIcon} width={16} height={16} />
       <span>Time synced</span>
     </>
-  ) : null;
+  );
 
   if (!subtitleDatePart && !subtitleZiumInfoPart) {
     return null;
   }
 
-  const divider = subtitleZiumInfoPart && subtitleDatePart ? <span>{MIDDLE_DOT}</span> : null;
-
-  return (
-    <>
-      {subtitleDatePart}
-      {divider}
-      {subtitleZiumInfoPart}
-    </>
-  );
+  const divider = <span>{MIDDLE_DOT}</span>;
+  return joinReactNodes([subtitleDatePart, subtitleZiumInfoPart].filter(isNotFalse), divider);
 };

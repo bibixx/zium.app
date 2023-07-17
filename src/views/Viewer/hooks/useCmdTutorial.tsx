@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { z } from "zod";
-import { useSnackbars } from "../../../components/Snackbar/SnackbarsProvider";
+import { useSnackbars } from "../../../components/Snackbar/SnackbarsList.hooks";
 import { SHORTCUTS } from "../../../hooks/useHotkeys/useHotkeys.keys";
 import { LocalStorageClient } from "../../../utils/localStorageClient";
 import { HumanReadableShortcuts } from "../../../components/HumanReadableShortcuts/HumanReadableShortcuts";
