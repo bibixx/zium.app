@@ -17,6 +17,7 @@ export const CookieBanner = ({ position, mode }: CookieBannerProps) => {
 
   return (
     <div
+      id="cookieConsentBanner"
       className={cn(styles.wrapper, {
         [styles.isOnTop]: position === "top",
         [styles.isOnBottom]: position === "bottom",
