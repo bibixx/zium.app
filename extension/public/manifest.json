@@ -1,6 +1,13 @@
 {
   "name": "zium.app Helper",
-  "version": "0.9.7",
+  "version": "1.0.0",
+  "icons": {
+    "16": "icon16.png",
+    "32": "icon32.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  },
+  "description": "This is a companion extension needed for the zium.app to work properly.",
   "declarative_net_request": {
     "rule_resources": [
       {
