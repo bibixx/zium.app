@@ -9,6 +9,7 @@ export const useGlobalShortcuts = (
   player: PlayerAPI | null,
   setAreVideosPaused: (fn: (oldValue: boolean) => boolean) => void,
   setAreClosedCaptionsOn: (fn: (oldValue: boolean) => boolean) => void,
+  setIsMuted: (fn: (oldValue: boolean) => boolean) => void,
 ) => {
   useEasterEgg();
 
@@ -70,6 +71,10 @@ export const useGlobalShortcuts = (
     }
   }, []);
 
+  const onToggleMute = useCallback(() => {
+    setIsMuted((isMuted) => !isMuted);
+  }, [setIsMuted]);
+
   useHotkeys(
     () => ({
       id: "global",
@@ -121,6 +126,10 @@ export const useGlobalShortcuts = (
           keys: SHORTCUTS.TOGGLE_CLOSED_CAPTIONS,
           action: onToggleClosedCaptions,
         },
+        {
+          keys: SHORTCUTS.TOGGLE_MUTE,
+          action: onToggleMute,
+        },
       ],
     }),
     [
@@ -134,6 +143,7 @@ export const useGlobalShortcuts = (
       onSuperSmallSkipBackwards,
       onToggleClosedCaptions,
       onToggleFullScreen,
+      onToggleMute,
     ],
   );
 };

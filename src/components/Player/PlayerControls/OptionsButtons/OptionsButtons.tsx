@@ -114,6 +114,10 @@ const VolumeButton = ({ player, volume, setVolume, isMuted, setIsMuted }: Volume
   const onIncreaseVolume = useCallback(() => {
     setVolume(volume + 1);
   }, [setVolume, volume]);
+  const onToggleMuted = useCallback(() => {
+    setIsMuted(!isMuted);
+  }, [isMuted, setIsMuted]);
+
   useHotkeys(
     () => ({
       id: "VolumeButton",
@@ -128,9 +132,13 @@ const VolumeButton = ({ player, volume, setVolume, isMuted, setIsMuted }: Volume
           keys: SHORTCUTS.FOCUSED_VOLUME_UP,
           action: onIncreaseVolume,
         },
+        {
+          keys: SHORTCUTS.TOGGLE_MUTE,
+          action: onToggleMuted,
+        },
       ],
     }),
-    [onDecreaseVolume, onIncreaseVolume, isFocusWithin],
+    [onDecreaseVolume, onIncreaseVolume, isFocusWithin, onToggleMuted],
   );
 
   return (

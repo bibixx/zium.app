@@ -53,6 +53,7 @@ export const SHORTCUTS = {
   CLOSE: brandShortcut([Key.Escape]),
   FOCUSED_VOLUME_DOWN: brandShortcut([Key.ArrowLeft]),
   FOCUSED_VOLUME_UP: brandShortcut([Key.ArrowRight]),
+  TOGGLE_MUTE: brandShortcut(["m"]),
   STREAM_PICKER_NEXT: brandShortcut([Key.ArrowDown]),
   STREAM_PICKER_PREV: brandShortcut([Key.ArrowUp]),
   STREAM_PICKER_SELECT: brandShortcut([Key.Enter]),
