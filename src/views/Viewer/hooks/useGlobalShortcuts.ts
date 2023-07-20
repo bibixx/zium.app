@@ -64,6 +64,12 @@ export const useGlobalShortcuts = (
     toggleFullScreen();
   }, []);
 
+  const onCloseFullScreen = useCallback(() => {
+    if (document.fullscreenElement) {
+      toggleFullScreen();
+    }
+  }, []);
+
   useHotkeys(
     () => ({
       id: "global",
@@ -104,6 +110,10 @@ export const useGlobalShortcuts = (
           preventDefault: true,
         },
         {
+          keys: SHORTCUTS.CLOSE,
+          action: onCloseFullScreen,
+        },
+        {
           keys: SHORTCUTS.TOGGLE_FULL_SCREEN,
           action: onToggleFullScreen,
         },
@@ -116,6 +126,7 @@ export const useGlobalShortcuts = (
     [
       onBigSkipAhead,
       onBigSkipBackwards,
+      onCloseFullScreen,
       onPlayClick,
       onSmallSkipAhead,
       onSmallSkipBackwards,
