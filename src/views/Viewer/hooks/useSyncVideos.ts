@@ -49,13 +49,13 @@ export const useSyncVideos = ({ windows, windowVideojsRefMapRef, isLive, playbac
         }
 
         if (isLive) {
-          const diff = Math.abs(player.getTimeShift() + offset);
+          const diff = Math.abs(player.getTimeShift() + offset + mainWindowPlayer.getTimeShift());
 
           if (diff < 1 && !forceSync) {
             return;
           }
 
-          player.timeShift(-offset);
+          player.timeShift(-offset + mainWindowPlayer.getTimeShift());
           return;
         }
 

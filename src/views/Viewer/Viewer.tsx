@@ -49,7 +49,7 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
     [viewerState.currentLayoutIndex, viewerState.savedLayouts],
   );
 
-  const [areVideosPaused, setAreVideosPaused] = useState(true);
+  const [areVideosPaused, setAreVideosPaused] = useState(!isLive);
   const [areClosedCaptionsOn, setAreClosedCaptionsOn] = useState(false);
   const { audioFocusedWindow, onWindowAudioFocus, setVolume, volume, internalVolume, setIsMuted, isMuted } =
     useVideoAudio({
