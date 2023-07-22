@@ -10,8 +10,8 @@ interface GlitchTipPluginConfig {
   releaseName: string;
 }
 
-const run = async <T>(cmd: string, pipeStd = true) =>
-  new Promise<T>((resolve, reject) => {
+const run = async (cmd: string, pipeStd = true) =>
+  new Promise<string>((resolve, reject) => {
     const child = exec(cmd, { stdio: "inherit" }, (error, stdout) => {
       if (error) {
         reject(error);
