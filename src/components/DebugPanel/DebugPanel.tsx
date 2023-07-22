@@ -135,6 +135,14 @@ const DebugGeneralSection = () => {
           <Button variant="Secondary" onClick={resetFlags}>
             Reset flags
           </Button>
+          <Button
+            variant="Secondary"
+            onClick={() => {
+              throw new Error("Test Error");
+            }}
+          >
+            Trigger error
+          </Button>
         </div>
       </div>
 
