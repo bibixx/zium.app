@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { captureException } from "@sentry/browser";
 import { useSnackbars } from "../../../../components/Snackbar/SnackbarsProvider";
 import { Button } from "../../../../components/Button/Button";
 import { UserOffsets, useUserOffsets } from "../../../../hooks/useUserOffests/useUserOffests";
-import { useAnalytics } from "../../../../hooks/useAnalytics/useAnalytics";
 import { useCloseAllSnackbarsOnUnmount } from "../../../../hooks/useCloseAllSnackbarsOnUnmount/useCloseAllSnackbarsOnUnmount";
 import { fetchZiumOffsets } from "./useZiumOffsets.api";
 
@@ -11,7 +11,6 @@ export const useZiumOffsets = (raceId: string, hasOnlyOneStream: boolean, setPau
   const isFirstFetchRef = useRef(true);
   const { openSnackbar, closeSnackbar } = useSnackbars();
   const { overrideOffsets, offsets: userOffsets } = useUserOffsets();
-  const { trackError } = useAnalytics();
   const registerSnackbarForUnmount = useCloseAllSnackbarsOnUnmount();
   const { setState: setDialogState, state: dialogState } = useZiumOffsetsDialog();
 
@@ -85,7 +84,7 @@ export const useZiumOffsets = (raceId: string, hasOnlyOneStream: boolean, setPau
 
         registerSnackbarForUnmount(id);
       } catch (error) {
-        trackError(error);
+        captureException(error);
       }
     },
     [
@@ -96,7 +95,6 @@ export const useZiumOffsets = (raceId: string, hasOnlyOneStream: boolean, setPau
       overrideOffsets,
       setDialogState,
       closeSnackbar,
-      trackError,
       setPaused,
     ],
   );

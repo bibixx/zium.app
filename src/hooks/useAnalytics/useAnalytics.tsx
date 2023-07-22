@@ -25,17 +25,6 @@ export const useAnalytics = () => {
   const push = useCallback((...args: Parameters<PiwikPush>) => piwik?.push(...args), [piwik]);
   const setUserId = useCallback((...args: Parameters<PiwikSetUserId>) => piwik?.setUserId(...args), [piwik]);
 
-  const trackError = useCallback(
-    (e: Error | unknown, eventName?: string) => {
-      if (e instanceof Error) {
-        push(["trackEvent", eventName ?? "JavaScript Error", e.message, e.stack]);
-      } else {
-        push(["trackEvent", eventName ?? "JavaScript Error", e]);
-      }
-    },
-    [push],
-  );
-
   const track = useCallback(
     (location: Location, title?: string) => {
       const currentPath = location.pathname + location.search;
@@ -66,12 +55,11 @@ export const useAnalytics = () => {
     () => ({
       push,
       setUserId,
-      trackError,
       track,
       setConsent,
       wasConsentGiven,
     }),
-    [push, setUserId, trackError, track, setConsent, wasConsentGiven],
+    [push, setUserId, track, setConsent, wasConsentGiven],
   );
 };
 
