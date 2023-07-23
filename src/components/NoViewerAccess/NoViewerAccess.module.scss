@@ -40,6 +40,19 @@
   border-radius: var(--radii-large);
 }
 
+.contentWrapper {
+  a {
+    transition: var(--transition-fast);
+    transition-property: color;
+    text-decoration: underline;
+    color: currentColor;
+
+    &:hover {
+      color: var(--color-text-strong);
+    }
+  }
+}
+
 .buttonWrapper {
   display: flex;
   gap: 8px;

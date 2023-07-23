@@ -47,7 +47,7 @@ export const ViewerWithState = () => {
   }
 
   if (!canAccessEvent(currentTier, state.entitlement)) {
-    return <NoViewerAccess />;
+    return <NoViewerAccess currentTier={currentTier} />;
   }
 
   return (
