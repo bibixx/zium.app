@@ -2,7 +2,21 @@ import { Alarm } from "./common";
 import { EventEmitter } from "./utils/EventEmitter";
 import { parseLoginSession } from "./utils/parseLoginSession";
 
-const { RuleActionType, HeaderOperation } = chrome.declarativeNetRequest;
+enum HeaderOperation {
+  APPEND = "append",
+  SET = "set",
+  REMOVE = "remove",
+}
+
+enum RuleActionType {
+  BLOCK = "block",
+  REDIRECT = "redirect",
+  ALLOW = "allow",
+  UPGRADE_SCHEME = "upgradeScheme",
+  MODIFY_HEADERS = "modifyHeaders",
+  ALLOW_ALL_REQUESTS = "allowAllRequests",
+}
+
 const TOKEN_STORE_KEY = "token";
 const ALARMS_STORE_KEY = "alarms";
 

@@ -35,7 +35,7 @@ const makeRequest = async <T, U = never>(type: string, data?: U, timeout?: numbe
 };
 
 export const getVersion = async () => {
-  const version = await makeRequest<string>("VERSION", undefined, 100);
+  const version = await makeRequest<string>("VERSION", undefined, 300);
 
   return version;
 };

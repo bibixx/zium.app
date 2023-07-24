@@ -52,8 +52,8 @@ export class JsonPlugin implements Plugin {
       script.matches = this.appDomains.map((domain) => `*://${domain}/*`);
     }
 
-    // externally_connectable
-    parsedManifest.externally_connectable.matches = this.appDomains.map((domain) => `*://${domain}/`);
+    // // externally_connectable
+    // parsedManifest.externally_connectable.matches = this.appDomains.map((domain) => `*://${domain}/`);
 
     return {
       fileName,

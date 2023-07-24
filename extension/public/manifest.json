@@ -18,7 +18,7 @@
     ]
   },
   "background": {
-    "service_worker": "background.js"
+    "scripts": ["background.js"]
   },
   "host_permissions": ["__FROM_ENV__"],
   "content_scripts": [
@@ -28,9 +28,6 @@
       "run_at": "document_start"
     }
   ],
-  "externally_connectable": {
-    "matches": ["__FROM_ENV__"]
-  },
   "permissions": ["declarativeNetRequest", "storage", "cookies", "alarms", "notifications"],
   "manifest_version": 3
 }
