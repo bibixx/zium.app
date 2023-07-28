@@ -28,7 +28,12 @@ const getReplayEvents = (body: unknown) => {
   const parsedBody = bodyRootValidator.parse(body);
 
   const replays = parsedBody.resultObj.containers
-    .filter((c) => c.metadata.label?.includes("Replays") || c.metadata.label?.includes("Weekend Sessions"))
+    .filter(
+      (c) =>
+        c.metadata.label?.includes("Replays") ||
+        c.metadata.label?.includes("Weekend Sessions") ||
+        c.metadata.label?.includes("Shows & Analysis"),
+    )
     .flatMap((c) => c.retrieveItems.resultObj.containers)
     .reduce(validateArray(eventValidator), [] as z.output<typeof eventValidator>[])
     .filter((c) => c.metadata.emfAttributes.Series === "FORMULA 1");
