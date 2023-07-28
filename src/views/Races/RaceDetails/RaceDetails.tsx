@@ -61,7 +61,7 @@ export const RaceDetails = ({ id, endDate, onClose, seasonId, ziumOffsetsInfo }:
         <div className={styles.errorWrapper}>
           <DialogContentInformation
             title="Grand Prix cancelled"
-            subtitle="The F1 officials have waved the yellow flag and this Grand Prix is no more. Buckle up for the next race, it's going to be a thrilling ride!"
+            subtitle="The F1 officials have waved the red flag and this Grand Prix is no more. Buckle up for the next race, it's going to be a thrilling ride!"
           />
           <div className={styles.zeroStateButtonWrapper}>
             <Button fluid variant="Secondary" onClick={onClose}>
