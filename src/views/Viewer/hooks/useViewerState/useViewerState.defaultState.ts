@@ -101,7 +101,7 @@ const race21_9: LayoutBase = {
       y: 0,
       zIndex: 7,
       fillMode: "fill",
-      window: { type: "main" },
+      window: { type: "main", streamId: "f1tv" },
     },
     {
       width: 26.8115234375,
@@ -183,6 +183,7 @@ const race16_10: LayoutBase = {
       fillMode: "fill",
       window: {
         type: "main",
+        streamId: "f1tv",
       },
     },
   ],
@@ -200,6 +201,7 @@ const quali21_9: LayoutBase = {
       fillMode: "fill",
       window: {
         type: "main",
+        streamId: "f1tv",
       },
     },
     {
@@ -261,6 +263,7 @@ const quali16_10: LayoutBase = {
       fillMode: "fill",
       window: {
         type: "main",
+        streamId: "f1tv",
       },
     },
   ],
@@ -276,7 +279,7 @@ const fullScreen: LayoutBase = {
       y: 0,
       zIndex: 0,
       fillMode: "fit",
-      window: { type: "main" },
+      window: { type: "main", streamId: "f1tv" },
     },
   ],
 };
@@ -311,7 +314,15 @@ const rowHeight = 100 / Math.ceil(offsetsDriversIds.length / columnsInRow);
 const offsets: LayoutBase = {
   name: "Offsets",
   data: [
-    { width: firstRowWidth, height: 100 / 3, x: 0, y: 0, zIndex: 0, fillMode: "fill", window: { type: "main" } },
+    {
+      width: firstRowWidth,
+      height: 100 / 3,
+      x: 0,
+      y: 0,
+      zIndex: 0,
+      fillMode: "fill",
+      window: { type: "main", streamId: "f1tv" },
+    },
     ...offsetsDriversIds.map((driverId, i): WindowGridSavedLayoutBase => {
       const y = Math.floor(i / columnsInRow);
       const x = (i - y * columnsInRow) % columnsInRow;

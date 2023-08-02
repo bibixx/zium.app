@@ -11,13 +11,13 @@ import {
 } from "react";
 import { AutoComplete } from "../../types/AutoComplete";
 import { EventEmitter } from "../../utils/EventEmitter";
-import { StreamInfo } from "../useVideoRaceDetails/useVideoRaceDetails.types";
+import { MainAndGlobalStreamInfo } from "../useVideoRaceDetails/useVideoRaceDetails.types";
 import { getInitialOffsets, saveOffsets } from "./useUserOffests.utils";
 
 export type UserOffsets = {
   isUserDefined: boolean;
   lastAppliedZiumOffsets: number | null;
-  additionalStreams: Partial<Record<AutoComplete<StreamInfo["type"]>, number>>;
+  additionalStreams: Partial<Record<AutoComplete<MainAndGlobalStreamInfo["type"]>, number>>;
 };
 
 interface UserOffsetsEmitterHandlers {

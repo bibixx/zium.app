@@ -7,7 +7,7 @@ import { setRef } from "../../../utils/setRef";
 import { AdditionalVideoJSOptions, VideoJS } from "../../VideoJS/VideoJS";
 import { VideoWindowWrapper } from "../VideoWindowWrapper/VideoWindowWrapper";
 import { DriverData } from "../../../views/Viewer/Viewer.utils";
-import { useStreamPicker } from "../../../hooks/useStreamPicker/useStreamPicker";
+import { ChosenValueType, useStreamPicker } from "../../../hooks/useStreamPicker/useStreamPicker";
 import { StreamVideoError } from "../../../hooks/useStreamVideo/useStreamVideo.utils";
 import { NoFeed } from "../NoFeed/NoFeed";
 import { FeedError } from "../FeedError/FeedError";
@@ -18,7 +18,7 @@ import { SourceButton } from "../../SourceButton/SourceButton";
 interface DriverVideoWindowProps extends VideoWindowProps {
   gridWindow: DriverGridWindow;
   availableDrivers: DriverData[];
-  onDriverChange: (streamIdentifier: string) => void;
+  onDriverChange: (streamId: string, chosenValueType: ChosenValueType) => void;
   isAudioFocused: boolean;
   onWindowAudioFocus: () => void;
   focusMainWindow: () => void;
@@ -134,7 +134,7 @@ const ADDITIONAL_OPTIONS: AdditionalVideoJSOptions = {
 
 interface DriverPickerButtonProps {
   currentDriver: DriverData | undefined;
-  onDriverChange: (streamIdentifier: string) => void;
+  onDriverChange: (streamId: string, chosenValueType: ChosenValueType) => void;
 }
 const DriverPickerButton = ({ currentDriver, onDriverChange }: DriverPickerButtonProps) => {
   const { requestStream } = useStreamPicker();
@@ -144,14 +144,17 @@ const DriverPickerButton = ({ currentDriver, onDriverChange }: DriverPickerButto
   const imageUrls = currentDriver?.imageUrls;
 
   const onClick = async () => {
-    const chosenDriverData = await requestStream("all", currentDriverId === undefined ? [] : [currentDriverId]);
+    const chosenDriverData = await requestStream(
+      ["drivers", "global"],
+      currentDriverId === undefined ? [] : [currentDriverId],
+    );
 
     if (chosenDriverData == null) {
       return;
     }
 
-    const [chosenDriverId] = chosenDriverData;
-    onDriverChange(chosenDriverId);
+    const [chosenStreamId, chosenValueType] = chosenDriverData;
+    onDriverChange(chosenStreamId, chosenValueType);
   };
 
   return (

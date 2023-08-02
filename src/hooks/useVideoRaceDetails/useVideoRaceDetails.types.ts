@@ -1,11 +1,10 @@
 import { EventGenre, RaceEntitlement } from "../../constants/races";
 
 export interface StreamsStateData {
-  defaultStream: StreamInfo | null;
-  driverTrackerStream: StreamInfo | null;
-  dataChannelStream: StreamInfo | null;
+  defaultStreams: MainStreamInfo[];
+  driverTrackerStream: GlobalStreamInfo | null;
+  dataChannelStream: GlobalStreamInfo | null;
   driverStreams: DriverStreamInfo[];
-  otherStreams: StreamInfo[];
 }
 
 export interface RaceInfo {
@@ -48,8 +47,12 @@ export interface BaseStreamInfo {
   identifier: string;
 }
 
-export interface StreamInfo extends BaseStreamInfo {
-  type: "main" | "driver-tracker" | "data-channel" | "other";
+export interface MainStreamInfo extends BaseStreamInfo {
+  type: "f1tv" | "international";
+}
+
+export interface GlobalStreamInfo extends BaseStreamInfo {
+  type: "driver-tracker" | "data-channel";
 }
 
 export interface DriverStreamInfo extends BaseStreamInfo {
@@ -64,7 +67,8 @@ export interface DriverStreamInfo extends BaseStreamInfo {
   hex: string;
 }
 
-export type StreamInfoWithDriver = StreamInfo | DriverStreamInfo;
+export type MainAndGlobalStreamInfo = GlobalStreamInfo | MainStreamInfo;
+export type StreamInfoWithDriver = MainAndGlobalStreamInfo | DriverStreamInfo;
 
 export interface BaseStreamDataDTO {
   type: string;

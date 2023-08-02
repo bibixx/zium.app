@@ -86,13 +86,15 @@ const debugLiveStreams: StreamsState & { state: "done" } = {
   state: "done",
   entitlement: "Access",
   streams: {
-    defaultStream: {
-      type: "main",
-      channelId: 1033,
-      playbackUrl: "__DEBUG__",
-      title: "F1 Live",
-      identifier: "PRES",
-    },
+    defaultStreams: [
+      {
+        type: "f1tv",
+        channelId: 1033,
+        playbackUrl: "__DEBUG__",
+        title: "F1 Live",
+        identifier: "PRES",
+      },
+    ],
     driverStreams: [
       {
         type: "driver",
@@ -373,15 +375,6 @@ const debugLiveStreams: StreamsState & { state: "done" } = {
         teamName: "McLaren",
         constructorName: "McLaren",
         hex: "#F58020",
-      },
-    ],
-    otherStreams: [
-      {
-        type: "other",
-        channelId: 1025,
-        playbackUrl: "CONTENT/PLAY?contentId=1000006436",
-        title: "International",
-        identifier: "WIF",
       },
     ],
     driverTrackerStream: {
