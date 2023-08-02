@@ -16,8 +16,6 @@ export const fetchVideoStream = async (playbackUrl: string, signal: AbortSignal)
   const body = await fetchJSON(`${baseUrl}/${playbackUrl}`, undefined, signal);
   const parsedBody = streamVideoBodyValidator.parse(body);
 
-  console.log(body);
-
   if (parsedBody.resultObj.streamType === "HLS") {
     return { videoUrl: parsedBody.resultObj.url, streamType: "HLS" };
   }

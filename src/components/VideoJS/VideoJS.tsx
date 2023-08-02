@@ -127,7 +127,6 @@ export const VideoJS = forwardRef<PlayerAPI | null, VideoJSProps>(
         setAudioTrack(player, selectedAudioTrackId);
         if (setAvailableAudioTracks != null) {
           setAvailableAudioTracks(player.getAvailableAudio());
-          console.log(player.getAvailableAudio());
 
           player.on(PlayerEvent.AudioAdded, () => {
             setAvailableAudioTracks(player.getAvailableAudio());

@@ -48,6 +48,7 @@ export interface BaseStreamInfo {
 }
 
 export interface MainStreamInfo extends BaseStreamInfo {
+  // TODO: Rename to F1 Live
   type: "f1tv" | "international";
 }
 
