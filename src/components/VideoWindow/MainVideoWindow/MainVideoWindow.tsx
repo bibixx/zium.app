@@ -1,5 +1,5 @@
-import { forwardRef, useEffect, useMemo, useRef } from "react";
-import { PlayerAPI, PlayerEvent, TimeMode } from "bitmovin-player";
+import { forwardRef, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { AudioTrack, PlayerAPI, PlayerEvent, SubtitleTrack, TimeMode } from "bitmovin-player";
 import { useStreamVideo } from "../../../hooks/useStreamVideo/useStreamVideo";
 import { VideoWindowProps } from "../../../types/VideoWindowBaseProps";
 import { setRef } from "../../../utils/setRef";
@@ -14,6 +14,9 @@ import { ChosenValueType, useStreamPicker } from "../../../hooks/useStreamPicker
 import { MainGridWindow } from "../../../types/GridWindow";
 import { getIconForStreamInfo } from "../../../utils/getIconForStreamInfo";
 import { assertNever } from "../../../utils/assertNever";
+import { useHotkeys } from "../../../hooks/useHotkeys/useHotkeys";
+import { SHORTCUTS } from "../../../hooks/useHotkeys/useHotkeys.keys";
+import { getTrackPrettyName } from "./MainVideoWindow.utils";
 
 interface MainVideoWindowProps extends VideoWindowProps {
   gridWindow: MainGridWindow;
@@ -22,8 +25,6 @@ interface MainVideoWindowProps extends VideoWindowProps {
   isAudioFocused: boolean;
   volume: number;
   setVolume: (newVolume: number) => void;
-  areClosedCaptionsOn: boolean;
-  setAreClosedCaptionsOn: (value: boolean) => void;
   hasOnlyOneStream: boolean;
   onSourceChange: (streamId: string, chosenValueType: ChosenValueType) => void;
   hasOnlyOneMainStream: boolean;
@@ -41,8 +42,6 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
       volume,
       fillMode,
       updateFillMode,
-      areClosedCaptionsOn,
-      setAreClosedCaptionsOn,
       hasOnlyOneStream,
       onSourceChange,
       hasOnlyOneMainStream,
@@ -51,6 +50,61 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
   ) => {
     const playerRef = useRef<PlayerAPI | null>(null);
     const streamVideoState = useStreamVideo(streamUrl);
+    const [availableSubtitleTracks, setAvailableSubtitleTracks] = useState<SubtitleTrack[]>([]);
+    const previousSelectedSubtitleIdRef = useRef<SubtitleTrack["id"] | null>(null);
+    const [selectedSubtitleId, setSelectedSubtitleId] = useState<SubtitleTrack["id"] | null>(null);
+    const areClosedCaptionsOn = useMemo(() => selectedSubtitleId != null, [selectedSubtitleId]);
+    const hasMultipleCaptionsTracks = availableSubtitleTracks.length > 1;
+
+    const toggleClosedCaptions = useCallback(() => {
+      const toggleClosedCaptionsWithMultipleTracks = () => {
+        if (selectedSubtitleId !== null) {
+          previousSelectedSubtitleIdRef.current = selectedSubtitleId;
+          setSelectedSubtitleId(null);
+          return;
+        }
+
+        setSelectedSubtitleId(previousSelectedSubtitleIdRef.current ?? availableSubtitleTracks[0]?.id ?? null);
+      };
+      const toggleClosedCaptionsWithSingleTrack = () => {
+        if (areClosedCaptionsOn) {
+          setSelectedSubtitleId(null);
+          return;
+        }
+
+        setSelectedSubtitleId(availableSubtitleTracks[0]?.id ?? null);
+      };
+
+      if (hasMultipleCaptionsTracks) {
+        toggleClosedCaptionsWithMultipleTracks();
+      } else {
+        toggleClosedCaptionsWithSingleTrack();
+      }
+    }, [areClosedCaptionsOn, availableSubtitleTracks, hasMultipleCaptionsTracks, selectedSubtitleId]);
+
+    useHotkeys(
+      () => ({
+        id: "mainVideo",
+        allowPropagation: true,
+        hotkeys: [
+          {
+            keys: SHORTCUTS.TOGGLE_CLOSED_CAPTIONS,
+            action: toggleClosedCaptions,
+          },
+        ],
+      }),
+      [toggleClosedCaptions],
+    );
+
+    const [availableAudioTracks, setAvailableAudioTracks] = useState<AudioTrack[]>([]);
+    const [selectedAudioTrackId, setSelectedAudioTrackId] = useState<AudioTrack["id"] | null>(null);
+
+    useEffect(() => {
+      setAvailableSubtitleTracks([]);
+      setSelectedSubtitleId(null);
+      setAvailableAudioTracks([]);
+      setSelectedAudioTrackId(null);
+    }, [streamUrl]);
 
     const ref = (r: PlayerAPI | null) => {
       setRef(forwardedRef, r);
@@ -105,6 +159,66 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
       return assertNever(gridWindow.streamId);
     }, [gridWindow.streamId]);
 
+    const closedCaptionsProps = useMemo(() => {
+      if (!hasMultipleCaptionsTracks) {
+        return {
+          toggleClosedCaptions,
+          areClosedCaptionsOn: areClosedCaptionsOn,
+        };
+      }
+
+      const onClick = (id: string | null) => () => {
+        if (id === null) {
+          previousSelectedSubtitleIdRef.current = selectedSubtitleId;
+        }
+
+        setSelectedSubtitleId(id);
+      };
+
+      return {
+        setClosedCaptions: () => undefined,
+        availableClosedCaptions: [
+          {
+            id: "off",
+            isActive: selectedSubtitleId === null,
+            text: "Off",
+            onClick: onClick(null),
+          },
+          ...availableSubtitleTracks.map((subtitleTrack) => ({
+            id: subtitleTrack.id,
+            isActive: selectedSubtitleId === subtitleTrack.id,
+            text: getTrackPrettyName(subtitleTrack),
+            onClick: onClick(subtitleTrack.id),
+          })),
+        ],
+        areClosedCaptionsOn: selectedSubtitleId !== null,
+      };
+    }, [
+      hasMultipleCaptionsTracks,
+      selectedSubtitleId,
+      availableSubtitleTracks,
+      toggleClosedCaptions,
+      areClosedCaptionsOn,
+    ]);
+
+    const commentaryCaptionsProps = useMemo(() => {
+      const hasMultipleAudioTracks = availableAudioTracks.length > 1;
+
+      if (!hasMultipleAudioTracks) {
+        return {};
+      }
+
+      return {
+        setAudioTrack: () => undefined,
+        availableAudioTracks: availableAudioTracks.map((audioTrack, i) => ({
+          id: audioTrack.id,
+          isActive: selectedAudioTrackId === null ? i === 0 : selectedAudioTrackId === audioTrack.id,
+          text: getTrackPrettyName(audioTrack),
+          onClick: () => setSelectedAudioTrackId(audioTrack.id),
+        })),
+      };
+    }, [availableAudioTracks, selectedAudioTrackId]);
+
     if (streamVideoState.state === "loading") {
       return null;
     }
@@ -138,14 +252,17 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
           isPaused={isPaused}
           volume={isAudioFocused ? volume : 0}
           fillMode={fillMode}
-          areClosedCaptionsOn={areClosedCaptionsOn}
+          selectedSubtitleId={selectedSubtitleId}
+          setAvailableSubtitles={setAvailableSubtitleTracks}
+          selectedAudioTrackId={selectedAudioTrackId}
+          setAvailableAudioTracks={setAvailableAudioTracks}
         />
         <VideoWindowButtons
           updateFillMode={() => updateFillMode(fillMode === "fill" ? "fit" : "fill")}
           fillMode={fillMode}
           {...audioFocusProps}
-          toggleClosedCaptions={() => setAreClosedCaptionsOn(!areClosedCaptionsOn)}
-          areClosedCaptionsOn={areClosedCaptionsOn}
+          {...closedCaptionsProps}
+          {...commentaryCaptionsProps}
           streamPill={
             <SourceButton
               onClick={hasOnlyOneMainStream ? undefined : onRequestSourceChange}

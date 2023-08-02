@@ -8,7 +8,6 @@ import { useEasterEgg } from "../../../hooks/useEasterEgg/useEasterEgg";
 export const useGlobalShortcuts = (
   player: PlayerAPI | null,
   setAreVideosPaused: (fn: (oldValue: boolean) => boolean) => void,
-  setAreClosedCaptionsOn: (fn: (oldValue: boolean) => boolean) => void,
   setIsMuted: (fn: (oldValue: boolean) => boolean) => void,
 ) => {
   useEasterEgg();
@@ -56,10 +55,6 @@ export const useGlobalShortcuts = (
 
     player?.seek(player.getCurrentTime() - timeDiff);
   }, [player]);
-
-  const onToggleClosedCaptions = useCallback(() => {
-    setAreClosedCaptionsOn((areClosedCaptionsOn) => !areClosedCaptionsOn);
-  }, [setAreClosedCaptionsOn]);
 
   const onToggleFullScreen = useCallback(() => {
     toggleFullScreen();
@@ -123,10 +118,6 @@ export const useGlobalShortcuts = (
           action: onToggleFullScreen,
         },
         {
-          keys: SHORTCUTS.TOGGLE_CLOSED_CAPTIONS,
-          action: onToggleClosedCaptions,
-        },
-        {
           keys: SHORTCUTS.TOGGLE_MUTE,
           action: onToggleMute,
         },
@@ -141,7 +132,6 @@ export const useGlobalShortcuts = (
       onSmallSkipBackwards,
       onSuperSmallSkipAhead,
       onSuperSmallSkipBackwards,
-      onToggleClosedCaptions,
       onToggleFullScreen,
       onToggleMute,
     ],
