@@ -140,7 +140,6 @@ const getAlarmsStorage = async () => {
 const createAlarm = async (alarm: Alarm) => {
   await chrome.storage.local.remove(ALARMS_STORE_KEY);
   const alarmDate = new Date(alarm.date);
-  console.log(alarmDate);
 
   await chrome.alarms.create(String(alarm.id), {
     when: alarmDate.getTime(),

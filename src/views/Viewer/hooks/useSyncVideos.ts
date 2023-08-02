@@ -137,7 +137,13 @@ const getOffset = (
     userOffset = userOffsets?.additionalStreams[w.type] ?? 0;
   }
 
-  const f1Offset = playbackOffsets.f1[w.type]?.[mainWindow.type] ?? 0;
+  // TODO: Add international offset
+  let f1Offset = 0;
+  if (w.type === "main") {
+    f1Offset = playbackOffsets.f1[w.streamId]?.[mainWindow.type] ?? 0;
+  } else {
+    f1Offset = playbackOffsets.f1[w.type]?.[mainWindow.type] ?? 0;
+  }
 
   return f1Offset + userOffset;
 };
