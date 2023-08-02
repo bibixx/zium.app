@@ -2,7 +2,7 @@ import { forwardRef, useEffect, useRef, useState } from "react";
 import objectMerge from "object-merge";
 import { SubtitleOverlay, UIContainer, UIFactory, UIManager } from "bitmovin-player-ui";
 import { UIConfig } from "bitmovin-player-ui/dist/js/framework/uiconfig";
-import { Player, PlayerAPI, PlayerConfig, PlayerEvent, SourceConfig } from "bitmovin-player";
+import { AudioTrack, Player, PlayerAPI, PlayerConfig, PlayerEvent, SourceConfig, SubtitleTrack } from "bitmovin-player";
 import classNames from "classnames";
 import { setRef } from "../../utils/setRef";
 import { VideoStreamInfo } from "../../hooks/useStreamVideo/useStreamVideo.api";
@@ -24,10 +24,13 @@ interface VideoJSProps {
   options: AdditionalVideoJSOptions;
   onReady?: (player: PlayerAPI) => void;
   isPaused: boolean;
-  areClosedCaptionsOn?: boolean;
   isMuted?: boolean;
   volume?: number;
   fillMode?: GridLayoutFillMode;
+  selectedSubtitleId?: SubtitleTrack["id"] | null;
+  setAvailableSubtitles?: (subtitles: SubtitleTrack[]) => void;
+  selectedAudioTrackId?: AudioTrack["id"] | null;
+  setAvailableAudioTracks?: (audioTrack: AudioTrack[]) => void;
 }
 
 export const VideoJS = forwardRef<PlayerAPI | null, VideoJSProps>(
@@ -39,8 +42,11 @@ export const VideoJS = forwardRef<PlayerAPI | null, VideoJSProps>(
       isPaused,
       volume = 0,
       isMuted = false,
-      areClosedCaptionsOn = false,
       fillMode = "fill",
+      selectedSubtitleId = null,
+      setAvailableSubtitles,
+      selectedAudioTrackId = null,
+      setAvailableAudioTracks,
     },
     ref,
   ) => {
@@ -102,13 +108,33 @@ export const VideoJS = forwardRef<PlayerAPI | null, VideoJSProps>(
         });
 
         player.setVolume(volume);
-        setSubtitles(player, areClosedCaptionsOn);
 
         if (isMuted) {
           playerRef.current?.mute();
         } else {
           playerRef.current?.unmute();
         }
+
+        setSubtitles(player, selectedSubtitleId);
+        if (setAvailableSubtitles != null) {
+          setAvailableSubtitles(player.subtitles.list());
+
+          player.on(PlayerEvent.SubtitleAdded, () => {
+            setAvailableSubtitles(player.subtitles.list());
+          });
+        }
+
+        setAudioTrack(player, selectedAudioTrackId);
+        if (setAvailableAudioTracks != null) {
+          setAvailableAudioTracks(player.getAvailableAudio());
+          console.log(player.getAvailableAudio());
+
+          player.on(PlayerEvent.AudioAdded, () => {
+            setAvailableAudioTracks(player.getAvailableAudio());
+          });
+        }
+
+        player.getAvailableAudio();
 
         playerRef.current = player;
         setRef(ref, player);
@@ -140,8 +166,12 @@ export const VideoJS = forwardRef<PlayerAPI | null, VideoJSProps>(
     }, [volume]);
 
     useEffect(() => {
-      setSubtitles(playerRef.current, areClosedCaptionsOn);
-    }, [areClosedCaptionsOn]);
+      setSubtitles(playerRef.current, selectedSubtitleId);
+    }, [selectedSubtitleId]);
+
+    useEffect(() => {
+      setAudioTrack(playerRef.current, selectedAudioTrackId);
+    }, [selectedAudioTrackId]);
 
     useEffect(() => {
       if (isMuted) {
@@ -182,21 +212,33 @@ function getSourceConfig(videoStreamInfo: VideoStreamInfo): SourceConfig {
   };
 }
 
-function setSubtitles(player: PlayerAPI | null, enabled: boolean) {
+function setSubtitles(player: PlayerAPI | null, selectedSubtitleId: string | null) {
   if (player == null) {
     return;
   }
 
-  const [firstSubtitle] = player.subtitles.list();
+  const subtitles = player.subtitles.list();
 
-  if (firstSubtitle == null) {
+  if (selectedSubtitleId != null) {
+    player.subtitles.enable(selectedSubtitleId, true);
     return;
   }
 
-  if (!enabled) {
-    player.subtitles.disable(firstSubtitle.id);
+  subtitles.forEach((s) => {
+    player.subtitles.disable(s.id);
+  });
+}
+
+function setAudioTrack(player: PlayerAPI | null, selectedAudioTrackId: string | null) {
+  if (player == null) {
     return;
   }
 
-  player.subtitles.enable(firstSubtitle.id, true);
+  if (selectedAudioTrackId != null) {
+    player.setAudio(selectedAudioTrackId);
+    return;
+  }
+
+  const [firstAudioTrack] = player.getAvailableAudio();
+  player.setAudio(firstAudioTrack.id);
 }

@@ -51,7 +51,6 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
   );
 
   const [areVideosPaused, setAreVideosPaused] = useState(!isLive);
-  const [areClosedCaptionsOn, setAreClosedCaptionsOn] = useState(false);
   const { audioFocusedWindow, onWindowAudioFocus, setVolume, volume, internalVolume, setIsMuted, isMuted } =
     useVideoAudio({
       windows,
@@ -236,8 +235,6 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
             streamUrl={windowStreamMap[gridWindow.streamId]}
             fillMode={fillMode}
             updateFillMode={updateFillMode}
-            areClosedCaptionsOn={areClosedCaptionsOn}
-            setAreClosedCaptionsOn={setAreClosedCaptionsOn}
             hasOnlyOneStream={hasOnlyOneStream}
             hasOnlyOneMainStream={hasOnlyOneMainStream}
           />
@@ -310,7 +307,6 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
       volume,
       setVolume,
       windowStreamMap,
-      areClosedCaptionsOn,
       onWindowAudioFocus,
       availableDrivers,
       hasOnlyOneStream,
@@ -320,7 +316,7 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
   );
 
   useSyncVideos({ windows, windowVideojsRefMapRef, isLive, playbackOffsets });
-  useGlobalShortcuts(mainVideoPlayer, setAreVideosPaused, setAreClosedCaptionsOn, setIsMuted);
+  useGlobalShortcuts(mainVideoPlayer, setAreVideosPaused, setIsMuted);
   useNotifyAboutNewEvent(raceId);
 
   const globalFeeds = useMemo(

@@ -20,7 +20,7 @@ export interface DropdownSectionElement {
   caption?: ReactNode;
   isActive?: boolean;
   disabled?: boolean;
-  onClick?: () => void;
+  onClick?: (e: React.MouseEvent) => void;
 }
 
 export interface DropdownSection {
@@ -43,6 +43,7 @@ interface DropdownProps {
   options: BaseOptions | ((toggleOpen: () => void) => BaseOptions);
   onOpened?: () => void;
   onClosed?: () => void;
+  closeOnClick?: boolean;
 }
 export const Dropdown = ({
   width = 240,
@@ -53,6 +54,7 @@ export const Dropdown = ({
   options,
   onOpened,
   onClosed,
+  closeOnClick = false,
 }: DropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const toggleOpen = useCallback(() => setIsOpen((oldIsOpen) => !oldIsOpen), []);
@@ -154,9 +156,19 @@ export const Dropdown = ({
                           return null;
                         }
 
-                        const { id, text, ...rest } = option;
+                        const { id, text, onClick, ...rest } = option;
                         return (
-                          <ListItem key={id} {...rest}>
+                          <ListItem
+                            key={id}
+                            onClick={(e: React.MouseEvent) => {
+                              onClick?.(e);
+
+                              if (!e.defaultPrevented && closeOnClick) {
+                                setIsOpen(false);
+                              }
+                            }}
+                            {...rest}
+                          >
                             {text}
                           </ListItem>
                         );
