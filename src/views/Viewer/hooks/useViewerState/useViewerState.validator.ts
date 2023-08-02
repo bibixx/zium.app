@@ -18,6 +18,10 @@ const gridWindowValidator = z.discriminatedUnion("type", [
   z.object({
     id: z.string(),
     type: z.literal("main"),
+    streamId: z
+      .union([z.literal("international"), z.literal("f1tv")])
+      .optional()
+      .default("f1tv"),
   }),
   z.object({
     id: z.string(),

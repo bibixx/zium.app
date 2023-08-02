@@ -1,13 +1,13 @@
 import { useCallback, useMemo, useRef, useState } from "react";
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
-import { useStreamPicker } from "../../hooks/useStreamPicker/useStreamPicker";
+import { PickerType, useStreamPicker } from "../../hooks/useStreamPicker/useStreamPicker";
 import { DriverData } from "../../views/Viewer/Viewer.utils";
 import { Input } from "../Input/Input";
 import { ListItem } from "../ListItem/ListItem";
 import { Sheet } from "../Sheet/Sheet";
 import { VideoFeedContent } from "../VideoFeedContent/VideoFeedContent";
 import { assertNever } from "../../utils/assertNever";
-import { StreamInfo } from "../../hooks/useVideoRaceDetails/useVideoRaceDetails.types";
+import { GlobalStreamInfo, MainStreamInfo } from "../../hooks/useVideoRaceDetails/useVideoRaceDetails.types";
 import { isNotNullable } from "../../utils/isNotNullable";
 import { useLaggedBehindData } from "../../hooks/useLaggedBehindData/useLaggedBehindData";
 import { getIconForStreamInfo } from "../../utils/getIconForStreamInfo";
@@ -18,9 +18,10 @@ import { StreamPickerEntry } from "./StreamPicker.types";
 
 interface StreamPickerProps {
   availableDrivers: DriverData[];
-  globalFeeds: Array<StreamInfo | null>;
+  globalFeeds: Array<GlobalStreamInfo | null>;
+  mainFeeds: Array<MainStreamInfo>;
 }
-export const StreamPicker = ({ availableDrivers, globalFeeds }: StreamPickerProps) => {
+export const StreamPicker = ({ availableDrivers, globalFeeds, mainFeeds }: StreamPickerProps) => {
   const { state, onCancel, onChoice } = useStreamPicker();
   const { data: laggedState, reset: resetLaggedState } = useLaggedBehindData(state, state.isOpen);
   const [searchText, setSearchText] = useState("");
@@ -28,19 +29,21 @@ export const StreamPicker = ({ availableDrivers, globalFeeds }: StreamPickerProp
   const listItemsRefs = useRef<(HTMLElement | null)[]>([]);
 
   const streamPickerEntries: StreamPickerEntry[] = useMemo(() => {
-    const globalEntries = globalFeeds
-      .filter(isNotNullable)
-      .map((streamInfo): StreamPickerEntry | null => {
-        if (streamInfo.type === "main") {
-          return null;
-        }
-        return {
-          id: streamInfo.type,
-          type: "global",
-          streamInfo,
-        };
-      })
-      .filter(isNotNullable);
+    const globalEntries = globalFeeds.filter(isNotNullable).map((streamInfo): StreamPickerEntry => {
+      return {
+        id: streamInfo.type,
+        type: "global",
+        streamInfo,
+      };
+    });
+
+    const mainEntries = mainFeeds.map((streamInfo): StreamPickerEntry => {
+      return {
+        id: streamInfo.type,
+        type: "main",
+        streamInfo,
+      };
+    });
 
     const driverEntries = availableDrivers.map(
       (driver): StreamPickerEntry => ({
@@ -50,13 +53,21 @@ export const StreamPicker = ({ availableDrivers, globalFeeds }: StreamPickerProp
       }),
     );
 
-    const allEntries = [...globalEntries, ...driverEntries];
+    const allEntries = [...mainEntries, ...globalEntries, ...driverEntries];
 
     const hiddenEntries = laggedState.isOpen ? laggedState.hiddenEntries : [];
-    const pickerType = laggedState.isOpen ? laggedState.pickerType : "all";
+    const pickerType: PickerType[] = laggedState.isOpen ? laggedState.pickerTypes : [];
 
     const filteredEntires = allEntries.filter((entry) => {
-      if (pickerType === "drivers" && entry.type !== "driver") {
+      if (entry.type === "driver" && !pickerType.includes("drivers")) {
+        return false;
+      }
+
+      if (entry.type === "global" && !pickerType.includes("global")) {
+        return false;
+      }
+
+      if (entry.type === "main" && !pickerType.includes("main")) {
         return false;
       }
 
@@ -80,11 +91,16 @@ export const StreamPicker = ({ availableDrivers, globalFeeds }: StreamPickerProp
         return includes(streamInfo.title, searchText);
       }
 
+      if (entry.type === "main") {
+        const streamInfo = entry.streamInfo;
+        return includes(streamInfo.title, searchText);
+      }
+
       return assertNever(entry);
     });
 
     return filteredEntires;
-  }, [availableDrivers, globalFeeds, searchText, laggedState]);
+  }, [availableDrivers, globalFeeds, mainFeeds, searchText, laggedState]);
 
   const onClosed = () => {
     setSearchText("");
@@ -103,8 +119,6 @@ export const StreamPicker = ({ availableDrivers, globalFeeds }: StreamPickerProp
   }, [fakeSelection, scrollListItemIntoView, streamPickerEntries.length]);
 
   const onArrowUp = useCallback(() => {
-    console.log("onArrowUp");
-
     const newFakeSelection = loopSelection(fakeSelection - 1, streamPickerEntries.length - 1);
     setFakeSelection(newFakeSelection);
     scrollListItemIntoView(newFakeSelection);
@@ -204,6 +218,25 @@ export const StreamPicker = ({ availableDrivers, globalFeeds }: StreamPickerProp
                   tabIndex={-1}
                   key={stream.type}
                   onClick={() => onChoice(stream.type, "global")}
+                  isActive={fakeSelection === i}
+                  onMouseEnter={() => setFakeSelection(i)}
+                  ref={(ref) => {
+                    listItemsRefs.current[i] = ref;
+                  }}
+                >
+                  <VideoFeedContent label={stream.title} icon={getIconForStreamInfo(stream.type, "outline")} />
+                </ListItem>
+              );
+            }
+
+            if (entry.type === "main") {
+              const stream = entry.streamInfo;
+
+              return (
+                <ListItem
+                  tabIndex={-1}
+                  key={stream.type}
+                  onClick={() => onChoice(stream.type, "main")}
                   isActive={fakeSelection === i}
                   onMouseEnter={() => setFakeSelection(i)}
                   ref={(ref) => {

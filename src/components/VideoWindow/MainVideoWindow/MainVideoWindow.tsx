@@ -1,6 +1,5 @@
-import { forwardRef, useRef } from "react";
-import { PlayerAPI, PlayerEvent } from "bitmovin-player";
-import { TvIcon } from "@heroicons/react/20/solid";
+import { forwardRef, useEffect, useMemo, useRef } from "react";
+import { PlayerAPI, PlayerEvent, TimeMode } from "bitmovin-player";
 import { useStreamVideo } from "../../../hooks/useStreamVideo/useStreamVideo";
 import { VideoWindowProps } from "../../../types/VideoWindowBaseProps";
 import { setRef } from "../../../utils/setRef";
@@ -11,8 +10,13 @@ import { FeedError } from "../FeedError/FeedError";
 import { StreamVideoError } from "../../../hooks/useStreamVideo/useStreamVideo.utils";
 import { VideoWindowButtons } from "../VideoWindowButtons/VideoWindowButtons";
 import { SourceButton } from "../../SourceButton/SourceButton";
+import { ChosenValueType, useStreamPicker } from "../../../hooks/useStreamPicker/useStreamPicker";
+import { MainGridWindow } from "../../../types/GridWindow";
+import { getIconForStreamInfo } from "../../../utils/getIconForStreamInfo";
+import { assertNever } from "../../../utils/assertNever";
 
 interface MainVideoWindowProps extends VideoWindowProps {
+  gridWindow: MainGridWindow;
   onPlayingChange: (isPaused: boolean) => void;
   onWindowAudioFocus: () => void;
   isAudioFocused: boolean;
@@ -21,11 +25,14 @@ interface MainVideoWindowProps extends VideoWindowProps {
   areClosedCaptionsOn: boolean;
   setAreClosedCaptionsOn: (value: boolean) => void;
   hasOnlyOneStream: boolean;
+  onSourceChange: (streamId: string, chosenValueType: ChosenValueType) => void;
+  hasOnlyOneMainStream: boolean;
 }
 
 export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps>(
   (
     {
+      gridWindow,
       streamUrl,
       onPlayingChange,
       isPaused,
@@ -37,6 +44,8 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
       areClosedCaptionsOn,
       setAreClosedCaptionsOn,
       hasOnlyOneStream,
+      onSourceChange,
+      hasOnlyOneMainStream,
     },
     forwardedRef,
   ) => {
@@ -48,7 +57,31 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
       playerRef.current = r;
     };
 
+    const { requestStream } = useStreamPicker();
+    const onRequestSourceChange = async () => {
+      const chosenDriverData = await requestStream(["main"], [gridWindow.streamId]);
+
+      if (chosenDriverData == null) {
+        return;
+      }
+
+      const [chosenStreamId, chosenValueType] = chosenDriverData;
+      onSourceChange(chosenStreamId, chosenValueType);
+    };
+
+    const oldTimeRef = useRef<number | null>(null);
+    useEffect(
+      function savePreviousTimeBeforeStreamUrlChange() {
+        oldTimeRef.current = playerRef.current?.getCurrentTime(TimeMode.AbsoluteTime) ?? null;
+      },
+      [streamUrl],
+    );
+
     const onReady = (player: PlayerAPI) => {
+      if (oldTimeRef.current !== null) {
+        player.seek(oldTimeRef.current);
+      }
+
       onPlayingChange(false);
 
       player.on(PlayerEvent.Paused, () => {
@@ -59,6 +92,18 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
         onPlayingChange(false);
       });
     };
+
+    const streamLabel = useMemo(() => {
+      if (gridWindow.streamId === "f1tv") {
+        return "F1 Live";
+      }
+
+      if (gridWindow.streamId === "international") {
+        return "International";
+      }
+
+      return assertNever(gridWindow.streamId);
+    }, [gridWindow.streamId]);
 
     if (streamVideoState.state === "loading") {
       return null;
@@ -101,7 +146,14 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
           {...audioFocusProps}
           toggleClosedCaptions={() => setAreClosedCaptionsOn(!areClosedCaptionsOn)}
           areClosedCaptionsOn={areClosedCaptionsOn}
-          streamPill={!hasOnlyOneStream && <SourceButton label="F1 Live" icon={TvIcon} hideWhenUiHidden />}
+          streamPill={
+            <SourceButton
+              onClick={hasOnlyOneMainStream ? undefined : onRequestSourceChange}
+              label={streamLabel}
+              icon={getIconForStreamInfo(gridWindow.streamId, "mini")}
+              hideWhenUiHidden
+            />
+          }
         />
       </VideoWindowWrapper>
     );

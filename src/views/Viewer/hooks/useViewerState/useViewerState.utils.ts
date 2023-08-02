@@ -193,6 +193,15 @@ export const windowGridReducer = (prevState: WindowGridState, action: WindowGrid
       const indexOfReplacedWindow = prevCurrentLayout.windows.findIndex((w) => w.id === newWindow.id);
       const replacedWindow = prevCurrentLayout.windows[indexOfReplacedWindow];
 
+      if (newWindow.type === "main") {
+        if (replacedWindow.type !== "main") {
+          throw new Error("Trying to replace main window with non-main window");
+        }
+
+        newCurrentLayout.windows.splice(indexOfReplacedWindow, 1, newWindow);
+        break;
+      }
+
       const oldWindowOfNewDriverIndex = prevCurrentLayout.windows.findIndex((w) => {
         if (w.type !== "driver" || newWindow.type !== "driver") {
           return w.type === newWindow.type;

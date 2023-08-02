@@ -13,12 +13,12 @@ import { VideoWindowButtons } from "../VideoWindowButtons/VideoWindowButtons";
 import { useReactiveUserOffsets, useUserOffsets } from "../../../hooks/useUserOffests/useUserOffests";
 import { SourceButton } from "../../SourceButton/SourceButton";
 import { getIconForStreamInfo } from "../../../utils/getIconForStreamInfo";
-import { useStreamPicker } from "../../../hooks/useStreamPicker/useStreamPicker";
+import { ChosenValueType, useStreamPicker } from "../../../hooks/useStreamPicker/useStreamPicker";
 
 interface DataChannelVideoWindowProps extends VideoWindowProps {
   gridWindow: BaseGridWindow;
   onDelete: () => void;
-  onSourceChange: (streamId: string) => void;
+  onSourceChange: (streamId: string, chosenValueType: ChosenValueType) => void;
 }
 
 export const DataChannelVideoWindow = forwardRef<PlayerAPI | null, DataChannelVideoWindowProps>(
@@ -30,15 +30,14 @@ export const DataChannelVideoWindow = forwardRef<PlayerAPI | null, DataChannelVi
 
     const { requestStream } = useStreamPicker();
     const onRequestSourceChange = async () => {
-      const chosenDriverData = await requestStream("all", ["data-channel"]);
+      const chosenDriverData = await requestStream(["drivers", "global"], ["data-channel"]);
 
       if (chosenDriverData == null) {
         return;
       }
 
-      const [chosenStreamId] = chosenDriverData;
-
-      onSourceChange(chosenStreamId);
+      const [chosenStreamId, chosenValueType] = chosenDriverData;
+      onSourceChange(chosenStreamId, chosenValueType);
     };
 
     const ref = (r: PlayerAPI | null) => {

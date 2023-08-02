@@ -14,9 +14,11 @@ import { Dropdown, DropdownSection, DropdownSectionElement } from "../../Dropdow
 import { sizePxToPercent } from "../../RnDWindow/RnDWindow.utils";
 import { LayoutDialogs } from "../LayoutDialogs/LayoutDialogs";
 import { LayoutDialogState } from "../LayoutDialogs/LayoutDialogs.types";
-import { isValidGridWindowType } from "../../../utils/isValidGridWindowType";
+import { isValidGlobalGridWindowType } from "../../../utils/isValidGridWindowType";
 import { useHotkeys } from "../../../hooks/useHotkeys/useHotkeys";
 import { SHORTCUTS } from "../../../hooks/useHotkeys/useHotkeys.keys";
+import { isValidMainGridWindowStreamId } from "../../../utils/isValidMainGridWindowStreamId";
+import { assertNever } from "../../../utils/assertNever";
 import styles from "./LayoutButtons.module.scss";
 
 interface LayoutButtonsProps {
@@ -47,7 +49,7 @@ export const LayoutButtons = ({
   const selectedLayoutIndex = useMemo(() => viewerState.currentLayoutIndex, [viewerState.currentLayoutIndex]);
 
   const onAddClick = useCallback(async () => {
-    const chosenData = await requestStream("all", usedWindows);
+    const chosenData = await requestStream(["drivers", "global"], usedWindows);
     if (chosenData == null) {
       return;
     }
@@ -208,14 +210,30 @@ const getNewWindow = (chosenId: string, chosenType: ChosenValueType): GridWindow
     };
   }
 
-  if (isValidGridWindowType(chosenId) && chosenId !== "driver") {
-    return {
-      id: "",
-      type: chosenId,
-    };
+  if (chosenType === "main") {
+    if (isValidMainGridWindowStreamId(chosenId)) {
+      return {
+        id: "",
+        type: "main",
+        streamId: chosenId,
+      };
+    }
+
+    return null;
   }
 
-  return null;
+  if (chosenType === "global") {
+    if (isValidGlobalGridWindowType(chosenId)) {
+      return {
+        id: "",
+        type: chosenId,
+      };
+    }
+
+    return null;
+  }
+
+  return assertNever(chosenType);
 };
 
 function getVideosText(videosCount: number) {

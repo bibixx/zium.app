@@ -4,6 +4,7 @@ export interface BaseGridWindow {
 
 export interface MainGridWindow extends BaseGridWindow {
   type: "main";
+  streamId: "f1tv" | "international";
 }
 
 export interface DriverTrackerGridWindow extends BaseGridWindow {

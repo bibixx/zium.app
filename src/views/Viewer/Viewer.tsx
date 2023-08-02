@@ -11,14 +11,15 @@ import { PlaybackOffsets, RaceInfo, StreamsStateData } from "../../hooks/useVide
 import { DriverTrackerVideoWindow } from "../../components/VideoWindow/DriverTrackerVideoWindow/DriverTrackerVideoWindow";
 import { RnDWindow } from "../../components/RnDWindow/RnDWindow";
 import { Dimensions } from "../../types/Dimensions";
-import { StreamPickerProvider } from "../../hooks/useStreamPicker/useStreamPicker";
+import { ChosenValueType, StreamPickerProvider } from "../../hooks/useStreamPicker/useStreamPicker";
 import { StreamPicker } from "../../components/StreamPicker/StreamPicker";
 import { Player } from "../../components/Player/Player";
 import { isNotNullable } from "../../utils/isNotNullable";
 import { CookieBanner } from "../../components/CookieBanner/CookieBanner";
-import { isValidGridWindowType } from "../../utils/isValidGridWindowType";
+import { isValidGlobalGridWindowType } from "../../utils/isValidGridWindowType";
 import { ZiumOffsetsOverwriteOnStartDialog } from "../../components/ZiumOffsetsDialogs/ZiumOffsetsOverwriteOnStartDialog";
 import { GlobalShortcutsSnackbar } from "../../components/ShortcutsSnackbar/ShortcutsSnackbar";
+import { isValidMainGridWindowStreamId } from "../../utils/isValidMainGridWindowStreamId";
 import { getWindowStreamMap, getAvailableDrivers } from "./Viewer.utils";
 import { useGrid } from "./hooks/useGrid";
 import styles from "./Viewer.module.scss";
@@ -139,15 +140,15 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
 
   const hasOnlyOneStream = useMemo(() => {
     const allStreams = [
-      streams.defaultStream,
+      ...streams.defaultStreams,
       streams.driverTrackerStream,
       streams.dataChannelStream,
       ...streams.driverStreams,
-      ...streams.otherStreams,
     ].filter(isNotNullable);
 
     return allStreams.length === 1;
   }, [streams]);
+  const hasOnlyOneMainStream = useMemo(() => streams.defaultStreams.length === 1, [streams.defaultStreams.length]);
 
   const { dialogState: ziumOffsetsDialogState } = useZiumOffsets(raceId, hasOnlyOneStream, setAreVideosPaused);
 
@@ -172,26 +173,49 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
         });
       };
 
-      const onSourceChange = (streamIdentifier: string) => {
-        if (isValidGridWindowType(streamIdentifier) && streamIdentifier !== "driver") {
+      const onSourceChange = (streamIdentifier: string, chosenValueType: ChosenValueType) => {
+        if (chosenValueType === "driver") {
           dispatch({
             type: "updateWindow",
             window: {
-              type: streamIdentifier,
+              type: "driver",
               id: gridWindow.id,
+              driverId: streamIdentifier,
             },
           });
           return;
         }
 
-        dispatch({
-          type: "updateWindow",
-          window: {
-            type: "driver",
-            id: gridWindow.id,
-            driverId: streamIdentifier,
-          },
-        });
+        if (chosenValueType === "global") {
+          if (isValidGlobalGridWindowType(streamIdentifier)) {
+            dispatch({
+              type: "updateWindow",
+              window: {
+                type: streamIdentifier,
+                id: gridWindow.id,
+              },
+            });
+          }
+
+          return;
+        }
+
+        if (chosenValueType === "main") {
+          if (isValidMainGridWindowStreamId(streamIdentifier)) {
+            dispatch({
+              type: "updateWindow",
+              window: {
+                type: "main",
+                id: gridWindow.id,
+                streamId: streamIdentifier,
+              },
+            });
+          }
+
+          return;
+        }
+
+        assertNever(chosenValueType);
       };
 
       if (gridWindow.type === "main") {
@@ -201,18 +225,21 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
               setRef(ref);
               setMainVideoPlayer(ref);
             }}
+            gridWindow={gridWindow}
+            onSourceChange={onSourceChange}
             onPlayingChange={(isPaused: boolean) => setAreVideosPaused(isPaused)}
             isPaused={areVideosPaused}
             isAudioFocused={audioFocusedWindow === gridWindow.id}
             onWindowAudioFocus={() => onWindowAudioFocus(gridWindow.id)}
             volume={volume}
             setVolume={setVolume}
-            streamUrl={windowStreamMap[gridWindow.id]}
+            streamUrl={windowStreamMap[gridWindow.streamId]}
             fillMode={fillMode}
             updateFillMode={updateFillMode}
             areClosedCaptionsOn={areClosedCaptionsOn}
             setAreClosedCaptionsOn={setAreClosedCaptionsOn}
             hasOnlyOneStream={hasOnlyOneStream}
+            hasOnlyOneMainStream={hasOnlyOneMainStream}
           />
         );
       }
@@ -287,6 +314,7 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
       onWindowAudioFocus,
       availableDrivers,
       hasOnlyOneStream,
+      hasOnlyOneMainStream,
       windows,
     ],
   );
@@ -296,8 +324,8 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
   useNotifyAboutNewEvent(raceId);
 
   const globalFeeds = useMemo(
-    () => [streams.defaultStream, streams.driverTrackerStream, streams.dataChannelStream],
-    [streams.dataChannelStream, streams.defaultStream, streams.driverTrackerStream],
+    () => [streams.driverTrackerStream, streams.dataChannelStream],
+    [streams.dataChannelStream, streams.driverTrackerStream],
   );
 
   return (
@@ -336,7 +364,11 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
             );
           })}
         </TransitionGroup>
-        <StreamPicker availableDrivers={availableDrivers} globalFeeds={globalFeeds} />
+        <StreamPicker
+          availableDrivers={availableDrivers}
+          globalFeeds={globalFeeds}
+          mainFeeds={streams.defaultStreams}
+        />
         <Player
           player={mainVideoPlayer}
           raceInfo={raceInfo}

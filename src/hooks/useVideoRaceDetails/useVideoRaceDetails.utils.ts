@@ -1,11 +1,13 @@
+import { assertNever } from "../../utils/assertNever";
 import {
   BaseStreamInfo,
   DriverStreamDataDTO,
   DriverStreamInfo,
   F1PlaybackOffsetsApiResponse,
   F1PlaybackOffsetsData,
+  GlobalStreamInfo,
+  MainStreamInfo,
   StreamDataDTO,
-  StreamInfo,
   StreamInfoWithDriver,
 } from "./useVideoRaceDetails.types";
 
@@ -26,13 +28,17 @@ const getStreamPrettyName = (name: string) => {
   }
 };
 
-const mapStreamIdentifierToType = (identifier: string, season: number): StreamInfoWithDriver["type"] => {
+const mapStreamIdentifierToType = (identifier: string, season: number): StreamInfoWithDriver["type"] | null => {
   if (identifier === "PRES") {
-    return "main";
+    return "f1tv";
   }
 
-  if (identifier === "WIF" && season <= 2021) {
-    return "main";
+  if (identifier === "WIF") {
+    if (season <= 2021) {
+      return "f1tv";
+    }
+
+    return "international";
   }
 
   if (identifier === "TRACKER") {
@@ -47,29 +53,27 @@ const mapStreamIdentifierToType = (identifier: string, season: number): StreamIn
     return "driver";
   }
 
-  return "other";
+  return null;
 };
 
 export const collectStreams = (streams: StreamDataDTO[] | undefined, season: number, raceId: string) => {
-  let defaultStream: StreamInfo | null = null;
-  let driverTrackerStream: StreamInfo | null = null;
-  let dataChannelStream: StreamInfo | null = null;
+  const defaultStreams: MainStreamInfo[] = [];
+  let driverTrackerStream: GlobalStreamInfo | null = null;
+  let dataChannelStream: GlobalStreamInfo | null = null;
   const driverStreams: DriverStreamInfo[] = [];
-  const otherStreams: StreamInfo[] = [];
 
   if (streams == null) {
-    defaultStream = {
-      type: "main",
+    const defaultStream: MainStreamInfo = {
+      type: "f1tv",
       channelId: 0,
       playbackUrl: `CONTENT/PLAY?contentId=${raceId}`,
-      title: "main",
+      title: getStreamPrettyName("F1 LIVE"),
       identifier: "main",
     };
 
     return {
-      defaultStream,
+      defaultStreams: [defaultStream],
       driverStreams,
-      otherStreams,
       driverTrackerStream,
       dataChannelStream,
     };
@@ -84,11 +88,23 @@ export const collectStreams = (streams: StreamDataDTO[] | undefined, season: num
       identifier: stream.identifier,
     };
 
-    if (streamType === "main") {
-      defaultStream = {
+    if (streamType === null) {
+      continue;
+    }
+
+    if (streamType === "f1tv") {
+      defaultStreams.push({
         type: streamType,
         ...baseStreamInfo,
-      };
+      });
+      continue;
+    }
+
+    if (streamType === "international") {
+      defaultStreams.push({
+        type: streamType,
+        ...baseStreamInfo,
+      });
       continue;
     }
 
@@ -108,34 +124,32 @@ export const collectStreams = (streams: StreamDataDTO[] | undefined, season: num
       continue;
     }
 
-    if (isDriverStream(stream, streamType)) {
+    if (streamType === "driver") {
+      const driverStream = stream as DriverStreamDataDTO;
+
       const driverStreamInfo: DriverStreamInfo = {
         ...baseStreamInfo,
         type: "driver",
-        racingNumber: stream.racingNumber,
-        title: stream.title,
-        reportingName: stream.reportingName,
-        driverFirstName: stream.driverFirstName,
-        driverLastName: stream.driverLastName,
-        teamName: stream.teamName,
-        constructorName: stream.constructorName,
-        hex: stream.hex,
+        racingNumber: driverStream.racingNumber,
+        title: driverStream.title,
+        reportingName: driverStream.reportingName,
+        driverFirstName: driverStream.driverFirstName,
+        driverLastName: driverStream.driverLastName,
+        teamName: driverStream.teamName,
+        constructorName: driverStream.constructorName,
+        hex: driverStream.hex,
       };
 
       driverStreams.push(driverStreamInfo);
       continue;
     }
 
-    otherStreams.push({
-      type: "other",
-      ...baseStreamInfo,
-    });
+    assertNever(streamType);
   }
 
   return {
-    defaultStream,
+    defaultStreams,
     driverStreams,
-    otherStreams,
     driverTrackerStream,
     dataChannelStream,
   };
@@ -153,6 +167,11 @@ export const createF1OffsetsMap = (
 
   for (const offset of playbackOffsets) {
     const key = mapStreamIdentifierToType(offset.channelToAdjust, season);
+
+    if (key === null) {
+      continue;
+    }
+
     const value = offset.delaySeconds;
     const baseChannel = offset.channels.find((channel) => channel !== offset.channelToAdjust);
 
@@ -161,6 +180,11 @@ export const createF1OffsetsMap = (
     }
 
     const baseChannelType = mapStreamIdentifierToType(baseChannel, season);
+
+    if (baseChannelType === null) {
+      continue;
+    }
+
     const otherValues: Record<StreamInfoWithDriver["type"], number | undefined> = data[key] ?? {};
     otherValues[baseChannelType] = value;
 
@@ -169,7 +193,3 @@ export const createF1OffsetsMap = (
 
   return data;
 };
-
-function isDriverStream(stream: StreamDataDTO, streamType: string): stream is DriverStreamDataDTO {
-  return streamType === "driver";
-}

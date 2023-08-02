@@ -1,7 +1,7 @@
 import { createContext, ReactNode, useCallback, useContext, useMemo, useState } from "react";
 
-type PickerType = "all" | "drivers";
-export type ChosenValueType = "driver" | "global";
+export type PickerType = "global" | "drivers" | "main";
+export type ChosenValueType = "driver" | "global" | "main";
 
 export type StreamPickerDataState =
   | {
@@ -11,12 +11,12 @@ export type StreamPickerDataState =
       isOpen: true;
       requestModeResolveFunction?: (value: [string, ChosenValueType] | null) => void;
       allowDnD: boolean;
-      pickerType: PickerType;
+      pickerTypes: PickerType[];
       hiddenEntries: string[];
     };
 
 interface StreamPickerContextType {
-  requestStream: (pickerType?: PickerType, hiddenEntries?: string[]) => Promise<[string, ChosenValueType] | null>;
+  requestStream: (pickerTypes?: PickerType[], hiddenEntries?: string[]) => Promise<[string, ChosenValueType] | null>;
   onCancel: () => void;
   onChoice: (chosenValue: string, elementType: ChosenValueType) => void;
   state: StreamPickerDataState;
@@ -36,13 +36,13 @@ const useStreamPickerData = (): StreamPickerContextType => {
   const [state, setState] = useState<StreamPickerDataState>({ isOpen: false });
 
   const requestStream = useCallback(
-    (pickerType: PickerType = "all", hiddenEntries: string[] = []) =>
+    (pickerTypes: PickerType[] = ["global", "drivers"], hiddenEntries: string[] = []) =>
       new Promise<[string, ChosenValueType] | null>((resolve) => {
         setState({
           isOpen: true,
           allowDnD: false,
           hiddenEntries,
-          pickerType,
+          pickerTypes,
           requestModeResolveFunction: resolve,
         });
       }),
