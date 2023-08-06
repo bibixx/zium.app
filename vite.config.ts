@@ -13,7 +13,13 @@ export default defineConfig(({ mode }) => {
   );
 
   let glitchTipPlugin: GlitchTipPlugin | undefined = undefined;
-  if (GLITCH_TIP_AUTH_TOKEN != null && GLITCH_TIP_ORG != null && GLITCH_TIP_PROJECT != null && GLITCH_TIP_URL != null) {
+  if (
+    mode === "production" &&
+    GLITCH_TIP_AUTH_TOKEN != null &&
+    GLITCH_TIP_ORG != null &&
+    GLITCH_TIP_PROJECT != null &&
+    GLITCH_TIP_URL != null
+  ) {
     const commitHash = execSync("git rev-parse HEAD").toString().trimEnd();
 
     glitchTipPlugin = new GlitchTipPlugin({
