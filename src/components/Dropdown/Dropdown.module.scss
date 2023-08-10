@@ -28,6 +28,7 @@
   &.wrapperExit {
     transform: translateX(0);
     opacity: 1;
+    pointer-events: none;
   }
 
   &.wrapperExitActive {
@@ -36,6 +37,7 @@
 
     transition: var(--transition-fast);
     transition-property: transform, opacity;
+    pointer-events: none;
   }
 }
 

@@ -9,7 +9,7 @@ import { NoFeed } from "../NoFeed/NoFeed";
 import { FeedError } from "../FeedError/FeedError";
 import { StreamVideoError } from "../../../hooks/useStreamVideo/useStreamVideo.utils";
 import { SourceButton } from "../../SourceButton/SourceButton";
-import { ChosenValueType, useStreamPicker } from "../../../hooks/useStreamPicker/useStreamPicker";
+import { ChosenValueType } from "../../../hooks/useStreamPicker/useStreamPicker";
 import { MainGridWindow } from "../../../types/GridWindow";
 import { getIconForStreamInfo } from "../../../utils/getIconForStreamInfo";
 import { assertNever } from "../../../utils/assertNever";
@@ -20,10 +20,12 @@ import {
   VideoWindowButtonsOnAudioFocusClick,
   VideoWindowButtonsSetAudioTrack,
   VideoWindowButtonsSetClosedCaptions,
+  VideoWindowButtonsSetVideoTrack,
   VideoWindowButtonsToggleClosedCaptions,
   VideoWindowButtonsTopLeftWrapper,
   VideoWindowButtonsUpdateFillMode,
 } from "../VideoWindowButtons/VideoWindowButtons";
+import { MainStreamInfo } from "../../../hooks/useVideoRaceDetails/useVideoRaceDetails.types";
 import { getTrackPrettyName } from "./MainVideoWindow.utils";
 
 interface MainVideoWindowProps extends VideoWindowProps {
@@ -35,7 +37,7 @@ interface MainVideoWindowProps extends VideoWindowProps {
   setVolume: (newVolume: number) => void;
   hasOnlyOneStream: boolean;
   onSourceChange: (streamId: string, chosenValueType: ChosenValueType) => void;
-  hasOnlyOneMainStream: boolean;
+  defaultStreams: MainStreamInfo[];
 }
 
 export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps>(
@@ -52,7 +54,7 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
       updateFillMode,
       hasOnlyOneStream,
       onSourceChange,
-      hasOnlyOneMainStream,
+      defaultStreams,
     },
     forwardedRef,
   ) => {
@@ -119,18 +121,6 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
       playerRef.current = r;
     };
 
-    const { requestStream } = useStreamPicker();
-    const onRequestSourceChange = async () => {
-      const chosenDriverData = await requestStream(["main"], [gridWindow.streamId]);
-
-      if (chosenDriverData == null) {
-        return;
-      }
-
-      const [chosenStreamId, chosenValueType] = chosenDriverData;
-      onSourceChange(chosenStreamId, chosenValueType);
-    };
-
     const oldTimeRef = useRef<number | null>(null);
     useEffect(
       function savePreviousTimeBeforeStreamUrlChange() {
@@ -154,18 +144,6 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
         onPlayingChange(false);
       });
     };
-
-    const streamLabel = useMemo(() => {
-      if (gridWindow.streamId === "f1tv") {
-        return "F1 Live";
-      }
-
-      if (gridWindow.streamId === "international") {
-        return "International";
-      }
-
-      return assertNever(gridWindow.streamId);
-    }, [gridWindow.streamId]);
 
     const closedCaptionsProps = useMemo(() => {
       if (!hasMultipleCaptionsTracks) {
@@ -226,6 +204,21 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
       }));
     }, [availableAudioTracks, selectedAudioTrackId]);
 
+    const availableVideoTracks = useMemo(() => {
+      const hasMultipleVideoTracks = defaultStreams.length > 1;
+
+      if (!hasMultipleVideoTracks) {
+        return null;
+      }
+
+      return defaultStreams.map((stream) => ({
+        id: stream.type,
+        isActive: stream.type === gridWindow.streamId,
+        text: getStreamLabel(stream),
+        onClick: () => onSourceChange(stream.type, "main"),
+      }));
+    }, [defaultStreams, gridWindow.streamId, onSourceChange]);
+
     if (streamVideoState.state === "loading") {
       return null;
     }
@@ -258,12 +251,7 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
           setAvailableAudioTracks={setAvailableAudioTracks}
         />
         <VideoWindowButtonsTopLeftWrapper>
-          <SourceButton
-            onClick={hasOnlyOneMainStream ? undefined : onRequestSourceChange}
-            label={streamLabel}
-            icon={getIconForStreamInfo(gridWindow.streamId, "mini")}
-            hideWhenUiHidden
-          />
+          <SourceButton label="Main stream" icon={getIconForStreamInfo("f1tv", "mini")} hideWhenUiHidden />
         </VideoWindowButtonsTopLeftWrapper>
         <VideoWindowButtonsBottomRightWrapper>
           <VideoWindowButtonsUpdateFillMode
@@ -277,6 +265,9 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
           )}
           {commentaryAvailableAudioTracks != null && (
             <VideoWindowButtonsSetAudioTrack availableAudioTracks={commentaryAvailableAudioTracks} />
+          )}
+          {availableVideoTracks != null && (
+            <VideoWindowButtonsSetVideoTrack availableVideoTracks={availableVideoTracks} />
           )}
           {!hasOnlyOneStream && (
             <VideoWindowButtonsOnAudioFocusClick
@@ -304,4 +295,16 @@ const ADDITIONAL_OPTIONS: AdditionalVideoJSOptions = {
   //   audioTrackButton: true,
   //   fullscreenToggle: true,
   // },
+};
+
+const getStreamLabel = (stream: MainStreamInfo) => {
+  if (stream.type === "f1tv") {
+    return "F1 Live";
+  }
+
+  if (stream.type === "international") {
+    return "International";
+  }
+
+  return assertNever(stream.type);
 };
