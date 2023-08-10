@@ -12,7 +12,6 @@ import { SourceButton } from "../../SourceButton/SourceButton";
 import { ChosenValueType } from "../../../hooks/useStreamPicker/useStreamPicker";
 import { MainGridWindow } from "../../../types/GridWindow";
 import { getIconForStreamInfo } from "../../../utils/getIconForStreamInfo";
-import { assertNever } from "../../../utils/assertNever";
 import { useHotkeys } from "../../../hooks/useHotkeys/useHotkeys";
 import { SHORTCUTS } from "../../../hooks/useHotkeys/useHotkeys.keys";
 import {
@@ -214,7 +213,7 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
       return defaultStreams.map((stream) => ({
         id: stream.type,
         isActive: stream.type === gridWindow.streamId,
-        text: getStreamLabel(stream),
+        text: stream.title,
         onClick: () => onSourceChange(stream.type, "main"),
       }));
     }, [defaultStreams, gridWindow.streamId, onSourceChange]);
@@ -295,16 +294,4 @@ const ADDITIONAL_OPTIONS: AdditionalVideoJSOptions = {
   //   audioTrackButton: true,
   //   fullscreenToggle: true,
   // },
-};
-
-const getStreamLabel = (stream: MainStreamInfo) => {
-  if (stream.type === "f1tv") {
-    return "F1 Live";
-  }
-
-  if (stream.type === "international") {
-    return "International";
-  }
-
-  return assertNever(stream.type);
 };
