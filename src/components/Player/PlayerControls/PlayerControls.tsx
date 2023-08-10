@@ -1,5 +1,5 @@
 import { PauseIcon, PlayIcon } from "@heroicons/react/20/solid";
-import { PlayerAPI, PlayerEvent, UserInteractionEvent } from "bitmovin-player";
+import { PlayerAPI, PlayerEvent, PlayerEventCallback, UserInteractionEvent } from "bitmovin-player";
 import {
   Container,
   ControlBar,
@@ -116,7 +116,7 @@ export const PlayerControls = ({ player, setVolume, volume, isMuted, setIsMuted 
 
   return (
     <div className={cn(styles.wrapper)}>
-      <PlaybackButtons player={player} isReady={isReady} />
+      <PlaybackButtons player={isBitmovinPlayerDestroyed(player) ? undefined : player} isReady={isReady} />
       <div
         className={cn(styles.bitmovinWrapper, { [styles.isReady]: isReady })}
         ref={wrapperRef}
@@ -128,7 +128,7 @@ export const PlayerControls = ({ player, setVolume, volume, isMuted, setIsMuted 
 };
 
 interface PlaybackButtonsProps {
-  player: PlayerAPI;
+  player: PlayerAPI | undefined;
   isReady: boolean;
 }
 const PlaybackButtons = ({ player, isReady }: PlaybackButtonsProps) => {
@@ -140,32 +140,42 @@ const PlaybackButtons = ({ player, isReady }: PlaybackButtonsProps) => {
   const [wasPlayingBeforeSeekStart, setWasPlayingBeforeSeekStart] = useState(false);
 
   useEffect(() => {
+    if (player == null) {
+      return;
+    }
+
     setIsPlaying(player.isPlaying());
-    player.on(PlayerEvent.Paused, (event: UserInteractionEvent) => {
-      if (event.issuer === "ui-seek") {
-        setWasPlayingBeforeSeekStart(isPlayingRef.current);
-        setHasStartedSeeking(true);
-      }
+    return setupEvents(player, {
+      [PlayerEvent.Paused]: (event: UserInteractionEvent) => {
+        if (event.issuer === "ui-seek") {
+          setWasPlayingBeforeSeekStart(isPlayingRef.current);
+          setHasStartedSeeking(true);
+        }
 
-      setIsPlaying(player.isPlaying());
-    });
-    player.on(PlayerEvent.Play, (event: UserInteractionEvent) => {
-      if (event.issuer === "ui-seek") {
-        setHasStartedSeeking(false);
-      }
+        setIsPlaying(player.isPlaying());
+      },
+      [PlayerEvent.Play]: (event: UserInteractionEvent) => {
+        if (event.issuer === "ui-seek") {
+          setHasStartedSeeking(false);
+        }
 
-      setIsPlaying(player.isPlaying());
+        setIsPlaying(player.isPlaying());
+      },
+      [PlayerEvent.Playing]: () => setIsPlaying(player.isPlaying()),
+      [PlayerEvent.SourceLoaded]: () => setIsPlaying(player.isPlaying()),
+      [PlayerEvent.SourceUnloaded]: () => setIsPlaying(player.isPlaying()),
+      [PlayerEvent.PlaybackFinished]: () => setIsPlaying(player.isPlaying()),
+      [PlayerEvent.CastStarted]: () => setIsPlaying(player.isPlaying()),
+      [PlayerEvent.Seek]: () => setIsSeeking(true),
+      [PlayerEvent.Seeked]: () => setIsSeeking(false),
     });
-    player.on(PlayerEvent.Playing, () => setIsPlaying(player.isPlaying()));
-    player.on(PlayerEvent.SourceLoaded, () => setIsPlaying(player.isPlaying()));
-    player.on(PlayerEvent.SourceUnloaded, () => setIsPlaying(player.isPlaying()));
-    player.on(PlayerEvent.PlaybackFinished, () => setIsPlaying(player.isPlaying()));
-    player.on(PlayerEvent.CastStarted, () => setIsPlaying(player.isPlaying()));
-    player.on(PlayerEvent.Seek, () => setIsSeeking(true));
-    player.on(PlayerEvent.Seeked, () => setIsSeeking(false));
   }, [isPlayingRef, player, setIsPlaying, setIsSeeking]);
 
   useEffect(() => {
+    if (player == null) {
+      return;
+    }
+
     let overlayTimeout = -1;
     const showOverlay = () => {
       clearTimeout(overlayTimeout);
@@ -177,22 +187,28 @@ const PlaybackButtons = ({ player, isReady }: PlaybackButtonsProps) => {
       clearTimeout(overlayTimeout);
       setIsLoading(false);
     };
-    player.on(PlayerEvent.StallStarted, showOverlay);
-    player.on(PlayerEvent.StallEnded, hideOverlay);
-    player.on(PlayerEvent.Play, showOverlay);
-    player.on(PlayerEvent.Playing, hideOverlay);
-    player.on(PlayerEvent.Paused, hideOverlay);
-    player.on(PlayerEvent.Seek, showOverlay);
-    player.on(PlayerEvent.Seeked, hideOverlay);
-    player.on(PlayerEvent.TimeShift, showOverlay);
-    player.on(PlayerEvent.TimeShifted, hideOverlay);
-    player.on(PlayerEvent.SourceUnloaded, hideOverlay);
 
-    return () => clearTimeout(overlayTimeout);
+    const eventsCleanup = setupEvents(player, {
+      [PlayerEvent.StallStarted]: showOverlay,
+      [PlayerEvent.StallEnded]: hideOverlay,
+      [PlayerEvent.Play]: showOverlay,
+      [PlayerEvent.Playing]: hideOverlay,
+      [PlayerEvent.Paused]: hideOverlay,
+      [PlayerEvent.Seek]: showOverlay,
+      [PlayerEvent.Seeked]: hideOverlay,
+      [PlayerEvent.TimeShift]: showOverlay,
+      [PlayerEvent.TimeShifted]: hideOverlay,
+      [PlayerEvent.SourceUnloaded]: hideOverlay,
+    });
+
+    return () => {
+      eventsCleanup();
+      clearTimeout(overlayTimeout);
+    };
   }, [player]);
 
   useEffect(() => {
-    if (!player.isLive()) {
+    if (player == null || !player.isLive()) {
       return;
     }
 
@@ -204,15 +220,22 @@ const PlaybackButtons = ({ player, isReady }: PlaybackButtonsProps) => {
     };
 
     updateLiveTimeshiftState();
-    player.on(PlayerEvent.TimeShift, updateLiveTimeshiftState);
-    player.on(PlayerEvent.TimeShifted, updateLiveTimeshiftState);
-    player.on(PlayerEvent.Playing, updateLiveTimeshiftState);
-    player.on(PlayerEvent.Paused, updateLiveTimeshiftState);
-    player.on(PlayerEvent.StallStarted, updateLiveTimeshiftState);
-    player.on(PlayerEvent.StallEnded, updateLiveTimeshiftState);
+
+    return setupEvents(player, {
+      [PlayerEvent.TimeShift]: updateLiveTimeshiftState,
+      [PlayerEvent.TimeShifted]: updateLiveTimeshiftState,
+      [PlayerEvent.Playing]: updateLiveTimeshiftState,
+      [PlayerEvent.Paused]: updateLiveTimeshiftState,
+      [PlayerEvent.StallStarted]: updateLiveTimeshiftState,
+      [PlayerEvent.StallEnded]: updateLiveTimeshiftState,
+    });
   }, [player]);
 
   const onPlayClick = useCallback(() => {
+    if (player == null) {
+      return;
+    }
+
     if (player.isPlaying()) {
       player.pause("ui");
     } else {
@@ -221,6 +244,10 @@ const PlaybackButtons = ({ player, isReady }: PlaybackButtonsProps) => {
   }, [player]);
 
   const onSkipAhead = useCallback(() => {
+    if (player == null) {
+      return;
+    }
+
     if (player.isLive()) {
       player.timeShift(player.getTimeShift() + 30);
     } else {
@@ -229,6 +256,10 @@ const PlaybackButtons = ({ player, isReady }: PlaybackButtonsProps) => {
   }, [player]);
 
   const onSkipBackwards = useCallback(() => {
+    if (player == null) {
+      return;
+    }
+
     if (player.isLive()) {
       player.timeShift(player.getTimeShift() - 30);
     } else {
@@ -296,4 +327,18 @@ const PlaybackButtons = ({ player, isReady }: PlaybackButtonsProps) => {
       />
     </div>
   );
+};
+
+const setupEvents = (player: PlayerAPI, eventMap: Partial<Record<PlayerEvent, PlayerEventCallback>>) => {
+  Object.entries(eventMap).map(([e, callback]) => {
+    player.on(e as PlayerEvent, callback);
+  });
+
+  return () => {
+    if (!isBitmovinPlayerDestroyed(player)) {
+      Object.entries(eventMap).map(([e, callback]) => {
+        player.off(e as PlayerEvent, callback);
+      });
+    }
+  };
 };

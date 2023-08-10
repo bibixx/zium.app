@@ -1,7 +1,7 @@
 import { PlayerAPI, PlayerEvent, TimeMode } from "bitmovin-player";
 import { MutableRefObject, useEffect } from "react";
 import { PlaybackOffsets } from "../../../hooks/useVideoRaceDetails/useVideoRaceDetails.types";
-import { GridWindow } from "../../../types/GridWindow";
+import { GridWindow, MainGridWindow } from "../../../types/GridWindow";
 import { UserOffsets, useUserOffsets } from "../../../hooks/useUserOffests/useUserOffests";
 import { isBitmovinPlayerDestroyed } from "../../../utils/isBitmovinPlayerDestroyed";
 
@@ -18,7 +18,7 @@ export const useSyncVideos = ({ windows, windowVideojsRefMapRef, isLive, playbac
     const syncVideos = (forceSync = false) => {
       const mainWindow = windows.find((w) => w.type === "main");
 
-      if (mainWindow == null) {
+      if (mainWindow == null || mainWindow.type !== "main") {
         return;
       }
 
@@ -39,10 +39,21 @@ export const useSyncVideos = ({ windows, windowVideojsRefMapRef, isLive, playbac
           return;
         }
 
-        const offset = getOffset(playbackOffsets, userOffsetsRef.current, w, mainWindow);
+        const f1TVPlaceholderWindowWindow: GridWindow = {
+          type: "main",
+          id: "",
+          streamId: "f1tv",
+        };
+        const mainWindowToF1TVOffset = getOffset(
+          playbackOffsets,
+          userOffsetsRef.current,
+          f1TVPlaceholderWindowWindow,
+          mainWindow,
+        );
+        const offset = getOffset(playbackOffsets, userOffsetsRef.current, w, mainWindow, mainWindowToF1TVOffset);
 
-        if (player.isPaused() !== mainWindowPlayer.isPaused()) {
-          if (mainWindowPlayer.isPaused()) {
+        if (player.isPlaying() !== mainWindowPlayer.isPlaying()) {
+          if (!mainWindowPlayer.isPlaying()) {
             player.pause();
           } else {
             player.play();
@@ -132,22 +143,24 @@ const getOffset = (
   playbackOffsets: PlaybackOffsets,
   userOffsets: UserOffsets | null,
   w: GridWindow,
-  mainWindow: GridWindow,
+  mainWindow: MainGridWindow,
+  additionalOffset = 0,
 ): number => {
   let userOffset = 0;
   if (w.type === "driver") {
     userOffset = userOffsets?.additionalStreams[w.driverId] ?? 0;
+  } else if (w.type === "main") {
+    userOffset = userOffsets?.additionalStreams[mainWindow.streamId] ?? 0;
   } else {
     userOffset = userOffsets?.additionalStreams[w.type] ?? 0;
   }
 
-  // TODO: Add international offset
   let f1Offset = 0;
   if (w.type === "main") {
-    f1Offset = playbackOffsets.f1[w.streamId]?.[mainWindow.type] ?? 0;
+    f1Offset = playbackOffsets.f1[w.streamId]?.[mainWindow.streamId] ?? 0;
   } else {
-    f1Offset = playbackOffsets.f1[w.type]?.[mainWindow.type] ?? 0;
+    f1Offset = playbackOffsets.f1[w.type]?.[mainWindow.streamId] ?? 0;
   }
 
-  return f1Offset + userOffset;
+  return f1Offset + userOffset + additionalOffset;
 };

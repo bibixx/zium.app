@@ -31,6 +31,7 @@ interface VideoJSProps {
   setAvailableSubtitles?: (subtitles: SubtitleTrack[]) => void;
   selectedAudioTrackId?: AudioTrack["id"] | null;
   setAvailableAudioTracks?: (audioTrack: AudioTrack[]) => void;
+  startAt?: number;
 }
 
 export const VideoJS = forwardRef<PlayerAPI | null, VideoJSProps>(
@@ -47,6 +48,7 @@ export const VideoJS = forwardRef<PlayerAPI | null, VideoJSProps>(
       setAvailableSubtitles,
       selectedAudioTrackId = null,
       setAvailableAudioTracks,
+      startAt,
     },
     ref,
   ) => {
@@ -100,6 +102,9 @@ export const VideoJS = forwardRef<PlayerAPI | null, VideoJSProps>(
         const sourceConfig = getSourceConfig(videoStreamInfo);
 
         await player.load(sourceConfig);
+        if (startAt != null) {
+          player.seek(startAt);
+        }
 
         player.on(PlayerEvent.Ready, () => {
           onReady?.(player);
