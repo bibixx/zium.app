@@ -1,6 +1,6 @@
 import { VideoWindowWrapper } from "../VideoWindowWrapper/VideoWindowWrapper";
 
-import { VideoWindowButtons } from "../VideoWindowButtons/VideoWindowButtons";
+import { VideoWindowButtonsClose, VideoWindowButtonsTopRightWrapper } from "../VideoWindowButtons/VideoWindowButtons";
 import { ErrorMessage } from "../../ErrorMessage/ErrorMessage";
 import styles from "./FeedError.module.scss";
 
@@ -16,7 +16,11 @@ export const FeedError = ({ error, onDelete }: FeedErrorProps) => {
           <ErrorMessage error={error} />
         </div>
       </div>
-      <VideoWindowButtons onClose={onDelete} />
+      {onDelete && (
+        <VideoWindowButtonsTopRightWrapper>
+          <VideoWindowButtonsClose onClose={onDelete} />
+        </VideoWindowButtonsTopRightWrapper>
+      )}
     </VideoWindowWrapper>
   );
 };

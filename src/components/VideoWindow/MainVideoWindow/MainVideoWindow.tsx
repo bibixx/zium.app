@@ -8,7 +8,6 @@ import { VideoWindowWrapper } from "../VideoWindowWrapper/VideoWindowWrapper";
 import { NoFeed } from "../NoFeed/NoFeed";
 import { FeedError } from "../FeedError/FeedError";
 import { StreamVideoError } from "../../../hooks/useStreamVideo/useStreamVideo.utils";
-import { VideoWindowButtons } from "../VideoWindowButtons/VideoWindowButtons";
 import { SourceButton } from "../../SourceButton/SourceButton";
 import { ChosenValueType, useStreamPicker } from "../../../hooks/useStreamPicker/useStreamPicker";
 import { MainGridWindow } from "../../../types/GridWindow";
@@ -16,6 +15,15 @@ import { getIconForStreamInfo } from "../../../utils/getIconForStreamInfo";
 import { assertNever } from "../../../utils/assertNever";
 import { useHotkeys } from "../../../hooks/useHotkeys/useHotkeys";
 import { SHORTCUTS } from "../../../hooks/useHotkeys/useHotkeys.keys";
+import {
+  VideoWindowButtonsBottomRightWrapper,
+  VideoWindowButtonsOnAudioFocusClick,
+  VideoWindowButtonsSetAudioTrack,
+  VideoWindowButtonsSetClosedCaptions,
+  VideoWindowButtonsToggleClosedCaptions,
+  VideoWindowButtonsTopLeftWrapper,
+  VideoWindowButtonsUpdateFillMode,
+} from "../VideoWindowButtons/VideoWindowButtons";
 import { getTrackPrettyName } from "./MainVideoWindow.utils";
 
 interface MainVideoWindowProps extends VideoWindowProps {
@@ -162,6 +170,7 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
     const closedCaptionsProps = useMemo(() => {
       if (!hasMultipleCaptionsTracks) {
         return {
+          type: "single" as const,
           toggleClosedCaptions,
           areClosedCaptionsOn: areClosedCaptionsOn,
         };
@@ -176,6 +185,7 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
       };
 
       return {
+        type: "multiple" as const,
         setClosedCaptions: () => undefined,
         availableClosedCaptions: [
           {
@@ -201,22 +211,19 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
       areClosedCaptionsOn,
     ]);
 
-    const commentaryCaptionsProps = useMemo(() => {
+    const commentaryAvailableAudioTracks = useMemo(() => {
       const hasMultipleAudioTracks = availableAudioTracks.length > 1;
 
       if (!hasMultipleAudioTracks) {
-        return {};
+        return null;
       }
 
-      return {
-        setAudioTrack: () => undefined,
-        availableAudioTracks: availableAudioTracks.map((audioTrack, i) => ({
-          id: audioTrack.id,
-          isActive: selectedAudioTrackId === null ? i === 0 : selectedAudioTrackId === audioTrack.id,
-          text: getTrackPrettyName(audioTrack),
-          onClick: () => setSelectedAudioTrackId(audioTrack.id),
-        })),
-      };
+      return availableAudioTracks.map((audioTrack, i) => ({
+        id: audioTrack.id,
+        isActive: selectedAudioTrackId === null ? i === 0 : selectedAudioTrackId === audioTrack.id,
+        text: getTrackPrettyName(audioTrack),
+        onClick: () => setSelectedAudioTrackId(audioTrack.id),
+      }));
     }, [availableAudioTracks, selectedAudioTrackId]);
 
     if (streamVideoState.state === "loading") {
@@ -235,13 +242,6 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
       return <FeedError error={streamVideoState.error} />;
     }
 
-    const audioFocusProps = hasOnlyOneStream
-      ? {}
-      : ({
-          onAudioFocusClick: onWindowAudioFocus,
-          isAudioFocused: isAudioFocused,
-        } as const);
-
     return (
       <VideoWindowWrapper>
         <VideoJS
@@ -257,21 +257,34 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
           selectedAudioTrackId={selectedAudioTrackId}
           setAvailableAudioTracks={setAvailableAudioTracks}
         />
-        <VideoWindowButtons
-          updateFillMode={() => updateFillMode(fillMode === "fill" ? "fit" : "fill")}
-          fillMode={fillMode}
-          {...audioFocusProps}
-          {...closedCaptionsProps}
-          {...commentaryCaptionsProps}
-          streamPill={
-            <SourceButton
-              onClick={hasOnlyOneMainStream ? undefined : onRequestSourceChange}
-              label={streamLabel}
-              icon={getIconForStreamInfo(gridWindow.streamId, "mini")}
-              hideWhenUiHidden
+        <VideoWindowButtonsTopLeftWrapper>
+          <SourceButton
+            onClick={hasOnlyOneMainStream ? undefined : onRequestSourceChange}
+            label={streamLabel}
+            icon={getIconForStreamInfo(gridWindow.streamId, "mini")}
+            hideWhenUiHidden
+          />
+        </VideoWindowButtonsTopLeftWrapper>
+        <VideoWindowButtonsBottomRightWrapper>
+          <VideoWindowButtonsUpdateFillMode
+            updateFillMode={() => updateFillMode(fillMode === "fill" ? "fit" : "fill")}
+            fillMode={fillMode}
+          />
+          {closedCaptionsProps.type === "single" ? (
+            <VideoWindowButtonsToggleClosedCaptions {...closedCaptionsProps} />
+          ) : (
+            <VideoWindowButtonsSetClosedCaptions {...closedCaptionsProps} />
+          )}
+          {commentaryAvailableAudioTracks != null && (
+            <VideoWindowButtonsSetAudioTrack availableAudioTracks={commentaryAvailableAudioTracks} />
+          )}
+          {!hasOnlyOneStream && (
+            <VideoWindowButtonsOnAudioFocusClick
+              onAudioFocusClick={onWindowAudioFocus}
+              isAudioFocused={isAudioFocused}
             />
-          }
-        />
+          )}
+        </VideoWindowButtonsBottomRightWrapper>
       </VideoWindowWrapper>
     );
   },

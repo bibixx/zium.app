@@ -12,7 +12,15 @@ import { StreamVideoError } from "../../../hooks/useStreamVideo/useStreamVideo.u
 import { NoFeed } from "../NoFeed/NoFeed";
 import { FeedError } from "../FeedError/FeedError";
 import { useReactiveUserOffsets, useUserOffsets } from "../../../hooks/useUserOffests/useUserOffests";
-import { VideoWindowButtons } from "../VideoWindowButtons/VideoWindowButtons";
+import {
+  VideoWindowButtonsBottomRightWrapper,
+  VideoWindowButtonsClose,
+  VideoWindowButtonsOffset,
+  VideoWindowButtonsOnAudioFocusClick,
+  VideoWindowButtonsTopLeftWrapper,
+  VideoWindowButtonsTopRightWrapper,
+  VideoWindowButtonsUpdateFillMode,
+} from "../VideoWindowButtons/VideoWindowButtons";
 import { SourceButton } from "../../SourceButton/SourceButton";
 
 interface DriverVideoWindowProps extends VideoWindowProps {
@@ -84,9 +92,9 @@ export const DriverVideoWindow = forwardRef<PlayerAPI | null, DriverVideoWindowP
       return (
         <NoFeed onDelete={onDelete}>
           {!hasOnlyOneStream && (
-            <VideoWindowButtons
-              streamPill={<DriverPickerButton currentDriver={currentDriver} onDriverChange={onDriverChange} />}
-            />
+            <VideoWindowButtonsTopLeftWrapper>
+              <DriverPickerButton currentDriver={currentDriver} onDriverChange={onDriverChange} />
+            </VideoWindowButtonsTopLeftWrapper>
           )}
         </NoFeed>
       );
@@ -107,19 +115,24 @@ export const DriverVideoWindow = forwardRef<PlayerAPI | null, DriverVideoWindowP
           fillMode={fillMode}
         />
 
-        <VideoWindowButtons
-          onOffsetChange={onOffsetChange}
-          currentOffset={offsets?.additionalStreams[gridWindow.driverId] ?? 0}
-          usesZiumOffsets={offsets?.isUserDefined === false}
-          updateFillMode={() => updateFillMode(fillMode === "fill" ? "fit" : "fill")}
-          fillMode={fillMode}
-          onAudioFocusClick={onAudioFocusClick}
-          isAudioFocused={isAudioFocused}
-          onClose={onDelete}
-          streamPill={
-            !hasOnlyOneStream && <DriverPickerButton currentDriver={currentDriver} onDriverChange={onDriverChange} />
-          }
-        />
+        <VideoWindowButtonsTopLeftWrapper>
+          {!hasOnlyOneStream && <DriverPickerButton currentDriver={currentDriver} onDriverChange={onDriverChange} />}
+          <VideoWindowButtonsOffset
+            onOffsetChange={onOffsetChange}
+            currentOffset={offsets?.additionalStreams[gridWindow.driverId] ?? 0}
+            usesZiumOffsets={offsets?.isUserDefined === false}
+          />
+        </VideoWindowButtonsTopLeftWrapper>
+        <VideoWindowButtonsTopRightWrapper>
+          <VideoWindowButtonsClose onClose={onDelete} />
+        </VideoWindowButtonsTopRightWrapper>
+        <VideoWindowButtonsBottomRightWrapper>
+          <VideoWindowButtonsUpdateFillMode
+            updateFillMode={() => updateFillMode(fillMode === "fill" ? "fit" : "fill")}
+            fillMode={fillMode}
+          />
+          <VideoWindowButtonsOnAudioFocusClick onAudioFocusClick={onAudioFocusClick} isAudioFocused={isAudioFocused} />
+        </VideoWindowButtonsBottomRightWrapper>
       </VideoWindowWrapper>
     );
   },

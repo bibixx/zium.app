@@ -9,7 +9,14 @@ import { StreamVideoError } from "../../../hooks/useStreamVideo/useStreamVideo.u
 import { VideoWindowWrapper } from "../VideoWindowWrapper/VideoWindowWrapper";
 import { NoFeed } from "../NoFeed/NoFeed";
 import { FeedError } from "../FeedError/FeedError";
-import { VideoWindowButtons } from "../VideoWindowButtons/VideoWindowButtons";
+import {
+  VideoWindowButtonsBottomRightWrapper,
+  VideoWindowButtonsClose,
+  VideoWindowButtonsOffset,
+  VideoWindowButtonsTopLeftWrapper,
+  VideoWindowButtonsTopRightWrapper,
+  VideoWindowButtonsUpdateFillMode,
+} from "../VideoWindowButtons/VideoWindowButtons";
 import { useReactiveUserOffsets, useUserOffsets } from "../../../hooks/useUserOffests/useUserOffests";
 import { SourceButton } from "../../SourceButton/SourceButton";
 import { getIconForStreamInfo } from "../../../utils/getIconForStreamInfo";
@@ -76,22 +83,29 @@ export const DriverTrackerVideoWindow = forwardRef<PlayerAPI | null, DriverTrack
           isPaused={isPaused}
           fillMode={fillMode}
         />
-        <VideoWindowButtons
-          onOffsetChange={onOffsetChange}
-          currentOffset={offsets?.additionalStreams["driver-tracker"] ?? 0}
-          usesZiumOffsets={offsets?.isUserDefined === false}
-          updateFillMode={() => updateFillMode(fillMode === "fill" ? "fit" : "fill")}
-          fillMode={fillMode}
-          onClose={onDelete}
-          streamPill={
-            <SourceButton
-              onClick={onRequestSourceChange}
-              label="Tracker"
-              icon={getIconForStreamInfo("driver-tracker", "mini")}
-              hideWhenUiHidden
-            />
-          }
-        />
+
+        <VideoWindowButtonsTopLeftWrapper>
+          <SourceButton
+            onClick={onRequestSourceChange}
+            label="Tracker"
+            icon={getIconForStreamInfo("driver-tracker", "mini")}
+            hideWhenUiHidden
+          />
+          <VideoWindowButtonsOffset
+            onOffsetChange={onOffsetChange}
+            currentOffset={offsets?.additionalStreams["driver-tracker"] ?? 0}
+            usesZiumOffsets={offsets?.isUserDefined === false}
+          />
+        </VideoWindowButtonsTopLeftWrapper>
+        <VideoWindowButtonsTopRightWrapper>
+          <VideoWindowButtonsClose onClose={onDelete} />
+        </VideoWindowButtonsTopRightWrapper>
+        <VideoWindowButtonsBottomRightWrapper>
+          <VideoWindowButtonsUpdateFillMode
+            updateFillMode={() => updateFillMode(fillMode === "fill" ? "fit" : "fill")}
+            fillMode={fillMode}
+          />
+        </VideoWindowButtonsBottomRightWrapper>
       </VideoWindowWrapper>
     );
   },
