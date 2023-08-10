@@ -3,6 +3,7 @@ import { MutableRefObject, useEffect } from "react";
 import { PlaybackOffsets } from "../../../hooks/useVideoRaceDetails/useVideoRaceDetails.types";
 import { GridWindow } from "../../../types/GridWindow";
 import { UserOffsets, useUserOffsets } from "../../../hooks/useUserOffests/useUserOffests";
+import { isBitmovinPlayerDestroyed } from "../../../utils/isBitmovinPlayerDestroyed";
 
 interface UseSyncVideosArguments {
   windows: GridWindow[];
@@ -92,8 +93,11 @@ export const useSyncVideos = ({ windows, windowVideojsRefMapRef, isLive, playbac
       offsetEmitter.addEventListener("change", forceSync);
 
       cleanupFunction = () => {
-        mainWindowPlayer.off(PlayerEvent.Seek, forceSync);
-        mainWindowPlayer.off(PlayerEvent.TimeShift, forceSync);
+        if (!isBitmovinPlayerDestroyed(mainWindowPlayer)) {
+          mainWindowPlayer.off(PlayerEvent.Seek, forceSync);
+          mainWindowPlayer.off(PlayerEvent.TimeShift, forceSync);
+        }
+
         offsetEmitter.removeEventListener("change", forceSync);
       };
     };

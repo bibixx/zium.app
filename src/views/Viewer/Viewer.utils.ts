@@ -6,7 +6,7 @@ export const getWindowStreamMap = (windows: GridWindow[], streams: StreamsStateD
   return Object.fromEntries(
     windows.map((w) => {
       if (w.type === "main") {
-        const stream = streams.defaultStreams.find((stream) => stream.type === w.streamId);
+        const stream = streams.defaultStreams.find((stream) => stream.type === w.streamId) ?? streams.defaultStreams[0];
         return [w.streamId, stream?.playbackUrl ?? null];
       }
 

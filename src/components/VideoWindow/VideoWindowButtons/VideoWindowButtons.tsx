@@ -1,5 +1,5 @@
 import cn from "classnames";
-import { SpeakerWaveIcon, XMarkIcon, MicrophoneIcon } from "@heroicons/react/20/solid";
+import { SpeakerWaveIcon, XMarkIcon, MicrophoneIcon, GlobeEuropeAfricaIcon } from "@heroicons/react/20/solid";
 import { ReactNode } from "react";
 import { GridLayoutFillMode } from "../../../views/Viewer/hooks/useViewerState/useViewerState.utils";
 import { Button } from "../../Button/Button";
@@ -162,3 +162,33 @@ export const VideoWindowButtonsOnAudioFocusClick = (props: VideoWindowButtonsOnA
     aria-label={props.isAudioFocused ? "Unfocus audio" : "Focus audio"}
   />
 );
+
+interface VideoWindowButtonsSetVideoTrackProps {
+  availableVideoTracks: DropdownSectionElement[];
+}
+export const VideoWindowButtonsSetVideoTrack = (props: VideoWindowButtonsSetVideoTrackProps) => {
+  const { preventHiding } = useViewerUIVisibility();
+
+  return (
+    <Dropdown
+      placement="top-end"
+      options={props.availableVideoTracks}
+      onOpened={() => preventHiding(true)}
+      onClosed={() => preventHiding(false)}
+      closeOnClick
+    >
+      {({ setRef, toggleOpen, isOpen }) => {
+        return (
+          <Button
+            ref={setRef}
+            iconLeft={GlobeEuropeAfricaIcon}
+            isPressed={isOpen}
+            variant="SecondaryInverted"
+            onClick={toggleOpen}
+            aria-label="Choose video track"
+          />
+        );
+      }}
+    </Dropdown>
+  );
+};

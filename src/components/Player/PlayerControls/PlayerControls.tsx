@@ -20,6 +20,7 @@ import { Button } from "../../Button/Button";
 import { ArrowLeft30Icon, ArrowRight30Icon } from "../../CustomIcons/CustomIcons";
 import { Spinner } from "../../Spinner/Spinner";
 import { assertNever } from "../../../utils/assertNever";
+import { isBitmovinPlayerDestroyed } from "../../../utils/isBitmovinPlayerDestroyed";
 import { OptionsButtons } from "./OptionsButtons/OptionsButtons";
 import styles from "./PlayerControls.module.scss";
 
@@ -35,7 +36,9 @@ const OVERLAY_TIMEOUT_DELAY = 100;
 
 export const PlayerControls = ({ player, setVolume, volume, isMuted, setIsMuted }: PlayerControlsProps) => {
   const wrapperRef = useRef<HTMLDivElement | null>(null);
-  const [isReady, setIsReady] = useState(player.getBufferedRanges().length > 0);
+  const [isReady, setIsReady] = useState(
+    isBitmovinPlayerDestroyed(player) ? false : player.getBufferedRanges().length > 0,
+  );
 
   useEffect(() => {
     const $wrapper = wrapperRef.current;

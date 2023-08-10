@@ -20,6 +20,7 @@ import { isValidGlobalGridWindowType } from "../../utils/isValidGridWindowType";
 import { ZiumOffsetsOverwriteOnStartDialog } from "../../components/ZiumOffsetsDialogs/ZiumOffsetsOverwriteOnStartDialog";
 import { GlobalShortcutsSnackbar } from "../../components/ShortcutsSnackbar/ShortcutsSnackbar";
 import { isValidMainGridWindowStreamId } from "../../utils/isValidMainGridWindowStreamId";
+import { captureWarning } from "../../utils/captureWarning";
 import { getWindowStreamMap, getAvailableDrivers } from "./Viewer.utils";
 import { useGrid } from "./hooks/useGrid";
 import styles from "./Viewer.module.scss";
@@ -147,8 +148,6 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
 
     return allStreams.length === 1;
   }, [streams]);
-  const hasOnlyOneMainStream = useMemo(() => streams.defaultStreams.length === 1, [streams.defaultStreams.length]);
-
   const { dialogState: ziumOffsetsDialogState } = useZiumOffsets(raceId, hasOnlyOneStream, setAreVideosPaused);
 
   const getLayoutChild = useCallback(
@@ -194,6 +193,11 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
                 id: gridWindow.id,
               },
             });
+          } else {
+            captureWarning("Invalid stream identifier for type", {
+              value: streamIdentifier,
+              valueType: chosenValueType,
+            });
           }
 
           return;
@@ -208,6 +212,11 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
                 id: gridWindow.id,
                 streamId: streamIdentifier,
               },
+            });
+          } else {
+            captureWarning("Invalid stream identifier for type", {
+              value: streamIdentifier,
+              valueType: chosenValueType,
             });
           }
 
@@ -236,7 +245,7 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
             fillMode={fillMode}
             updateFillMode={updateFillMode}
             hasOnlyOneStream={hasOnlyOneStream}
-            hasOnlyOneMainStream={hasOnlyOneMainStream}
+            defaultStreams={streams.defaultStreams}
           />
         );
       }
@@ -307,10 +316,10 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
       volume,
       setVolume,
       windowStreamMap,
+      hasOnlyOneStream,
+      streams.defaultStreams,
       onWindowAudioFocus,
       availableDrivers,
-      hasOnlyOneStream,
-      hasOnlyOneMainStream,
       windows,
     ],
   );
