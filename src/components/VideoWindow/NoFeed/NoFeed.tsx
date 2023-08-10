@@ -1,7 +1,7 @@
 import { EyeSlashIcon } from "@heroicons/react/20/solid";
 import { ReactNode } from "react";
 import { VideoWindowWrapper } from "../VideoWindowWrapper/VideoWindowWrapper";
-import { VideoWindowButtons } from "../VideoWindowButtons/VideoWindowButtons";
+import { VideoWindowButtonsClose, VideoWindowButtonsTopRightWrapper } from "../VideoWindowButtons/VideoWindowButtons";
 import styles from "./NoFeed.module.scss";
 
 interface NoFeedProps {
@@ -15,7 +15,11 @@ export const NoFeed = ({ children, onDelete }: NoFeedProps) => {
         <EyeSlashIcon height={36} width={36} />
       </div>
       {children}
-      <VideoWindowButtons onClose={onDelete} />
+      {onDelete && (
+        <VideoWindowButtonsTopRightWrapper>
+          <VideoWindowButtonsClose onClose={onDelete} />
+        </VideoWindowButtonsTopRightWrapper>
+      )}
     </VideoWindowWrapper>
   );
 };
