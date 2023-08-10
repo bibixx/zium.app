@@ -16,6 +16,7 @@ export const debugFlagTypes = {
   forceUiVisibility: BOOLEAN_TYPE,
   disableLiveNotifications: BOOLEAN_TYPE,
   forceTVAccess: BOOLEAN_TYPE,
+  showInternationalOffsets: BOOLEAN_TYPE,
 } satisfies Record<string, DebugFlagTypes>;
 
 export const defaultFlags = {
@@ -24,4 +25,5 @@ export const defaultFlags = {
   forceUiVisibility: false,
   disableLiveNotifications: false,
   forceTVAccess: false,
+  showInternationalOffsets: false,
 } satisfies FlagsObject;

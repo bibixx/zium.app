@@ -16,6 +16,7 @@ import { useHotkeys } from "../../../hooks/useHotkeys/useHotkeys";
 import { SHORTCUTS } from "../../../hooks/useHotkeys/useHotkeys.keys";
 import {
   VideoWindowButtonsBottomRightWrapper,
+  VideoWindowButtonsOffset,
   VideoWindowButtonsOnAudioFocusClick,
   VideoWindowButtonsSetAudioTrack,
   VideoWindowButtonsSetClosedCaptions,
@@ -25,6 +26,8 @@ import {
   VideoWindowButtonsUpdateFillMode,
 } from "../VideoWindowButtons/VideoWindowButtons";
 import { MainStreamInfo } from "../../../hooks/useVideoRaceDetails/useVideoRaceDetails.types";
+import { useReactiveUserOffsets, useUserOffsets } from "../../../hooks/useUserOffests/useUserOffests";
+import { useFeatureFlags } from "../../../hooks/useFeatureFlags/useFeatureFlags";
 import { getTrackPrettyName } from "./MainVideoWindow.utils";
 
 interface MainVideoWindowProps extends VideoWindowProps {
@@ -64,6 +67,16 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
     const [selectedSubtitleId, setSelectedSubtitleId] = useState<SubtitleTrack["id"] | null>(null);
     const areClosedCaptionsOn = useMemo(() => selectedSubtitleId != null, [selectedSubtitleId]);
     const hasMultipleCaptionsTracks = availableSubtitleTracks.length > 1;
+    const showInternationalOffsets = useFeatureFlags((state) => state.flags.showInternationalOffsets);
+
+    const { updateOffset } = useUserOffsets();
+    const offsets = useReactiveUserOffsets();
+    const onOffsetChange = useCallback(
+      (value: number) => {
+        updateOffset("international", value);
+      },
+      [updateOffset],
+    );
 
     const toggleClosedCaptions = useCallback(() => {
       const toggleClosedCaptionsWithMultipleTracks = () => {
@@ -129,11 +142,9 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
     );
 
     const onReady = (player: PlayerAPI) => {
-      if (oldTimeRef.current !== null) {
-        player.seek(oldTimeRef.current);
+      if (oldTimeRef.current === null) {
+        onPlayingChange(false);
       }
-
-      onPlayingChange(false);
 
       player.on(PlayerEvent.Paused, () => {
         onPlayingChange(true);
@@ -248,9 +259,18 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
           setAvailableSubtitles={setAvailableSubtitleTracks}
           selectedAudioTrackId={selectedAudioTrackId}
           setAvailableAudioTracks={setAvailableAudioTracks}
+          startAt={oldTimeRef.current ?? undefined}
         />
         <VideoWindowButtonsTopLeftWrapper>
           <SourceButton label="Main stream" icon={getIconForStreamInfo("f1tv", "mini")} hideWhenUiHidden />
+
+          {showInternationalOffsets && gridWindow.streamId !== "f1tv" && (
+            <VideoWindowButtonsOffset
+              onOffsetChange={onOffsetChange}
+              currentOffset={offsets?.additionalStreams.international ?? 0}
+              usesZiumOffsets={offsets?.isUserDefined === false}
+            />
+          )}
         </VideoWindowButtonsTopLeftWrapper>
         <VideoWindowButtonsBottomRightWrapper>
           <VideoWindowButtonsUpdateFillMode

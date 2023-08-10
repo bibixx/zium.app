@@ -218,6 +218,11 @@ const DebugRaceSettings = ({ closePanel }: DebugPanelContentsProps) => {
         checked={flags.forceTVAccess}
         onChange={updateFlag("forceTVAccess")}
       />
+      <Checkbox
+        label="Show offset picker for International stream"
+        checked={flags.showInternationalOffsets}
+        onChange={updateFlag("showInternationalOffsets")}
+      />
     </div>
   );
 };
