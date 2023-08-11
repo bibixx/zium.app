@@ -1,6 +1,4 @@
+import { Response } from "../../types/Response";
 import { RaceData } from "../useRacesList/useRacesList.types";
 
-export type HeaderCardDataState =
-  | { state: "loading" }
-  | { state: "error"; error: Error }
-  | { state: "done"; data: RaceData | null };
+export type HeaderCardDataState = Response<RaceData | null>;
