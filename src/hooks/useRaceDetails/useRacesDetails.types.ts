@@ -1,4 +1,5 @@
 import { EventGenre } from "../../constants/races";
+import { Response } from "../../types/Response";
 
 export interface RaceDetailsData {
   title: string;
@@ -21,10 +22,7 @@ export interface RaceDetailsData {
   genre: EventGenre;
 }
 
-export type RaceDetailsState =
-  | { state: "loading" }
-  | { state: "error"; error: Error }
-  | { state: "done"; data: RaceDetailsData[] };
+export type RaceDetailsState = Response<RaceDetailsData[]>;
 
 export type RaceDetailsStateAction =
   | { type: "load" }

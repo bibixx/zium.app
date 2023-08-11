@@ -1,5 +1,6 @@
 import { EventGenre } from "../../constants/races";
 import { SupportedSeasons } from "../../constants/seasons";
+import { Response } from "../../types/Response";
 
 export interface RaceData {
   contentId: number;
@@ -19,8 +20,7 @@ export interface RaceData {
 }
 
 export type BaseRaces = { seasonId: SupportedSeasons };
-export type RacesState = BaseRaces &
-  ({ state: "loading" } | { state: "error"; error: Error } | { state: "done"; data: RaceData[] });
+export type RacesState = BaseRaces & Response<RaceData[]>;
 
 export type RacesStateAction =
   | { type: "load"; seasonId: SupportedSeasons }

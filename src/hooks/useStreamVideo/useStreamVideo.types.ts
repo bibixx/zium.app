@@ -1,9 +1,7 @@
+import { Response } from "../../types/Response";
 import { VideoStreamInfo } from "./useStreamVideo.api";
 
-export type StreamVideoState =
-  | { state: "loading"; data: null }
-  | { state: "error"; data: null; error: Error }
-  | { state: "done"; data: VideoStreamInfo };
+export type StreamVideoState = Response<VideoStreamInfo>;
 
 export type StreamVideoStateAction =
   | { type: "load" }

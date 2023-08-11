@@ -47,7 +47,6 @@ export const useVideoRaceDetails = (raceId: string): StreamsState => {
           genre,
         };
         const mappedF1PlaybackOffsets = createF1OffsetsMap(playbackOffsets, season);
-        console.log(mappedF1PlaybackOffsets);
 
         dispatch({
           type: "done",

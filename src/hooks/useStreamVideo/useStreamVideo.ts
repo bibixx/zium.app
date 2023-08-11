@@ -7,11 +7,11 @@ export const useStreamVideo = (playbackUrl: string | null) => {
   const [streams, dispatch] = useReducer(
     (state: StreamVideoState, action: StreamVideoStateAction): StreamVideoState => {
       if (action.type === "load") {
-        return { state: "loading", data: null };
+        return { state: "loading" };
       }
 
       if (action.type === "error") {
-        return { state: "error", data: null, error: action.error };
+        return { state: "error", error: action.error };
       }
 
       if (action.type === "done") {
@@ -20,7 +20,7 @@ export const useStreamVideo = (playbackUrl: string | null) => {
 
       return state;
     },
-    { state: "loading", data: null },
+    { state: "loading" },
   );
 
   const fetchData = useCallback(
