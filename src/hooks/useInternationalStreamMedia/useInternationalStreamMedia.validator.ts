@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { safeJSONParse } from "../../../../utils/safeJSONParse";
+import { safeJSONParse } from "../../utils/safeJSONParse";
 
 const yesNoBoolean = z.union([z.literal("YES"), z.literal("NO")]).transform((arg) => arg === "YES");
 const quotedString = z

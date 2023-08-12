@@ -1,5 +1,5 @@
 import cn from "classnames";
-import { SpeakerWaveIcon, XMarkIcon, MicrophoneIcon, GlobeEuropeAfricaIcon } from "@heroicons/react/20/solid";
+import { SpeakerWaveIcon, XMarkIcon, GlobeEuropeAfricaIcon } from "@heroicons/react/20/solid";
 import { ReactNode } from "react";
 import { GridLayoutFillMode } from "../../../views/Viewer/hooks/useViewerState/useViewerState.utils";
 import { Button } from "../../Button/Button";
@@ -10,7 +10,7 @@ import {
   ClosedCaptionsOnIcon,
 } from "../../CustomIcons/CustomIcons";
 import { OffsetInput } from "../OffsetInput/OffsetInput";
-import { Dropdown, DropdownSectionElement } from "../../Dropdown/Dropdown";
+import { BaseOptions, Dropdown, DropdownSectionElement } from "../../Dropdown/Dropdown";
 import { useViewerUIVisibility } from "../../../hooks/useViewerUIVisibility/useViewerUIVisibility";
 import styles from "./VideoWindowButtons.module.scss";
 
@@ -119,36 +119,6 @@ export const VideoWindowButtonsSetClosedCaptions = (props: VideoWindowButtonsSet
   );
 };
 
-interface VideoWindowButtonsSetAudioTrackProps {
-  availableAudioTracks: DropdownSectionElement[];
-}
-export const VideoWindowButtonsSetAudioTrack = (props: VideoWindowButtonsSetAudioTrackProps) => {
-  const { preventHiding } = useViewerUIVisibility();
-
-  return (
-    <Dropdown
-      placement="top-end"
-      options={props.availableAudioTracks}
-      onOpened={() => preventHiding(true)}
-      onClosed={() => preventHiding(false)}
-      closeOnClick
-    >
-      {({ setRef, toggleOpen, isOpen }) => {
-        return (
-          <Button
-            ref={setRef}
-            iconLeft={MicrophoneIcon}
-            isPressed={isOpen}
-            variant="SecondaryInverted"
-            onClick={toggleOpen}
-            aria-label="Choose audio track"
-          />
-        );
-      }}
-    </Dropdown>
-  );
-};
-
 interface VideoWindowButtonsOnAudioFocusClickProps {
   onAudioFocusClick: () => void;
   isAudioFocused: boolean;
@@ -164,7 +134,7 @@ export const VideoWindowButtonsOnAudioFocusClick = (props: VideoWindowButtonsOnA
 );
 
 interface VideoWindowButtonsSetVideoTrackProps {
-  availableVideoTracks: DropdownSectionElement[];
+  availableVideoTracks: BaseOptions;
 }
 export const VideoWindowButtonsSetVideoTrack = (props: VideoWindowButtonsSetVideoTrackProps) => {
   const { preventHiding } = useViewerUIVisibility();

@@ -18,7 +18,6 @@ import {
   VideoWindowButtonsBottomRightWrapper,
   VideoWindowButtonsOffset,
   VideoWindowButtonsOnAudioFocusClick,
-  VideoWindowButtonsSetAudioTrack,
   VideoWindowButtonsSetClosedCaptions,
   VideoWindowButtonsSetVideoTrack,
   VideoWindowButtonsToggleClosedCaptions,
@@ -28,6 +27,8 @@ import {
 import { MainStreamInfo } from "../../../hooks/useVideoRaceDetails/useVideoRaceDetails.types";
 import { useReactiveUserOffsets, useUserOffsets } from "../../../hooks/useUserOffests/useUserOffests";
 import { useFeatureFlags } from "../../../hooks/useFeatureFlags/useFeatureFlags";
+import { useInternationalStreamMedia } from "../../../hooks/useInternationalStreamMedia/useInternationalStreamMedia";
+import { DropdownSection, DropdownSectionElement } from "../../Dropdown/Dropdown";
 import { getTrackPrettyName } from "./MainVideoWindow.utils";
 
 interface MainVideoWindowProps extends VideoWindowProps {
@@ -62,6 +63,7 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
   ) => {
     const playerRef = useRef<PlayerAPI | null>(null);
     const streamVideoState = useStreamVideo(streamUrl);
+    const internationalStreamMedia = useInternationalStreamMedia(defaultStreams);
     const [availableSubtitleTracks, setAvailableSubtitleTracks] = useState<SubtitleTrack[]>([]);
     const previousSelectedSubtitleIdRef = useRef<SubtitleTrack["id"] | null>(null);
     const [selectedSubtitleId, setSelectedSubtitleId] = useState<SubtitleTrack["id"] | null>(null);
@@ -119,13 +121,21 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
     );
 
     const [availableAudioTracks, setAvailableAudioTracks] = useState<AudioTrack[]>([]);
-    const [selectedAudioTrackId, setSelectedAudioTrackId] = useState<AudioTrack["id"] | null>(null);
+    const [selectedAudioTrackLang, setSelectedAudioTrackLang] = useState<string | null>(null);
+    // TODO: What happens if the audio track doesn't exist on the stream?
+    const selectedAudioTrackId = useMemo(() => {
+      if (selectedAudioTrackLang === null) {
+        return null;
+      }
+
+      const selectedAudioTrack = availableAudioTracks.find((track) => track.lang === selectedAudioTrackLang);
+      return selectedAudioTrack?.id ?? null;
+    }, [availableAudioTracks, selectedAudioTrackLang]);
 
     useEffect(() => {
       setAvailableSubtitleTracks([]);
-      setSelectedSubtitleId(null);
       setAvailableAudioTracks([]);
-      setSelectedAudioTrackId(null);
+      setSelectedSubtitleId(null);
     }, [streamUrl]);
 
     const ref = (r: PlayerAPI | null) => {
@@ -185,7 +195,7 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
           ...availableSubtitleTracks.map((subtitleTrack) => ({
             id: subtitleTrack.id,
             isActive: selectedSubtitleId === subtitleTrack.id,
-            text: getTrackPrettyName(subtitleTrack),
+            text: getTrackPrettyName(subtitleTrack.lang, subtitleTrack.label),
             onClick: onClick(subtitleTrack.id),
           })),
         ],
@@ -199,35 +209,71 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
       areClosedCaptionsOn,
     ]);
 
-    const commentaryAvailableAudioTracks = useMemo(() => {
-      const hasMultipleAudioTracks = availableAudioTracks.length > 1;
-
-      if (!hasMultipleAudioTracks) {
-        return null;
-      }
-
-      return availableAudioTracks.map((audioTrack, i) => ({
-        id: audioTrack.id,
-        isActive: selectedAudioTrackId === null ? i === 0 : selectedAudioTrackId === audioTrack.id,
-        text: getTrackPrettyName(audioTrack),
-        onClick: () => setSelectedAudioTrackId(audioTrack.id),
-      }));
-    }, [availableAudioTracks, selectedAudioTrackId]);
-
-    const availableVideoTracks = useMemo(() => {
+    const availableVideoTracks = useMemo((): null | DropdownSection[] | DropdownSectionElement[] => {
       const hasMultipleVideoTracks = defaultStreams.length > 1;
 
       if (!hasMultipleVideoTracks) {
         return null;
       }
 
-      return defaultStreams.map((stream) => ({
-        id: stream.type,
-        isActive: stream.type === gridWindow.streamId,
-        text: stream.title,
-        onClick: () => onSourceChange(stream.type, "main"),
-      }));
-    }, [defaultStreams, gridWindow.streamId, onSourceChange]);
+      const getDefaultStreamsElements = () => {
+        return defaultStreams.map((stream) => ({
+          id: stream.type,
+          isActive: stream.type === gridWindow.streamId,
+          text: stream.title,
+          onClick: () => {
+            onSourceChange(stream.type, "main");
+            setSelectedAudioTrackLang(null);
+          },
+        }));
+      };
+
+      if (internationalStreamMedia.state !== "done" || internationalStreamMedia.data == null) {
+        return getDefaultStreamsElements();
+      }
+
+      const f1tvStream = defaultStreams.find((stream) => stream.type === "f1tv");
+      if (f1tvStream == null) {
+        return getDefaultStreamsElements();
+      }
+
+      const f1tvStreamElement: DropdownSectionElement = {
+        id: f1tvStream.type,
+        isActive: f1tvStream.type === gridWindow.streamId,
+        text: f1tvStream.title,
+        onClick: () => {
+          onSourceChange(f1tvStream.type, "main");
+          setSelectedAudioTrackLang(null);
+        },
+        caption: getTrackPrettyName("eng", ""),
+      };
+
+      return [
+        {
+          id: "f1tv",
+          options: [f1tvStreamElement],
+        },
+        {
+          id: "international",
+          options: internationalStreamMedia.data.AUDIO.map((media) => ({
+            id: media.LANGUAGE,
+            isActive: selectedAudioTrackLang === media.LANGUAGE,
+            text: getTrackPrettyName(media.LANGUAGE, ""),
+            onClick: () => {
+              onSourceChange("international", "main");
+              setSelectedAudioTrackLang(media.LANGUAGE);
+            },
+          })),
+        },
+      ];
+    }, [
+      defaultStreams,
+      gridWindow.streamId,
+      internationalStreamMedia.data,
+      internationalStreamMedia.state,
+      onSourceChange,
+      selectedAudioTrackLang,
+    ]);
 
     if (streamVideoState.state === "loading") {
       return null;
@@ -281,9 +327,6 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
             <VideoWindowButtonsToggleClosedCaptions {...closedCaptionsProps} />
           ) : (
             <VideoWindowButtonsSetClosedCaptions {...closedCaptionsProps} />
-          )}
-          {commentaryAvailableAudioTracks != null && (
-            <VideoWindowButtonsSetAudioTrack availableAudioTracks={commentaryAvailableAudioTracks} />
           )}
           {availableVideoTracks != null && (
             <VideoWindowButtonsSetVideoTrack availableVideoTracks={availableVideoTracks} />

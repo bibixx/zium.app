@@ -1,4 +1,4 @@
-import { mapAndStripNullable } from "../../../../utils/mapAndStrip";
+import { mapAndStripNullable } from "../../utils/mapAndStrip";
 import { VideoStreamMedia } from "./useInternationalStreamMedia.types";
 import { groupEntryValidator } from "./useInternationalStreamMedia.validator";
 
