@@ -5,7 +5,7 @@ const yesNoBoolean = z.union([z.literal("YES"), z.literal("NO")]).transform((arg
 const quotedString = z
   .string()
   .transform((val) => safeJSONParse(val))
-  .refine((val): val is string => typeof val === "string");
+  .pipe(z.string());
 
 export const audioGroupEntryValidator = z.object({
   AUTOSELECT: yesNoBoolean,
