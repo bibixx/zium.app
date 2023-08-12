@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { useStreamVideo } from "../../../../hooks/useStreamVideo/useStreamVideo";
-import { MainStreamInfo } from "../../../../hooks/useVideoRaceDetails/useVideoRaceDetails.types";
-import { Response } from "../../../../types/Response";
+import { useStreamVideo } from "../useStreamVideo/useStreamVideo";
+import { MainStreamInfo } from "../useVideoRaceDetails/useVideoRaceDetails.types";
+import { Response } from "../../types/Response";
 import { fetchManifest } from "./useInternationalStreamMedia.api";
 import { VideoStreamMedia } from "./useInternationalStreamMedia.types";
 

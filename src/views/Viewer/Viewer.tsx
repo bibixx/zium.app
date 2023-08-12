@@ -33,7 +33,6 @@ import { useCmdTutorial } from "./hooks/useCmdTutorial";
 import { GridLayoutFillMode } from "./hooks/useViewerState/useViewerState.utils";
 import { useZiumOffsets } from "./hooks/useZiumOffsets/useZiumOffsets";
 import { useNotifyAboutNewEvent } from "./hooks/useNotifyAboutNewEvent/useNotifyAboutNewEvent";
-import { useInternationalStreamMedia } from "./hooks/useInternationalStreamMedia/useInternationalStreamMedia";
 
 interface ViewerProps {
   streams: StreamsStateData;
@@ -138,9 +137,6 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
       }),
     [windows],
   );
-
-  const internationalStreamMedia = useInternationalStreamMedia(streams.defaultStreams);
-  console.log(internationalStreamMedia);
 
   const hasOnlyOneStream = useMemo(() => {
     const allStreams = [

@@ -33,7 +33,7 @@ interface DropdownChildrenProps {
   isOpen: boolean;
   toggleOpen: () => void;
 }
-type BaseOptions = (DropdownSection | false)[] | DropdownSectionElement[];
+export type BaseOptions = (DropdownSection | false)[] | DropdownSectionElement[];
 interface DropdownProps {
   width?: number;
   distance?: number;

@@ -1,33 +1,31 @@
-import { AudioTrack, SubtitleTrack } from "bitmovin-player";
-
-export const getTrackPrettyName = (subtitleTrack: SubtitleTrack | AudioTrack) => {
-  if (subtitleTrack.lang === "eng") {
+export const getTrackPrettyName = (lang: string, fallback: string) => {
+  if (lang === "eng") {
     return "English";
   }
 
-  if (subtitleTrack.lang === "fra") {
+  if (lang === "fra") {
     return "Français";
   }
 
-  if (subtitleTrack.lang === "deu") {
+  if (lang === "deu") {
     return "Deutsch";
   }
 
-  if (subtitleTrack.lang === "spa") {
+  if (lang === "spa") {
     return "Español";
   }
 
-  if (subtitleTrack.lang === "por") {
+  if (lang === "por") {
     return "Português";
   }
 
-  if (subtitleTrack.lang === "nld") {
+  if (lang === "nld") {
     return "Nederlands";
   }
 
-  if (subtitleTrack.lang === "fx") {
+  if (lang === "fx") {
     return "FX";
   }
 
-  return subtitleTrack.label;
+  return fallback;
 };
