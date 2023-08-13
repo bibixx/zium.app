@@ -10,7 +10,7 @@ import {
   ClosedCaptionsOnIcon,
 } from "../../CustomIcons/CustomIcons";
 import { OffsetInput } from "../OffsetInput/OffsetInput";
-import { BaseOptions, Dropdown, DropdownSectionElement } from "../../Dropdown/Dropdown";
+import { DropdownOptions, Dropdown, DropdownSectionElement } from "../../Dropdown/Dropdown";
 import { useViewerUIVisibility } from "../../../hooks/useViewerUIVisibility/useViewerUIVisibility";
 import styles from "./VideoWindowButtons.module.scss";
 
@@ -134,7 +134,7 @@ export const VideoWindowButtonsOnAudioFocusClick = (props: VideoWindowButtonsOnA
 );
 
 interface VideoWindowButtonsSetVideoTrackProps {
-  availableVideoTracks: BaseOptions;
+  availableVideoTracks: DropdownOptions;
 }
 export const VideoWindowButtonsSetVideoTrack = (props: VideoWindowButtonsSetVideoTrackProps) => {
   const { preventHiding } = useViewerUIVisibility();
