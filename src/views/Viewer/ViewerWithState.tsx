@@ -14,7 +14,7 @@ import { useTrackWithTitle } from "../../hooks/useAnalytics/useAnalytics";
 import { CookieBanner } from "../../components/CookieBanner/CookieBanner";
 import { UserOffsetsProvider } from "../../hooks/useUserOffests/useUserOffests";
 import { lazyWithPreload } from "../../utils/lazyWithPreload";
-import { assertExistence } from "../../utils/assertExistence";
+import { assertNotNullable } from "../../utils/assertExistence";
 import { canAccessEvent } from "../../utils/canAccessEvent";
 import { useCurrentTier } from "../../hooks/useLoggedInState";
 import { NoViewerAccess } from "../../components/NoViewerAccess/NoViewerAccess";
@@ -28,7 +28,7 @@ export { preloadViewer };
 export const ViewerWithState = () => {
   const { raceId } = useParams();
   const currentTier = useCurrentTier();
-  assertExistence(raceId);
+  assertNotNullable(raceId);
 
   useTrackWithTitle(`Viewer: ${raceId}`);
   const state = useVideoRaceDetails(raceId);

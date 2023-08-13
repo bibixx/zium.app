@@ -1,5 +1,5 @@
 import { createContext, ReactNode, useCallback, useContext, useMemo, useState } from "react";
-import { assertExistence } from "../../utils/assertExistence";
+import { assertNotNullable } from "../../utils/assertExistence";
 import { DataChannelGridWindow, DriverTrackerGridWindow } from "../../types/GridWindow";
 
 export type PickerType = "data" | "drivers" | "main";
@@ -30,7 +30,7 @@ interface StreamPickerContextType {
 export const StreamPickerContext = createContext<StreamPickerContextType | null>(null);
 export const useStreamPicker = () => {
   const context = useContext(StreamPickerContext);
-  assertExistence(context, "Using uninitialised StreamPickerContext");
+  assertNotNullable(context, "Using uninitialised StreamPickerContext");
 
   return context;
 };
