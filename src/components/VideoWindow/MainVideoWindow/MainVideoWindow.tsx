@@ -29,7 +29,8 @@ import { useFeatureFlags } from "../../../hooks/useFeatureFlags/useFeatureFlags"
 import { useInternationalStreamMedia } from "../../../hooks/useInternationalStreamMedia/useInternationalStreamMedia";
 import { DropdownSection, DropdownSectionElement } from "../../Dropdown/Dropdown";
 import { ChosenValueType } from "../../../hooks/useStreamPicker/useStreamPicker";
-import { getTrackPrettyName } from "./MainVideoWindow.utils";
+import { isNotFalse } from "../../../utils/isNotFalse";
+import { countTotalNumberOfOptions, getTrackPrettyName } from "./MainVideoWindow.utils";
 
 interface MainVideoWindowProps extends VideoWindowProps {
   gridWindow: MainGridWindow;
@@ -208,45 +209,39 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
       areClosedCaptionsOn,
     ]);
 
-    const availableVideoTracks = useMemo((): null | DropdownSection[] | DropdownSectionElement[] => {
-      const hasMultipleVideoTracks = defaultStreams.length > 1;
-
-      if (!hasMultipleVideoTracks) {
-        return null;
-      }
-
-      const getDefaultStreamsElements = () => {
-        return defaultStreams.map((stream) => ({
-          id: stream.type,
-          isActive: stream.type === gridWindow.streamId,
-          text: stream.title,
-          onClick: () => onSourceChange({ type: "main", streamId: stream.type }),
-        }));
-      };
-
+    const availableVideoTracks = useMemo((): null | DropdownSection[] => {
       if (internationalStreamMedia.state !== "done" || internationalStreamMedia.data == null) {
-        return getDefaultStreamsElements();
+        return [
+          {
+            id: "root",
+            options: defaultStreams.map((stream) => ({
+              id: stream.type,
+              isActive: stream.type === gridWindow.streamId,
+              text: stream.title,
+              onClick: () => onSourceChange({ type: "main", streamId: stream.type }),
+            })),
+          },
+        ];
       }
 
       const f1tvStream = defaultStreams.find((stream) => stream.type === "f1live");
-      if (f1tvStream == null) {
-        return getDefaultStreamsElements();
-      }
-
-      const f1tvStreamElement: DropdownSectionElement = {
-        id: f1tvStream.type,
-        isActive: f1tvStream.type === gridWindow.streamId,
-        text: f1tvStream.title,
-        onClick: () => onSourceChange({ type: "main", streamId: "f1live" }),
-        caption: getTrackPrettyName("eng", ""),
-      };
+      const f1tvStreamElement: DropdownSectionElement | null = f1tvStream
+        ? {
+            id: f1tvStream.type,
+            isActive: f1tvStream.type === gridWindow.streamId,
+            text: f1tvStream.title,
+            onClick: () => onSourceChange({ type: "main", streamId: "f1live" }),
+            caption: getTrackPrettyName("eng", ""),
+          }
+        : null;
 
       const doesSelectedLanguageExist =
         gridWindow.streamId !== "international"
           ? true
           : gridWindow.audioLanguage != null && selectedAudioTrackId != null;
-      return [
-        {
+
+      const sections = [
+        f1tvStreamElement != null && {
           id: "f1live",
           options: [f1tvStreamElement],
         },
@@ -257,19 +252,14 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
             isActive: !doesSelectedLanguageExist
               ? media.DEFAULT
               : gridWindow.streamId === "international" && gridWindow.audioLanguage === media.LANGUAGE,
-            text: getTrackPrettyName(media.LANGUAGE, ""),
+            text: getTrackPrettyName(media.LANGUAGE, media.NAME),
             onClick: () => onSourceChange({ type: "main", streamId: "international", audioLanguage: media.LANGUAGE }),
           })),
         },
-      ];
-    }, [
-      defaultStreams,
-      gridWindow,
-      internationalStreamMedia.data,
-      internationalStreamMedia.state,
-      onSourceChange,
-      selectedAudioTrackId,
-    ]);
+      ].filter(isNotFalse);
+
+      return sections;
+    }, [defaultStreams, gridWindow, internationalStreamMedia, onSourceChange, selectedAudioTrackId]);
 
     if (streamVideoState.state === "loading") {
       return null;
@@ -324,7 +314,7 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
           ) : (
             <VideoWindowButtonsSetClosedCaptions {...closedCaptionsProps} />
           )}
-          {availableVideoTracks != null && (
+          {availableVideoTracks != null && countTotalNumberOfOptions(availableVideoTracks) > 1 && (
             <VideoWindowButtonsSetVideoTrack availableVideoTracks={availableVideoTracks} />
           )}
           {!hasOnlyOneStream && (
