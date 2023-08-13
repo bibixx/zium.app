@@ -5,7 +5,7 @@ import { ErrorMessage } from "../../ErrorMessage/ErrorMessage";
 import styles from "./FeedError.module.scss";
 
 interface FeedErrorProps {
-  error: Error;
+  error: Error | unknown;
   onDelete?: () => void;
 }
 export const FeedError = ({ error, onDelete }: FeedErrorProps) => {

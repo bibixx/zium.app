@@ -10,7 +10,7 @@ export const useLiveEvents = (refetchInterval: number) => {
       const liveRace = await fetchLiveEvents(signal);
       setState({ state: "done", data: liveRace });
     } catch (error) {
-      setState({ state: "error", error: error as Error });
+      setState({ state: "error", error: error });
       console.error(error);
     }
   }, []);

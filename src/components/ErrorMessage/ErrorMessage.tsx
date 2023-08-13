@@ -8,7 +8,7 @@ const EMAIL_ADDRESS = "zium@zium.app";
 const SUBJECT = "zium.app Error Report";
 
 export interface ErrorMessageProps {
-  error: Error | string | null | undefined;
+  error: Error | string | null | undefined | unknown;
 }
 export const ErrorMessage = ({ error }: ErrorMessageProps) => {
   const errorMessage = useMemo(() => {
@@ -16,11 +16,11 @@ export const ErrorMessage = ({ error }: ErrorMessageProps) => {
       return null;
     }
 
-    if (typeof error === "string") {
-      return error;
+    if (error instanceof Error) {
+      return error.stack ?? error.message;
     }
 
-    return error.stack ?? error.message;
+    return String(error);
   }, [error]);
 
   const mailtoUrl = useMemo(() => {

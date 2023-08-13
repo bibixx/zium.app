@@ -40,7 +40,7 @@ export const useRaceDetails = (racePageId: string | null) => {
       dispatch({ type: "done", data: newDetails });
     } catch (error) {
       console.error(error);
-      dispatch({ type: "error", error: error as Error });
+      dispatch({ type: "error", error: error });
     }
   }, [racePageId]);
 
