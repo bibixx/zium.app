@@ -158,7 +158,7 @@ const DriverPickerButton = ({ currentDriver, onDriverChange }: DriverPickerButto
 
   const onClick = async () => {
     const chosenDriverData = await requestStream(
-      ["drivers", "global"],
+      ["drivers", "data"],
       currentDriverId === undefined ? [] : [currentDriverId],
     );
 

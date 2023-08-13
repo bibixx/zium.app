@@ -5,7 +5,7 @@ import {
   DriverStreamInfo,
   F1PlaybackOffsetsApiResponse,
   F1PlaybackOffsetsData,
-  GlobalStreamInfo,
+  DataStreamInfo,
   MainStreamInfo,
   StreamDataDTO,
   StreamInfoWithDriver,
@@ -58,8 +58,8 @@ const mapStreamIdentifierToType = (identifier: string, season: number): StreamIn
 
 export const collectStreams = (streams: StreamDataDTO[] | undefined, season: number, raceId: string) => {
   const defaultStreams: MainStreamInfo[] = [];
-  let driverTrackerStream: GlobalStreamInfo | null = null;
-  let dataChannelStream: GlobalStreamInfo | null = null;
+  let driverTrackerStream: DataStreamInfo | null = null;
+  let dataChannelStream: DataStreamInfo | null = null;
   const driverStreams: DriverStreamInfo[] = [];
 
   if (streams == null) {
