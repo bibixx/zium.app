@@ -5,5 +5,5 @@ export function assertExistence<T>(data: T | null | undefined, customMessage?: s
     return;
   }
 
-  throw new Error(customMessage ?? `Passed value ${data} was nullable`);
+  throw new Error(customMessage ?? `Passed value ${data} is nullable`);
 }

@@ -12,6 +12,7 @@ import {
 import { AutoComplete } from "../../types/AutoComplete";
 import { EventEmitter } from "../../utils/EventEmitter";
 import { MainAndGlobalStreamInfo } from "../useVideoRaceDetails/useVideoRaceDetails.types";
+import { assertExistence } from "../../utils/assertExistence";
 import { getInitialOffsets, saveOffsets } from "./useUserOffests.utils";
 
 export type UserOffsets = {
@@ -84,10 +85,7 @@ const UserOffsetsContext = createContext<UserOffsetsContextType | null>(null);
 
 export const useUserOffsets = (): UserOffsetsContextType => {
   const context = useContext(UserOffsetsContext);
-
-  if (context === null) {
-    throw new Error("Using uninitialised UserOffsetsContext");
-  }
+  assertExistence(context, "Using uninitialised UserOffsetsContext");
 
   return context;
 };
