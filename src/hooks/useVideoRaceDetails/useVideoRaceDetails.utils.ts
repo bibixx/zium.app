@@ -30,12 +30,12 @@ const getStreamPrettyName = (name: string) => {
 
 const mapStreamIdentifierToType = (identifier: string, season: number): StreamInfoWithDriver["type"] | null => {
   if (identifier === "PRES") {
-    return "f1tv";
+    return "f1live";
   }
 
   if (identifier === "WIF") {
     if (season <= 2021) {
-      return "f1tv";
+      return "f1live";
     }
 
     return "international";
@@ -64,7 +64,7 @@ export const collectStreams = (streams: StreamDataDTO[] | undefined, season: num
 
   if (streams == null) {
     const defaultStream: MainStreamInfo = {
-      type: "f1tv",
+      type: "f1live",
       channelId: 0,
       playbackUrl: `CONTENT/PLAY?contentId=${raceId}`,
       title: getStreamPrettyName("F1 LIVE"),
@@ -92,7 +92,7 @@ export const collectStreams = (streams: StreamDataDTO[] | undefined, season: num
       continue;
     }
 
-    if (streamType === "f1tv") {
+    if (streamType === "f1live") {
       defaultStreams.push({
         type: streamType,
         ...baseStreamInfo,

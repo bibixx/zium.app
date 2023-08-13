@@ -19,9 +19,9 @@ const gridWindowValidator = z.discriminatedUnion("type", [
     id: z.string(),
     type: z.literal("main"),
     streamId: z
-      .union([z.literal("international"), z.literal("f1tv")])
+      .union([z.literal("international"), z.literal("f1live")])
       .optional()
-      .default("f1tv"),
+      .default("f1live"),
     // TODO: audioLanguage only if international
     audioLanguage: z.string().optional(),
   }),

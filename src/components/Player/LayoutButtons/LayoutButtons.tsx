@@ -14,10 +14,8 @@ import { Dropdown, DropdownSection, DropdownSectionElement } from "../../Dropdow
 import { sizePxToPercent } from "../../RnDWindow/RnDWindow.utils";
 import { LayoutDialogs } from "../LayoutDialogs/LayoutDialogs";
 import { LayoutDialogState } from "../LayoutDialogs/LayoutDialogs.types";
-import { isValidGlobalGridWindowType } from "../../../utils/isValidGridWindowType";
 import { useHotkeys } from "../../../hooks/useHotkeys/useHotkeys";
 import { SHORTCUTS } from "../../../hooks/useHotkeys/useHotkeys.keys";
-import { isValidMainGridWindowStreamId } from "../../../utils/isValidMainGridWindowStreamId";
 import { assertNever } from "../../../utils/assertNever";
 import styles from "./LayoutButtons.module.scss";
 
@@ -54,8 +52,7 @@ export const LayoutButtons = ({
       return;
     }
 
-    const [chosenId, chosenType] = chosenData;
-    const newWindow = getNewWindow(chosenId, chosenType);
+    const newWindow = getNewWindow(chosenData);
 
     if (newWindow == null) {
       return;
@@ -201,39 +198,31 @@ export const LayoutButtons = ({
   );
 };
 
-const getNewWindow = (chosenId: string, chosenType: ChosenValueType): GridWindow | null => {
-  if (chosenType === "driver") {
+const getNewWindow = (chosenValue: ChosenValueType): GridWindow | null => {
+  if (chosenValue.type === "driver") {
     return {
-      driverId: chosenId,
+      driverId: chosenValue.driverId,
       id: "",
       type: "driver",
     };
   }
 
-  if (chosenType === "main") {
-    if (isValidMainGridWindowStreamId(chosenId)) {
-      return {
-        id: "",
-        type: "main",
-        streamId: chosenId,
-      };
-    }
-
-    return null;
+  if (chosenValue.type === "main") {
+    return {
+      id: "",
+      type: "main",
+      streamId: chosenValue.streamId,
+    };
   }
 
-  if (chosenType === "global") {
-    if (isValidGlobalGridWindowType(chosenId)) {
-      return {
-        id: "",
-        type: chosenId,
-      };
-    }
-
-    return null;
+  if (chosenValue.type === "global") {
+    return {
+      id: "",
+      type: chosenValue.streamId,
+    };
   }
 
-  return assertNever(chosenType);
+  return assertNever(chosenValue);
 };
 
 function getVideosText(videosCount: number) {

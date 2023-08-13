@@ -25,7 +25,7 @@ import { ChosenValueType, useStreamPicker } from "../../../hooks/useStreamPicker
 interface DataChannelVideoWindowProps extends VideoWindowProps {
   gridWindow: BaseGridWindow;
   onDelete: () => void;
-  onSourceChange: (streamId: string, chosenValueType: ChosenValueType) => void;
+  onSourceChange: (data: ChosenValueType) => void;
 }
 
 export const DataChannelVideoWindow = forwardRef<PlayerAPI | null, DataChannelVideoWindowProps>(
@@ -37,14 +37,13 @@ export const DataChannelVideoWindow = forwardRef<PlayerAPI | null, DataChannelVi
 
     const { requestStream } = useStreamPicker();
     const onRequestSourceChange = async () => {
-      const chosenDriverData = await requestStream(["drivers", "global"], ["data-channel"]);
+      const chosenData = await requestStream(["drivers", "global"], ["data-channel"]);
 
-      if (chosenDriverData == null) {
+      if (chosenData == null) {
         return;
       }
 
-      const [chosenStreamId, chosenValueType] = chosenDriverData;
-      onSourceChange(chosenStreamId, chosenValueType);
+      onSourceChange(chosenData);
     };
 
     const ref = (r: PlayerAPI | null) => {

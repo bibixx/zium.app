@@ -26,7 +26,7 @@ import { SourceButton } from "../../SourceButton/SourceButton";
 interface DriverVideoWindowProps extends VideoWindowProps {
   gridWindow: DriverGridWindow;
   availableDrivers: DriverData[];
-  onDriverChange: (streamId: string, chosenValueType: ChosenValueType) => void;
+  onDriverChange: (data: ChosenValueType) => void;
   isAudioFocused: boolean;
   onWindowAudioFocus: () => void;
   focusMainWindow: () => void;
@@ -147,7 +147,7 @@ const ADDITIONAL_OPTIONS: AdditionalVideoJSOptions = {
 
 interface DriverPickerButtonProps {
   currentDriver: DriverData | undefined;
-  onDriverChange: (streamId: string, chosenValueType: ChosenValueType) => void;
+  onDriverChange: (data: ChosenValueType) => void;
 }
 const DriverPickerButton = ({ currentDriver, onDriverChange }: DriverPickerButtonProps) => {
   const { requestStream } = useStreamPicker();
@@ -166,8 +166,7 @@ const DriverPickerButton = ({ currentDriver, onDriverChange }: DriverPickerButto
       return;
     }
 
-    const [chosenStreamId, chosenValueType] = chosenDriverData;
-    onDriverChange(chosenStreamId, chosenValueType);
+    onDriverChange(chosenDriverData);
   };
 
   return (

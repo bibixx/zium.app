@@ -42,7 +42,7 @@ export const useSyncVideos = ({ windows, windowVideojsRefMapRef, isLive, playbac
         const f1TVPlaceholderWindowWindow: GridWindow = {
           type: "main",
           id: "",
-          streamId: "f1tv",
+          streamId: "f1live",
         };
         const mainWindowToF1TVOffset = getOffset(
           playbackOffsets,

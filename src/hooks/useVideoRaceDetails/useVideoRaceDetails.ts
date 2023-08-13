@@ -88,7 +88,7 @@ const debugLiveStreams: StreamsState & { state: "done" } = {
   streams: {
     defaultStreams: [
       {
-        type: "f1tv",
+        type: "f1live",
         channelId: 1033,
         playbackUrl: "__DEBUG__",
         title: "F1 Live",

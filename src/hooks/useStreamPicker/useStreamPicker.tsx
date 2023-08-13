@@ -1,8 +1,13 @@
 import { createContext, ReactNode, useCallback, useContext, useMemo, useState } from "react";
 import { assertExistence } from "../../utils/assertExistence";
+import { DataChannelGridWindow, DriverTrackerGridWindow } from "../../types/GridWindow";
 
 export type PickerType = "global" | "drivers" | "main";
-export type ChosenValueType = "driver" | "global" | "main";
+export type ChosenValueType =
+  | { type: "main"; streamId: "f1live" }
+  | { type: "main"; streamId: "international"; audioLanguage?: string }
+  | { type: "global"; streamId: (DriverTrackerGridWindow | DataChannelGridWindow)["type"] }
+  | { type: "driver"; driverId: string };
 
 export type StreamPickerDataState =
   | {
@@ -10,16 +15,16 @@ export type StreamPickerDataState =
     }
   | {
       isOpen: true;
-      requestModeResolveFunction?: (value: [string, ChosenValueType] | null) => void;
+      requestModeResolveFunction?: (value: ChosenValueType | null) => void;
       allowDnD: boolean;
       pickerTypes: PickerType[];
       hiddenEntries: string[];
     };
 
 interface StreamPickerContextType {
-  requestStream: (pickerTypes?: PickerType[], hiddenEntries?: string[]) => Promise<[string, ChosenValueType] | null>;
+  requestStream: (pickerTypes?: PickerType[], hiddenEntries?: string[]) => Promise<ChosenValueType | null>;
   onCancel: () => void;
-  onChoice: (chosenValue: string, elementType: ChosenValueType) => void;
+  onChoice: (chosenValue: ChosenValueType) => void;
   state: StreamPickerDataState;
 }
 export const StreamPickerContext = createContext<StreamPickerContextType | null>(null);
@@ -35,7 +40,7 @@ const useStreamPickerData = (): StreamPickerContextType => {
 
   const requestStream = useCallback(
     (pickerTypes: PickerType[] = ["global", "drivers"], hiddenEntries: string[] = []) =>
-      new Promise<[string, ChosenValueType] | null>((resolve) => {
+      new Promise<ChosenValueType | null>((resolve) => {
         setState({
           isOpen: true,
           allowDnD: false,
@@ -54,9 +59,9 @@ const useStreamPickerData = (): StreamPickerContextType => {
   }, []);
 
   const onChoice = useCallback(
-    (chosenValue: string, elementType: ChosenValueType) => {
+    (chosenValue: ChosenValueType) => {
       if (state.isOpen && state.requestModeResolveFunction != null) {
-        state.requestModeResolveFunction([chosenValue, elementType]);
+        state.requestModeResolveFunction(chosenValue);
         onClose();
         return;
       }

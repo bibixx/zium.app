@@ -101,7 +101,7 @@ const race21_9: LayoutBase = {
       y: 0,
       zIndex: 7,
       fillMode: "fill",
-      window: { type: "main", streamId: "f1tv" },
+      window: { type: "main", streamId: "f1live" },
     },
     {
       width: 26.8115234375,
@@ -183,7 +183,7 @@ const race16_10: LayoutBase = {
       fillMode: "fill",
       window: {
         type: "main",
-        streamId: "f1tv",
+        streamId: "f1live",
       },
     },
   ],
@@ -201,7 +201,7 @@ const quali21_9: LayoutBase = {
       fillMode: "fill",
       window: {
         type: "main",
-        streamId: "f1tv",
+        streamId: "f1live",
       },
     },
     {
@@ -263,7 +263,7 @@ const quali16_10: LayoutBase = {
       fillMode: "fill",
       window: {
         type: "main",
-        streamId: "f1tv",
+        streamId: "f1live",
       },
     },
   ],
@@ -279,7 +279,7 @@ const fullScreen: LayoutBase = {
       y: 0,
       zIndex: 0,
       fillMode: "fit",
-      window: { type: "main", streamId: "f1tv" },
+      window: { type: "main", streamId: "f1live" },
     },
   ],
 };
@@ -321,7 +321,7 @@ const offsets: LayoutBase = {
       y: 0,
       zIndex: 0,
       fillMode: "fill",
-      window: { type: "main", streamId: "f1tv" },
+      window: { type: "main", streamId: "f1live" },
     },
     ...offsetsDriversIds.map((driverId, i): WindowGridSavedLayoutBase => {
       const y = Math.floor(i / columnsInRow);
