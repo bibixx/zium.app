@@ -2,11 +2,11 @@ import { createContext, ReactNode, useCallback, useContext, useMemo, useState } 
 import { assertExistence } from "../../utils/assertExistence";
 import { DataChannelGridWindow, DriverTrackerGridWindow } from "../../types/GridWindow";
 
-export type PickerType = "global" | "drivers" | "main";
+export type PickerType = "data" | "drivers" | "main";
 export type ChosenValueType =
   | { type: "main"; streamId: "f1live" }
   | { type: "main"; streamId: "international"; audioLanguage?: string }
-  | { type: "global"; streamId: (DriverTrackerGridWindow | DataChannelGridWindow)["type"] }
+  | { type: "data"; streamId: (DriverTrackerGridWindow | DataChannelGridWindow)["type"] }
   | { type: "driver"; driverId: string };
 
 export type StreamPickerDataState =
@@ -39,7 +39,7 @@ const useStreamPickerData = (): StreamPickerContextType => {
   const [state, setState] = useState<StreamPickerDataState>({ isOpen: false });
 
   const requestStream = useCallback(
-    (pickerTypes: PickerType[] = ["global", "drivers"], hiddenEntries: string[] = []) =>
+    (pickerTypes: PickerType[] = ["data", "drivers"], hiddenEntries: string[] = []) =>
       new Promise<ChosenValueType | null>((resolve) => {
         setState({
           isOpen: true,

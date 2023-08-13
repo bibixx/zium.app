@@ -198,7 +198,7 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
           return assertNever(data);
         }
 
-        if (data.type === "global") {
+        if (data.type === "data") {
           dispatch({
             type: "updateWindow",
             window: {

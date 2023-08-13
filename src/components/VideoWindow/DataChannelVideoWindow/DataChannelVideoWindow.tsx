@@ -37,7 +37,7 @@ export const DataChannelVideoWindow = forwardRef<PlayerAPI | null, DataChannelVi
 
     const { requestStream } = useStreamPicker();
     const onRequestSourceChange = async () => {
-      const chosenData = await requestStream(["drivers", "global"], ["data-channel"]);
+      const chosenData = await requestStream(["drivers", "data"], ["data-channel"]);
 
       if (chosenData == null) {
         return;

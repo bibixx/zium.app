@@ -1,4 +1,4 @@
-import { GlobalStreamInfo, MainStreamInfo } from "../../hooks/useVideoRaceDetails/useVideoRaceDetails.types";
+import { DataStreamInfo, MainStreamInfo } from "../../hooks/useVideoRaceDetails/useVideoRaceDetails.types";
 import { DriverData } from "../../views/Viewer/Viewer.utils";
 
 interface StreamPickerEntryBase {
@@ -10,9 +10,9 @@ interface DriverStreamPickerEntry extends StreamPickerEntryBase {
   driver: DriverData;
 }
 
-interface GlobalStreamPickerEntry extends StreamPickerEntryBase {
-  type: "global";
-  streamInfo: GlobalStreamInfo;
+interface DataStreamPickerEntry extends StreamPickerEntryBase {
+  type: "data";
+  streamInfo: DataStreamInfo;
 }
 
 interface MainStreamPickerEntry extends StreamPickerEntryBase {
@@ -20,4 +20,4 @@ interface MainStreamPickerEntry extends StreamPickerEntryBase {
   streamInfo: MainStreamInfo;
 }
 
-export type StreamPickerEntry = DriverStreamPickerEntry | GlobalStreamPickerEntry | MainStreamPickerEntry;
+export type StreamPickerEntry = DriverStreamPickerEntry | DataStreamPickerEntry | MainStreamPickerEntry;

@@ -42,7 +42,7 @@ export const DriverTrackerVideoWindow = forwardRef<PlayerAPI | null, DriverTrack
 
     const { requestStream } = useStreamPicker();
     const onRequestSourceChange = async () => {
-      const chosenData = await requestStream(["drivers", "global"], ["driver-tracker"]);
+      const chosenData = await requestStream(["drivers", "data"], ["driver-tracker"]);
 
       if (chosenData == null) {
         return;

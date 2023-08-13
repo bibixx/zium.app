@@ -47,7 +47,7 @@ export const LayoutButtons = ({
   const selectedLayoutIndex = useMemo(() => viewerState.currentLayoutIndex, [viewerState.currentLayoutIndex]);
 
   const onAddClick = useCallback(async () => {
-    const chosenData = await requestStream(["drivers", "global"], usedWindows);
+    const chosenData = await requestStream(["drivers", "data"], usedWindows);
     if (chosenData == null) {
       return;
     }
@@ -215,7 +215,7 @@ const getNewWindow = (chosenValue: ChosenValueType): GridWindow | null => {
     };
   }
 
-  if (chosenValue.type === "global") {
+  if (chosenValue.type === "data") {
     return {
       id: "",
       type: chosenValue.streamId,

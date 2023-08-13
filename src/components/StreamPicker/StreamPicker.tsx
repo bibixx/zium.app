@@ -7,7 +7,7 @@ import { ListItem } from "../ListItem/ListItem";
 import { Sheet } from "../Sheet/Sheet";
 import { VideoFeedContent } from "../VideoFeedContent/VideoFeedContent";
 import { assertNever } from "../../utils/assertNever";
-import { GlobalStreamInfo, MainStreamInfo } from "../../hooks/useVideoRaceDetails/useVideoRaceDetails.types";
+import { DataStreamInfo, MainStreamInfo } from "../../hooks/useVideoRaceDetails/useVideoRaceDetails.types";
 import { isNotNullable } from "../../utils/isNotNullable";
 import { useLaggedBehindData } from "../../hooks/useLaggedBehindData/useLaggedBehindData";
 import { getIconForStreamInfo } from "../../utils/getIconForStreamInfo";
@@ -18,7 +18,7 @@ import { StreamPickerEntry } from "./StreamPicker.types";
 
 interface StreamPickerProps {
   availableDrivers: DriverData[];
-  globalFeeds: Array<GlobalStreamInfo | null>;
+  globalFeeds: Array<DataStreamInfo | null>;
   mainFeeds: Array<MainStreamInfo>;
 }
 export const StreamPicker = ({ availableDrivers, globalFeeds, mainFeeds }: StreamPickerProps) => {
@@ -46,9 +46,9 @@ export const StreamPicker = ({ availableDrivers, globalFeeds, mainFeeds }: Strea
         return;
       }
 
-      if (selectedEntry.type === "global") {
+      if (selectedEntry.type === "data") {
         onChoice({
-          type: "global",
+          type: "data",
           streamId: selectedEntry.streamInfo.type,
         });
         return;
@@ -61,7 +61,7 @@ export const StreamPicker = ({ availableDrivers, globalFeeds, mainFeeds }: Strea
     const globalEntries = globalFeeds.filter(isNotNullable).map((streamInfo): StreamPickerEntry => {
       return {
         id: streamInfo.type,
-        type: "global",
+        type: "data",
         streamInfo,
       };
     });
@@ -92,7 +92,7 @@ export const StreamPicker = ({ availableDrivers, globalFeeds, mainFeeds }: Strea
         return false;
       }
 
-      if (entry.type === "global" && !pickerType.includes("global")) {
+      if (entry.type === "data" && !pickerType.includes("data")) {
         return false;
       }
 
@@ -115,7 +115,7 @@ export const StreamPicker = ({ availableDrivers, globalFeeds, mainFeeds }: Strea
         return includes(`${driver.lastName} ${driver.firstName}`, searchText);
       }
 
-      if (entry.type === "global") {
+      if (entry.type === "data") {
         const streamInfo = entry.streamInfo;
         return includes(streamInfo.title, searchText);
       }
@@ -239,7 +239,7 @@ export const StreamPicker = ({ availableDrivers, globalFeeds, mainFeeds }: Strea
               );
             }
 
-            if (entry.type === "global") {
+            if (entry.type === "data") {
               const stream = entry.streamInfo;
 
               return (
