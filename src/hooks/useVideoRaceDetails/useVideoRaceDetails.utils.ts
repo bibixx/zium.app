@@ -28,16 +28,12 @@ const getStreamPrettyName = (name: string) => {
   }
 };
 
-const mapStreamIdentifierToType = (identifier: string, season: number): StreamInfoWithDriver["type"] | null => {
+const mapStreamIdentifierToType = (identifier: string): StreamInfoWithDriver["type"] | null => {
   if (identifier === "PRES") {
     return "f1live";
   }
 
   if (identifier === "WIF") {
-    if (season <= 2021) {
-      return "f1live";
-    }
-
     return "international";
   }
 
@@ -56,7 +52,7 @@ const mapStreamIdentifierToType = (identifier: string, season: number): StreamIn
   return null;
 };
 
-export const collectStreams = (streams: StreamDataDTO[] | undefined, season: number, raceId: string) => {
+export const collectStreams = (streams: StreamDataDTO[] | undefined, raceId: string) => {
   const defaultStreams: MainStreamInfo[] = [];
   let driverTrackerStream: DataStreamInfo | null = null;
   let dataChannelStream: DataStreamInfo | null = null;
@@ -80,7 +76,7 @@ export const collectStreams = (streams: StreamDataDTO[] | undefined, season: num
   }
 
   for (const stream of streams) {
-    const streamType = mapStreamIdentifierToType(stream.identifier, season);
+    const streamType = mapStreamIdentifierToType(stream.identifier);
     const baseStreamInfo: BaseStreamInfo = {
       channelId: stream.channelId,
       playbackUrl: stream.playbackUrl,
@@ -157,7 +153,6 @@ export const collectStreams = (streams: StreamDataDTO[] | undefined, season: num
 
 export const createF1OffsetsMap = (
   playbackOffsets: F1PlaybackOffsetsApiResponse[] | undefined,
-  season: number,
 ): F1PlaybackOffsetsData => {
   const data: F1PlaybackOffsetsData = {};
 
@@ -166,7 +161,7 @@ export const createF1OffsetsMap = (
   }
 
   for (const offset of playbackOffsets) {
-    const key = mapStreamIdentifierToType(offset.channelToAdjust, season);
+    const key = mapStreamIdentifierToType(offset.channelToAdjust);
 
     if (key === null) {
       continue;
@@ -179,7 +174,7 @@ export const createF1OffsetsMap = (
       continue;
     }
 
-    const baseChannelType = mapStreamIdentifierToType(baseChannel, season);
+    const baseChannelType = mapStreamIdentifierToType(baseChannel);
 
     if (baseChannelType === null) {
       continue;

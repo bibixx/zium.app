@@ -1,3 +1,5 @@
+import { DropdownSection } from "../../Dropdown/Dropdown";
+
 export const getTrackPrettyName = (lang: string, fallback: string) => {
   if (lang === "eng") {
     return "English";
@@ -23,9 +25,13 @@ export const getTrackPrettyName = (lang: string, fallback: string) => {
     return "Nederlands";
   }
 
-  if (lang === "fx") {
+  if (lang === "fx" || lang === "cfx") {
     return "FX";
   }
 
   return fallback;
+};
+
+export const countTotalNumberOfOptions = (section: DropdownSection[]) => {
+  return section.reduce((count, o) => count + o.options.length, 0);
 };
