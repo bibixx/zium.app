@@ -2,7 +2,7 @@ import { memo, useCallback, useMemo, useRef, useState } from "react";
 import { PlayerAPI } from "bitmovin-player";
 import deepEqual from "fast-deep-equal/es6";
 import { Transition, TransitionGroup } from "react-transition-group";
-import { GridWindow } from "../../types/GridWindow";
+import { DataChannelGridWindow, DriverTrackerGridWindow, GridWindow } from "../../types/GridWindow";
 import { MainVideoWindow } from "../../components/VideoWindow/MainVideoWindow/MainVideoWindow";
 import { DriverVideoWindow } from "../../components/VideoWindow/DriverVideoWindow/DriverVideoWindow";
 import { assertNever } from "../../utils/assertNever";
@@ -226,6 +226,62 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
         assertNever(chosenValueType);
       };
 
+      const onSourceChange2 = (data: OnSourceChange2Argument) => {
+        if (data.type === "main") {
+          if (data.streamId === "f1tv") {
+            dispatch({
+              type: "updateWindow",
+              window: {
+                type: "main",
+                streamId: "f1tv",
+                id: gridWindow.id,
+              },
+            });
+            return;
+          }
+
+          if (data.streamId === "international") {
+            dispatch({
+              type: "updateWindow",
+              window: {
+                type: "main",
+                streamId: "international",
+                audioLanguage: data.audioLanguage,
+                id: gridWindow.id,
+              },
+            });
+            return;
+          }
+
+          return assertNever(data);
+        }
+
+        if (data.type === "global") {
+          dispatch({
+            type: "updateWindow",
+            window: {
+              type: data.streamId,
+              id: gridWindow.id,
+            },
+          });
+          return;
+        }
+
+        if (data.type === "driver") {
+          dispatch({
+            type: "updateWindow",
+            window: {
+              type: "driver",
+              driverId: data.driverId,
+              id: gridWindow.id,
+            },
+          });
+          return;
+        }
+
+        return assertNever(data);
+      };
+
       if (gridWindow.type === "main") {
         return (
           <MainVideoWindow
@@ -234,7 +290,7 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
               setMainVideoPlayer(ref);
             }}
             gridWindow={gridWindow}
-            onSourceChange={onSourceChange}
+            onSourceChange={onSourceChange2}
             onPlayingChange={(isPaused: boolean) => setAreVideosPaused(isPaused)}
             isPaused={areVideosPaused}
             isAudioFocused={audioFocusedWindow === gridWindow.id}
@@ -403,3 +459,9 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
 }, deepEqual);
 
 export default Viewer;
+
+export type OnSourceChange2Argument =
+  | { type: "main"; streamId: "f1tv" }
+  | { type: "main"; streamId: "international"; audioLanguage?: string }
+  | { type: "global"; streamId: (DriverTrackerGridWindow | DataChannelGridWindow)["type"] }
+  | { type: "driver"; driverId: string };
