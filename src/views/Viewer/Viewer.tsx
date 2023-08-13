@@ -1,4 +1,4 @@
-import { memo, useCallback, useMemo, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { PlayerAPI } from "bitmovin-player";
 import deepEqual from "fast-deep-equal/es6";
 import { Transition, TransitionGroup } from "react-transition-group";
@@ -22,6 +22,7 @@ import { isNotNullable } from "../../utils/isNotNullable";
 import { CookieBanner } from "../../components/CookieBanner/CookieBanner";
 import { ZiumOffsetsOverwriteOnStartDialog } from "../../components/ZiumOffsetsDialogs/ZiumOffsetsOverwriteOnStartDialog";
 import { GlobalShortcutsSnackbar } from "../../components/ShortcutsSnackbar/ShortcutsSnackbar";
+import { toggleFullScreen } from "../../utils/toggleFullScreen";
 import { getWindowStreamMap, getAvailableDrivers } from "./Viewer.utils";
 import { useGrid } from "./hooks/useGrid";
 import styles from "./Viewer.module.scss";
@@ -62,6 +63,13 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
   const windowVideojsRefMapRef = useRef<Record<string, PlayerAPI | null>>({});
   const [mainVideoPlayer, setMainVideoPlayer] = useState<PlayerAPI | null>(null);
   const { onResize } = useCmdTutorial();
+  useEffect(function closeFullScreenWhenLeavingViewer() {
+    return () => {
+      if (document.fullscreenElement) {
+        toggleFullScreen();
+      }
+    };
+  }, []);
 
   const windowsMap = useMemo((): Record<string, GridWindow> => {
     const entries = windows.map((w) => [w.id, w]);
