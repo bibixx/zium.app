@@ -7,7 +7,11 @@ import { MainVideoWindow } from "../../components/VideoWindow/MainVideoWindow/Ma
 import { DriverVideoWindow } from "../../components/VideoWindow/DriverVideoWindow/DriverVideoWindow";
 import { assertNever } from "../../utils/assertNever";
 import { DataChannelVideoWindow } from "../../components/VideoWindow/DataChannelVideoWindow/DataChannelVideoWindow";
-import { PlaybackOffsets, RaceInfo, StreamsStateData } from "../../hooks/useVideoRaceDetails/useVideoRaceDetails.types";
+import {
+  PlaybackOffsets,
+  RaceInfo,
+  StreamsStateStreamsData,
+} from "../../hooks/useVideoRaceDetails/useVideoRaceDetails.types";
 import { DriverTrackerVideoWindow } from "../../components/VideoWindow/DriverTrackerVideoWindow/DriverTrackerVideoWindow";
 import { RnDWindow } from "../../components/RnDWindow/RnDWindow";
 import { Dimensions } from "../../types/Dimensions";
@@ -32,7 +36,7 @@ import { useZiumOffsets } from "./hooks/useZiumOffsets/useZiumOffsets";
 import { useNotifyAboutNewEvent } from "./hooks/useNotifyAboutNewEvent/useNotifyAboutNewEvent";
 
 interface ViewerProps {
-  streams: StreamsStateData;
+  streams: StreamsStateStreamsData;
   season: number;
   isLive: boolean;
   raceInfo: RaceInfo;

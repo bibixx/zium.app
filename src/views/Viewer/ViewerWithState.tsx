@@ -46,7 +46,7 @@ export const ViewerWithState = () => {
     return <LoadingState />;
   }
 
-  if (!canAccessEvent(currentTier, state.entitlement)) {
+  if (!canAccessEvent(currentTier, state.data.entitlement)) {
     return <NoViewerAccess currentTier={currentTier} />;
   }
 
@@ -60,11 +60,11 @@ export const ViewerWithState = () => {
             })}
           >
             <Viewer
-              streams={state.streams}
-              season={state.season}
-              isLive={state.isLive}
-              raceInfo={state.raceInfo}
-              playbackOffsets={state.playbackOffsets}
+              streams={state.data.streams}
+              season={state.data.season}
+              isLive={state.data.isLive}
+              raceInfo={state.data.raceInfo}
+              playbackOffsets={state.data.playbackOffsets}
               raceId={raceId}
             />
           </div>

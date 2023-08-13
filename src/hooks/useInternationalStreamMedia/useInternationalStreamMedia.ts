@@ -27,7 +27,7 @@ export const useInternationalStreamMedia = (defaultStreams: MainStreamInfo[]) =>
 
         setManifestState({ state: "done", data: result });
       } catch (error) {
-        setManifestState({ state: "error", error: error as Error });
+        setManifestState({ state: "error", error: error });
       }
     },
     [streamVideoState],

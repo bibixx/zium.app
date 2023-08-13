@@ -1,6 +1,7 @@
 import { EventGenre, RaceEntitlement } from "../../constants/races";
+import { Response, ResponseAction } from "../../types/Response";
 
-export interface StreamsStateData {
+export interface StreamsStateStreamsData {
   defaultStreams: MainStreamInfo[];
   driverTrackerStream: DataStreamInfo | null;
   dataChannelStream: DataStreamInfo | null;
@@ -14,31 +15,17 @@ export interface RaceInfo {
   genre: EventGenre;
 }
 
-export type StreamsState =
-  | { state: "loading" }
-  | { state: "error"; error: Error }
-  | {
-      state: "done";
-      streams: StreamsStateData;
-      season: number;
-      isLive: boolean;
-      raceInfo: RaceInfo;
-      playbackOffsets: PlaybackOffsets;
-      entitlement: RaceEntitlement;
-    };
+export interface StreamsStateData {
+  streams: StreamsStateStreamsData;
+  season: number;
+  isLive: boolean;
+  raceInfo: RaceInfo;
+  playbackOffsets: PlaybackOffsets;
+  entitlement: RaceEntitlement;
+}
 
-export type StreamsStateAction =
-  | { type: "load" }
-  | { type: "error"; error: Error }
-  | {
-      type: "done";
-      streams: StreamsStateData;
-      season: number;
-      isLive: boolean;
-      raceInfo: RaceInfo;
-      playbackOffsets: PlaybackOffsets;
-      entitlement: RaceEntitlement;
-    };
+export type StreamsState = Response<StreamsStateData>;
+export type StreamsStateAction = ResponseAction<StreamsStateData>;
 
 export interface BaseStreamInfo {
   channelId: number;

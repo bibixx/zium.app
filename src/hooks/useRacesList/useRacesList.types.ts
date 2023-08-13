@@ -24,5 +24,5 @@ export type RacesState = BaseRaces & Response<RaceData[]>;
 
 export type RacesStateAction =
   | { type: "load"; seasonId: SupportedSeasons }
-  | { type: "error"; error: Error; seasonId: SupportedSeasons }
+  | { type: "error"; error: Error | unknown; seasonId: SupportedSeasons }
   | { type: "done"; data: RaceData[]; seasonId: SupportedSeasons };

@@ -46,7 +46,7 @@ export const useRacesList = (seasonIds: SupportedSeasons[]) => {
       dispatch({ type: "done", data: newRaces, seasonId });
     } catch (error) {
       console.error(error);
-      dispatch({ type: "error", error: error as Error, seasonId });
+      dispatch({ type: "error", error: error, seasonId });
     }
   }, []);
 

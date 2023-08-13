@@ -61,7 +61,7 @@ export const useStreamVideo = (playbackUrl: string | null) => {
 
         dispatch({ type: "done", data });
       } catch (error) {
-        dispatch({ type: "error", error: error as Error });
+        dispatch({ type: "error", error: error });
       }
     },
     [playbackUrl],

@@ -1,8 +1,8 @@
-import { DriverStreamInfo, StreamsStateData } from "../../hooks/useVideoRaceDetails/useVideoRaceDetails.types";
+import { DriverStreamInfo, StreamsStateStreamsData } from "../../hooks/useVideoRaceDetails/useVideoRaceDetails.types";
 import { GridWindow } from "../../types/GridWindow";
 import { assertNever } from "../../utils/assertNever";
 
-export const getWindowStreamMap = (windows: GridWindow[], streams: StreamsStateData) => {
+export const getWindowStreamMap = (windows: GridWindow[], streams: StreamsStateStreamsData) => {
   return Object.fromEntries(
     windows.map((w) => {
       if (w.type === "main") {
@@ -43,7 +43,7 @@ export interface DriverData {
   id: string;
   imageUrls: string[];
 }
-export const getAvailableDrivers = (streams: StreamsStateData, season: number) =>
+export const getAvailableDrivers = (streams: StreamsStateStreamsData, season: number) =>
   streams.driverStreams.map((driverStream): DriverData => {
     const id = driverStream.title;
     return {

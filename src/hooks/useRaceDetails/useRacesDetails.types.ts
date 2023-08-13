@@ -1,5 +1,5 @@
 import { EventGenre } from "../../constants/races";
-import { Response } from "../../types/Response";
+import { Response, ResponseAction } from "../../types/Response";
 
 export interface RaceDetailsData {
   title: string;
@@ -23,8 +23,4 @@ export interface RaceDetailsData {
 }
 
 export type RaceDetailsState = Response<RaceDetailsData[]>;
-
-export type RaceDetailsStateAction =
-  | { type: "load" }
-  | { type: "error"; error: Error }
-  | { type: "done"; data: RaceDetailsData[] };
+export type RaceDetailsStateAction = ResponseAction<RaceDetailsData[]>;
