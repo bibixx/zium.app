@@ -236,9 +236,9 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
         : null;
 
       const doesSelectedLanguageExist =
-        gridWindow.streamId !== "international"
-          ? true
-          : gridWindow.audioLanguage != null && selectedAudioTrackId != null;
+        gridWindow.streamId === "international"
+          ? gridWindow.audioLanguage != null && selectedAudioTrackId != null
+          : f1tvStream != null;
 
       const sections = [
         f1tvStreamElement != null && {
