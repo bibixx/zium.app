@@ -9,7 +9,6 @@ import { NoFeed } from "../NoFeed/NoFeed";
 import { FeedError } from "../FeedError/FeedError";
 import { StreamVideoError } from "../../../hooks/useStreamVideo/useStreamVideo.utils";
 import { SourceButton } from "../../SourceButton/SourceButton";
-import { ChosenValueType } from "../../../hooks/useStreamPicker/useStreamPicker";
 import { MainGridWindow } from "../../../types/GridWindow";
 import { getIconForStreamInfo } from "../../../utils/getIconForStreamInfo";
 import { useHotkeys } from "../../../hooks/useHotkeys/useHotkeys";
@@ -29,6 +28,7 @@ import { useReactiveUserOffsets, useUserOffsets } from "../../../hooks/useUserOf
 import { useFeatureFlags } from "../../../hooks/useFeatureFlags/useFeatureFlags";
 import { useInternationalStreamMedia } from "../../../hooks/useInternationalStreamMedia/useInternationalStreamMedia";
 import { DropdownSection, DropdownSectionElement } from "../../Dropdown/Dropdown";
+import { OnSourceChange2Argument } from "../../../views/Viewer/Viewer";
 import { getTrackPrettyName } from "./MainVideoWindow.utils";
 
 interface MainVideoWindowProps extends VideoWindowProps {
@@ -39,7 +39,8 @@ interface MainVideoWindowProps extends VideoWindowProps {
   volume: number;
   setVolume: (newVolume: number) => void;
   hasOnlyOneStream: boolean;
-  onSourceChange: (streamId: string, chosenValueType: ChosenValueType) => void;
+  onSourceChange: (data: OnSourceChange2Argument) => void;
+  // onSourceChange: (streamId: string, chosenValueType: ChosenValueType) => void;
   defaultStreams: MainStreamInfo[];
 }
 
@@ -121,16 +122,15 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
     );
 
     const [availableAudioTracks, setAvailableAudioTracks] = useState<AudioTrack[]>([]);
-    const [selectedAudioTrackLang, setSelectedAudioTrackLang] = useState<string | null>(null);
-    // TODO: What happens if the audio track doesn't exist on the stream?
     const selectedAudioTrackId = useMemo(() => {
+      const selectedAudioTrackLang = gridWindow.streamId === "international" ? gridWindow.audioLanguage : null;
       if (selectedAudioTrackLang === null) {
         return null;
       }
 
       const selectedAudioTrack = availableAudioTracks.find((track) => track.lang === selectedAudioTrackLang);
       return selectedAudioTrack?.id ?? null;
-    }, [availableAudioTracks, selectedAudioTrackLang]);
+    }, [availableAudioTracks, gridWindow]);
 
     useEffect(() => {
       setAvailableSubtitleTracks([]);
@@ -221,10 +221,7 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
           id: stream.type,
           isActive: stream.type === gridWindow.streamId,
           text: stream.title,
-          onClick: () => {
-            onSourceChange(stream.type, "main");
-            setSelectedAudioTrackLang(null);
-          },
+          onClick: () => onSourceChange({ type: "main", streamId: stream.type }),
         }));
       };
 
@@ -241,13 +238,14 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
         id: f1tvStream.type,
         isActive: f1tvStream.type === gridWindow.streamId,
         text: f1tvStream.title,
-        onClick: () => {
-          onSourceChange(f1tvStream.type, "main");
-          setSelectedAudioTrackLang(null);
-        },
+        onClick: () => onSourceChange({ type: "main", streamId: "f1tv" }),
         caption: getTrackPrettyName("eng", ""),
       };
 
+      const doesSelectedLanguageExist =
+        gridWindow.streamId !== "international"
+          ? true
+          : gridWindow.audioLanguage != null && selectedAudioTrackId != null;
       return [
         {
           id: "f1tv",
@@ -257,22 +255,21 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
           id: "international",
           options: internationalStreamMedia.data.AUDIO.map((media) => ({
             id: media.LANGUAGE,
-            isActive: selectedAudioTrackLang === media.LANGUAGE,
+            isActive: !doesSelectedLanguageExist
+              ? media.DEFAULT
+              : gridWindow.streamId === "international" && gridWindow.audioLanguage === media.LANGUAGE,
             text: getTrackPrettyName(media.LANGUAGE, ""),
-            onClick: () => {
-              onSourceChange("international", "main");
-              setSelectedAudioTrackLang(media.LANGUAGE);
-            },
+            onClick: () => onSourceChange({ type: "main", streamId: "international", audioLanguage: media.LANGUAGE }),
           })),
         },
       ];
     }, [
       defaultStreams,
-      gridWindow.streamId,
+      gridWindow,
       internationalStreamMedia.data,
       internationalStreamMedia.state,
       onSourceChange,
-      selectedAudioTrackLang,
+      selectedAudioTrackId,
     ]);
 
     if (streamVideoState.state === "loading") {

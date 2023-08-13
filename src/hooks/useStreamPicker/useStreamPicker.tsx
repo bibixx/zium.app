@@ -1,4 +1,5 @@
 import { createContext, ReactNode, useCallback, useContext, useMemo, useState } from "react";
+import { assertExistence } from "../../utils/assertExistence";
 
 export type PickerType = "global" | "drivers" | "main";
 export type ChosenValueType = "driver" | "global" | "main";
@@ -24,10 +25,7 @@ interface StreamPickerContextType {
 export const StreamPickerContext = createContext<StreamPickerContextType | null>(null);
 export const useStreamPicker = () => {
   const context = useContext(StreamPickerContext);
-
-  if (context === null) {
-    throw new Error("Using uninitialised StreamPickerContext");
-  }
+  assertExistence(context, "Using uninitialised StreamPickerContext");
 
   return context;
 };

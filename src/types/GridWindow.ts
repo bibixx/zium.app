@@ -2,10 +2,16 @@ export interface BaseGridWindow {
   id: string;
 }
 
-export interface MainGridWindow extends BaseGridWindow {
+export interface F1TVMainGridWindow extends BaseGridWindow {
   type: "main";
-  streamId: "f1tv" | "international";
+  streamId: "f1tv";
 }
+export interface InternationalMainGridWindow extends BaseGridWindow {
+  type: "main";
+  streamId: "international";
+  audioLanguage?: string;
+}
+export type MainGridWindow = F1TVMainGridWindow | InternationalMainGridWindow;
 
 export interface DriverTrackerGridWindow extends BaseGridWindow {
   type: "driver-tracker";

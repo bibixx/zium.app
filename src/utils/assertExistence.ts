@@ -1,9 +1,9 @@
 import { isNotNullable } from "./isNotNullable";
 
-export function assertExistence<T>(data: T | null | undefined): asserts data is T {
+export function assertExistence<T>(data: T | null | undefined, customMessage?: string): asserts data is T {
   if (isNotNullable(data)) {
     return;
   }
 
-  throw new Error(`Passed value ${data} was nullable`);
+  throw new Error(customMessage ?? `Passed value ${data} was nullable`);
 }
