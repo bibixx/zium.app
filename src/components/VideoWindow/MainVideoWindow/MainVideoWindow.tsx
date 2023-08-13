@@ -28,7 +28,7 @@ import { useReactiveUserOffsets, useUserOffsets } from "../../../hooks/useUserOf
 import { useFeatureFlags } from "../../../hooks/useFeatureFlags/useFeatureFlags";
 import { useInternationalStreamMedia } from "../../../hooks/useInternationalStreamMedia/useInternationalStreamMedia";
 import { DropdownSection, DropdownSectionElement } from "../../Dropdown/Dropdown";
-import { OnSourceChange2Argument } from "../../../views/Viewer/Viewer";
+import { ChosenValueType } from "../../../hooks/useStreamPicker/useStreamPicker";
 import { getTrackPrettyName } from "./MainVideoWindow.utils";
 
 interface MainVideoWindowProps extends VideoWindowProps {
@@ -39,8 +39,7 @@ interface MainVideoWindowProps extends VideoWindowProps {
   volume: number;
   setVolume: (newVolume: number) => void;
   hasOnlyOneStream: boolean;
-  onSourceChange: (data: OnSourceChange2Argument) => void;
-  // onSourceChange: (streamId: string, chosenValueType: ChosenValueType) => void;
+  onSourceChange: (data: ChosenValueType) => void;
   defaultStreams: MainStreamInfo[];
 }
 
@@ -229,7 +228,7 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
         return getDefaultStreamsElements();
       }
 
-      const f1tvStream = defaultStreams.find((stream) => stream.type === "f1tv");
+      const f1tvStream = defaultStreams.find((stream) => stream.type === "f1live");
       if (f1tvStream == null) {
         return getDefaultStreamsElements();
       }
@@ -238,7 +237,7 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
         id: f1tvStream.type,
         isActive: f1tvStream.type === gridWindow.streamId,
         text: f1tvStream.title,
-        onClick: () => onSourceChange({ type: "main", streamId: "f1tv" }),
+        onClick: () => onSourceChange({ type: "main", streamId: "f1live" }),
         caption: getTrackPrettyName("eng", ""),
       };
 
@@ -248,7 +247,7 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
           : gridWindow.audioLanguage != null && selectedAudioTrackId != null;
       return [
         {
-          id: "f1tv",
+          id: "f1live",
           options: [f1tvStreamElement],
         },
         {
@@ -305,9 +304,9 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
           startAt={oldTimeRef.current ?? undefined}
         />
         <VideoWindowButtonsTopLeftWrapper>
-          <SourceButton label="Main stream" icon={getIconForStreamInfo("f1tv", "mini")} hideWhenUiHidden />
+          <SourceButton label="Main stream" icon={getIconForStreamInfo("f1live", "mini")} hideWhenUiHidden />
 
-          {showInternationalOffsets && gridWindow.streamId !== "f1tv" && (
+          {showInternationalOffsets && gridWindow.streamId !== "f1live" && (
             <VideoWindowButtonsOffset
               onOffsetChange={onOffsetChange}
               currentOffset={offsets?.additionalStreams.international ?? 0}

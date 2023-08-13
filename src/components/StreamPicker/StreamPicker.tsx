@@ -28,6 +28,35 @@ export const StreamPicker = ({ availableDrivers, globalFeeds, mainFeeds }: Strea
   const [fakeSelection, setFakeSelection] = useState<number>(0);
   const listItemsRefs = useRef<(HTMLElement | null)[]>([]);
 
+  const onEntryChosen = useCallback(
+    (selectedEntry: StreamPickerEntry) => {
+      if (selectedEntry.type === "main") {
+        onChoice({
+          type: "main",
+          streamId: selectedEntry.streamInfo.type,
+        });
+        return;
+      }
+
+      if (selectedEntry.type === "driver") {
+        onChoice({
+          type: "driver",
+          driverId: selectedEntry.driver.id,
+        });
+        return;
+      }
+
+      if (selectedEntry.type === "global") {
+        onChoice({
+          type: "global",
+          streamId: selectedEntry.streamInfo.type,
+        });
+        return;
+      }
+    },
+    [onChoice],
+  );
+
   const streamPickerEntries: StreamPickerEntry[] = useMemo(() => {
     const globalEntries = globalFeeds.filter(isNotNullable).map((streamInfo): StreamPickerEntry => {
       return {
@@ -128,11 +157,11 @@ export const StreamPicker = ({ availableDrivers, globalFeeds, mainFeeds }: Strea
     const selectedEntry = streamPickerEntries[fakeSelection];
 
     if (selectedEntry) {
-      onChoice(selectedEntry.id, selectedEntry.type);
+      onEntryChosen(selectedEntry);
     }
 
     return;
-  }, [fakeSelection, streamPickerEntries, onChoice]);
+  }, [fakeSelection, streamPickerEntries, onEntryChosen]);
 
   useHotkeys(
     () => ({
@@ -198,7 +227,7 @@ export const StreamPicker = ({ availableDrivers, globalFeeds, mainFeeds }: Strea
                 <ListItem
                   tabIndex={-1}
                   key={driver.id}
-                  onClick={() => onChoice(driver.id, "driver")}
+                  onClick={() => onEntryChosen(entry)}
                   isActive={fakeSelection === i}
                   onMouseEnter={() => setFakeSelection(i)}
                   ref={(ref) => {
@@ -217,7 +246,7 @@ export const StreamPicker = ({ availableDrivers, globalFeeds, mainFeeds }: Strea
                 <ListItem
                   tabIndex={-1}
                   key={stream.type}
-                  onClick={() => onChoice(stream.type, "global")}
+                  onClick={() => onEntryChosen(entry)}
                   isActive={fakeSelection === i}
                   onMouseEnter={() => setFakeSelection(i)}
                   ref={(ref) => {
@@ -236,7 +265,7 @@ export const StreamPicker = ({ availableDrivers, globalFeeds, mainFeeds }: Strea
                 <ListItem
                   tabIndex={-1}
                   key={stream.type}
-                  onClick={() => onChoice(stream.type, "main")}
+                  onClick={() => onEntryChosen(entry)}
                   isActive={fakeSelection === i}
                   onMouseEnter={() => setFakeSelection(i)}
                   ref={(ref) => {

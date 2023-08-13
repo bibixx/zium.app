@@ -2,7 +2,7 @@ import { memo, useCallback, useMemo, useRef, useState } from "react";
 import { PlayerAPI } from "bitmovin-player";
 import deepEqual from "fast-deep-equal/es6";
 import { Transition, TransitionGroup } from "react-transition-group";
-import { DataChannelGridWindow, DriverTrackerGridWindow, GridWindow } from "../../types/GridWindow";
+import { GridWindow } from "../../types/GridWindow";
 import { MainVideoWindow } from "../../components/VideoWindow/MainVideoWindow/MainVideoWindow";
 import { DriverVideoWindow } from "../../components/VideoWindow/DriverVideoWindow/DriverVideoWindow";
 import { assertNever } from "../../utils/assertNever";
@@ -16,11 +16,8 @@ import { StreamPicker } from "../../components/StreamPicker/StreamPicker";
 import { Player } from "../../components/Player/Player";
 import { isNotNullable } from "../../utils/isNotNullable";
 import { CookieBanner } from "../../components/CookieBanner/CookieBanner";
-import { isValidGlobalGridWindowType } from "../../utils/isValidGridWindowType";
 import { ZiumOffsetsOverwriteOnStartDialog } from "../../components/ZiumOffsetsDialogs/ZiumOffsetsOverwriteOnStartDialog";
 import { GlobalShortcutsSnackbar } from "../../components/ShortcutsSnackbar/ShortcutsSnackbar";
-import { isValidMainGridWindowStreamId } from "../../utils/isValidMainGridWindowStreamId";
-import { captureWarning } from "../../utils/captureWarning";
 import { getWindowStreamMap, getAvailableDrivers } from "./Viewer.utils";
 import { useGrid } from "./hooks/useGrid";
 import styles from "./Viewer.module.scss";
@@ -171,69 +168,14 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
         });
       };
 
-      const onSourceChange = (streamIdentifier: string, chosenValueType: ChosenValueType) => {
-        if (chosenValueType === "driver") {
-          dispatch({
-            type: "updateWindow",
-            window: {
-              type: "driver",
-              id: gridWindow.id,
-              driverId: streamIdentifier,
-            },
-          });
-          return;
-        }
-
-        if (chosenValueType === "global") {
-          if (isValidGlobalGridWindowType(streamIdentifier)) {
-            dispatch({
-              type: "updateWindow",
-              window: {
-                type: streamIdentifier,
-                id: gridWindow.id,
-              },
-            });
-          } else {
-            captureWarning("Invalid stream identifier for type", {
-              value: streamIdentifier,
-              valueType: chosenValueType,
-            });
-          }
-
-          return;
-        }
-
-        if (chosenValueType === "main") {
-          if (isValidMainGridWindowStreamId(streamIdentifier)) {
-            dispatch({
-              type: "updateWindow",
-              window: {
-                type: "main",
-                id: gridWindow.id,
-                streamId: streamIdentifier,
-              },
-            });
-          } else {
-            captureWarning("Invalid stream identifier for type", {
-              value: streamIdentifier,
-              valueType: chosenValueType,
-            });
-          }
-
-          return;
-        }
-
-        assertNever(chosenValueType);
-      };
-
-      const onSourceChange2 = (data: OnSourceChange2Argument) => {
+      const onSourceChange = (data: ChosenValueType) => {
         if (data.type === "main") {
-          if (data.streamId === "f1tv") {
+          if (data.streamId === "f1live") {
             dispatch({
               type: "updateWindow",
               window: {
                 type: "main",
-                streamId: "f1tv",
+                streamId: "f1live",
                 id: gridWindow.id,
               },
             });
@@ -290,7 +232,7 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
               setMainVideoPlayer(ref);
             }}
             gridWindow={gridWindow}
-            onSourceChange={onSourceChange2}
+            onSourceChange={onSourceChange}
             onPlayingChange={(isPaused: boolean) => setAreVideosPaused(isPaused)}
             isPaused={areVideosPaused}
             isAudioFocused={audioFocusedWindow === gridWindow.id}
@@ -459,9 +401,3 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
 }, deepEqual);
 
 export default Viewer;
-
-export type OnSourceChange2Argument =
-  | { type: "main"; streamId: "f1tv" }
-  | { type: "main"; streamId: "international"; audioLanguage?: string }
-  | { type: "global"; streamId: (DriverTrackerGridWindow | DataChannelGridWindow)["type"] }
-  | { type: "driver"; driverId: string };

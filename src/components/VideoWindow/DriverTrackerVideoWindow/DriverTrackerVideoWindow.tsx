@@ -25,7 +25,7 @@ import { ChosenValueType, useStreamPicker } from "../../../hooks/useStreamPicker
 interface DriverTrackerVideoWindowProps extends VideoWindowProps {
   gridWindow: BaseGridWindow;
   onDelete: () => void;
-  onSourceChange: (streamId: string, chosenValueType: ChosenValueType) => void;
+  onSourceChange: (data: ChosenValueType) => void;
 }
 
 export const DriverTrackerVideoWindow = forwardRef<PlayerAPI | null, DriverTrackerVideoWindowProps>(
@@ -42,14 +42,13 @@ export const DriverTrackerVideoWindow = forwardRef<PlayerAPI | null, DriverTrack
 
     const { requestStream } = useStreamPicker();
     const onRequestSourceChange = async () => {
-      const chosenDriverData = await requestStream(["drivers", "global"], ["driver-tracker"]);
+      const chosenData = await requestStream(["drivers", "global"], ["driver-tracker"]);
 
-      if (chosenDriverData == null) {
+      if (chosenData == null) {
         return;
       }
 
-      const [chosenStreamId, chosenValueType] = chosenDriverData;
-      onSourceChange(chosenStreamId, chosenValueType);
+      onSourceChange(chosenData);
     };
     const onOffsetChange = useCallback(
       (value: number) => {

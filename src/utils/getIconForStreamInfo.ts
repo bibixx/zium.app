@@ -45,7 +45,7 @@ export const getIconForStreamInfo = (
   type: "outline" | "solid" | "mini",
 ) => {
   switch (streamType) {
-    case "f1tv":
+    case "f1live":
       return icons[type]["tv"];
     case "international":
       return icons[type]["international"];
