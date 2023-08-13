@@ -14,15 +14,16 @@ const gridLayoutValidator = z.object({
 });
 validateZodValidator<GridLayout, typeof gridLayoutValidator>(gridLayoutValidator);
 
-const gridWindowValidator = z.discriminatedUnion("type", [
+const gridWindowValidator = z.union([
   z.object({
     id: z.string(),
     type: z.literal("main"),
-    streamId: z
-      .union([z.literal("international"), z.literal("f1live")])
-      .optional()
-      .default("f1live"),
-    // TODO: audioLanguage only if international
+    streamId: z.literal("f1live").optional().default("f1live"),
+  }),
+  z.object({
+    id: z.string(),
+    type: z.literal("main"),
+    streamId: z.literal("international"),
     audioLanguage: z.string().optional(),
   }),
   z.object({
