@@ -33,14 +33,14 @@ interface DropdownChildrenProps {
   isOpen: boolean;
   toggleOpen: () => void;
 }
-export type BaseOptions = (DropdownSection | false)[] | DropdownSectionElement[];
+export type DropdownOptions = (DropdownSection | false)[] | DropdownSectionElement[];
 interface DropdownProps {
   width?: number;
   distance?: number;
   skidding?: number;
   placement?: Placement;
   children: (props: DropdownChildrenProps) => JSX.Element;
-  options: BaseOptions | ((toggleOpen: () => void) => BaseOptions);
+  options: DropdownOptions | ((toggleOpen: () => void) => DropdownOptions);
   onOpened?: () => void;
   onClosed?: () => void;
   closeOnClick?: boolean;
