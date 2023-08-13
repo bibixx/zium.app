@@ -1,6 +1,7 @@
 import PiwikReactRouter from "piwik-react-router";
 import { Location, useLocation } from "react-router-dom";
 import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { assertExistence } from "../../utils/assertExistence";
 import { setInitialWasConsentGiven, wasConsentGivenStorageClient } from "./useAnalytics.utils";
 
 const BASE_URL = import.meta.env.VITE_MATOMO_URL_BASE;
@@ -14,13 +15,10 @@ type PiwikPush = PiwikReactRouter["push"];
 type PiwikSetUserId = PiwikReactRouter["setUserId"];
 
 export const useAnalytics = () => {
-  const analyticsContext = useContext(AnalyticsContext);
+  const context = useContext(AnalyticsContext);
+  assertExistence(context, "Using uninitialised AnalyticsContext");
 
-  if (analyticsContext === null) {
-    throw new Error("Using uninitialised AnalyticsContext");
-  }
-
-  const { piwik, wasConsentGiven, setWasConsentGiven } = analyticsContext;
+  const { piwik, wasConsentGiven, setWasConsentGiven } = context;
 
   const push = useCallback((...args: Parameters<PiwikPush>) => piwik?.push(...args), [piwik]);
   const setUserId = useCallback((...args: Parameters<PiwikSetUserId>) => piwik?.setUserId(...args), [piwik]);

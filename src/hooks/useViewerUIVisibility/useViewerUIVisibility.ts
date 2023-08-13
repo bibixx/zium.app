@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { useFeatureFlags } from "../useFeatureFlags/useFeatureFlags";
 import { useStateWithRef } from "../useStateWithRef/useStateWithRef";
+import { assertExistence } from "../../utils/assertExistence";
 
 const UI_VISIBILITY_TIMEOUT = 1_000;
 
@@ -70,10 +71,7 @@ export const ViewerUIVisibilityContext = createContext<ViewerUIVisibilityContext
 
 export const useViewerUIVisibility = (): ViewerUIVisibilityContextState => {
   const context = useContext(ViewerUIVisibilityContext);
-
-  if (context === null) {
-    throw new Error("Using uninitialised ViewerUIVisibilityContext");
-  }
+  assertExistence(context, "Using uninitialised ViewerUIVisibilityContext");
 
   return context;
 };
