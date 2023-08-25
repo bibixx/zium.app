@@ -57,31 +57,6 @@ export interface DriverStreamInfo extends BaseStreamInfo {
 export type MainAndGlobalStreamInfo = DataStreamInfo | MainStreamInfo;
 export type StreamInfoWithDriver = MainAndGlobalStreamInfo | DriverStreamInfo;
 
-export interface BaseStreamDataDTO {
-  type: string;
-  playbackUrl: string;
-  channelId: number;
-  title: string;
-  reportingName: string;
-  default: boolean;
-}
-
-export interface DriverStreamDataDTO extends BaseStreamDataDTO {
-  teamName: string;
-  racingNumber: number;
-  identifier: "OBC";
-  driverImg: string;
-  teamImg: string;
-  driverFirstName: string;
-  driverLastName: string;
-  constructorName: string;
-  hex: string;
-}
-interface OtherStreamDataDTO extends BaseStreamDataDTO {
-  identifier: string;
-}
-export type StreamDataDTO = DriverStreamDataDTO | OtherStreamDataDTO;
-
 export interface F1PlaybackOffsetsApiResponse {
   channels: [string, string];
   channelToAdjust: string;
