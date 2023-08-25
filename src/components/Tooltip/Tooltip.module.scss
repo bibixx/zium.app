@@ -1,0 +1,56 @@
+.wrapper {
+  background: var(--color-core-neutral-darken-300);
+  color: var(--color-text-strong);
+  @include inner-border(var(--color-border-muted-alpha));
+
+  z-index: var(--z-index-tooltip);
+  overflow: hidden;
+  border-radius: var(--radii-xsmall);
+  padding: 6px 12px;
+  @include typography(text, 200, regular);
+  transition: var(--transition-fast);
+  will-change: transform, opacity;
+  user-select: none;
+
+  animation-name: enter;
+  animation-duration: 150ms;
+  --enter-opacity: 0;
+  --enter-scale: 0.95;
+
+  &[data-state="closed"] {
+    animation-name: exit;
+    animation-duration: 150ms;
+    --exit-opacity: 0;
+    --exit-scale: .95;
+  }
+
+  &[data-side=bottom][data-side=bottom] {
+    --enter-translate-y: -8px;
+  }
+
+  &[data-side=left][data-side=left] {
+    --enter-translate-x: 8px;
+  }
+
+  &[data-side=right][data-side=right] {
+    --enter-translate-x: -8px;
+  }
+
+  &[data-side=top][data-side=top] {
+    --enter-translate-y: 8px;
+  }
+}
+
+@keyframes enter {
+  0% {
+    opacity: var(--enter-opacity, 1);
+    transform: translate3d(var(--enter-translate-x, 0), var(--enter-translate-y, 0), 0) scale3d(var(--enter-scale, 1), var(--enter-scale, 1), var(--enter-scale, 1));
+  }
+}
+
+@keyframes exit {
+  100% {
+    opacity: var(--exit-opacity, 1);
+    transform: translate3d(var(--exit-translate-x, 0), var(--exit-translate-y, 0), 0) scale3d(var(--exit-scale, 1), var(--exit-scale, 1), var(--exit-scale, 1));
+  }
+}
