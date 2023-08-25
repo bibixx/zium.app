@@ -1,7 +1,6 @@
 import { z } from "zod";
 import { fetchJSON } from "../../utils/api";
 import { validateArray } from "../../utils/validators";
-import { StreamDataDTO } from "./useVideoRaceDetails.types";
 import {
   streamDataValidator,
   videoRaceStreamsContainerValidator,
@@ -18,7 +17,7 @@ export const fetchRaceStreams = async (raceId: string, signal: AbortSignal) => {
     [] as z.output<typeof videoRaceStreamsContainerValidator>[],
   );
 
-  const streams: StreamDataDTO[] | undefined = container.metadata.additionalStreams?.reduce(
+  const streams = container.metadata.additionalStreams?.reduce(
     validateArray(streamDataValidator),
     [] as z.output<typeof streamDataValidator>[],
   );
@@ -29,7 +28,6 @@ export const fetchRaceStreams = async (raceId: string, signal: AbortSignal) => {
   const title = container.metadata.titleBrief;
   const playbackOffsets = container.playbackOffsets;
   const meetingKey = container.metadata.meetingKey;
-  const meetingSessionKey = container.metadata.emfAttributes.MeetingSessionKey;
   const genre = container.metadata.genres[0];
   const entitlement = container.metadata.entitlement;
 
@@ -42,7 +40,6 @@ export const fetchRaceStreams = async (raceId: string, signal: AbortSignal) => {
     title,
     playbackOffsets,
     meetingKey,
-    meetingSessionKey,
     genre,
     entitlement,
   };

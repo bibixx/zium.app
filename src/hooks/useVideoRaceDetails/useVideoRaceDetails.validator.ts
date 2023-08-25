@@ -15,22 +15,25 @@ export const baseStreamDataValidator = z.object({
   reportingName: z.string(),
   default: z.boolean(),
 });
-export const streamDataValidator = z.union([
-  baseStreamDataValidator.extend({
-    identifier: z.literal("OBC"),
-    racingNumber: z.number(),
-    teamName: z.string(),
-    driverImg: z.string(),
-    teamImg: z.string(),
-    driverFirstName: z.string(),
-    driverLastName: z.string(),
-    constructorName: z.string(),
-    hex: z.string(),
-  }),
-  baseStreamDataValidator.extend({
-    identifier: z.string(),
-  }),
-]);
+const driverStreamDataValidator = baseStreamDataValidator.extend({
+  identifier: z.literal("OBC"),
+  racingNumber: z.number(),
+  teamName: z.string(),
+  driverImg: z.string(),
+  teamImg: z.string(),
+  driverFirstName: z.string(),
+  driverLastName: z.string(),
+  constructorName: z.string(),
+  hex: z.string(),
+});
+const otherStreamDataValidator = baseStreamDataValidator.extend({
+  identifier: z.string(),
+});
+
+export const streamDataValidator = z.union([driverStreamDataValidator, otherStreamDataValidator]);
+export type StreamData = z.output<typeof streamDataValidator>;
+export type DriverStreamData = z.output<typeof driverStreamDataValidator>;
+export type OtherStreamData = z.output<typeof otherStreamDataValidator>;
 
 const f1PlaybackOffsetValidator = z.object({
   channels: z.tuple([z.string(), z.string()]),
@@ -51,7 +54,6 @@ export const videoRaceStreamsContainerValidator = z.object({
     emfAttributes: z.object({
       Meeting_Country_Name: z.string(),
       MeetingCountryKey: z.string(),
-      MeetingSessionKey: z.string(),
     }),
   }),
 });

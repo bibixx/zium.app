@@ -1,15 +1,15 @@
 import { assertNever } from "../../utils/assertNever";
 import {
   BaseStreamInfo,
-  DriverStreamDataDTO,
+  // DriverStreamDataDTO,
   DriverStreamInfo,
   F1PlaybackOffsetsApiResponse,
   F1PlaybackOffsetsData,
   DataStreamInfo,
   MainStreamInfo,
-  StreamDataDTO,
   StreamInfoWithDriver,
 } from "./useVideoRaceDetails.types";
+import { DriverStreamData, StreamData } from "./useVideoRaceDetails.validator";
 
 const getStreamPrettyName = (name: string) => {
   switch (name) {
@@ -52,7 +52,7 @@ const mapStreamIdentifierToType = (identifier: string): StreamInfoWithDriver["ty
   return null;
 };
 
-export const collectStreams = (streams: StreamDataDTO[] | undefined, raceId: string) => {
+export const collectStreams = (streams: StreamData[] | undefined, raceId: string) => {
   const defaultStreams: MainStreamInfo[] = [];
   let driverTrackerStream: DataStreamInfo | null = null;
   let dataChannelStream: DataStreamInfo | null = null;
@@ -121,7 +121,7 @@ export const collectStreams = (streams: StreamDataDTO[] | undefined, raceId: str
     }
 
     if (streamType === "driver") {
-      const driverStream = stream as DriverStreamDataDTO;
+      const driverStream = stream as DriverStreamData;
 
       const driverStreamInfo: DriverStreamInfo = {
         ...baseStreamInfo,
