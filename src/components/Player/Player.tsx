@@ -29,7 +29,7 @@ interface PlayerProps {
   deleteLayout: (layoutIndex: number) => void;
   viewerState: WindowGridState;
   isPaused: boolean;
-  hasOnlyOneStream: boolean;
+  hasUsedAllStreams: boolean;
 }
 export const Player = ({
   player,
@@ -46,7 +46,7 @@ export const Player = ({
   deleteLayout,
   viewerState,
   isPaused,
-  hasOnlyOneStream,
+  hasUsedAllStreams,
 }: PlayerProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -144,7 +144,7 @@ export const Player = ({
               duplicateLayout={duplicateLayout}
               renameLayout={renameLayout}
               deleteLayout={deleteLayout}
-              hasOnlyOneStream={hasOnlyOneStream}
+              hasUsedAllStreams={hasUsedAllStreams}
             />
           </div>
         </div>

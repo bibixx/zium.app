@@ -339,7 +339,7 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
   useNotifyAboutNewEvent(raceId);
 
   const globalFeeds = useMemo(
-    () => [streams.driverTrackerStream, streams.dataChannelStream],
+    () => [streams.driverTrackerStream, streams.dataChannelStream].filter(isNotNullable),
     [streams.dataChannelStream, streams.driverTrackerStream],
   );
 
@@ -399,7 +399,7 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
           deleteLayout={deleteLayout}
           viewerState={viewerState}
           isPaused={areVideosPaused}
-          hasOnlyOneStream={hasOnlyOneStream}
+          hasUsedAllStreams={usedWindows.length >= availableDrivers.length + globalFeeds.length}
         />
         <ZiumOffsetsOverwriteOnStartDialog
           isOpen={ziumOffsetsDialogState.isOpen}

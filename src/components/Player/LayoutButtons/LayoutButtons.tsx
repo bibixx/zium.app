@@ -17,6 +17,7 @@ import { LayoutDialogState } from "../LayoutDialogs/LayoutDialogs.types";
 import { useHotkeys } from "../../../hooks/useHotkeys/useHotkeys";
 import { SHORTCUTS } from "../../../hooks/useHotkeys/useHotkeys.keys";
 import { assertNever } from "../../../utils/assertNever";
+import { Tooltip } from "../../Tooltip/Tooltip";
 import styles from "./LayoutButtons.module.scss";
 
 interface LayoutButtonsProps {
@@ -27,7 +28,7 @@ interface LayoutButtonsProps {
   renameLayout: (layoutIndex: number, name: string) => void;
   deleteLayout: (layoutIndex: number) => void;
   viewerState: WindowGridState;
-  hasOnlyOneStream: boolean;
+  hasUsedAllStreams: boolean;
 }
 export const LayoutButtons = ({
   usedWindows,
@@ -37,7 +38,7 @@ export const LayoutButtons = ({
   renameLayout,
   deleteLayout,
   viewerState,
-  hasOnlyOneStream,
+  hasUsedAllStreams,
 }: LayoutButtonsProps) => {
   const { requestStream } = useStreamPicker();
   const { preventHiding } = useViewerUIVisibility();
@@ -190,9 +191,11 @@ export const LayoutButtons = ({
           );
         }}
       </Dropdown>
-      <Button iconLeft={PlusCircleIcon} variant="Secondary" onClick={onAddClick} disabled={hasOnlyOneStream}>
-        Add video
-      </Button>
+      <Tooltip content={hasUsedAllStreams && "There are no more streams available"} delayDuration={300}>
+        <Button iconLeft={PlusCircleIcon} variant="Secondary" onClick={onAddClick} disabled={hasUsedAllStreams}>
+          Add video
+        </Button>
+      </Tooltip>
       <LayoutDialogs state={layoutDialogState} />
     </div>
   );
