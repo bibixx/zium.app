@@ -85,7 +85,7 @@ const LoadingState = () => {
 
       <TimedOutWrapper timeout={500}>
         <div className={styles.loaderWrapper}>
-          <Loader width={128} />
+          <Loader width={64} />
         </div>
       </TimedOutWrapper>
     </div>
