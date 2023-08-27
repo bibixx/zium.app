@@ -1,25 +1,27 @@
 .wrapper {
-  background: var(--color-core-neutral-darken-300);
-  color: var(--color-text-strong);
+  background: var(--color-background-strong-default);
+  color: var(--color-text);
   @include inner-border(var(--color-border-muted-alpha));
 
   z-index: var(--z-index-tooltip);
   overflow: hidden;
-  border-radius: var(--radii-xsmall);
-  padding: 6px 12px;
-  @include typography(text, 200, regular);
+  border-radius: var(--radii-small);
+  padding: 8px 12px;
+  @include typography(text, 300, regular);
   transition: var(--transition-fast);
   will-change: transform, opacity;
   user-select: none;
 
   animation-name: enter;
-  animation-duration: 150ms;
+  animation-duration: var(--motion-timing-fast);
+  animation-timing-function: var(--transition-function);
   --enter-opacity: 0;
   --enter-scale: 0.95;
 
   &[data-state="closed"] {
     animation-name: exit;
-    animation-duration: 150ms;
+    animation-duration: var(--motion-timing-fast);
+    animation-timing-function: var(--transition-function);
     --exit-opacity: 0;
     --exit-scale: .95;
   }
