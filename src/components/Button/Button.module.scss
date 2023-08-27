@@ -50,13 +50,13 @@
       color: var(--color-text-strong);
     }
 
-    &:hover {
+    &:hover:not(&.disabled) {
       background: var(--color-background-accent-strong);
       color: var(--color-text-strong);
     }
 
-    &:active,
-    &.isPressed,
+    &:active:not(&.disabled),
+    &.isPressed:not(&.disabled),
     &.isPressed:hover {
       background: var(--color-background-accent-muted);
       color: var(--color-text-strong);
@@ -82,7 +82,7 @@
       color: var(--color-text-default);
     }
 
-    &:hover {
+    &:hover:not(&.disabled) {
       background: var(--color-background-strong-alpha);
       color: var(--color-text-strong);
 
@@ -91,8 +91,8 @@
       }
     }
 
-    &:active,
-    &.isPressed,
+    &:active:not(&.disabled),
+    &.isPressed:not(&.disabled),
     &.isPressed:hover {
       background: var(--color-background-muted-alpha);
       color: var(--color-text-strong);
@@ -122,12 +122,12 @@
       color: var(--color-text-strong);
     }
 
-    &:hover {
+    &:hover:not(&.disabled) {
       background: var(--color-core-neutral-darken-500);
     }
 
-    &:active,
-    &.isPressed,
+    &:active:not(&.disabled),
+    &.isPressed,:not(&.disabled)
     &.isPressed:hover {
       background: var(--color-core-neutral-darken-500);
     }
@@ -156,7 +156,7 @@
       color: var(--color-text-default);
     }
 
-    &:hover {
+    &:hover:not(&.disabled) {
       @include inner-border(var(--color-border-default-alpha));
       background: var(--color-background-strong-alpha);
       color: var(--color-text-strong);
@@ -166,8 +166,8 @@
       }
     }
 
-    &:active,
-    &.isPressed,
+    &:active:not(&.disabled),
+    &.isPressed:not(&.disabled),
     &.isPressed:hover {
       @include inner-border(var(--color-border-muted-alpha));
       background: var(--color-background-muted-alpha);
@@ -180,7 +180,6 @@
 
     &.disabled {
       @include inner-border(transparent);
-      background: var(--color-background-muted-alpha);
       color: var(--color-text-muted);
 
       .iconWrapper {
@@ -188,6 +187,11 @@
       }
     }
   }
+
+  &.disabled {
+    cursor: not-allowed;
+  }
+
 }
 
 .content {
