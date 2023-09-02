@@ -14,6 +14,7 @@ export const Tooltip = ({
   children,
   content,
   sideOffset = 4,
+  collisionPadding = 4,
   delayDuration,
   skipDelayDuration,
   disableHoverableContent = true,
@@ -33,7 +34,12 @@ export const Tooltip = ({
         <TooltipPrimitive.Trigger asChild>{children}</TooltipPrimitive.Trigger>
 
         <TooltipPrimitive.Portal>
-          <TooltipPrimitive.TooltipContent className={cn(styles.wrapper)} sideOffset={sideOffset} {...props}>
+          <TooltipPrimitive.TooltipContent
+            className={cn(styles.wrapper)}
+            sideOffset={sideOffset}
+            collisionPadding={collisionPadding}
+            {...props}
+          >
             {content}
           </TooltipPrimitive.TooltipContent>
         </TooltipPrimitive.Portal>
