@@ -11,7 +11,7 @@ export const audioGroupEntryValidator = z.object({
   AUTOSELECT: yesNoBoolean,
   DEFAULT: yesNoBoolean,
   TYPE: z.literal("AUDIO"),
-  CHANNELS: quotedString,
+  CHANNELS: quotedString.optional(),
   "GROUP-ID": quotedString,
   LANGUAGE: quotedString,
   NAME: quotedString,
@@ -29,8 +29,6 @@ export const subtitlesGroupEntryValidator = z.object({
   NAME: quotedString,
   URI: quotedString,
 });
-
-export type SubtitlesGroupEntry = z.output<typeof subtitlesGroupEntryValidator>;
 
 export const groupEntryValidator = z.discriminatedUnion("TYPE", [
   audioGroupEntryValidator,

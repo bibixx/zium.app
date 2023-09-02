@@ -27,6 +27,7 @@
     "lottie-react": "^2.4.0",
     "lottie-web": "^5.12.2",
     "moize": "^6.1.6",
+    "mpd-parser": "^1.2.2",
     "object-merge": "^2.5.1",
     "piwik-react-router": "^0.12.1",
     "react": "^18.2.0",
