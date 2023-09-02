@@ -11,18 +11,19 @@
   border: 0;
   user-select: none;
   transform: scale(1);
+  cursor: pointer;
   @include typography(label, 300);
-
-  &:not(.disabled) {
-    cursor: pointer;
-  }
 
   &::after {
     transition: var(--transition-fast);
     transition-property: box-shadow;
   }
 
-  &:not(:disabled) {
+  &.disabled {
+    cursor: not-allowed;
+  }
+
+  &:not(&.disabled) {
     &:hover {
       transform: scale(1.0333);
     }
@@ -50,16 +51,18 @@
       color: var(--color-text-strong);
     }
 
-    &:hover:not(&.disabled) {
-      background: var(--color-background-accent-strong);
-      color: var(--color-text-strong);
-    }
+    &:not(&.disabled) {
+      &:hover {
+        background: var(--color-background-accent-strong);
+        color: var(--color-text-strong);
+      }
 
-    &:active:not(&.disabled),
-    &.isPressed:not(&.disabled),
-    &.isPressed:hover {
-      background: var(--color-background-accent-muted);
-      color: var(--color-text-strong);
+      &:active,
+      &.isPressed,
+      &.isPressed:hover {
+        background: var(--color-background-accent-muted);
+        color: var(--color-text-strong);
+      }
     }
 
     &.disabled {
@@ -82,23 +85,25 @@
       color: var(--color-text-default);
     }
 
-    &:hover:not(&.disabled) {
-      background: var(--color-background-strong-alpha);
-      color: var(--color-text-strong);
-
-      .iconWrapper {
+    &:not(&.disabled) {
+      &:hover {
+        background: var(--color-background-strong-alpha);
         color: var(--color-text-strong);
+
+        .iconWrapper {
+          color: var(--color-text-strong);
+        }
       }
-    }
 
-    &:active:not(&.disabled),
-    &.isPressed:not(&.disabled),
-    &.isPressed:hover {
-      background: var(--color-background-muted-alpha);
-      color: var(--color-text-strong);
+      &:active,
+      &.isPressed,
+      &.isPressed:hover {
+        background: var(--color-background-muted-alpha);
+        color: var(--color-text-strong);
 
-      .iconWrapper {
-        color: var(--color-text-default);
+        .iconWrapper {
+          color: var(--color-text-default);
+        }
       }
     }
 
@@ -122,14 +127,15 @@
       color: var(--color-text-strong);
     }
 
-    &:hover:not(&.disabled) {
-      background: var(--color-core-neutral-darken-500);
-    }
+    &:not(&.disabled) {
+      &:hover {
+        background: var(--color-core-neutral-darken-500);
+      }
 
-    &:active:not(&.disabled),
-    &.isPressed,:not(&.disabled)
-    &.isPressed:hover {
-      background: var(--color-core-neutral-darken-500);
+      &:active,
+      &.isPressed &.isPressed:hover {
+        background: var(--color-core-neutral-darken-500);
+      }
     }
 
     &:active {
@@ -187,11 +193,6 @@
       }
     }
   }
-
-  &.disabled {
-    cursor: not-allowed;
-  }
-
 }
 
 .content {

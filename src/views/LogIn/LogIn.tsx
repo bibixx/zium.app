@@ -43,9 +43,8 @@ export const LogIn = () => {
           <Button
             as={isOpening ? "div" : "button"}
             iconLeft={!isOpening ? ArrowLeftOnRectangleIcon : Spinner}
-            variant="Primary"
+            variant={isOpening ? "Secondary" : "Primary"}
             fluid
-            disabledState={isOpening}
             onClick={() => {
               requestLogin();
               setIsOpening(true);

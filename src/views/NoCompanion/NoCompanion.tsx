@@ -19,9 +19,8 @@ export const NoCompanion = () => {
           target="_blank"
           rel="noreferrer"
           iconLeft={!isOpening ? PuzzlePieceIcon : Spinner}
-          variant="Primary"
+          variant={isOpening ? "Secondary" : "Primary"}
           fluid
-          disabledState={isOpening}
           onClick={() => setIsOpening(true)}
         >
           {!isOpening ? "Install Chrome Extension" : "Refresh the page"}

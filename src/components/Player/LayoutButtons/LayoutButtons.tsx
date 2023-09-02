@@ -192,7 +192,12 @@ export const LayoutButtons = ({
         }}
       </Dropdown>
       <Tooltip content={hasUsedAllStreams && "There are no more streams available"} delayDuration={300}>
-        <Button iconLeft={PlusCircleIcon} variant="Secondary" onClick={onAddClick} disabled={hasUsedAllStreams}>
+        <Button
+          iconLeft={PlusCircleIcon}
+          variant="Secondary"
+          onClick={hasUsedAllStreams ? undefined : onAddClick}
+          disabledState={hasUsedAllStreams}
+        >
           Add video
         </Button>
       </Tooltip>
