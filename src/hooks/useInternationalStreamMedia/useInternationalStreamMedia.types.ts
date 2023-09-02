@@ -1,6 +1,5 @@
-import { AudioGroupEntry, SubtitlesGroupEntry } from "./useInternationalStreamMedia.validator";
+import { AudioGroupEntry } from "./useInternationalStreamMedia.validator";
 
 export type VideoStreamMedia = {
   AUDIO: AudioGroupEntry[];
-  SUBTITLES: SubtitlesGroupEntry[];
 };
