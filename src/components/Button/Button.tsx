@@ -51,6 +51,7 @@ export const Button = withAs("button")<ButtonProps>(
         )}
         ref={ref}
         disabled={disabled}
+        aria-disabled={disabled || disabledState}
         {...props}
       >
         {IconLeft && (
