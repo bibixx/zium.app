@@ -84,10 +84,11 @@ export const LayoutButtons = ({
         {
           keys: SHORTCUTS.OPEN_LAYOUTS,
           action: onAddClick,
+          enabled: !hasUsedAllStreams,
         },
       ],
     }),
-    [onAddClick],
+    [hasUsedAllStreams, onAddClick],
   );
 
   const dropdownOptions = useCallback(
