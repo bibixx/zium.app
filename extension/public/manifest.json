@@ -1,6 +1,6 @@
 {
   "name": "zium.app Helper",
-  "version": "1.0.2",
+  "version": "0.0.1",
   "icons": {
     "16": "icon16.png",
     "32": "icon32.png",
@@ -29,5 +29,11 @@
     }
   ],
   "permissions": ["declarativeNetRequest", "storage", "cookies", "alarms", "notifications"],
-  "manifest_version": 3
+  "manifest_version": 3,
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "zium@zium.app",
+      "strict_min_version": "109.0"
+    }
+  }
 }
