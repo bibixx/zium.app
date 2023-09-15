@@ -34,6 +34,10 @@ const addRule = (token: string) => {
               operation: HeaderOperation.SET,
               header: "ascendontoken",
             },
+            {
+              operation: HeaderOperation.REMOVE,
+              header: "referer",
+            },
           ],
         },
         condition: {
