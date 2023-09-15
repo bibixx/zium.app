@@ -396,7 +396,7 @@ export const getDefaultState = (includeOffsets = false): WindowGridState => {
   ].filter(isNotFalse);
 
   return {
-    currentLayoutIndex: 0,
+    currentLayoutIndex: includeOffsets ? defaultLayouts.length - 1 : 0,
     savedLayouts: defaultLayouts.map((layoutBase) => getLayout(layoutBase, mainId)),
   };
 };
