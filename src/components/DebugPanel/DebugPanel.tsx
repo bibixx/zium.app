@@ -223,6 +223,7 @@ const DebugRaceSettings = ({ closePanel }: DebugPanelContentsProps) => {
         checked={flags.showInternationalOffsets}
         onChange={updateFlag("showInternationalOffsets")}
       />
+      <Checkbox label="Use kids avatars" checked={flags.useKidsAvatars} onChange={updateFlag("useKidsAvatars")} />
     </div>
   );
 };

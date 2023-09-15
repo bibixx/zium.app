@@ -23,6 +23,7 @@ import { CookieBanner } from "../../components/CookieBanner/CookieBanner";
 import { ZiumOffsetsOverwriteOnStartDialog } from "../../components/ZiumOffsetsDialogs/ZiumOffsetsOverwriteOnStartDialog";
 import { GlobalShortcutsSnackbar } from "../../components/ShortcutsSnackbar/ShortcutsSnackbar";
 import { toggleFullScreen } from "../../utils/toggleFullScreen";
+import { useFeatureFlags } from "../../hooks/useFeatureFlags/useFeatureFlags";
 import { getWindowStreamMap, getAvailableDrivers } from "./Viewer.utils";
 import { useGrid } from "./hooks/useGrid";
 import styles from "./Viewer.module.scss";
@@ -134,7 +135,12 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
     [dispatch],
   );
 
-  const availableDrivers = useMemo(() => getAvailableDrivers(streams, season), [season, streams]);
+  const shouldUseKidsAvatars = useFeatureFlags((state) => state.flags.useKidsAvatars);
+  const isKidsStream = raceInfo.title.toLowerCase().includes("kids") || shouldUseKidsAvatars;
+  const availableDrivers = useMemo(
+    () => getAvailableDrivers(streams, season, isKidsStream),
+    [isKidsStream, season, streams],
+  );
   const usedWindows = useMemo(
     () =>
       windows.map((w) => {

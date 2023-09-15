@@ -17,6 +17,7 @@ export const debugFlagTypes = {
   disableLiveNotifications: BOOLEAN_TYPE,
   forceTVAccess: BOOLEAN_TYPE,
   showInternationalOffsets: BOOLEAN_TYPE,
+  useKidsAvatars: BOOLEAN_TYPE,
 } satisfies Record<string, DebugFlagTypes>;
 
 export const defaultFlags = {
@@ -26,4 +27,5 @@ export const defaultFlags = {
   disableLiveNotifications: false,
   forceTVAccess: false,
   showInternationalOffsets: false,
+  useKidsAvatars: false,
 } satisfies FlagsObject;
