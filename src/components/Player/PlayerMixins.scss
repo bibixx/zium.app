@@ -23,6 +23,10 @@
       * {
         pointer-events: auto;
       }
+
+      .bmpui-ui-seekbar-label {
+        pointer-events: none !important;
+      }
     }
 
     .bmpui-ui-volumeslider,
