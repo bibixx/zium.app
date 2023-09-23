@@ -10,7 +10,8 @@ interface HumanReadableShortcutsProps {
   keys: BrandedShortcut;
   withoutClick?: boolean;
 }
-export const HumanReadableShortcuts = ({ keys, withoutClick }: HumanReadableShortcutsProps) => {
+export const HumanReadableShortcuts = ({ keys: rawKeys, withoutClick }: HumanReadableShortcutsProps) => {
+  const keys = rawKeys.type === "keyShortcut" ? rawKeys.keys : rawKeys.codes;
   const shift = keys.includes(Key.Shift);
   const alt = keys.includes(Key.Alt);
   const control = keys.includes(Key.Control);

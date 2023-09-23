@@ -8,7 +8,7 @@ import { WithVariables } from "../../../components/WithVariables/WithVariables";
 import { FigmaIcon, GitHubIcon, TwitterIcon } from "../../../components/CustomIcons/CustomIcons";
 import { MIDDLE_DOT } from "../../../utils/text";
 import { ShortcutsSnackbar } from "../../../components/ShortcutsSnackbar/ShortcutsSnackbar";
-import { useElementHeight } from "../../../hooks/useElementHeight/useElementHeight";
+import { useElementSize } from "../../../hooks/useElementSize/useElementSize";
 import styles from "./Sidebar.module.scss";
 
 interface SidebarSeason {
@@ -157,7 +157,7 @@ const SidebarElement = ({
 const useLonelyMiddleDot = () => {
   const [isVisible, setIsVisible] = useState(true);
   const middleDotWrapperRef = useRef<HTMLDivElement>(null);
-  useElementHeight((height) => setIsVisible(height < 24), middleDotWrapperRef);
+  useElementSize(({ height }) => setIsVisible(height < 24), middleDotWrapperRef);
 
   return { isVisible, middleDotWrapperRef };
 };

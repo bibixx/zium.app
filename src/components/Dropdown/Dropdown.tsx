@@ -1,6 +1,6 @@
 import { Placement } from "@popperjs/core";
 import FocusTrap from "focus-trap-react";
-import { Fragment, ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Fragment, ReactNode, useMemo, useRef } from "react";
 import { createPortal } from "react-dom";
 import { usePopper } from "react-popper";
 import { CSSTransition } from "react-transition-group";
@@ -8,10 +8,8 @@ import { Key } from "ts-key-enum";
 import { OVERLAYS_PORTAL_ID } from "../../constants/portals";
 import { ListItem } from "../ListItem/ListItem";
 import { WithVariables } from "../WithVariables/WithVariables";
-import { useHotkeys } from "../../hooks/useHotkeys/useHotkeys";
-import { SHORTCUTS } from "../../hooks/useHotkeys/useHotkeys.keys";
 import { isNotFalse } from "../../utils/isNotFalse";
-import { usePopperAnchorRef } from "./Dropdown.hooks";
+import { UseDropdownStateArguments, useDropdownHotkeys, useDropdownState, usePopperAnchorRef } from "./Dropdown.hooks";
 import styles from "./Dropdown.module.scss";
 
 export interface DropdownSectionElement {
@@ -34,54 +32,41 @@ interface DropdownChildrenProps {
   toggleOpen: () => void;
 }
 export type DropdownOptions = (DropdownSection | false)[] | DropdownSectionElement[];
-interface DropdownProps {
+interface StatelessDropdownProps {
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
+  toggleOpen: () => void;
   width?: number;
   distance?: number;
   skidding?: number;
   placement?: Placement;
   children: (props: DropdownChildrenProps) => JSX.Element;
   options: DropdownOptions | ((toggleOpen: () => void) => DropdownOptions);
-  onOpened?: () => void;
-  onClosed?: () => void;
   closeOnClick?: boolean;
 }
-export const Dropdown = ({
+
+type DropdownProps = UseDropdownStateArguments &
+  Omit<StatelessDropdownProps, "isOpen" | "setIsOpen" | "onOpened" | "onClosed" | "toggleOpen">;
+
+export const Dropdown = ({ onOpened, onClosed, ...props }: DropdownProps) => {
+  const state = useDropdownState({ onOpened, onClosed });
+  useDropdownHotkeys(state);
+
+  return <StatelessDropdown {...props} {...state} />;
+};
+
+export const StatelessDropdown = ({
+  isOpen,
+  setIsOpen,
+  toggleOpen,
   width = 240,
   children,
   placement = "auto",
   distance = 8,
   skidding = 0,
   options,
-  onOpened,
-  onClosed,
   closeOnClick = false,
-}: DropdownProps) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const toggleOpen = useCallback(() => setIsOpen((oldIsOpen) => !oldIsOpen), []);
-
-  useEffect(() => {
-    if (isOpen) {
-      onOpened?.();
-    } else {
-      onClosed?.();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpen]);
-
-  useHotkeys(
-    () => ({
-      enabled: isOpen,
-      allowPropagation: false,
-      hotkeys: [
-        {
-          action: toggleOpen,
-          keys: SHORTCUTS.CLOSE,
-        },
-      ],
-    }),
-    [isOpen, toggleOpen],
-  );
-
+}: StatelessDropdownProps) => {
   const $portalContainer = useMemo(() => document.getElementById(OVERLAYS_PORTAL_ID), []);
   const backgroundWrapperRef = useRef<HTMLDivElement>(null);
 

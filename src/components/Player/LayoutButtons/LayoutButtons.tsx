@@ -1,16 +1,15 @@
 import { PlusCircleIcon, RectangleGroupIcon } from "@heroicons/react/20/solid";
 import { useCallback, useMemo, useState } from "react";
 import { ChosenValueType, useStreamPicker } from "../../../hooks/useStreamPicker/useStreamPicker";
-import { useViewerUIVisibility } from "../../../hooks/useViewerUIVisibility/useViewerUIVisibility";
 import { Dimensions } from "../../../types/Dimensions";
 import { GridWindow } from "../../../types/GridWindow";
-import { quote } from "../../../utils/text";
+import { ELLIPSIS, quote } from "../../../utils/text";
 import {
   WindowGridSavedLayout,
   WindowGridState,
 } from "../../../views/Viewer/hooks/useViewerState/useViewerState.utils";
 import { Button } from "../../Button/Button";
-import { Dropdown, DropdownSection, DropdownSectionElement } from "../../Dropdown/Dropdown";
+import { DropdownSection, DropdownSectionElement, StatelessDropdown } from "../../Dropdown/Dropdown";
 import { sizePxToPercent } from "../../RnDWindow/RnDWindow.utils";
 import { LayoutDialogs } from "../LayoutDialogs/LayoutDialogs";
 import { LayoutDialogState } from "../LayoutDialogs/LayoutDialogs.types";
@@ -19,6 +18,8 @@ import { SHORTCUTS } from "../../../hooks/useHotkeys/useHotkeys.keys";
 import { assertNever } from "../../../utils/assertNever";
 import { Tooltip } from "../../Tooltip/Tooltip";
 import styles from "./LayoutButtons.module.scss";
+import { useLayoutsDropdownHotkeys, useLayoutsDropdownState } from "./LayoutButtons.hooks";
+import { LayoutCaption } from "./LayoutCaption/LayoutCaption";
 
 interface LayoutButtonsProps {
   usedWindows: string[];
@@ -41,11 +42,10 @@ export const LayoutButtons = ({
   hasUsedAllStreams,
 }: LayoutButtonsProps) => {
   const { requestStream } = useStreamPicker();
-  const { preventHiding } = useViewerUIVisibility();
   const [layoutDialogState, setLayoutDialogState] = useState<LayoutDialogState>({ type: "closed" });
   const onCancel = useCallback(() => setLayoutDialogState({ type: "closed" }), []);
-
   const selectedLayoutIndex = useMemo(() => viewerState.currentLayoutIndex, [viewerState.currentLayoutIndex]);
+  const { dropdownState, withShortcutVisible } = useLayoutsDropdownState({ loadLayout });
 
   const onAddClick = useCallback(async () => {
     const chosenData = await requestStream(["drivers", "data"], usedWindows);
@@ -76,8 +76,8 @@ export const LayoutButtons = ({
     createWindow(newWindow, dimensions);
   }, [createWindow, requestStream, usedWindows]);
 
-  useHotkeys(
-    () => ({
+  useHotkeys(() => {
+    return {
       id: "LayoutButtons",
       allowPropagation: true,
       hotkeys: [
@@ -87,9 +87,14 @@ export const LayoutButtons = ({
           enabled: !hasUsedAllStreams,
         },
       ],
-    }),
-    [hasUsedAllStreams, onAddClick],
-  );
+    };
+  }, [hasUsedAllStreams, onAddClick]);
+
+  useLayoutsDropdownHotkeys({
+    isOpen: dropdownState.isOpen,
+    toggleOpen: dropdownState.toggleOpen,
+    withShortcutVisible,
+  });
 
   const dropdownOptions = useCallback(
     (toggleOpen: () => void): (DropdownSection | false)[] => {
@@ -103,7 +108,9 @@ export const LayoutButtons = ({
             (layout, i): DropdownSectionElement => ({
               id: String(i),
               text: layout.name,
-              caption: getVideosText(layout.windows.length),
+              caption: (
+                <LayoutCaption videosCount={layout.windows.length} i={i} withShortcutVisible={withShortcutVisible} />
+              ),
               isActive: i === selectedLayoutIndex,
               onClick: () => {
                 toggleOpen();
@@ -117,7 +124,7 @@ export const LayoutButtons = ({
           options: [
             {
               id: "duplicate",
-              text: `Duplicate layout...`,
+              text: `Duplicate layout${ELLIPSIS}`,
               onClick: () => {
                 toggleOpen();
                 setLayoutDialogState({
@@ -134,7 +141,7 @@ export const LayoutButtons = ({
             },
             {
               id: "rename",
-              text: `Rename ${quote(selectedLayout.name)}...`,
+              text: `Rename ${quote(selectedLayout.name)}${ELLIPSIS}`,
               onClick: () => {
                 toggleOpen();
                 setLayoutDialogState({
@@ -169,17 +176,21 @@ export const LayoutButtons = ({
         },
       ];
     },
-    [viewerState.savedLayouts, selectedLayoutIndex, loadLayout, onCancel, duplicateLayout, renameLayout, deleteLayout],
+    [
+      viewerState.savedLayouts,
+      selectedLayoutIndex,
+      withShortcutVisible,
+      loadLayout,
+      onCancel,
+      duplicateLayout,
+      renameLayout,
+      deleteLayout,
+    ],
   );
 
   return (
     <div className={styles.buttonsWrapper}>
-      <Dropdown
-        placement="top-end"
-        options={dropdownOptions}
-        onOpened={() => preventHiding(true)}
-        onClosed={() => preventHiding(false)}
-      >
+      <StatelessDropdown placement="top-end" width={248} options={dropdownOptions} {...dropdownState}>
         {({ setRef, toggleOpen, isOpen }) => {
           return (
             <Button
@@ -191,7 +202,7 @@ export const LayoutButtons = ({
             />
           );
         }}
-      </Dropdown>
+      </StatelessDropdown>
       <Tooltip content={hasUsedAllStreams && "There are no more streams available"} delayDuration={300}>
         <Button
           iconLeft={PlusCircleIcon}
@@ -233,14 +244,6 @@ const getNewWindow = (chosenValue: ChosenValueType): GridWindow | null => {
 
   return assertNever(chosenValue);
 };
-
-function getVideosText(videosCount: number) {
-  if (videosCount === 1) {
-    return `${videosCount} video`;
-  }
-
-  return `${videosCount} videos`;
-}
 
 function getNewLayoutName(layouts: WindowGridSavedLayout[]) {
   const baseLayoutName = `Layout ${layouts.length + 1}`;

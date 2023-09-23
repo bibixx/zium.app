@@ -31,5 +31,9 @@ const toHumanReadableKey = (key: string) => {
     return "Esc";
   }
 
+  if (key.startsWith("Digit")) {
+    return key.substring("Digit".length);
+  }
+
   return toTitleCase(key);
 };

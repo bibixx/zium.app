@@ -1,7 +1,7 @@
 import { MutableRefObject, useEffect } from "react";
 
-export const useElementHeight = (
-  onHeightChange: (height: number) => void,
+export const useElementSize = (
+  onSizeChange: (size: { height: number; width: number }) => void,
   ref: MutableRefObject<HTMLElement | null>,
 ) => {
   useEffect(() => {
@@ -13,7 +13,7 @@ export const useElementHeight = (
 
     const resizeObserver = new ResizeObserver(([entry]) => {
       const [borderBoxSize] = entry.borderBoxSize;
-      onHeightChange(borderBoxSize.blockSize);
+      onSizeChange({ height: borderBoxSize.blockSize, width: borderBoxSize.inlineSize });
     });
 
     resizeObserver.observe($element);

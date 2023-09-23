@@ -3,7 +3,7 @@ import cn from "classnames";
 import { forwardRef, ReactNode, useCallback, useRef, useState } from "react";
 import { Button } from "../Button/Button";
 import { WithVariables } from "../WithVariables/WithVariables";
-import { useElementHeight } from "../../hooks/useElementHeight/useElementHeight";
+import { useElementSize } from "../../hooks/useElementSize/useElementSize";
 import { useSnackbarDrag, useSnackbarTime } from "./Snackbar.hooks";
 import styles from "./Snackbar.module.scss";
 
@@ -17,7 +17,7 @@ interface SnackbarProps {
   offsetY: number;
   onClose: () => void;
   setShowDraggingOverlay: (showDraggingOverlay: boolean) => void;
-  onHeightChange: (height: number) => void;
+  onHeightChange: (size: { height: number }) => void;
 }
 
 export const Snackbar = forwardRef<HTMLDivElement | null, SnackbarProps>(
@@ -58,7 +58,7 @@ export const Snackbar = forwardRef<HTMLDivElement | null, SnackbarProps>(
       onDragEnd,
     });
 
-    useElementHeight(onHeightChange, wrapperRef);
+    useElementSize(onHeightChange, wrapperRef);
 
     return (
       <>

@@ -3,7 +3,7 @@ import { create } from "zustand";
 import { Key } from "ts-key-enum";
 import { BrandedShortcut, MODIFIER_KEYS, mappedKeys } from "./useHotkeys.keys";
 
-interface Hotkey {
+export interface Hotkey {
   keys: BrandedShortcut;
   action: (e: KeyboardEvent) => void;
   enabled?: boolean;
@@ -60,7 +60,8 @@ export const useHotkeysExecutor = () => {
         }
 
         for (const hotkey of scope.hotkeys) {
-          const keys = hotkey.keys;
+          const useCodes = hotkey.keys.type === "codeShortcut";
+          const keys = hotkey.keys.type === "keyShortcut" ? hotkey.keys.keys : hotkey.keys.codes;
           const isHotkeyEnabled = hotkey.enabled ?? true;
           const preventDefault = hotkey.preventDefault ?? false;
           const enableOnFormTags = hotkey.enableOnFormTags ?? false;
@@ -74,6 +75,8 @@ export const useHotkeysExecutor = () => {
             continue;
           }
 
+          const compareValue = useCodes ? e.code : e.key;
+
           const shift = keys.includes(Key.Shift);
           const alt = keys.includes(Key.Alt);
           const control = keys.includes(Key.Control);
@@ -85,11 +88,12 @@ export const useHotkeysExecutor = () => {
             }
 
             const mappedKey = mappedKeys[key];
-            if (mappedKey != null && mappedKey.toLocaleLowerCase() === e.key.toLocaleLowerCase()) {
+
+            if (mappedKey != null && mappedKey.toLocaleLowerCase() === compareValue.toLocaleLowerCase()) {
               return true;
             }
 
-            return key.toLocaleLowerCase() === e.key.toLocaleLowerCase();
+            return key.toLocaleLowerCase() === compareValue.toLocaleLowerCase();
           });
 
           const shouldActivate =

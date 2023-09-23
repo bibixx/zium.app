@@ -251,6 +251,10 @@ export const windowGridReducer = (prevState: WindowGridState, action: WindowGrid
       break;
     }
     case "loadLayout": {
+      if (action.layoutIndex >= newState.savedLayouts.length) {
+        break;
+      }
+
       newState.currentLayoutIndex = action.layoutIndex;
 
       break;

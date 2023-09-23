@@ -50,7 +50,7 @@ export const SnackbarsList = () => {
                 time={snackbar.time}
                 actions={snackbar.actions}
                 offsetY={getPreviousHeights(reversedSnackbars, i, snackbarHeights) + i * 8}
-                onHeightChange={(height) => {
+                onHeightChange={({ height }) => {
                   setSnackbarHeights((heights) => ({
                     ...heights,
                     [snackbar.id]: height,

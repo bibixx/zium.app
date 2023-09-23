@@ -1,6 +1,7 @@
 import { Key } from "ts-key-enum";
 
 import { isWindows } from "../../utils/platform";
+import { NDASH } from "../../utils/text";
 
 export const CmdOrControl = isWindows ? Key.Control : Key.Meta;
 
@@ -20,45 +21,61 @@ export const mappedKeys: Record<string, string> = {
 export const LEFT_CLICK = "__LEFT_CLICK__";
 export const MODIFIER_KEYS = [Key.Shift, Key.Alt, Key.Control, Key.Meta, LEFT_CLICK] as string[];
 
-export type BrandedShortcut = string[] & { __type: "shortcut" };
-const brandShortcut = (shortcut: string[]) => shortcut as BrandedShortcut;
+export type BrandedKeyShortcut = { type: "keyShortcut"; keys: string[] };
+export type BrandedCodeShortcut = { type: "codeShortcut"; codes: string[] };
+export type BrandedShortcut = BrandedKeyShortcut | BrandedCodeShortcut;
+
+const brandKeyShortcut = (keys: string[]): BrandedKeyShortcut => ({ type: "keyShortcut", keys });
+const brandCodeShortcut = (codes: string[]): BrandedCodeShortcut => ({ type: "codeShortcut", codes });
 
 export const SHORTCUTS = {
   // Races
-  SEARCH_RACES: brandShortcut(["/"]),
+  SEARCH_RACES: brandKeyShortcut(["/"]),
 
   // Viewer
-  OPEN_LAYOUTS: brandShortcut([Key.Shift, "n"]),
-  PLAY_PAUSE: brandShortcut(["space"]),
-  BIG_SKIP_AHEAD: brandShortcut([Key.ArrowRight]),
-  SMALL_SKIP_AHEAD: brandShortcut([Key.ArrowRight, CmdOrControl]),
-  SUPER_SMALL_SKIP_AHEAD: brandShortcut(["."]),
-  BIG_SKIP_BACKWARDS: brandShortcut([Key.ArrowLeft]),
-  SMALL_SKIP_BACKWARDS: brandShortcut([Key.ArrowLeft, CmdOrControl]),
-  SUPER_SMALL_SKIP_BACKWARDS: brandShortcut([","]),
-  TOGGLE_FULL_SCREEN: brandShortcut(["f"]),
-  TOGGLE_CLOSED_CAPTIONS: brandShortcut(["c"]),
+  OPEN_LAYOUTS: brandKeyShortcut([Key.Shift, "n"]),
+  PLAY_PAUSE: brandKeyShortcut(["space"]),
+  BIG_SKIP_AHEAD: brandKeyShortcut([Key.ArrowRight]),
+  SMALL_SKIP_AHEAD: brandKeyShortcut([Key.ArrowRight, CmdOrControl]),
+  SUPER_SMALL_SKIP_AHEAD: brandKeyShortcut(["."]),
+  BIG_SKIP_BACKWARDS: brandKeyShortcut([Key.ArrowLeft]),
+  SMALL_SKIP_BACKWARDS: brandKeyShortcut([Key.ArrowLeft, CmdOrControl]),
+  SUPER_SMALL_SKIP_BACKWARDS: brandKeyShortcut([","]),
+  TOGGLE_FULL_SCREEN: brandKeyShortcut(["f"]),
+  TOGGLE_CLOSED_CAPTIONS: brandKeyShortcut(["c"]),
 
-  OFFSET_INPUT_INCREASE_SMALL: brandShortcut([CmdOrControl, Key.ArrowUp]),
-  OFFSET_INPUT_INCREASE_MEDIUM: brandShortcut([Key.ArrowUp]),
-  OFFSET_INPUT_INCREASE_BIG: brandShortcut([Key.Shift, Key.ArrowUp]),
-  OFFSET_INPUT_DECREASE_SMALL: brandShortcut([CmdOrControl, Key.ArrowDown]),
-  OFFSET_INPUT_DECREASE_MEDIUM: brandShortcut([Key.ArrowDown]),
-  OFFSET_INPUT_DECREASE_BIG: brandShortcut([Key.Shift, Key.ArrowDown]),
+  OFFSET_INPUT_INCREASE_SMALL: brandKeyShortcut([CmdOrControl, Key.ArrowUp]),
+  OFFSET_INPUT_INCREASE_MEDIUM: brandKeyShortcut([Key.ArrowUp]),
+  OFFSET_INPUT_INCREASE_BIG: brandKeyShortcut([Key.Shift, Key.ArrowUp]),
+  OFFSET_INPUT_DECREASE_SMALL: brandKeyShortcut([CmdOrControl, Key.ArrowDown]),
+  OFFSET_INPUT_DECREASE_MEDIUM: brandKeyShortcut([Key.ArrowDown]),
+  OFFSET_INPUT_DECREASE_BIG: brandKeyShortcut([Key.Shift, Key.ArrowDown]),
 
-  GRID_SMALL: brandShortcut([Key.Shift, LEFT_CLICK]),
-  GRID_PRECISE: brandShortcut([CmdOrControl, LEFT_CLICK]),
+  GRID_SMALL: brandKeyShortcut([Key.Shift, LEFT_CLICK]),
+  GRID_PRECISE: brandKeyShortcut([CmdOrControl, LEFT_CLICK]),
 
   // Generic
-  CLOSE: brandShortcut([Key.Escape]),
-  FOCUSED_VOLUME_DOWN: brandShortcut([Key.ArrowLeft]),
-  FOCUSED_VOLUME_UP: brandShortcut([Key.ArrowRight]),
-  TOGGLE_MUTE: brandShortcut(["m"]),
-  STREAM_PICKER_NEXT: brandShortcut([Key.ArrowDown]),
-  STREAM_PICKER_PREV: brandShortcut([Key.ArrowUp]),
-  STREAM_PICKER_SELECT: brandShortcut([Key.Enter]),
-  DEBUG: brandShortcut([Key.Control, "d"]),
-  HELP: brandShortcut([CmdOrControl, "?"]),
+  CLOSE: brandKeyShortcut([Key.Escape]),
+  FOCUSED_VOLUME_DOWN: brandKeyShortcut([Key.ArrowLeft]),
+  FOCUSED_VOLUME_UP: brandKeyShortcut([Key.ArrowRight]),
+  TOGGLE_MUTE: brandKeyShortcut(["m"]),
+  STREAM_PICKER_NEXT: brandKeyShortcut([Key.ArrowDown]),
+  STREAM_PICKER_PREV: brandKeyShortcut([Key.ArrowUp]),
+  STREAM_PICKER_SELECT: brandKeyShortcut([Key.Enter]),
+  DEBUG: brandKeyShortcut([Key.Control, "d"]),
+  HELP: brandKeyShortcut([CmdOrControl, "?"]),
 
-  EASTER_EGG: brandShortcut([Key.Shift, "s"]),
+  SELECT_LAYOUT_1: brandCodeShortcut([Key.Alt, "Digit1"]),
+  SELECT_LAYOUT_2: brandCodeShortcut([Key.Alt, "Digit2"]),
+  SELECT_LAYOUT_3: brandCodeShortcut([Key.Alt, "Digit3"]),
+  SELECT_LAYOUT_4: brandCodeShortcut([Key.Alt, "Digit4"]),
+  SELECT_LAYOUT_5: brandCodeShortcut([Key.Alt, "Digit5"]),
+  SELECT_LAYOUT_6: brandCodeShortcut([Key.Alt, "Digit6"]),
+  SELECT_LAYOUT_7: brandCodeShortcut([Key.Alt, "Digit7"]),
+  SELECT_LAYOUT_8: brandCodeShortcut([Key.Alt, "Digit8"]),
+  SELECT_LAYOUT_9: brandCodeShortcut([Key.Alt, "Digit9"]),
+  SELECT_LAYOUT_0: brandCodeShortcut([Key.Alt, "Digit0"]),
+  SELECT_LAYOUT_GENERIC: brandCodeShortcut([Key.Alt, `1${NDASH}9`]),
+
+  EASTER_EGG: brandKeyShortcut([Key.Shift, "s"]),
 } satisfies Record<string, BrandedShortcut>;

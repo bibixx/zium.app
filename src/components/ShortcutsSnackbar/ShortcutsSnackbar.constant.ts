@@ -53,6 +53,7 @@ export const VISIBLE_SHORTCUTS: VisibleShortcutSection[] = [
         id: "watching_general",
         shortcuts: [
           { label: "Open layouts", shortcut: SHORTCUTS.OPEN_LAYOUTS },
+          { label: "Select layout", shortcut: SHORTCUTS.SELECT_LAYOUT_GENERIC },
           { label: "Play / Pause", shortcut: SHORTCUTS.PLAY_PAUSE },
           { label: "Toggle full screen", shortcut: SHORTCUTS.TOGGLE_FULL_SCREEN },
           { label: "Toggle mute", shortcut: SHORTCUTS.TOGGLE_MUTE },
