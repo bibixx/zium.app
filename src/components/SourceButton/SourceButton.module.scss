@@ -11,7 +11,10 @@
 
   @include inner-border(var(--color-border-muted-alpha));
 
-  transition: var(--transition-fast) transform, var(--transition-fast) background, var(--transition-fast) box-shadow,
+  transition:
+    var(--transition-fast) transform,
+    var(--transition-fast) background,
+    var(--transition-fast) box-shadow,
     var(--transition-slow) opacity;
   outline-offset: 1px;
 

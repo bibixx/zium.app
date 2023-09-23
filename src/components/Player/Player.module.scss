@@ -70,15 +70,21 @@
   transform: translateX(var(--translate-x)) translateY(var(--translate-y));
   right: 12px;
   z-index: var(--z-index-player);
-  transition: var(--transition-medium) transform, var(--transition-slow) opacity;
+  transition:
+    var(--transition-medium) transform,
+    var(--transition-slow) opacity;
   opacity: 0;
 
   &.wrapperIsDragging {
-    transition: 0s transform, var(--transition-slow) opacity;
+    transition:
+      0s transform,
+      var(--transition-slow) opacity;
   }
 
   &.isSpringing {
-    transition: cubic-bezier(0, 0.405, 0, 1.285) var(--motion-timing-slow) transform, var(--transition-slow) opacity;
+    transition:
+      cubic-bezier(0, 0.405, 0, 1.285) var(--motion-timing-slow) transform,
+      var(--transition-slow) opacity;
   }
 
   &.isCollapsed {

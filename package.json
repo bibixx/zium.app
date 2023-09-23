@@ -5,9 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "yarn tsc && yarn lint && vite build",
     "preview": "vite preview",
-    "lint": "eslint src/**/*.{ts,tsx}",
+    "lint:ts": "eslint src/**/*.{ts,tsx}",
+    "lint:css": "prettier -c src/**/*.scss",
+    "lint": "yarn lint:ts && yarn lint:css",
     "type-check": "tsc --noEmit",
     "build-tokens": "token-transformer --expandTypography --expandShadow --expandComposition --expandBorder src/tokens/global.json src/tokens/global.sd.json && style-dictionary build --config tokens.config.json && rm -f src/tokens/*.sd.json"
   },

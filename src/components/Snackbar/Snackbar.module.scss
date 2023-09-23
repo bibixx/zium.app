@@ -33,7 +33,9 @@
   width: 360px;
   padding: 4px;
   transform: translateX(var(--translate-x));
-  transition: cubic-bezier(0, 0.405, 0, 1.2) var(--motion-timing-slow) transform, var(--transition-slow) opacity;
+  transition:
+    cubic-bezier(0, 0.405, 0, 1.2) var(--motion-timing-slow) transform,
+    var(--transition-slow) opacity;
   cursor: grab;
 
   &.isDragging {
