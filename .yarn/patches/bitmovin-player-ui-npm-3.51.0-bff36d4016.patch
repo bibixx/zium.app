@@ -1,8 +1,8 @@
 diff --git a/dist/js/framework/components/seekbar.js b/dist/js/framework/components/seekbar.js
-index 590059db867e22193934765d47df9a7832a54c68..593412529d2222c9b57fba944f7dd2b151726781 100644
+index 4680df1ca4e9b82001ae40981250aac46b40c104..f0a5800dfb4e82b7ea6e306ed24c1e025f5dc88e 100644
 --- a/dist/js/framework/components/seekbar.js
 +++ b/dist/js/framework/components/seekbar.js
-@@ -273,7 +273,6 @@ var SeekBar = /** @class */ (function (_super) {
+@@ -273,7 +273,6 @@ var SeekBar = exports.SeekBar = /** @class */ (function (_super) {
                  // Pause playback while seeking
                  if (isPlaying) {
                      // use a different issuer here, as play/pause on seek is not "really" triggerd by the user
@@ -10,7 +10,7 @@ index 590059db867e22193934765d47df9a7832a54c68..593412529d2222c9b57fba944f7dd2b1
                  }
              }
          });
-@@ -736,28 +735,22 @@ var SeekBar = /** @class */ (function (_super) {
+@@ -736,28 +735,22 @@ var SeekBar = exports.SeekBar = /** @class */ (function (_super) {
       * @param percent a number between 0 and 100
       */
      SeekBar.prototype.setPosition = function (element, percent) {
