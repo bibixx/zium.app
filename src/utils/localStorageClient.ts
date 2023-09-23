@@ -3,7 +3,11 @@ import { PersistOptions } from "zustand/middleware";
 import { safeJSONParse } from "./safeJSONParse";
 
 export class LocalStorageClient<T extends z.ZodType, DefaultValue> {
-  constructor(private key: string, private validator: T, private defaultValue: DefaultValue | (() => DefaultValue)) {}
+  constructor(
+    private key: string,
+    private validator: T,
+    private defaultValue: DefaultValue | (() => DefaultValue),
+  ) {}
 
   public get(): z.output<T> | DefaultValue {
     const rawItem = localStorage.getItem(this.key);

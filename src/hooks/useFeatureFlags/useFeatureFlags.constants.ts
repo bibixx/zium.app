@@ -5,7 +5,7 @@ const getFlag =
   <Type>() =>
   <Key>(key: Key) =>
   <Validator>(validator: Validator extends ZodType ? (z.output<Validator> extends Type ? Validator : never) : never) =>
-    ({ type: key, validator } as { type: Key; _type: Type; validator: Validator });
+    ({ type: key, validator }) as { type: Key; _type: Type; validator: Validator };
 
 const BOOLEAN_TYPE = getFlag<boolean>()({ type: "boolean" } as const)(z.boolean().optional().default(false));
 

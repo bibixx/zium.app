@@ -18,7 +18,10 @@ export interface VolumeSliderConfig extends SeekBarConfig {
  * A simple volume slider component to adjust the player's volume setting.
  */
 export class CustomVolumeSlider extends SeekBar {
-  constructor(config: VolumeSliderConfig = {}, private setVolume: (newVolume: number) => void) {
+  constructor(
+    config: VolumeSliderConfig = {},
+    private setVolume: (newVolume: number) => void,
+  ) {
     super(config);
 
     this.config = this.mergeConfig(

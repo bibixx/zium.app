@@ -9,17 +9,18 @@ interface ListItemWrapperProps {
   disabled?: boolean;
   className?: string;
 }
-export const ListItemWrapper = withAs("button")<ListItemWrapperProps>(
-  ({ as: Component, children, className, isActive = false, disabled, ...props }, ref) => {
-    return (
-      <Component
-        className={cn(styles.wrapper, { [styles.isActive]: isActive, [styles.disabled]: disabled }, className)}
-        disabled={disabled}
-        ref={ref}
-        {...props}
-      >
-        {children}
-      </Component>
-    );
-  },
-);
+export const ListItemWrapper = withAs("button")<ListItemWrapperProps>((
+  { as: Component, children, className, isActive = false, disabled, ...props },
+  ref,
+) => {
+  return (
+    <Component
+      className={cn(styles.wrapper, { [styles.isActive]: isActive, [styles.disabled]: disabled }, className)}
+      disabled={disabled}
+      ref={ref}
+      {...props}
+    >
+      {children}
+    </Component>
+  );
+});

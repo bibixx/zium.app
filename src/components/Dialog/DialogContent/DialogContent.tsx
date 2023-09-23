@@ -7,20 +7,21 @@ interface DialogContentProps {
   children: ReactNode;
   maxWidth?: number;
 }
-export const DialogContent = withAs("div")<DialogContentProps>(
-  ({ children, as: Component, maxWidth, style, ...props }, ref) => {
-    return (
-      <Component
-        className={styles.contentWrapper}
-        ref={ref}
-        style={maxWidth != null || style != null ? { maxWidth, ...style } : undefined}
-        {...props}
-      >
-        {children}
-      </Component>
-    );
-  },
-);
+export const DialogContent = withAs("div")<DialogContentProps>((
+  { children, as: Component, maxWidth, style, ...props },
+  ref,
+) => {
+  return (
+    <Component
+      className={styles.contentWrapper}
+      ref={ref}
+      style={maxWidth != null || style != null ? { maxWidth, ...style } : undefined}
+      {...props}
+    >
+      {children}
+    </Component>
+  );
+});
 
 interface DialogContentInformationProps {
   title: string;
