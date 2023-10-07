@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { Key } from "ts-key-enum";
 import { useViewerUIVisibility } from "../../../hooks/useViewerUIVisibility/useViewerUIVisibility";
 import { useDropdownState } from "../../Dropdown/Dropdown.hooks";
 import { Hotkey, useHotkeys } from "../../../hooks/useHotkeys/useHotkeys";
@@ -20,8 +19,10 @@ export const useLayoutsDropdownState = ({ loadLayout }: UseLayoutsDropdownStateA
   const altTimeout = useRef<number | undefined>(undefined);
   useEffect(
     function openDropdownOnAlt() {
-      const onKeyDown = (e: KeyboardEvent) => {
-        if (e.key !== Key.Alt) {
+      const onKeyChange = (e: KeyboardEvent) => {
+        if (!e.altKey || e.shiftKey || e.ctrlKey || e.metaKey) {
+          clearTimeout(altTimeout.current);
+          setWithShortcutVisible(false);
           return;
         }
 
@@ -36,21 +37,12 @@ export const useLayoutsDropdownState = ({ loadLayout }: UseLayoutsDropdownStateA
         }, ALT_HOLD_TIP_DURATION);
       };
 
-      const onKeyUp = (e: KeyboardEvent) => {
-        if (e.key !== Key.Alt) {
-          return;
-        }
-
-        clearTimeout(altTimeout.current);
-        setWithShortcutVisible(false);
-      };
-
-      document.addEventListener("keydown", onKeyDown);
-      document.addEventListener("keyup", onKeyUp);
+      document.addEventListener("keydown", onKeyChange);
+      document.addEventListener("keyup", onKeyChange);
 
       return () => {
-        document.removeEventListener("keydown", onKeyDown);
-        document.removeEventListener("keyup", onKeyUp);
+        document.removeEventListener("keydown", onKeyChange);
+        document.removeEventListener("keyup", onKeyChange);
       };
     },
     [dropdownState],
