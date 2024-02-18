@@ -23,7 +23,7 @@ export const filterOutFutureRaces = (races: RaceData[]) => {
   const { race: latestFinishedRace, index: latestFinishedRaceIndex, sortedRaces } = getLatestFinishedRaceData(races);
 
   if (latestFinishedRaceIndex < 0) {
-    return sortedRaces.slice(0, 1);
+    return [sortedRaces.at(-1)];
   }
 
   if (isSameDay(latestFinishedRace?.startDate, new Date())) {
