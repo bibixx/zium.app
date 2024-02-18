@@ -78,10 +78,6 @@ export const Races = () => {
         return season;
       }
 
-      if (isSeasonComingSoon(season.seasonId)) {
-        return null;
-      }
-
       return {
         ...season,
         data: filterOutFutureRaces(season.data).filter(searchRacePredicate(transliteratedSearchQuery)),

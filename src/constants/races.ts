@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { includesCaseInsensitive } from "../utils/text";
 
 const raceGenresValidatorLiterals = [
   z.literal("race"),
@@ -29,6 +30,8 @@ export type RaceGenre = z.output<typeof raceGenresValidator>;
 export type EventGenre = z.output<typeof eventGenresValidator>;
 
 export const isRaceGenre = (genre: string) => raceGenresValidator.safeParse(genre).success;
+export const isPreSeasonTestingTitle = (title: string) => includesCaseInsensitive(title, "Pre-Season Testing");
+export const isGrandPrixTitle = (title: string) => includesCaseInsensitive(title, "grand prix");
 
 export const entitlementValidator = z
   .union([z.literal("Pro"), z.literal("Access")])

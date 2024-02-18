@@ -5,7 +5,7 @@ import { fetchJSON } from "../../utils/api";
 import { uniqueById } from "../../utils/uniqueById";
 import { isNotNullable } from "../../utils/isNotNullable";
 import { validateArray } from "../../utils/validators";
-import { includesCaseInsensitive } from "../../utils/text";
+import { isGrandPrixTitle, isPreSeasonTestingTitle } from "../../constants/races";
 import { RaceData } from "./useRacesList.types";
 import { bodyRootValidator, containersValidator, raceValidator } from "./useRacesList.validator";
 
@@ -54,7 +54,7 @@ export const fetchRacesList = async (seasonId: SupportedSeasons, signal: AbortSi
       const contentId = racePage.metadata.contentId;
       const isLive = racePage.metadata.contentSubtype === "LIVE";
 
-      if (!includesCaseInsensitive(title, "grand prix") && !includesCaseInsensitive(title, "Pre-Season Testing")) {
+      if (!isGrandPrixTitle(title) && !isPreSeasonTestingTitle(title)) {
         return null;
       }
 
