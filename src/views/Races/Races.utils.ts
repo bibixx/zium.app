@@ -22,6 +22,10 @@ export const getLatestFinishedRaceData = (races: RaceData[]) => {
 export const filterOutFutureRaces = (races: RaceData[]) => {
   const { race: latestFinishedRace, index: latestFinishedRaceIndex, sortedRaces } = getLatestFinishedRaceData(races);
 
+  if (latestFinishedRaceIndex < 0) {
+    return [];
+  }
+
   if (isSameDay(latestFinishedRace?.startDate, new Date())) {
     return sortedRaces.slice(latestFinishedRaceIndex);
   }
@@ -43,7 +47,7 @@ export const getWasSearchSuccessful = (seasonsList: RacesState[]) => {
   return false;
 };
 
-export const serachRacePredicate = (transliteratedSearchQuery: string) => (race: RaceData) => {
+export const searchRacePredicate = (transliteratedSearchQuery: string) => (race: RaceData) => {
   if (transliteratedSearchQuery === "") {
     return true;
   }

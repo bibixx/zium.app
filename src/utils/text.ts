@@ -74,3 +74,6 @@ export const formatRaceName = (text: string, addTm: boolean) => {
     addTm ? (text) => text + TM_SIGN : (text) => text,
   )(text);
 };
+
+export const includesCaseInsensitive = (text: string, searchString: string) =>
+  text.toLocaleLowerCase().includes(searchString.toLocaleLowerCase());

@@ -12,6 +12,7 @@ import { CookieBanner } from "../../components/CookieBanner/CookieBanner";
 import { useHeaderCardData } from "../../hooks/useHeaderCardData/useHeaderCardData";
 import { GlobalShortcutsSnackbar } from "../../components/ShortcutsSnackbar/ShortcutsSnackbar";
 import { useEasterEgg } from "../../hooks/useEasterEgg/useEasterEgg";
+import { mapAndStripNullable } from "../../utils/mapAndStrip";
 import { Season } from "./Season/Season";
 import styles from "./Races.module.scss";
 import { Sidebar } from "./Sidebar/Sidebar";
@@ -22,7 +23,7 @@ import {
   getLatestFinishedRaceData,
   getWasSearchSuccessful,
   prepareForSearch,
-  serachRacePredicate,
+  searchRacePredicate,
 } from "./Races.utils";
 import { ZeroState } from "./ZeroState/ZeroState";
 import { useZiumOffsetsInfo } from "./hooks/useZiumOffsetsInfo/useZiumOffsetsInfo";
@@ -33,7 +34,7 @@ export const Races = () => {
 
   const wrapperRefs = useRef<Array<HTMLDivElement | null>>([]);
 
-  const seasonsToRender = useMemo(() => SUPPORTED_SEASONS.filter((season) => !isSeasonComingSoon(season)), []);
+  const seasonsToRender = useMemo(() => SUPPORTED_SEASONS, []);
   const [firstVisibleSeasonIndex, overwriteVisibleSeasonIndex] = useFirstVisibleSeason(wrapperRefs);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -41,7 +42,7 @@ export const Races = () => {
   const ziumOffsetsInfo = useZiumOffsetsInfo();
 
   const fallbackRaceId = useMemo(() => {
-    const latestSeason = seasonsList[0];
+    const latestSeason = seasonsList.find((season) => !isSeasonComingSoon(season.seasonId))!;
     if (latestSeason.state !== "done") {
       return null;
     }
@@ -49,6 +50,10 @@ export const Races = () => {
     const { index, sortedRaces } = getLatestFinishedRaceData(latestSeason.data);
     const upcomingRace = sortedRaces[index - 1];
     const lastRace = sortedRaces[index];
+
+    if (upcomingRace == null && lastRace == null) {
+      return null;
+    }
 
     if (upcomingRace == null) {
       return lastRace.id;
@@ -68,14 +73,18 @@ export const Races = () => {
   const filteredRacesState = useMemo((): RacesState[] => {
     const transliteratedSearchQuery = prepareForSearch(searchQuery);
 
-    return seasonsList.map((season) => {
+    return mapAndStripNullable(seasonsList, (season) => {
       if (season.state !== "done") {
         return season;
       }
 
+      if (isSeasonComingSoon(season.seasonId)) {
+        return null;
+      }
+
       return {
         ...season,
-        data: filterOutFutureRaces(season.data).filter(serachRacePredicate(transliteratedSearchQuery)),
+        data: filterOutFutureRaces(season.data).filter(searchRacePredicate(transliteratedSearchQuery)),
       };
     });
   }, [searchQuery, seasonsList]);
@@ -103,7 +112,7 @@ export const Races = () => {
         />
         <Sidebar
           visibleSeasonId={seasonsToRender[firstVisibleSeasonIndex]}
-          seasons={filteredRacesState.map((season) => ({
+          seasons={seasonsList.map((season) => ({
             seasonId: season.seasonId,
             count: season.state === "done" ? season.data.length : null,
           }))}

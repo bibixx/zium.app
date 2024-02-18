@@ -3,7 +3,7 @@ import { SupportedSeasons } from "../../constants/seasons";
 import { fetchRacesList } from "./useRacesList.api";
 import { RacesState, RacesStateAction } from "./useRacesList.types";
 
-export const useRacesList = (seasonIds: SupportedSeasons[]) => {
+export const useRacesList = (seasonIds: readonly SupportedSeasons[]) => {
   const racesThatStartedLoading = useRef<string[]>([]);
   const isLoadingRef = useRef(false);
   const [racesLimit, setRacesLimit] = useState(Infinity);
