@@ -42,8 +42,8 @@ export const Races = () => {
   const ziumOffsetsInfo = useZiumOffsetsInfo();
 
   const fallbackRaceId = useMemo(() => {
-    const latestSeason = seasonsList.find((season) => !isSeasonComingSoon(season.seasonId))!;
-    if (latestSeason.state !== "done") {
+    const latestSeason = seasonsList.find((season) => !isSeasonComingSoon(season.seasonId));
+    if (latestSeason?.state !== "done") {
       return null;
     }
 

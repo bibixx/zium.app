@@ -19,11 +19,16 @@ export const getLatestFinishedRaceData = (races: RaceData[]) => {
   return { index: latestFinishedRaceIndex, race: latestFinishedRace, sortedRaces };
 };
 
-export const filterOutFutureRaces = (races: RaceData[]) => {
+export const filterOutFutureRaces = (races: RaceData[]): RaceData[] => {
   const { race: latestFinishedRace, index: latestFinishedRaceIndex, sortedRaces } = getLatestFinishedRaceData(races);
 
   if (latestFinishedRaceIndex < 0) {
-    return [sortedRaces.at(-1)];
+    const lastRace = sortedRaces.at(-1);
+    if (lastRace != null) {
+      return [lastRace];
+    } else {
+      return [];
+    }
   }
 
   if (isSameDay(latestFinishedRace?.startDate, new Date())) {
