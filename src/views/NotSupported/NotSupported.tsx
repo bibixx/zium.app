@@ -15,7 +15,7 @@ export const NotSupported = () => {
           variant="Primary"
           fluid
           as="a"
-          href="https://www.google.com/intl/pl/chrome/"
+          href="https://www.google.com/intl/en/chrome/"
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -27,7 +27,7 @@ export const NotSupported = () => {
         {!isMobile && (
           <span>
             For the best experience, please use{" "}
-            <a href="https://www.google.com/intl/pl/chrome/" rel="noopener noreferrer">
+            <a href="https://www.google.com/intl/en/chrome/" rel="noopener noreferrer">
               Google&nbsp;Chrome
             </a>
             ,{" "}
