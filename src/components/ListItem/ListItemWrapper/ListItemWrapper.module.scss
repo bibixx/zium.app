@@ -7,7 +7,6 @@
   border: none;
   border-radius: var(--radii-small);
   width: 100%;
-  cursor: pointer;
   user-select: none;
   transition: var(--transition-medium);
   transition-property: background, transform;
@@ -18,39 +17,39 @@
     transition-property: box-shadow;
   }
 
-  &:not(.isActive) {
-    background: transparent;
+  &:not(&.disabled) {
+    cursor: pointer;
 
-    &:hover {
+    &:not(.isActive) {
+      background: transparent;
+
+      &:hover {
+        --wrapper-border-color: var(--color-border-muted-alpha);
+        background: var(--color-background-default-alpha);
+      }
+
+      &:active {
+        --wrapper-border-color: var(--color-border-muted-alpha);
+        background: var(--color-background-muted-alpha);
+      }
+
+      &:focus-visible {
+        --wrapper-border-color: var(--color-border-muted-alpha);
+        background: var(--color-background-muted-alpha);
+      }
+    }
+
+    &.isActive {
       --wrapper-border-color: var(--color-border-muted-alpha);
       background: var(--color-background-default-alpha);
     }
 
-    &:active {
-      --wrapper-border-color: var(--color-border-muted-alpha);
-      background: var(--color-background-muted-alpha);
+    &:hover:not(&.disabled) {
+      transform: scale(1.025);
     }
 
-    &:focus-visible {
-      --wrapper-border-color: var(--color-border-muted-alpha);
-      background: var(--color-background-muted-alpha);
+    &:active:not(&.disabled) {
+      transform: scale(1);
     }
-  }
-
-  &.isActive {
-    --wrapper-border-color: var(--color-border-muted-alpha);
-    background: var(--color-background-default-alpha);
-  }
-
-  &.disabled {
-    pointer-events: none;
-  }
-
-  &:hover:not(&.disabled) {
-    transform: scale(1.025);
-  }
-
-  &:active:not(&.disabled) {
-    transform: scale(1);
   }
 }

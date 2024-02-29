@@ -1,4 +1,13 @@
-import { addDays, differenceInHours, formatDistanceStrict, isAfter, isBefore, isPast, isSameDay } from "date-fns";
+import {
+  addDays,
+  differenceInHours,
+  formatDistanceStrict,
+  isAfter,
+  isBefore,
+  isFuture,
+  isPast,
+  isSameDay,
+} from "date-fns";
 import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "../../../components/Button/Button";
@@ -12,6 +21,8 @@ import { MIDDLE_DOT } from "../../../utils/text";
 import { TimeOffsetOffIcon } from "../../../components/CustomIcons/CustomIcons";
 import { joinReactNodes } from "../../../utils/joinReactNodes";
 import { isNotFalse } from "../../../utils/isNotFalse";
+import { Tooltip } from "../../../components/Tooltip/Tooltip";
+import { formatDateDayShortMonthYear, formatDateDayLongMonthYearTime } from "../../../utils/date";
 import { AdditionalEvents } from "./AdditionalEvents/AdditionalEvents";
 import { EventSession } from "./EventSession/EventSession";
 import styles from "./RaceDetails.module.scss";
@@ -130,7 +141,7 @@ export const RaceDetails = ({ id, endDate, onClose, seasonId, ziumOffsetsInfo }:
 const formatDateRelative = (date: Date) => {
   const now = new Date();
   if (isBefore(date, now)) {
-    return formatDate(date);
+    return formatDateDayShortMonthYear(date);
   }
 
   const hoursDiff = differenceInHours(date, now, { roundingMethod: "ceil" });
@@ -143,11 +154,16 @@ const formatDateRelative = (date: Date) => {
   return "Starts in " + formatDistanceStrict(now, date, { addSuffix: false, roundingMethod: "ceil" });
 };
 
-const formatDate = (date: Date) =>
-  new Intl.DateTimeFormat("en-US", { day: "numeric", month: "short", year: "numeric" }).format(date);
-
 const getSubtitle = (raceDetails: RaceDetailsData, ziumOffsetsInfo: string[]) => {
-  const subtitleDatePart = raceDetails.startDate !== null && <span>{formatDateRelative(raceDetails.startDate)}</span>;
+  const subtitleDatePart = raceDetails.startDate !== null && (
+    <Tooltip
+      content={isFuture(raceDetails.startDate) ? formatDateDayLongMonthYearTime(raceDetails.startDate) : null}
+      delayDuration={0}
+      disableHoverableContent
+    >
+      <span>{formatDateRelative(raceDetails.startDate)}</span>
+    </Tooltip>
+  );
 
   const subtitleZiumInfoPart = ziumOffsetsInfo.includes(raceDetails.id) && (
     <>

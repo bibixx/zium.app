@@ -1,6 +1,8 @@
-export const formatDateDayMonth = (date: Date) =>
-  new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short" }).format(date);
-export const formatDateFull = (date: Date) =>
-  new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "long", year: "numeric" }).format(date);
-export const formatDateRange = (startDate: Date, endDate: Date) =>
-  `${formatDateDayMonth(startDate)}–${formatDateDayMonth(endDate)}`;
+import { format } from "date-fns";
+
+export const formatDateDayShortMonth = (date: Date) => format(date, "d MMM");
+export const formatDateDayLongMonthYear = (date: Date) => format(date, "d MMMM yyyy");
+export const formatDateDayShortMonthRange = (startDate: Date, endDate: Date) =>
+  `${formatDateDayShortMonth(startDate)}–${formatDateDayShortMonth(endDate)}`;
+export const formatDateDayLongMonthYearTime = (date: Date) => format(date, "d MMMM yyyy 'at' HH:mm");
+export const formatDateDayShortMonthYear = (date: Date) => format(date, "MMM d, yyyy");

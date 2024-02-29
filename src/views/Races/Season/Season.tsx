@@ -6,7 +6,7 @@ import { Sheet } from "../../../components/Sheet/Sheet";
 import { TimedOutWrapper } from "../../../components/TimedOutWrapper/TimedOutWrapper";
 import { useLaggedBehindData } from "../../../hooks/useLaggedBehindData/useLaggedBehindData";
 import { RacesState } from "../../../hooks/useRacesList/useRacesList.types";
-import { formatDateRange } from "../../../utils/date";
+import { formatDateDayShortMonthRange } from "../../../utils/date";
 import { formatRaceName } from "../../../utils/text";
 import { RaceDetails } from "../RaceDetails/RaceDetails";
 import { useHotkeys } from "../../../hooks/useHotkeys/useHotkeys";
@@ -117,7 +117,7 @@ export const Season = ({ season, ziumOffsetsInfo }: SeasonProps) => {
                 {...props}
                 pictureUrl={pictureUrl}
                 countryName={countryName}
-                displayDate={formatDateRange(startDate, endDate)}
+                displayDate={formatDateDayShortMonthRange(startDate, endDate)}
                 caption={`Round ${roundNumber}`}
                 description={formatRaceName(description, true)}
                 countryId={countryId}
