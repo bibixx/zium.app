@@ -4,11 +4,10 @@ import { uniqueById } from "../../utils/uniqueById";
 import { validateArray } from "../../utils/validators";
 import { RaceData } from "../useRacesList/useRacesList.types";
 import { mapAndStripNullable } from "../../utils/mapAndStrip";
-import { isRaceGenre } from "../../constants/races";
 import { bodyRootValidator, containerValidator } from "./useLiveEvents.validator";
 
 export const fetchLiveEvents = async (signal: AbortSignal): Promise<RaceData[]> => {
-  const url = `/2.0/R/ENG/WEB_DASH/ALL/PAGE/395/F1_TV_Pro_Annual/14`;
+  const url = `/2.0/R/ENG/WEB_DASH/ALL/PAGE/395/F1_TV_Pro_Annual/2`;
   const body = await fetchJSON(url, undefined, signal);
   const parsedBody = bodyRootValidator.parse(body);
 
@@ -25,7 +24,6 @@ export const fetchLiveEvents = async (signal: AbortSignal): Promise<RaceData[]> 
     }
 
     const genre = racePage.metadata.genres[0];
-    const isRace = isRaceGenre(genre);
 
     const racePageId = String(racePage.metadata.contentId);
     const title = racePage.metadata.shortDescription;
@@ -38,7 +36,7 @@ export const fetchLiveEvents = async (signal: AbortSignal): Promise<RaceData[]> 
       racePage.metadata.emfAttributes.Meeting_End_Date || racePage.metadata.emfAttributes.sessionEndDate,
     );
     const roundNumber = racePage.metadata.emfAttributes.Meeting_Number;
-    const description = isRace ? racePage.metadata.emfAttributes.Global_Title : racePage.metadata.title;
+    const description = racePage.metadata.title;
     const countryId = racePage.metadata.emfAttributes.MeetingCountryKey;
     const contentId = racePage.metadata.contentId;
     const isLive = racePage.metadata.contentSubtype === "LIVE";

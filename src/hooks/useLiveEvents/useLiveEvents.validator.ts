@@ -36,6 +36,11 @@ export const containerValidator = z.object({
       MeetingCountryKey: z.string(),
     }),
   }),
+  uiMetadata: z.object({
+    mainTitle: z.string(),
+    subTitle: z.string(),
+    summary: z.string(),
+  }),
 });
 
 export type Container = z.output<typeof containerValidator>;

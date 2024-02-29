@@ -45,7 +45,7 @@ const getScheduledEvents = (body: unknown) => {
   const parsedBody = bodyRootValidator.parse(body);
 
   const scheduled = parsedBody.resultObj.containers
-    .filter((c) => c.layout === "schedule")
+    .filter((c) => c.layout === "schedule" || c.layout === "interactive_schedule")
     .flatMap((c) => c.retrieveItems.resultObj.containers)
     .reduce(validateArray(scheduledContainerValidator), [] as z.output<typeof scheduledContainerValidator>[]);
 
