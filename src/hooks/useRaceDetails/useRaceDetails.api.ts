@@ -90,7 +90,7 @@ const mapEventToRaceDetailsData = (event: Event, isReplay: boolean): RaceDetails
     pictureUrl: event.metadata.pictureUrl,
     isLive: event.metadata.contentSubtype === "LIVE",
     hasMedia: isReplay,
-    description: isRace ? event.metadata.emfAttributes.Global_Title : event.metadata.title,
+    description: event.metadata.title,
     contentId: event.metadata.contentId,
     countryName: event.metadata.emfAttributes.Meeting_Country_Name,
     countryId: event.metadata.emfAttributes.MeetingCountryKey,
