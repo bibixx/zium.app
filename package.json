@@ -68,7 +68,7 @@
     "vite": "^4.4.9",
     "vite-plugin-svgr": "^3.3.0"
   },
-  "packageManager": "yarn@3.5.0",
+  "packageManager": "yarn@4.1.0",
   "resolutions": {
     "lottie-react@^2.4.0": "patch:lottie-react@npm%3A2.4.0#./.yarn/patches/lottie-react-npm-2.4.0-d4d95c55aa.patch",
     "bitmovin-player-ui@^3.54.0": "patch:bitmovin-player-ui@npm%3A3.54.0#./.yarn/patches/bitmovin-player-ui-npm-3.54.0-ac1e9cb5a9.patch"
