@@ -1,5 +1,5 @@
 diff --git a/dist/js/framework/components/seekbar.js b/dist/js/framework/components/seekbar.js
-index f409ba98f39024874e19446e20642486c3c8efe6..3eed226c27ddfc9f861a7d6d82fc61589c082f98 100644
+index 4680df1ca4e9b82001ae40981250aac46b40c104..f0a5800dfb4e82b7ea6e306ed24c1e025f5dc88e 100644
 --- a/dist/js/framework/components/seekbar.js
 +++ b/dist/js/framework/components/seekbar.js
 @@ -273,7 +273,6 @@ var SeekBar = exports.SeekBar = /** @class */ (function (_super) {
@@ -25,7 +25,7 @@ index f409ba98f39024874e19446e20642486c3c8efe6..3eed226c27ddfc9f861a7d6d82fc6158
 -        if (scale >= 0.99999 && scale <= 1.00001) {
 -            scale = 0.99999;
 +        if (size >= 99.999 && size <= 100.001) {
-+          size = 99.999;
++            size = 99.999;
          }
          var style = this.config.vertical ?
 -            // -ms-transform required for IE9
