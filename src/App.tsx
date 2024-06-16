@@ -17,6 +17,7 @@ import { PrivacyPolicy } from "./views/PrivacyPolicy/PrivacyPolicy";
 import { DebugPanel } from "./components/DebugPanel/DebugPanel";
 import { SnackbarsList } from "./components/Snackbar/SnackbarsList";
 import { FeatureFlagsWrapper } from "./hooks/useFeatureFlags/FeatureFlagsWrapper";
+import { TimingWithState } from "./views/Timing/Timing";
 
 const WithCompanion = ({ children }: React.PropsWithChildren<unknown>) => {
   const companionState = useHasCompanion();
@@ -67,6 +68,7 @@ function App() {
       <FeatureFlagsWrapper>
         <Routes>
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/timing" element={<TimingWithState />} />
           {isSupportedBrowser ? (
             <Route
               path="/"

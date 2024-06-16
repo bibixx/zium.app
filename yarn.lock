@@ -1394,6 +1394,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/jquery@npm:1.10.45":
+  version: 1.10.45
+  resolution: "@types/jquery@npm:1.10.45"
+  checksum: db0d5d8cdd0fbbb0427fff7a349192d09fa902cd9f17851f8fbb08a57dffda62795545307a1da5b8e0196863939aa24b3fa5569a915f9011f8a297af2b9b68d4
+  languageName: node
+  linkType: hard
+
 "@types/json-schema@npm:^7.0.12":
   version: 7.0.13
   resolution: "@types/json-schema@npm:7.0.13"
@@ -1408,10 +1415,42 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/lodash.merge@npm:^4.6.9":
+  version: 4.6.9
+  resolution: "@types/lodash.merge@npm:4.6.9"
+  dependencies:
+    "@types/lodash": "*"
+  checksum: d0dd6654547c9d8d905184d14aa5c2a37a1ed1c3204f5ab20b7d591a05f34859ef09d3b72c065e94ca1989abf9109eb8230f67c4d64a5768b1d65b9ed8baf8e7
+  languageName: node
+  linkType: hard
+
+"@types/lodash.throttle@npm:^4.1.9":
+  version: 4.1.9
+  resolution: "@types/lodash.throttle@npm:4.1.9"
+  dependencies:
+    "@types/lodash": "*"
+  checksum: 6d330072387f062d408747f0dbe62869820ee3f3fbec43965f703ce9c9083e4ff9082faa4fe92aea000d6367b7645955e9c8db6a4e04e6bd769697fdd19c12b1
+  languageName: node
+  linkType: hard
+
+"@types/lodash@npm:*":
+  version: 4.14.202
+  resolution: "@types/lodash@npm:4.14.202"
+  checksum: a91acf3564a568c6f199912f3eb2c76c99c5a0d7e219394294213b3f2d54f672619f0fde4da22b29dc5d4c31457cd799acc2e5cb6bd90f9af04a1578483b6ff7
+  languageName: node
+  linkType: hard
+
 "@types/object-merge@npm:^2.5.1":
   version: 2.5.1
   resolution: "@types/object-merge@npm:2.5.1"
   checksum: a691cf3a246ffa919e9baa1bef0f2b0be0bf8e3236dadc629c643bada704023fefb77473dd2adf542777af55ac8f1d6a5a7a1f9e4424153c1398ce2f0db19bcb
+  languageName: node
+  linkType: hard
+
+"@types/pako@npm:^2.0.3":
+  version: 2.0.3
+  resolution: "@types/pako@npm:2.0.3"
+  checksum: 0746dd5d29eccf5b2e6cceb3ccb093851219e78bd2e2e20d25757e247987139e061e5d4ba37cb5295493f06e3c683c74f8876011cd8a3f3748a09244fbc841d9
   languageName: node
   linkType: hard
 
@@ -1935,6 +1974,13 @@ __metadata:
   version: 2.2.0
   resolution: "binary-extensions@npm:2.2.0"
   checksum: ccd267956c58d2315f5d3ea6757cf09863c5fc703e50fbeb13a7dc849b812ef76e3cf9ca8f35a0c48498776a7478d7b4a0418e1e2b8cb9cb9731f2922aaad7f8
+  languageName: node
+  linkType: hard
+
+"binary-searching@npm:^2.0.5":
+  version: 2.0.5
+  resolution: "binary-searching@npm:2.0.5"
+  checksum: bbc72ddee8dcbfc4db8072deff76e944313785c3935f79b42533ddab14c62b37e46239bfd10878844a7ec16074c7bddde9be2083772228db86b7f01ce2a8856c
   languageName: node
   linkType: hard
 
@@ -4102,6 +4148,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"jquery@npm:1.11.0":
+  version: 1.11.0
+  resolution: "jquery@npm:1.11.0"
+  checksum: e0e734355e6ba3cdaa50ed39c913868282cdad564f86d51347e7c575768c188b85bde12501914004402d6476f5fdb3c53755b47f2720a193f80f33341ce45f3a
+  languageName: node
+  linkType: hard
+
+"jquery@npm:>=1.6.4":
+  version: 3.7.1
+  resolution: "jquery@npm:3.7.1"
+  checksum: 4370b8139d6ae82867eb6f7f21d1edccf1d1bdf41c0840920ea80d366c2cd5dbe1ceebb110ee9772aa839b04400faa1572c5c560b507c688ed7b61cea26c0e27
+  languageName: node
+  linkType: hard
+
 "js-tokens@npm:^3.0.0 || ^4.0.0, js-tokens@npm:^4.0.0":
   version: 4.0.0
   resolution: "js-tokens@npm:4.0.0"
@@ -4281,6 +4341,13 @@ __metadata:
   version: 4.6.2
   resolution: "lodash.merge@npm:4.6.2"
   checksum: ad580b4bdbb7ca1f7abf7e1bce63a9a0b98e370cf40194b03380a46b4ed799c9573029599caebc1b14e3f24b111aef72b96674a56cfa105e0f5ac70546cdc005
+  languageName: node
+  linkType: hard
+
+"lodash.throttle@npm:^4.1.1":
+  version: 4.1.1
+  resolution: "lodash.throttle@npm:4.1.1"
+  checksum: 129c0a28cee48b348aef146f638ef8a8b197944d4e9ec26c1890c19d9bf5a5690fe11b655c77a4551268819b32d27f4206343e30c78961f60b561b8608c8c805
   languageName: node
   linkType: hard
 
@@ -4947,6 +5014,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"pako@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "pako@npm:2.1.0"
+  checksum: 71666548644c9a4d056bcaba849ca6fd7242c6cf1af0646d3346f3079a1c7f4a66ffec6f7369ee0dc88f61926c10d6ab05da3e1fca44b83551839e89edd75a3e
+  languageName: node
+  linkType: hard
+
 "param-case@npm:^3.0.4":
   version: 3.0.4
   resolution: "param-case@npm:3.0.4"
@@ -5444,6 +5518,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"reselect@npm:^5.1.0":
+  version: 5.1.0
+  resolution: "reselect@npm:5.1.0"
+  checksum: 5bc9c5d03d7caea00d0c0e24330bf23d91801227346fec1cef6a60988ab8d3dd7cee76e6994ca0915bc1c20845bb2bd929b95753763e0a9db74c0f9dff5cb845
+  languageName: node
+  linkType: hard
+
 "reserved-words@npm:^0.1.2":
   version: 0.1.2
   resolution: "reserved-words@npm:0.1.2"
@@ -5754,6 +5835,15 @@ __metadata:
   version: 4.0.2
   resolution: "signal-exit@npm:4.0.2"
   checksum: 41f5928431cc6e91087bf0343db786a6313dd7c6fd7e551dbc141c95bb5fb26663444fd9df8ea47c5d7fc202f60aa7468c3162a9365cbb0615fc5e1b1328fe31
+  languageName: node
+  linkType: hard
+
+"signalr@npm:^2.4.3":
+  version: 2.4.3
+  resolution: "signalr@npm:2.4.3"
+  dependencies:
+    jquery: ">=1.6.4"
+  checksum: 4bd2d007f98ade3e01d63dc0c562f9ae142a4170fc3476fec02572c49ae04985e85dc853f1ebedfb8275206780fda0cb8a0cd3a5b11af6f1dfec590f81d13def
   languageName: node
   linkType: hard
 
@@ -6691,7 +6781,11 @@ __metadata:
     "@sentry/browser": ^7.70.0
     "@sentry/cli": ^2.21.1
     "@sindresorhus/transliterate": ^1.6.0
+    "@types/jquery": 1.10.45
+    "@types/lodash.merge": ^4.6.9
+    "@types/lodash.throttle": ^4.1.9
     "@types/object-merge": ^2.5.1
+    "@types/pako": ^2.0.3
     "@types/piwik-react-router": ^0.12.0
     "@types/react": 18.2.21
     "@types/react-dom": ^18.2.7
@@ -6699,6 +6793,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": ^6.7.2
     "@typescript-eslint/parser": ^6.7.2
     "@vitejs/plugin-react-swc": ^3.3.2
+    binary-searching: ^2.0.5
     bitmovin-player: ^8.133.0
     bitmovin-player-ui: ^3.50.0
     classnames: ^2.3.2
@@ -6712,11 +6807,15 @@ __metadata:
     eventemitter2: ^6.4.9
     fast-deep-equal: ^3.1.3
     focus-trap-react: ^10.2.1
+    jquery: 1.11.0
+    lodash.merge: ^4.6.2
+    lodash.throttle: ^4.1.1
     lottie-react: ^2.4.0
     lottie-web: ^5.12.2
     moize: ^6.1.6
     mpd-parser: ^1.2.2
     object-merge: ^2.5.1
+    pako: ^2.1.0
     piwik-react-router: ^0.12.1
     prettier: ^3.0.3
     react: ^18.2.0
@@ -6725,7 +6824,9 @@ __metadata:
     react-popper: ^2.3.0
     react-router-dom: ^6.16.0
     react-transition-group: ^4.4.5
+    reselect: ^5.1.0
     sass: ^1.68.0
+    signalr: ^2.4.3
     style-dictionary: ^3.8.0
     token-transformer: ^0.0.33
     ts-functional-pipe: ^3.1.2
