@@ -1,4 +1,4 @@
-import { differenceInSeconds } from "date-fns";
+import { addMilliseconds, differenceInMilliseconds, differenceInSeconds, formatISO } from "date-fns";
 import { useEffect, useRef, useState } from "react";
 import { TimingProvider, useLoadedTimingData, useTiming } from "../../hooks/useTiming/useTiming";
 import { padStart } from "../../utils/padStart";
@@ -68,9 +68,11 @@ const TimeSlider = () => {
         type="range"
         min={range?.start}
         max={range?.end}
+        step={1000}
         value={localCurrentTime}
         onChange={(e) => setLocalCurrentTime(e.target.valueAsNumber)}
         onMouseUp={() => setCurrentTime(localCurrentTime)}
+        onKeyUp={() => setCurrentTime(localCurrentTime)}
       />
       <button onClick={() => setIsStarted(!isStarted)}>{isStarted ? "Stop" : "Start"}</button>
     </header>
@@ -161,14 +163,15 @@ const DriverRow = (props: DriverRowProps) => {
 };
 
 const Time = () => {
+  const currentTime = useTiming((s) => s.state.currentTime);
   const time = useLoadedTimingData((s) => s.Heartbeat.Utc);
   const clock = useLoadedTimingData((s) => s.ExtrapolatedClock);
   const lapCount = useLoadedTimingData((s) => s.LapCount);
 
   let timeRemaining: string;
-  if (clock.Extrapolating && clock.Utc) {
-    const now = new Date(time);
+  const now = addMilliseconds(new Date(time), -differenceInMilliseconds(new Date(currentTime), new Date(clock.Utc)));
 
+  if (clock.Extrapolating && clock.Utc) {
     const [startRemainingHours, startRemainingMinutes, startRemainingSeconds] = clock.Remaining.split(":").map(Number);
     const remainingStartSeconds = startRemainingSeconds + startRemainingMinutes * 60 + startRemainingHours * 60 * 60;
     const remaining = remainingStartSeconds - differenceInSeconds(now, new Date(clock.Utc));
@@ -185,7 +188,7 @@ const Time = () => {
   return (
     <div>
       <div>{timeRemaining}</div>
-      <div>{time}</div>
+      <div>{formatISO(now)}</div>
       {lapCount != null && (
         <div>
           {lapCount.CurrentLap} / {lapCount.TotalLaps}
