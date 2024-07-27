@@ -10,6 +10,7 @@ import {
 } from "../../../components/CustomIcons/CustomIcons";
 import { RaceDetailsData } from "../../../hooks/useRaceDetails/useRacesDetails.types";
 import { IconComponent } from "../../../types/Icon";
+import { fixReplayTitles } from "../../../utils/text";
 
 const TvIconWithStroke: IconComponent = (props) => <TvIcon {...props} stroke="currentColor" />;
 
@@ -88,7 +89,7 @@ export const adjustTitle = (title: string, isLive: boolean) => {
   }
 
   if (!isLive) {
-    return title.replace(/ replay$/i, "");
+    return fixReplayTitles(title);
   }
 
   return title;

@@ -61,6 +61,8 @@ const applyTitleCaseToWord = (text: string): string => {
 
 export const toTitleCase = (text: string) => applyToTextParts(text, " ", applyTitleCaseToWord);
 
+export const fixReplayTitles = (text: string) => text.replace(/ replay$/i, "");
+
 const removeDateFromStart = (text: string) => text.replace(/^[\d ]+/, "");
 
 const raceApostrophesSet: Record<string, string | undefined> = {
