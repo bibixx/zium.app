@@ -56,20 +56,22 @@ export const getRaceIcon = (raceDetails: RaceDetailsData, seasonId: string) => {
       return raceDetailsTypeToIconMap["sprint qualifying"];
     }
     case "practice": {
-      if (raceDetails.title.toLowerCase() === "practice") {
+      const adjustedTitle = adjustTitle(raceDetails.title, raceDetails.isLive);
+
+      if (adjustedTitle.toLowerCase().includes("practice 1")) {
         return raceDetailsTypeToIconMap["practice 1"];
       }
 
-      if (raceDetails.title.toLowerCase() === "practice 1") {
-        return raceDetailsTypeToIconMap["practice 1"];
-      }
-
-      if (raceDetails.title.toLowerCase() === "practice 2") {
+      if (adjustedTitle.toLowerCase().includes("practice 2")) {
         return raceDetailsTypeToIconMap["practice 2"];
       }
 
-      if (raceDetails.title.toLowerCase() === "practice 3") {
+      if (adjustedTitle.toLowerCase().includes("practice 3")) {
         return raceDetailsTypeToIconMap["practice 3"];
+      }
+
+      if (adjustedTitle.toLowerCase().includes("practice")) {
+        return raceDetailsTypeToIconMap["practice 1"];
       }
 
       return TvIconWithStroke;
@@ -80,9 +82,13 @@ export const getRaceIcon = (raceDetails: RaceDetailsData, seasonId: string) => {
   }
 };
 
-export const adjustTitle = (title: string) => {
+export const adjustTitle = (title: string, isLive: boolean) => {
   if (title.toLowerCase() === "f1 sprint") {
     return "sprint";
+  }
+
+  if (!isLive) {
+    return title.replace(/ replay$/i, "");
   }
 
   return title;

@@ -31,6 +31,7 @@ const nonUpperableWords = [
   "DHL",
   "der",
   "della",
+  "GP",
 ];
 const lowerCaseNonUpperableWordsSet = Object.fromEntries(nonUpperableWords.map((w, i) => [w.toLowerCase(), i]));
 

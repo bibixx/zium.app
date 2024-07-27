@@ -14,6 +14,8 @@ export const fetchRaceDetailsId = async (raceId: string, signal: AbortSignal): P
   const liveAndReplayEvents = getReplayEvents(body);
   const scheduledEvents = getScheduledEvents(body);
 
+  console.log(liveAndReplayEvents);
+
   const liveAndReplayDetails = liveAndReplayEvents.map((e) => mapEventToRaceDetailsData(e, true));
   const scheduledDetails = scheduledEvents.map((e) => mapEventToRaceDetailsData(e, false));
 

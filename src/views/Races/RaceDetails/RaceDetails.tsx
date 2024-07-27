@@ -123,7 +123,7 @@ export const RaceDetails = ({ id, endDate, onClose, seasonId, ziumOffsetsInfo }:
             {...props}
           >
             <EventSession
-              title={adjustTitle(raceDetails.title)}
+              title={adjustTitle(raceDetails.title, raceDetails.isLive)}
               subtitle={getSubtitle(raceDetails, ziumOffsetsInfo)}
               rightIconWrapperClassName={styles.raceDetailsListItemRightIconWrapper}
               isLive={raceDetails.isLive}
