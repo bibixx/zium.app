@@ -47,3 +47,31 @@
     @content;
   }
 }
+
+@mixin elevation($level) {
+  $shadows: ();
+  $count: 0;
+
+  @while true {
+    $x: var(--elevation-#{$level}-#{$count}-x);
+    $y: var(--elevation-#{$level}-#{$count}-y);
+    $blur: var(--elevation-#{$level}-#{$count}-blur);
+    $spread: var(--elevation-#{$level}-#{$count}-spread);
+    $color: var(--elevation-#{$level}-#{$count}-color);
+    $type: var(--elevation-#{$level}-#{$count}-type);
+
+    @if not $x {
+      @break;
+    }
+
+    $shadow: #{$x} #{$y} #{$blur} #{$spread} #{$color};
+    @if $type == "innerShadow" {
+      $shadow: inset #{$shadow};
+    }
+
+    $shadows: append($shadows, $shadow, comma);
+    $count: $count + 1;
+  }
+
+  box-shadow: $shadows;
+}
