@@ -6,7 +6,7 @@
 
 .header {
   @include typography(heading, 500, default);
-  color: var(--color-text-strong);
+  color: var(--color-content-strong);
   user-select: none;
   display: flex;
   justify-content: space-between;
@@ -20,7 +20,7 @@
   gap: 8px;
   margin-bottom: 8px;
   @include typography(text, 300, regular);
-  color: var(--color-text-default);
+  color: var(--color-content-default);
 
   &:last-child {
     margin-bottom: 0;
@@ -31,7 +31,7 @@
   @include typography(text, 400, strong);
   user-select: none;
   margin-bottom: 4px;
-  color: var(--color-text-strong);
+  color: var(--color-content-strong);
 }
 
 .buttonsRow {

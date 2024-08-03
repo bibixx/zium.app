@@ -1,6 +1,6 @@
 .iconWrapper {
   display: flex;
-  color: var(--color-text-muted);
+  color: var(--color-content-muted);
   transition: var(--transition-fast);
   transition-property: color;
 
@@ -37,7 +37,7 @@
 
 .closeWrapper {
   display: flex;
-  color: var(--color-text-muted);
+  color: var(--color-content-muted);
   transition: var(--transition-fast);
   transition-property: color, opacity;
   visibility: hidden;
@@ -55,7 +55,7 @@
   }
 
   &:hover {
-    color: var(--color-text-strong);
+    color: var(--color-content-strong);
   }
 
   &.isVisible {
@@ -93,7 +93,7 @@
     }
 
     .iconWrapper {
-      color: var(--color-text-strong);
+      color: var(--color-content-strong);
     }
   }
 
@@ -101,7 +101,7 @@
     box-shadow: 0 0 0 2px var(--color-border-accent);
 
     .iconWrapper {
-      color: var(--color-text-strong);
+      color: var(--color-content-strong);
     }
 
     &::after {
@@ -118,7 +118,7 @@
 .input {
   border: 0;
   background: none;
-  color: var(--color-text-strong);
+  color: var(--color-content-strong);
   caret-color: var(--color-background-accent-default);
   padding: 0 4px;
   flex: 1;
@@ -131,6 +131,6 @@
   }
 
   &::placeholder {
-    color: var(--color-text-muted);
+    color: var(--color-content-muted);
   }
 }

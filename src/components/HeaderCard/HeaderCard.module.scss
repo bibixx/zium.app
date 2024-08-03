@@ -134,7 +134,7 @@
 
 .raceTitle {
   @include typography(heading, 500, default);
-  color: var(--color-text-strong);
+  color: var(--color-content-strong);
   text-wrap: balance;
 }
 
@@ -150,12 +150,12 @@
 
 .raceCountry {
   @include typography(heading, 400, default);
-  color: var(--color-text-strong);
+  color: var(--color-content-strong);
 }
 
 .raceRound {
   @include typography(text, 300, regular);
-  color: var(--color-text-default);
+  color: var(--color-content-default);
 }
 
 .wrapperSkeleton {

@@ -8,25 +8,25 @@
 
 .text {
   @include typography(label, 300);
-  color: var(--color-text-default);
+  color: var(--color-content-default);
   flex: 1;
   text-decoration: none;
   line-height: 20px;
 
   &.isActive {
-    color: var(--color-text-strong);
+    color: var(--color-content-strong);
   }
 }
 
 .caption {
   @include typography(text, 300, regular);
-  color: var(--color-text-muted);
+  color: var(--color-content-muted);
 }
 
 .listItemWrapper {
   text-decoration: none;
 
   &:hover:not(:active):not(:focus-visible) .text:not(.isActive) {
-    color: var(--color-text-strong);
+    color: var(--color-content-strong);
   }
 }

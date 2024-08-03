@@ -2,7 +2,7 @@
   padding: 16px;
   padding-bottom: 8px;
   @include typography(text, 200, regular);
-  color: var(--color-text-muted);
+  color: var(--color-content-muted);
   user-select: none;
 }
 
@@ -30,15 +30,15 @@
 }
 
 .zeroStateIcon {
-  color: var(--color-text-muted);
+  color: var(--color-content-muted);
 }
 
 .zeroStateHeader {
   @include typography(heading, 300, default);
-  color: var(--color-text-strong);
+  color: var(--color-content-strong);
 }
 
 .zeroStateSubheader {
   @include typography(text, 200, regular);
-  color: var(--color-text-default);
+  color: var(--color-content-default);
 }

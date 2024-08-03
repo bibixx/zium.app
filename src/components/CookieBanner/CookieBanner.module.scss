@@ -1,11 +1,11 @@
 .heading {
   @include typography(heading, 300, default);
-  color: var(--color-text-strong);
+  color: var(--color-content-strong);
   user-select: none;
 }
 
 .body {
-  color: var(--color-text-default);
+  color: var(--color-content-default);
   @include typography(text, 200, regular);
   user-select: none;
 
@@ -15,7 +15,7 @@
     transition-property: color;
 
     &:hover {
-      color: var(--color-text-strong);
+      color: var(--color-content-strong);
     }
   }
 }

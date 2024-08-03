@@ -14,12 +14,12 @@
 
 .title {
   @include typography(heading, 300, display);
-  color: var(--color-text-strong);
+  color: var(--color-content-strong);
 }
 
 .subtitle {
   @include typography(text, 200, regular);
-  color: var(--color-text-default);
+  color: var(--color-content-default);
 
   &.isLive {
     @include typography(text, 200, strong);
@@ -34,14 +34,14 @@
   height: 48px;
   width: 48px;
   background: var(--color-background-muted-alpha);
-  color: var(--color-text-default);
+  color: var(--color-content-default);
   border-radius: var(--radii-xsmall);
 
   @include inner-border(var(--color-border-muted-alpha), 1px);
 }
 
 .rightIconWrapper {
-  color: var(--color-text-default);
+  color: var(--color-content-default);
   opacity: 0;
   transition: var(--transition-medium);
   transition-property: color, opacity;

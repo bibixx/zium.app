@@ -111,13 +111,13 @@
 }
 
 .title {
-  color: var(--color-text-strong);
+  color: var(--color-content-strong);
   user-select: none;
   @include typography(heading, 300, default);
 }
 
 .textContent {
-  color: var(--color-text-default);
+  color: var(--color-content-default);
   user-select: none;
   @include typography(text, 300, regular);
 }

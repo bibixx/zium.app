@@ -45,33 +45,33 @@
   &.primary {
     @include inner-border(var(--color-border-default-alpha));
     background: var(--color-background-accent-default);
-    color: var(--color-text-strong);
+    color: var(--color-content-strong);
 
     .iconWrapper {
-      color: var(--color-text-strong);
+      color: var(--color-content-strong);
     }
 
     &:not(&.disabled) {
       &:hover {
         background: var(--color-background-accent-strong);
-        color: var(--color-text-strong);
+        color: var(--color-content-strong);
       }
 
       &:active,
       &.isPressed,
       &.isPressed:hover {
         background: var(--color-background-accent-muted);
-        color: var(--color-text-strong);
+        color: var(--color-content-strong);
       }
     }
 
     &.disabled {
       @include inner-border(transparent);
       background: var(--color-background-muted-alpha);
-      color: var(--color-text-muted);
+      color: var(--color-content-muted);
 
       .iconWrapper {
-        color: var(--color-text-muted);
+        color: var(--color-content-muted);
       }
     }
   }
@@ -79,19 +79,19 @@
   &.secondary {
     @include inner-border(var(--color-border-muted-alpha));
     background: var(--color-background-default-alpha);
-    color: var(--color-text-strong);
+    color: var(--color-content-strong);
 
     .iconWrapper {
-      color: var(--color-text-default);
+      color: var(--color-content-default);
     }
 
     &:not(&.disabled) {
       &:hover {
         background: var(--color-background-strong-alpha);
-        color: var(--color-text-strong);
+        color: var(--color-content-strong);
 
         .iconWrapper {
-          color: var(--color-text-strong);
+          color: var(--color-content-strong);
         }
       }
 
@@ -99,10 +99,10 @@
       &.isPressed,
       &.isPressed:hover {
         background: var(--color-background-muted-alpha);
-        color: var(--color-text-strong);
+        color: var(--color-content-strong);
 
         .iconWrapper {
-          color: var(--color-text-default);
+          color: var(--color-content-default);
         }
       }
     }
@@ -110,10 +110,10 @@
     &.disabled {
       @include inner-border(transparent);
       background: var(--color-background-muted-alpha);
-      color: var(--color-text-muted);
+      color: var(--color-content-muted);
 
       .iconWrapper {
-        color: var(--color-text-muted);
+        color: var(--color-content-muted);
       }
     }
   }
@@ -121,10 +121,10 @@
   &.secondaryInverted {
     @include inner-border(var(--color-border-muted-alpha));
     background: var(--color-core-neutral-darken-400);
-    color: var(--color-text-strong);
+    color: var(--color-content-strong);
 
     .iconWrapper {
-      color: var(--color-text-strong);
+      color: var(--color-content-strong);
     }
 
     &:not(&.disabled) {
@@ -145,10 +145,10 @@
     &.disabled {
       @include inner-border(transparent);
       background: var(--color-background-muted-alpha);
-      color: var(--color-text-muted);
+      color: var(--color-content-muted);
 
       .iconWrapper {
-        color: var(--color-text-muted);
+        color: var(--color-content-muted);
       }
     }
   }
@@ -156,19 +156,19 @@
   &.tertiary {
     @include inner-border(transparent);
     background: transparent;
-    color: var(--color-text-strong);
+    color: var(--color-content-strong);
 
     .iconWrapper {
-      color: var(--color-text-default);
+      color: var(--color-content-default);
     }
 
     &:hover:not(&.disabled) {
       @include inner-border(var(--color-border-default-alpha));
       background: var(--color-background-strong-alpha);
-      color: var(--color-text-strong);
+      color: var(--color-content-strong);
 
       .iconWrapper {
-        color: var(--color-text-strong);
+        color: var(--color-content-strong);
       }
     }
 
@@ -177,19 +177,19 @@
     &.isPressed:hover {
       @include inner-border(var(--color-border-muted-alpha));
       background: var(--color-background-muted-alpha);
-      color: var(--color-text-strong);
+      color: var(--color-content-strong);
 
       .iconWrapper {
-        color: var(--color-text-default);
+        color: var(--color-content-default);
       }
     }
 
     &.disabled {
       @include inner-border(transparent);
-      color: var(--color-text-muted);
+      color: var(--color-content-muted);
 
       .iconWrapper {
-        color: var(--color-text-muted);
+        color: var(--color-content-muted);
       }
     }
   }

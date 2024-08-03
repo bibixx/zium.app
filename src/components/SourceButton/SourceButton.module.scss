@@ -48,7 +48,7 @@
 }
 
 .label {
-  color: var(--color-text-strong);
+  color: var(--color-content-strong);
   padding: 0 8px;
   @include typography(heading, 300, display);
 }
@@ -57,7 +57,7 @@
   @include inner-border(var(--color-border-muted-alpha));
   border-radius: var(--radii-rounded);
   background-color: var(--color-background-muted-alpha);
-  color: var(--color-text-default);
+  color: var(--color-content-default);
   width: 28px;
   height: 28px;
   display: flex;
