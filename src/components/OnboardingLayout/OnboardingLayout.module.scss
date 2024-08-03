@@ -40,12 +40,12 @@
 .content {
   position: relative;
   width: 100%;
-  background: var(--color-background-muted-default);
+  background: var(--color-background-static-default);
   z-index: 1;
   padding: 64px 48px 48px;
   border-bottom-right-radius: var(--radii-large);
 
-  @include inner-border(var(--color-border-muted-default), 1px);
+  // @include inner-border(var(--color-border-muted-default), 1px);
 
   &::before {
     position: absolute;
@@ -56,7 +56,7 @@
     height: 5px;
     width: 100%;
     z-index: 2;
-    background-color: var(--color-background-accent-default);
+    background-color: var(--color-border-accent);
   }
 }
 
