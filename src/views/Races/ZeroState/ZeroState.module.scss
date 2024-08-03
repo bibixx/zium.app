@@ -14,14 +14,14 @@
 }
 
 .heading {
-  color: var(--color-text-strong);
+  color: var(--color-content-strong);
   @include typography(heading, 400, default);
   margin-bottom: 8px;
   user-select: none;
 }
 
 .subheading {
-  color: var(--color-text-default);
+  color: var(--color-content-default);
   @include typography(text, 300, regular);
   user-select: none;
 }

@@ -10,7 +10,7 @@
   padding: 16px;
   padding-bottom: 0;
 
-  color: var(--color-text-strong);
+  color: var(--color-content-strong);
   @include typography(heading, 500, default);
 }
 
@@ -25,11 +25,11 @@
 
 .sectionHeader {
   @include typography(heading, 400, default);
-  color: var(--color-text-strong);
+  color: var(--color-content-strong);
 }
 
 .sectionIcon {
-  color: var(--color-text-muted);
+  color: var(--color-content-muted);
   display: flex;
 }
 
@@ -48,7 +48,7 @@
 
 .subSectionHeader {
   @include typography(heading, 200, display);
-  color: var(--color-text-strong);
+  color: var(--color-content-strong);
   padding: 16px 0;
   user-select: none;
 }
@@ -69,5 +69,5 @@
 
 .shortcutRowText {
   @include typography(text, 300, regular);
-  color: var(--color-text-default);
+  color: var(--color-content-default);
 }

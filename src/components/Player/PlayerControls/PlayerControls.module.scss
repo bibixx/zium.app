@@ -86,7 +86,7 @@
       }
 
       .bmpui-current-time {
-        color: var(--color-text-strong);
+        color: var(--color-content-strong);
 
         .bmpui-label-placeholder {
           left: 0;
@@ -94,7 +94,7 @@
       }
 
       .bmpui-total-time {
-        color: var(--color-text-muted);
+        color: var(--color-content-muted);
 
         .bmpui-label-placeholder {
           right: 0;
@@ -109,7 +109,7 @@
           cursor: pointer;
 
           &::before {
-            background: var(--color-text-muted);
+            background: var(--color-content-muted);
           }
         }
 

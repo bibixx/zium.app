@@ -65,16 +65,16 @@
   padding: 0 24px;
   @include typography(text, 100, regular);
   text-align: center;
-  color: var(--color-text-muted);
+  color: var(--color-content-muted);
 
   a {
-    color: var(--color-text-muted);
+    color: var(--color-content-muted);
     transition: var(--transition-fast);
     transition-property: color;
     text-decoration: underline;
 
     &:hover {
-      color: var(--color-text-strong);
+      color: var(--color-content-strong);
     }
   }
 }
@@ -90,7 +90,7 @@
 .heading {
   @include typography(heading, 700, default);
   margin: 0;
-  color: var(--color-text-strong);
+  color: var(--color-content-strong);
   user-select: none;
 }
 

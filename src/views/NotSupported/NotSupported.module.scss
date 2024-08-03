@@ -3,17 +3,17 @@
   margin: 0;
   @include typography(text, 200, regular);
   text-align: center;
-  color: var(--color-text-muted);
+  color: var(--color-content-muted);
   margin-top: 8px;
 
   a {
     transition: var(--transition-fast);
     transition-property: color;
     text-decoration: underline;
-    color: var(--color-text-muted);
+    color: var(--color-content-muted);
 
     &:hover {
-      color: var(--color-text-default);
+      color: var(--color-content-default);
     }
   }
 }

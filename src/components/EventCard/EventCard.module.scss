@@ -41,7 +41,7 @@
 
 .headerFirstLine {
   @include typography(heading, 400, default);
-  color: var(--color-text-strong);
+  color: var(--color-content-strong);
 }
 
 .headerSecondLine {
@@ -51,11 +51,11 @@
   justify-content: space-between;
   gap: 4px;
 
-  color: var(--color-text-default);
+  color: var(--color-content-default);
 }
 
 .headerRound {
-  color: var(--color-text-muted);
+  color: var(--color-content-muted);
 }
 
 .content {

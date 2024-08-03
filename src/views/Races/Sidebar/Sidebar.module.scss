@@ -55,7 +55,7 @@
 }
 
 .footerLink {
-  color: var(--color-text-muted);
+  color: var(--color-content-muted);
   transition: var(--transition-fast);
   transition-property: color;
   border-radius: var(--radii-xsmall);
@@ -68,7 +68,7 @@
 
   &:hover,
   &:focus-visible {
-    color: var(--color-text-strong);
+    color: var(--color-content-strong);
   }
 }
 
@@ -77,7 +77,7 @@
 }
 
 .footerText {
-  color: var(--color-text-muted);
+  color: var(--color-content-muted);
   display: flex;
   gap: 4px;
   flex-wrap: wrap;

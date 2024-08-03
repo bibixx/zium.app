@@ -3,7 +3,7 @@
   margin: 0;
   @include typography(text, 200, regular);
   text-align: center;
-  color: var(--color-text-muted);
+  color: var(--color-content-muted);
   margin-top: 8px;
 }
 
@@ -21,7 +21,7 @@
   transition-property: color;
 
   &:hover {
-    color: var(--color-text-default);
+    color: var(--color-content-default);
   }
 }
 
@@ -32,7 +32,7 @@
     transition-property: color;
 
     &:hover {
-      color: var(--color-text-strong);
+      color: var(--color-content-strong);
     }
   }
 }

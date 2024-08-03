@@ -7,17 +7,17 @@
 }
 
 .textLabel {
-  color: var(--color-text-default);
+  color: var(--color-content-default);
   transition: var(--transition-fast);
   transition-property: color;
   @include typography(text, 300, regular);
 
   .checkboxRow:hover & {
-    color: var(--color-text-strong);
+    color: var(--color-content-strong);
   }
 
   .checkboxRow:active & {
-    color: var(--color-text-default);
+    color: var(--color-content-default);
   }
 }
 
@@ -40,7 +40,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-text-strong);
+  color: var(--color-content-strong);
 
   &.isActive {
     background: var(--color-background-accent-default);

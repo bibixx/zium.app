@@ -20,7 +20,7 @@
 
 .heading {
   @include typography(heading, 600, default);
-  color: var(--color-text-strong);
+  color: var(--color-content-strong);
   margin-bottom: var(--season-header-margin);
   margin-top: 0;
   height: var(--season-header-height);

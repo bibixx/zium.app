@@ -57,7 +57,7 @@ export const Header = ({ searchQuery, setSearchQuery, overwriteVisibleSeason }: 
         <div className={styles.shadow} />
         <div className={styles.wrapper}>
           <a href="#top" onClick={onLogoClick} className={styles.logoLink} aria-label="Scroll to top">
-            <Logo height={32} width={88} color={"var(--color-text-strong)"} aria-label="ZIUM logo" />
+            <Logo height={32} width={88} color={"var(--color-content-strong)"} aria-label="ZIUM logo" />
           </a>
           <div className={styles.rightContent}>
             <div className={styles.inputWrapper}>

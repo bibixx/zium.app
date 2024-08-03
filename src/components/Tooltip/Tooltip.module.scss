@@ -1,6 +1,6 @@
 .wrapper {
   background: var(--color-background-strong-default);
-  color: var(--color-text-default);
+  color: var(--color-content-default);
   @include inner-border(var(--color-border-muted-alpha));
 
   z-index: var(--z-index-tooltip);

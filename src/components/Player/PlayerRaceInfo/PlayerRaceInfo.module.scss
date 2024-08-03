@@ -1,18 +1,18 @@
 .eventTitle {
   @include typography(text, 300, regular);
-  color: var(--color-text-default);
+  color: var(--color-content-default);
   white-space: nowrap;
 }
 
 .countryName {
   @include typography(heading, 400, default);
-  color: var(--color-text-strong);
+  color: var(--color-content-strong);
   white-space: nowrap;
 }
 
 .nonRaceEventName {
   @include typography(heading, 300, default);
-  color: var(--color-text-strong);
+  color: var(--color-content-strong);
   display: -webkit-box;
   max-width: 300px;
   -webkit-line-clamp: 3;
