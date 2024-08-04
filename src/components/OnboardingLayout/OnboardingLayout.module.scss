@@ -12,7 +12,7 @@
   width: 100%;
   flex: 1;
   background: var(--color-background-surface);
-  --dotColor: var(--color-core-neutral-lighten-300);
+  --dotColor: var(--color-background-static-strong);
 
   @media (max-width: 800px) {
     height: 100%;
@@ -44,8 +44,7 @@
   z-index: 1;
   padding: 64px 48px 48px;
   border-bottom-right-radius: var(--radii-large);
-
-  // @include inner-border(var(--color-border-muted-default), 1px);
+  @extend .pos-2dp;
 
   &::before {
     position: absolute;
@@ -105,10 +104,10 @@
   width: 36px;
   height: 4px;
   border-radius: var(--radii-rounded);
-  background-color: var(--color-border-strong-default);
+  background-color: var(--color-border-default);
 
   &.isSelected {
-    background-color: var(--color-border-strong-inverted-default);
+    background-color: var(--color-border-strong);
   }
 }
 
