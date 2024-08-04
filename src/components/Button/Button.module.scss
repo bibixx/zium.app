@@ -44,30 +44,32 @@
 
   &.primary {
     @include inner-border(var(--color-border-default-alpha));
-    background: var(--color-background-accent-default);
+    background: var(--color-background-interactive-accent-rest);
     color: var(--color-content-strong);
+    @extend .pos-1dp;
 
     .iconWrapper {
-      color: var(--color-content-strong);
+      color: var(--color-content-on-accent);
     }
 
     &:not(&.disabled) {
       &:hover {
-        background: var(--color-background-accent-strong);
-        color: var(--color-content-strong);
+        background: var(--color-background-interactive-accent-hover);
+        color: var(--color-content-on-accent);
+        @extend .pos-2dp;
       }
 
       &:active,
       &.isPressed,
       &.isPressed:hover {
-        background: var(--color-background-accent-muted);
-        color: var(--color-content-strong);
+        background: var(--color-background-interactive-accent-press);
+        color: var(--color-content-on-accent);
+        @extend .neg-1dp;
       }
     }
 
     &.disabled {
-      @include inner-border(transparent);
-      background: var(--color-background-muted-alpha);
+      background: var(--color-background-interactive-disabled);
       color: var(--color-content-muted);
 
       .iconWrapper {
@@ -77,9 +79,9 @@
   }
 
   &.secondary {
-    @include inner-border(var(--color-border-muted-alpha));
-    background: var(--color-background-default-alpha);
+    background: var(--color-background-interactive-neutral-rest);
     color: var(--color-content-strong);
+    @extend .pos-1dp;
 
     .iconWrapper {
       color: var(--color-content-default);
@@ -87,8 +89,9 @@
 
     &:not(&.disabled) {
       &:hover {
-        background: var(--color-background-strong-alpha);
+        background: var(--color-background-interactive-neutral-hover);
         color: var(--color-content-strong);
+        @extend .pos-2dp;
 
         .iconWrapper {
           color: var(--color-content-strong);
@@ -98,8 +101,9 @@
       &:active,
       &.isPressed,
       &.isPressed:hover {
-        background: var(--color-background-muted-alpha);
+        background: var(--color-background-interactive-neutral-press);
         color: var(--color-content-strong);
+        @extend .neg-1dp;
 
         .iconWrapper {
           color: var(--color-content-default);
@@ -108,8 +112,7 @@
     }
 
     &.disabled {
-      @include inner-border(transparent);
-      background: var(--color-background-muted-alpha);
+      background: var(--color-background-interactive-disabled);
       color: var(--color-content-muted);
 
       .iconWrapper {
@@ -119,32 +122,29 @@
   }
 
   &.secondaryInverted {
-    @include inner-border(var(--color-border-muted-alpha));
-    background: var(--color-core-neutral-darken-400);
-    color: var(--color-content-strong);
+    background: var(--color-background-interactive-darken-rest);
+    color: var(--color-content-on-darken);
 
     .iconWrapper {
-      color: var(--color-content-strong);
+      color: var(--color-content-on-darken);
     }
 
     &:not(&.disabled) {
       &:hover {
-        background: var(--color-core-neutral-darken-500);
+        background: var(--color-background-interactive-darken-hover);
       }
 
       &:active,
       &.isPressed &.isPressed:hover {
-        background: var(--color-core-neutral-darken-500);
+        background: var(--color-background-interactive-darken-press);
       }
     }
 
     &:active {
-      background: var(--color-core-neutral-darken-300);
+      background: var(--color-background-interactive-darken-press);
     }
 
     &.disabled {
-      @include inner-border(transparent);
-      background: var(--color-background-muted-alpha);
       color: var(--color-content-muted);
 
       .iconWrapper {
@@ -154,7 +154,6 @@
   }
 
   &.tertiary {
-    @include inner-border(transparent);
     background: transparent;
     color: var(--color-content-strong);
 
@@ -163,9 +162,9 @@
     }
 
     &:hover:not(&.disabled) {
-      @include inner-border(var(--color-border-default-alpha));
-      background: var(--color-background-strong-alpha);
+      background: var(--color-background-interactive-neutral-hover);
       color: var(--color-content-strong);
+      @extend .pos-2dp;
 
       .iconWrapper {
         color: var(--color-content-strong);
@@ -175,9 +174,9 @@
     &:active:not(&.disabled),
     &.isPressed:not(&.disabled),
     &.isPressed:hover {
-      @include inner-border(var(--color-border-muted-alpha));
-      background: var(--color-background-muted-alpha);
+      background: var(--color-background-interactive-neutral-press);
       color: var(--color-content-strong);
+      @extend .neg-1dp;
 
       .iconWrapper {
         color: var(--color-content-default);
