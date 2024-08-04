@@ -48,30 +48,41 @@
   }
 }
 
-// @mixin elevation($level) {
-//   $shadows: ();
-//   $count: 0;
+// Manual shadows
+.neg-1dp {
+  box-shadow:
+    inset var(--elevation-neg-1dp-0-x) var(--elevation-neg-1dp-0-y) var(--elevation-neg-1dp-0-blur)
+      var(--elevation-neg-1dp-0-spread) var(--elevation-neg-1dp-0-color),
+    inset var(--elevation-neg-1dp-1-x) var(--elevation-neg-1dp-1-y) var(--elevation-neg-1dp-1-blur)
+      var(--elevation-neg-1dp-1-spread) var(--elevation-neg-1dp-1-color);
+}
 
-//   @while true {
-//     $x: var(--elevation-#{$level}-#{$count}-x);
-//     $y: var(--elevation-#{$level}-#{$count}-y);
-//     $blur: var(--elevation-#{$level}-#{$count}-blur);
-//     $spread: var(--elevation-#{$level}-#{$count}-spread);
-//     $color: var(--elevation-#{$level}-#{$count}-color);
-//     $type: var(--elevation-#{$level}-#{$count}-type);
+.pos-1dp {
+  box-shadow:
+    inset var(--elevation-1dp-0-x) var(--elevation-1dp-0-y) var(--elevation-1dp-0-blur) var(--elevation-1dp-0-spread)
+      var(--elevation-1dp-0-color),
+    inset var(--elevation-1dp-1-x) var(--elevation-1dp-1-y) var(--elevation-1dp-1-blur) var(--elevation-1dp-1-spread)
+      var(--elevation-1dp-1-color),
+    var(--elevation-1dp-2-x) var(--elevation-1dp-2-y) var(--elevation-1dp-2-blur) var(--elevation-1dp-2-spread)
+      var(--elevation-1dp-2-color);
+}
 
-//     @if not $x {
-//       @break;
-//     }
+.pos-2dp {
+  box-shadow:
+    inset var(--elevation-2dp-0-x) var(--elevation-2dp-0-y) var(--elevation-2dp-0-blur) var(--elevation-2dp-0-spread)
+      var(--elevation-2dp-0-color),
+    inset var(--elevation-2dp-1-x) var(--elevation-2dp-1-y) var(--elevation-2dp-1-blur) var(--elevation-2dp-1-spread)
+      var(--elevation-2dp-1-color),
+    var(--elevation-2dp-2-x) var(--elevation-2dp-2-y) var(--elevation-2dp-2-blur) var(--elevation-2dp-2-spread)
+      var(--elevation-2dp-2-color);
+}
 
-//     $shadow: #{$x} #{$y} #{$blur} #{$spread} #{$color};
-//     @if $type == "innerShadow" {
-//       $shadow: inset #{$shadow};
-//     }
-
-//     $shadows: append($shadows, $shadow, comma);
-//     $count: $count + 1;
-//   }
-
-//   box-shadow: $shadows;
-// }
+.pos-3dp {
+  box-shadow:
+    inset var(--elevation-3dp-0-x) var(--elevation-3dp-0-y) var(--elevation-3dp-0-blur) var(--elevation-3dp-0-spread)
+      var(--elevation-3dp-0-color),
+    inset var(--elevation-3dp-1-x) var(--elevation-3dp-1-y) var(--elevation-3dp-1-blur) var(--elevation-3dp-1-spread)
+      var(--elevation-3dp-1-color),
+    var(--elevation-3dp-2-x) var(--elevation-3dp-2-y) var(--elevation-3dp-2-blur) var(--elevation-3dp-2-spread)
+      var(--elevation-3dp-2-color);
+}
