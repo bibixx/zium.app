@@ -1,7 +1,7 @@
 .wrapper {
-  background: var(--color-background-strong-default);
+  background: var(--color-background-static-default);
   color: var(--color-content-default);
-  @include inner-border(var(--color-border-muted-alpha));
+  @extend .pos-2dp;
 
   z-index: var(--z-index-tooltip);
   overflow: hidden;
