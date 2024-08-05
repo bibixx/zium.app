@@ -26,6 +26,7 @@ export const DebugPanel = () => {
         {
           keys: SHORTCUTS.DEBUG,
           action: () => setIsDebugPanelOpen((d) => !d),
+          preventDefault: true,
         },
         {
           keys: SHORTCUTS.CLOSE,
