@@ -45,7 +45,7 @@
 
   &.primary {
     background: var(--color-background-interactive-accent-rest);
-    color: var(--color-content-strong);
+    color: var(--color-content-on-accent);
     @extend .pos-1dp;
 
     .iconWrapper {
