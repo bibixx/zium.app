@@ -12,6 +12,7 @@ import { useFormulaImage } from "../../hooks/useFormulaImage/useFormulaImage";
 import { SHORTCUTS } from "../../hooks/useHotkeys/useHotkeys.keys";
 import { useHotkeys } from "../../hooks/useHotkeys/useHotkeys";
 import { Checkbox } from "../Checkbox/Checkbox";
+import { useTheme } from "../../hooks/useTheme/useTheme";
 import styles from "./DebugPanel.module.scss";
 import { debugStore, downloadOffsetsForCurrentRace, getLorem } from "./DebugPanel.utils";
 
@@ -58,6 +59,7 @@ const DebugPanelContents = (props: DebugPanelContentsProps) => {
         <Button variant="Tertiary" iconLeft={XMarkIcon} onClick={props.closePanel} aria-label="Close" />
       </div>
       <DebugGeneralSection />
+      <DebugColorModeSection />
       <DebugSnackbars />
       <DebugRaceSettings {...props} />
     </>
@@ -124,18 +126,12 @@ const ClearStorageDialog = ({ onCancel, onConfirm }: ClearStorageDialogProps) =>
 const DebugGeneralSection = () => {
   const [isClearStorageDialogOpen, setIsClearStorageDialogOpen] = useState(false);
   const { resetFlags } = useFeatureFlags();
-  const toggleDarkMode = () => {
-    document.documentElement.classList.toggle("light");
-  };
 
   return (
     <>
       <div className={styles.section}>
         <div className={styles.sectionHeader}>General</div>
         <div className={styles.buttonsRow}>
-          <Button variant="Secondary" onClick={() => toggleDarkMode()}>
-            Toggle Dark Mode
-          </Button>
           <Button variant="Secondary" onClick={() => setIsClearStorageDialogOpen(true)}>
             Clear localStorage
           </Button>
@@ -163,6 +159,33 @@ const DebugGeneralSection = () => {
         />
       </Dialog>
     </>
+  );
+};
+
+const DebugColorModeSection = () => {
+  const { setTheme, theme, displayedTheme } = useTheme();
+  const toggleDarkMode = () => {
+    setTheme(displayedTheme === "dark" ? "light" : "dark");
+  };
+
+  return (
+    <div className={styles.section}>
+      <div className={styles.sectionHeader}>Color Mode (Current: {theme})</div>
+      <div className={styles.buttonsRow}>
+        <Button variant="Secondary" onClick={() => setTheme("dark")}>
+          Set Dark
+        </Button>
+        <Button variant="Secondary" onClick={() => setTheme("light")}>
+          Set Light
+        </Button>
+        <Button variant="Secondary" onClick={() => setTheme("system")}>
+          Set System
+        </Button>
+        <Button variant="Secondary" onClick={() => toggleDarkMode()}>
+          Toggle
+        </Button>
+      </div>
+    </div>
   );
 };
 
