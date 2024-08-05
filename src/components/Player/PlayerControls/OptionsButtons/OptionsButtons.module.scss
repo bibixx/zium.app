@@ -6,7 +6,6 @@
 }
 
 .volumeSliderContainer {
-  @include inner-border(var(--color-border-default-default));
   overflow: visible;
   position: absolute;
   z-index: 1;
@@ -14,7 +13,8 @@
   width: 196px;
   top: -4px;
   left: -4px;
-  background: var(--color-background-default-default);
+  background: var(--color-background-static-default);
+  @extend .pos-1dp;
   border-radius: var(--radii-rounded);
   opacity: 0;
   visibility: hidden;
