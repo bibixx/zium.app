@@ -8,8 +8,8 @@
   gap: 4px;
   padding: 8px;
   width: calc(var(--width) * 1px);
-  background: var(--color-background-default-default);
-  @include inner-border(var(--color-border-default-default));
+  background: var(--color-background-static-default);
+  @extend .pos-3dp;
   border-radius: var(--radii-medium);
 
   &.wrapperEnter {
@@ -49,7 +49,7 @@
     content: "";
     width: 100%;
     height: 2px;
-    background: var(--color-border-default-default);
+    background: var(--color-border-default);
     border-radius: var(--radii-rounded);
   }
 }
