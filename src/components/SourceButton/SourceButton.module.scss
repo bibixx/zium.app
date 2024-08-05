@@ -43,7 +43,7 @@
 }
 
 .label {
-  color: var(--color-content-strong);
+  color: var(--color-content-on-darken);
   padding: 0 8px;
   @include typography(heading, 300, display);
 }
@@ -51,7 +51,7 @@
 .imageWrapper {
   border-radius: var(--radii-rounded);
   background-color: var(--color-core-neutral-lighten-1100);
-  color: var(--color-content-default);
+  color: var(--color-content-on-darken);
   width: 28px;
   height: 28px;
   display: flex;
