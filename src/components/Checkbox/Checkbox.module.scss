@@ -56,7 +56,8 @@
     }
   }
 
-  .checkboxRow:active & {
+  .checkboxRow:active,
+  .checkboxRow:active:hover & {
     background: var(--color-background-interactive-neutral-press);
     @extend .neg-1dp;
 

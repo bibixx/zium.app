@@ -60,6 +60,7 @@
       }
 
       &:active,
+      &:active:hover,
       &.isPressed,
       &.isPressed:hover {
         background: var(--color-background-interactive-accent-press);
@@ -99,6 +100,7 @@
       }
 
       &:active,
+      &:active:hover,
       &.isPressed,
       &.isPressed:hover {
         background: var(--color-background-interactive-neutral-press);
@@ -161,25 +163,28 @@
       color: var(--color-content-default);
     }
 
-    &:hover:not(&.disabled) {
-      background: var(--color-background-interactive-neutral-hover);
-      color: var(--color-content-strong);
-      @extend .pos-2dp;
-
-      .iconWrapper {
+    &:not(&.disabled) {
+      &:hover {
+        background: var(--color-background-interactive-neutral-hover);
         color: var(--color-content-strong);
+        @extend .pos-2dp;
+
+        .iconWrapper {
+          color: var(--color-content-strong);
+        }
       }
-    }
 
-    &:active:not(&.disabled),
-    &.isPressed:not(&.disabled),
-    &.isPressed:hover {
-      background: var(--color-background-interactive-neutral-press);
-      color: var(--color-content-strong);
-      @extend .neg-1dp;
+      &:active,
+      &:active:hover,
+      &.isPressed,
+      &.isPressed:hover {
+        background: var(--color-background-interactive-neutral-press);
+        color: var(--color-content-strong);
+        @extend .neg-1dp;
 
-      .iconWrapper {
-        color: var(--color-content-default);
+        .iconWrapper {
+          color: var(--color-content-default);
+        }
       }
     }
 
