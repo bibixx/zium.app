@@ -29,6 +29,7 @@
   background: var(--color-background-static-default);
   @extend .pos-3dp;
   position: absolute;
+  overflow: hidden;
   border-radius: var(--radii-medium);
   width: 360px;
   padding: 4px;
