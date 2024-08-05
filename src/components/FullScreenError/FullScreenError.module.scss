@@ -16,8 +16,8 @@
   margin: 64px;
   padding: 24px;
   width: 400px;
-  background: var(--color-background-muted-default);
-  @include inner-border(var(--color-border-muted-default));
+  background: var(--color-background-static-muted);
+  @include inner-border(var(--color-border-default));
   border-radius: var(--radii-large);
 }
 

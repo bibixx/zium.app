@@ -81,21 +81,11 @@
   text-align: left;
   user-select: none;
 
-  @include inner-border(var(--color-border-muted-alpha)) {
-    opacity: 0;
-    transition: var(--transition-medium);
-    transition-property: opacity;
-  }
-
   &:hover,
   &:focus-visible {
     background: var(--color-background-interactive-neutral-rest);
     @extend .pos-1dp;
     transform: scale(1.05);
-
-    &::after {
-      opacity: 1;
-    }
 
     .heroImage {
       opacity: 1;

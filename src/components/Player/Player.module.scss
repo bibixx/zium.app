@@ -13,7 +13,7 @@
   transition: var(--transition-fast);
   transition-property: transform;
   cursor: grab;
-  color: var(--color-core-neutral-600);
+  color: var(--color-content-muted);
   background: none;
 
   &.dragHandleIsDragging {
@@ -52,7 +52,7 @@
   height: 24px;
   width: 68px;
   transform: translateX(-50%) translateY(-100%);
-  z-index: 1;
+  z-index: -2;
   cursor: grab;
 }
 

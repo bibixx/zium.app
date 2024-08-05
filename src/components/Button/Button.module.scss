@@ -44,7 +44,6 @@
   }
 
   &.primary {
-    @include inner-border(var(--color-border-default-alpha));
     background: var(--color-background-interactive-accent-rest);
     color: var(--color-content-strong);
     @extend .pos-1dp;

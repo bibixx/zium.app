@@ -1,8 +1,8 @@
 .wrapper {
   margin-top: 64px;
   padding: 64px;
-  background: var(--color-background-muted-default);
-  @include inner-border(var(--color-border-muted-default));
+  background: var(--color-background-static-muted);
+  @extend .pos-1dp;
   border-radius: var(--radii-large);
   text-align: center;
   display: flex;

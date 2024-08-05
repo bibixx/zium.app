@@ -12,7 +12,7 @@
 }
 
 .card {
-  background: var(--color-background-muted-default);
-  @include inner-border(var(--color-border-muted-default));
+  background: var(--color-background-static-muted);
+  @include inner-border(var(--color-border-default));
   border-radius: var(--radii-medium);
 }
