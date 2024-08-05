@@ -12,5 +12,5 @@
 .countryImageWrapper {
   border-radius: var(--radii-rounded);
 
-  @include inner-border(var(--color-border-muted-alpha));
+  @include inner-border(var(--color-border-default));
 }
