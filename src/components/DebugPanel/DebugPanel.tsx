@@ -123,12 +123,18 @@ const ClearStorageDialog = ({ onCancel, onConfirm }: ClearStorageDialogProps) =>
 const DebugGeneralSection = () => {
   const [isClearStorageDialogOpen, setIsClearStorageDialogOpen] = useState(false);
   const { resetFlags } = useFeatureFlags();
+  const toggleDarkMode = () => {
+    document.documentElement.classList.toggle("light");
+  };
 
   return (
     <>
       <div className={styles.section}>
         <div className={styles.sectionHeader}>General</div>
         <div className={styles.buttonsRow}>
+          <Button variant="Secondary" onClick={() => toggleDarkMode()}>
+            Toggle Dark Mode
+          </Button>
           <Button variant="Secondary" onClick={() => setIsClearStorageDialogOpen(true)}>
             Clear localStorage
           </Button>
