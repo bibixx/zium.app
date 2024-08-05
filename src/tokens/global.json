@@ -1020,7 +1020,7 @@
   "$themes": [],
   "$metadata": {
     "tokenSetOrder": [
-      "dark"
+      "global"
     ]
   }
 }
