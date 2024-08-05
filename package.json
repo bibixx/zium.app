@@ -11,7 +11,15 @@
     "lint:css": "prettier -c src/**/*.scss",
     "lint": "yarn lint:ts && yarn lint:css",
     "type-check": "tsc --noEmit",
-    "build-tokens": "token-transformer --expandTypography --expandShadow --expandComposition --expandBorder src/tokens/global.json src/tokens/global.sd.json && style-dictionary build --config tokens.config.json && rm -f src/tokens/*.sd.json"
+    "build-tokens:prepare:dark": "token-transformer --expandTypography --expandShadow --expandComposition --expandBorder src/tokens/dark.json src/tokens/dark.sd.json",
+    "build-tokens:prepare:light": "token-transformer --expandTypography --expandShadow --expandComposition --expandBorder src/tokens/light.json src/tokens/light.sd.json",
+    "build-tokens:prepare": "yarn build-tokens:prepare:dark && yarn build-tokens:prepare:light",
+    "build-tokens:build:base": "style-dictionary build --config tokens.config.cjs",
+    "build-tokens:build:light": "STYLE_DICTIONARY_MODE=light yarn run build-tokens:build:base",
+    "build-tokens:build:dark": "STYLE_DICTIONARY_MODE=dark yarn run build-tokens:build:base",
+    "build-tokens:build": "yarn run build-tokens:build:light && yarn run build-tokens:build:dark",
+    "build-tokens:cleanup": "rm -f src/tokens/*.sd.json",
+    "build-tokens": "yarn run build-tokens:prepare && yarn run build-tokens:build && yarn run build-tokens:cleanup"
   },
   "dependencies": {
     "@heroicons/react": "^2.0.18",
