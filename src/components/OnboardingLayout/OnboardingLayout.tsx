@@ -19,7 +19,6 @@ export const OnboardingLayout = ({ children, stepsCount, selectedStepIndex }: On
     <div className={styles.fullHeightWrapper}>
       <div className={styles.wrapper}>
         <BackgroundDots baseGrid={baseGrid} />
-        <div className={styles.backgroundDotsOverlay} />
         <div className={styles.contentWrapper}>
           <div className={styles.mobileDivider}></div>
           <div className={styles.content}>
