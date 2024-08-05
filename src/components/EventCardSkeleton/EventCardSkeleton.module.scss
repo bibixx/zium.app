@@ -2,7 +2,7 @@
   background: none;
 }
 .image {
-  background: var(--color-background-default-default);
+  background: var(--color-background-static-muted);
   height: 160px;
   border-radius: var(--radii-medium);
 }
@@ -31,7 +31,7 @@
 }
 
 @mixin skeleton {
-  background: var(--color-background-default-default);
+  background: var(--color-background-static-muted);
   border-radius: var(--radii-rounded);
 }
 
