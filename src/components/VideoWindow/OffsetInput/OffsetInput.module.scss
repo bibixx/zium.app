@@ -3,8 +3,7 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  background: var(--color-core-neutral-darken-400);
-  @include inner-border(var(--color-border-default-alpha));
+  background: var(--color-background-interactive-darken-rest);
   border-radius: var(--radii-rounded);
 }
 
@@ -24,5 +23,5 @@
 .divider {
   width: 1px;
   height: 24px;
-  background: var(--color-border-muted-alpha);
+  background: var(--color-border-default);
 }
