@@ -6,6 +6,7 @@ import { ReactComponent as Practice1Svg } from "../../assets/custom-icons/practi
 import { ReactComponent as Practice2Svg } from "../../assets/custom-icons/practice-2.svg";
 import { ReactComponent as Practice3Svg } from "../../assets/custom-icons/practice-3.svg";
 import { ReactComponent as QualificationsSvg } from "../../assets/custom-icons/qualifications.svg";
+import { ReactComponent as RaceKidsSvg } from "../../assets/custom-icons/race-kids.svg";
 import { ReactComponent as RaceSvg } from "../../assets/custom-icons/race.svg";
 import { ReactComponent as SprintShootoutSvg } from "../../assets/custom-icons/sprint-shootout.svg";
 import { ReactComponent as SprintSvg } from "../../assets/custom-icons/sprint.svg";
@@ -94,4 +95,8 @@ export const TimeOffsetOnIcon = (props: React.SVGProps<SVGSVGElement>) => {
 
 export const TimeOffsetOffIcon = (props: React.SVGProps<SVGSVGElement>) => {
   return <TimeOffsetOffSvg {...props} className={cn(styles.wrapper, props.className)} />;
+};
+
+export const RaceKidsIcon = (props: React.SVGProps<SVGSVGElement>) => {
+  return <RaceKidsSvg {...props} className={cn(styles.wrapper, props.className)} />;
 };

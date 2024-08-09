@@ -5,6 +5,7 @@ import {
   Practice3Icon,
   QualificationsIcon,
   RaceIcon,
+  RaceKidsIcon,
   SprintIcon,
   SprintShootoutIcon,
 } from "../../../components/CustomIcons/CustomIcons";
@@ -21,6 +22,7 @@ type RaceDetailsType =
   | "practice 2"
   | "practice 3"
   | "sprint qualifying"
+  | "race kids"
   | "sprint race";
 export const raceDetailsTypeToIconMap: Record<RaceDetailsType, React.FC> = {
   race: RaceIcon,
@@ -30,6 +32,7 @@ export const raceDetailsTypeToIconMap: Record<RaceDetailsType, React.FC> = {
   "practice 3": Practice3Icon,
   "sprint qualifying": SprintShootoutIcon,
   "sprint race": SprintIcon,
+  "race kids": RaceKidsIcon,
 };
 
 export const getRaceIcon = (raceDetails: RaceDetailsData, seasonId: string) => {
@@ -38,6 +41,10 @@ export const getRaceIcon = (raceDetails: RaceDetailsData, seasonId: string) => {
   switch (raceDetails.genre) {
     case "race":
     case "qualifying": {
+      if (raceDetails.isKidsStream) {
+        return raceDetailsTypeToIconMap["race kids"];
+      }
+
       return raceDetailsTypeToIconMap[raceDetails.genre];
     }
     case "sprint race":

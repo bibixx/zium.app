@@ -19,6 +19,7 @@ export interface RaceDetailsData {
   roundNumber: number;
   countryId: string;
   isSingleEvent: boolean;
+  isKidsStream: boolean;
   genre: EventGenre;
 }
 

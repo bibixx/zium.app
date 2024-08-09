@@ -23,6 +23,7 @@ export const eventGenresValidator = z.preprocess(
     z.literal("post-sprint show"),
     z.literal("pre-sprint show"),
     z.literal("show"),
+    z.literal("race kids"),
   ]),
 );
 
