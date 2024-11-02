@@ -11,19 +11,19 @@ export const getVersion = async () => {
 export type F1TVTier = "Pro" | "Access" | "None";
 export type IsLoggedInArgs = { isLoggedIn: boolean; tier: F1TVTier; token: string | null };
 export const getIsLoggedIn = async () => {
-  const isLoggedIn = await extensionClient.makeRequest<IsLoggedInArgs>("LOGGED_IN");
+  const isLoggedIn = await extensionClient.makeRequest<undefined, IsLoggedInArgs>("LOGGED_IN");
 
   return isLoggedIn;
 };
 
 export const requestLogin = async () => {
-  const logInSucceeded = await extensionClient.makeRequest<boolean>("REQUEST_LOGIN");
+  const logInSucceeded = await extensionClient.makeRequest<undefined, boolean>("REQUEST_LOGIN");
 
   return logInSucceeded;
 };
 
 export const logOut = async () => {
-  const logOutSucceeded = await extensionClient.makeRequest<boolean>("LOGOUT");
+  const logOutSucceeded = await extensionClient.makeRequest<undefined, boolean>("LOGOUT");
 
   return logOutSucceeded;
 };
@@ -48,7 +48,7 @@ export const deleteAlarm = async (alarmId: number) => {
 };
 
 export const getAlarms = async () => {
-  const alarms = await extensionClient.makeRequest<string[]>("ALARMS");
+  const alarms = await extensionClient.makeRequest<undefined, string[]>("ALARMS");
 
   return alarms;
 };

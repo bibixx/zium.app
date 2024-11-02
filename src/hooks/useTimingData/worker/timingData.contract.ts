@@ -5,7 +5,7 @@ type PageToWorkerContractBase = {
   getData: Contract<number, TimingRoot | null>;
   getDataRange: Contract<undefined, DataRange | null>;
 
-  setupSocketConnection: Contract<undefined, void>;
+  setupSocketConnection: Contract<string, void>;
   destroySocketConnection: Contract<undefined, void>;
 };
 type WorkerToPageContractBase = {

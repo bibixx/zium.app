@@ -68,7 +68,6 @@ function App() {
       <FeatureFlagsWrapper>
         <Routes>
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-          <Route path="/timing" element={<TimingWithState />} />
           {isSupportedBrowser ? (
             <Route
               path="/"
@@ -81,6 +80,7 @@ function App() {
             >
               <Route path="/" element={<Races />} />
               <Route path="/race/:raceId" element={<ViewerWithState />} />
+              <Route path="/timing" element={<TimingWithState />} />
             </Route>
           ) : (
             <Route path="/" element={<NotSupported />} />

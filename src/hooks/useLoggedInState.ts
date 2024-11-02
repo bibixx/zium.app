@@ -13,6 +13,7 @@ type LoggedInState =
   | {
       type: "loggedIn";
       tier: F1TVTier;
+      token: string | null;
     };
 
 interface LoggedInStore {
@@ -30,12 +31,12 @@ export const useLoggedInStateExecutor = () => {
   const setState = useLoggedInStore((state) => state.setState);
 
   useEffect(() => {
-    getIsLoggedIn().then(({ isLoggedIn, tier }) => {
-      setState(isLoggedIn ? { type: "loggedIn", tier } : { type: "loggedOut" });
+    getIsLoggedIn().then(({ isLoggedIn, tier, token }) => {
+      setState(isLoggedIn ? { type: "loggedIn", tier, token } : { type: "loggedOut" });
     });
 
-    const onTokenChange = ({ isLoggedIn, tier }: IsLoggedInArgs) => {
-      setState(isLoggedIn ? { type: "loggedIn", tier } : { type: "loggedOut" });
+    const onTokenChange = ({ isLoggedIn, tier, token }: IsLoggedInArgs) => {
+      setState(isLoggedIn ? { type: "loggedIn", tier, token } : { type: "loggedOut" });
     };
 
     const cleanup = listenOnTokenChange(onTokenChange);
@@ -48,6 +49,16 @@ export const useLoggedInStateExecutor = () => {
 
 export const useLoggedInState = () => {
   return useLoggedInStore((state) => state.state);
+};
+
+export const useLoggedInStateWithEnsuredLoggedIn = () => {
+  return useLoggedInStore((state) => {
+    if (state.state.type !== "loggedIn") {
+      throw new Error("User is not logged in");
+    }
+
+    return state.state;
+  });
 };
 
 export const useCurrentTier = (): F1TVTier => {

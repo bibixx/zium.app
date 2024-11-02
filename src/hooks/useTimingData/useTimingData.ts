@@ -2,6 +2,7 @@ import { useEffect, useMemo } from "react";
 import { useStore } from "zustand";
 import { MessagingClient } from "../../utils/messagingClient";
 import { TimingStoreApi } from "../useTiming/useTiming";
+import { useLoggedInStateWithEnsuredLoggedIn } from "../useLoggedInState";
 import { PageToWorkerContract } from "./worker/timingData.contract";
 import { TimingRoot } from "./useTimingData.validator";
 
@@ -21,8 +22,14 @@ export const useTimingData = (store: TimingStoreApi) => {
     return new MessagingClient<PageToWorkerContract>(w, "page-to-worker", "worker-to-page", false);
   }, []);
 
+  const { token } = useLoggedInStateWithEnsuredLoggedIn();
   useEffect(() => {
-    worker.makeContractualRequest("setupSocketConnection", undefined);
+    if (token == null) {
+      return;
+    }
+    const socketUrl = new URL("https://livetiming.formula1.com/signalrcore");
+    socketUrl.searchParams.set("authToken", token);
+    worker.makeContractualRequest("setupSocketConnection", socketUrl.toString());
 
     let wasSet = false;
     worker.handleContractualRequest("pushDataRange", (dataRange) => {
@@ -37,7 +44,7 @@ export const useTimingData = (store: TimingStoreApi) => {
     return () => {
       worker.makeContractualRequest("destroySocketConnection", undefined);
     };
-  }, [setCurrentTime, setDataRange, worker]);
+  }, [setCurrentTime, setDataRange, token, worker]);
 
   useEffect(() => {
     (async () => {

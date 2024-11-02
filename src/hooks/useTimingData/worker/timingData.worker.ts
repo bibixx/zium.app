@@ -19,8 +19,8 @@ onmessage = (e) => {
   messenger.emit("message", e);
 };
 
-const setupSocketConnectionWithMessagingClient = () => {
-  setupLiveSocketConnection(messagingClient);
+const setupSocketConnectionWithMessagingClient = (socketUrl: string) => {
+  setupLiveSocketConnection(socketUrl, messagingClient);
 };
 messagingClient.handleContractualRequest("setupSocketConnection", setupSocketConnectionWithMessagingClient);
 const destroySocketConnectionWithMessagingClient = () => {

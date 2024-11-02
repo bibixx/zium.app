@@ -6,10 +6,10 @@ import { TimingResponseValue, TimingResponse, RawTimingResponse } from "../../us
 import { hasOwn } from "../../../../utils/hasOwn";
 
 let connection: signalR.HubConnection | null;
-export const setupLiveSocketConnection = async (messagingClient: WorkerToPageMessagingClient) => {
+export const setupLiveSocketConnection = async (socketUrl: string, messagingClient: WorkerToPageMessagingClient) => {
   connection = new signalR.HubConnectionBuilder()
     .configureLogging(signalR.LogLevel.Warning)
-    .withUrl("https://livetiming.formula1.com/signalrcore?authToken=xxx", {
+    .withUrl(socketUrl, {
       transport: signalR.HttpTransportType.WebSockets,
       skipNegotiation: true,
     })
