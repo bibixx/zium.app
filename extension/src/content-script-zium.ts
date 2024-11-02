@@ -12,15 +12,17 @@ interface MessagesToPage {
   GET_TIMING_URL: string;
 }
 
-const sendMessageToPage = <T extends keyof MessagesToPage>(type: T, data: MessagesToPage[T]) => {
-  window.postMessage({ type, data, source: "extension" }, "*");
-};
+const getSendMessageToPage =
+  (id: string | undefined) =>
+  <T extends keyof MessagesToPage>(type: T, data: MessagesToPage[T]) => {
+    window.postMessage({ type, data, source: "extension", id }, "*");
+  };
 
 const isLoggedIn = async () => {
   const { token } = await chrome.storage.local.get("token");
   const tier = getF1TVTier(token);
 
-  return { isLoggedIn: token != null, tier };
+  return { isLoggedIn: token != null, tier, token };
 };
 
 const getAlarms = async () => {
@@ -53,6 +55,7 @@ window.addEventListener(
       return;
     }
 
+    const sendMessageToPage = getSendMessageToPage(event.data.id);
     switch (type) {
       case "VERSION":
         sendMessageToPage(type, version);
@@ -77,6 +80,8 @@ window.addEventListener(
 );
 
 chrome.storage.local.onChanged.addListener(async (changes) => {
+  const sendMessageToPage = getSendMessageToPage(undefined);
+
   if ("token" in changes) {
     const token: string | null = changes.token.newValue ?? null;
     const tier = getF1TVTier(token);
