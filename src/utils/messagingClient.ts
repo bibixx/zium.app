@@ -75,7 +75,7 @@ export class MessagingClient<C extends Record<string, Contract>> {
   };
 
   // TODO: Kill me in extensionApi
-  public makeRequest = async <TRequest, TResponse>(type: string, data?: TRequest, timeout?: number) => {
+  public makeRequest = async <TRequest, TResponse = unknown>(type: string, data?: TRequest, timeout?: number) => {
     const requestId = String(Math.random());
 
     const responsePromise = this.getResponse<TResponse>(type, requestId, timeout);

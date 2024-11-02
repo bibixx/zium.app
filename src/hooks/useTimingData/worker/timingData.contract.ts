@@ -4,8 +4,9 @@ import { TimingRoot } from "../useTimingData.validator";
 type PageToWorkerContractBase = {
   getData: Contract<number, TimingRoot | null>;
   getDataRange: Contract<undefined, DataRange | null>;
-  pushDataLine: Contract<unknown, DataRange | null>;
+
   setupSocketConnection: Contract<undefined, void>;
+  destroySocketConnection: Contract<undefined, void>;
 };
 type WorkerToPageContractBase = {
   pushDataRange: Contract<DataRange, void>;

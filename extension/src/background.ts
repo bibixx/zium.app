@@ -2,7 +2,7 @@ import { Alarm } from "./common";
 import { EventEmitter } from "./utils/EventEmitter";
 import { parseLoginSession } from "./utils/parseLoginSession";
 
-const { RuleActionType, HeaderOperation, ResourceType, RequestMethod } = chrome.declarativeNetRequest;
+const { RuleActionType, HeaderOperation } = chrome.declarativeNetRequest;
 const TOKEN_STORE_KEY = "token";
 const ALARMS_STORE_KEY = "alarms";
 
@@ -21,7 +21,7 @@ const addRule = (token: string) => {
   const initiatorDomains = appDomains.map((domain) => domain.replace(/^\*\./, ""));
 
   return chrome.declarativeNetRequest.updateDynamicRules({
-    removeRuleIds: [2, 3, 4, 6],
+    removeRuleIds: [2, 3, 4],
     addRules: [
       {
         id: 2,
@@ -71,73 +71,6 @@ const addRule = (token: string) => {
         },
         condition: {
           urlFilter: "licensing.bitmovin.com",
-          initiatorDomains,
-        },
-      },
-      {
-        id: 6,
-        priority: 1,
-        action: {
-          type: RuleActionType.MODIFY_HEADERS,
-          requestHeaders: [
-            {
-              operation: HeaderOperation.REMOVE,
-              header: "Origin",
-            },
-            {
-              operation: HeaderOperation.SET,
-              header: "Cookie",
-              value: "GCLB=CImIoN2j3NmYWg",
-            },
-          ],
-          responseHeaders: [
-            {
-              value: "http://localhost:5173",
-              operation: HeaderOperation.SET,
-              header: "Access-Control-Allow-Origin",
-            },
-            {
-              operation: HeaderOperation.SET,
-              value: "PUT, GET, HEAD, POST, DELETE, OPTIONS",
-              header: "Access-Control-Allow-Methods",
-            },
-            {
-              value: "*",
-              operation: HeaderOperation.SET,
-              header: "Access-Control-Allow-Headers",
-            },
-            {
-              value: "true",
-              operation: HeaderOperation.SET,
-              header: "Access-Control-Allow-Credentials",
-            },
-          ],
-        },
-        condition: {
-          requestMethods: [
-            RequestMethod.GET,
-            RequestMethod.POST,
-            RequestMethod.PUT,
-            RequestMethod.HEAD,
-            RequestMethod.DELETE,
-            RequestMethod.OPTIONS,
-          ],
-          resourceTypes: [
-            ResourceType.MAIN_FRAME,
-            ResourceType.SUB_FRAME,
-            ResourceType.STYLESHEET,
-            ResourceType.SCRIPT,
-            ResourceType.IMAGE,
-            ResourceType.FONT,
-            ResourceType.OBJECT,
-            ResourceType.XMLHTTPREQUEST,
-            ResourceType.PING,
-            ResourceType.CSP_REPORT,
-            ResourceType.MEDIA,
-            ResourceType.WEBSOCKET,
-            ResourceType.OTHER,
-          ],
-          urlFilter: "livetiming.formula1.com",
           initiatorDomains,
         },
       },

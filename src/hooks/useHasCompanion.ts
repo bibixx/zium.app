@@ -10,6 +10,8 @@ export const useHasCompanion = () => {
         await getVersion();
         setState("hasCompanion");
       } catch (error) {
+        console.log(error);
+
         setState("noCompanion");
       }
     };

@@ -1,5 +1,4 @@
-import { ZodError, z } from "zod";
-import { hasOwn } from "../../utils/hasOwn";
+import { z } from "zod";
 
 const Heartbeat = z.object({
   Utc: z.string(),
@@ -319,7 +318,7 @@ const CarData = z.object({
 const Position = z.object({}).passthrough();
 
 export const TimingRoot = z.object({
-  CarData: CarData,
+  CarData: CarData, // o
   DriverList: DriverList,
   ExtrapolatedClock: ExtrapolatedClock,
   Heartbeat: Heartbeat,
@@ -338,58 +337,9 @@ export const TimingRoot = z.object({
 });
 export type TimingRoot = z.infer<typeof TimingRoot>;
 
-export const HeartbeatTimingRoot = z.object({
-  Heartbeat: Heartbeat,
-});
-export type HeartbeatTimingRoot = z.infer<typeof HeartbeatTimingRoot>;
+export const TimingResponseValue = TimingRoot.partial();
+export type TimingResponseValue = z.infer<typeof TimingResponseValue>;
 
-export const TimingMessage = z.object({
-  A: z.tuple([z.string(), z.any(), z.string()]),
-});
-
-export const RecapTimingResponse = z.object({
-  R: z.object({}).passthrough(),
-});
-export type RecapTimingResponse = z.infer<typeof RecapTimingResponse>;
-
-export const EmptyTimingResponse = z.object({}).strict();
-export type EmptyTimingResponse = z.infer<typeof EmptyTimingResponse>;
-
-export const MessageTimingResponse = z.object({
-  M: z.array(TimingMessage),
-  // M: z.union([TimingMessage, z.array(TimingMessage)]),
-});
-export type MessageTimingResponse = z.infer<typeof MessageTimingResponse>;
-
-export type TimingResponse = RecapTimingResponse | MessageTimingResponse | EmptyTimingResponse;
-
-export function isMessageTimingResponse(data: TimingResponse): data is MessageTimingResponse {
-  return hasOwn(data, "M") && data.M != null;
-}
-
-export function isRecapTimingResponse(data: TimingResponse): data is RecapTimingResponse {
-  return hasOwn(data, "R") && data.R != null;
-}
-
-export const parseTimingData = (
-  data: unknown,
-):
-  | z.SafeParseSuccess<TimingResponse>
-  | { success: false; error: [ZodError<unknown>, ZodError<unknown>, ZodError<unknown>] } => {
-  const messageTimingResponse = MessageTimingResponse.safeParse(data);
-  const recapTimingResponse = RecapTimingResponse.safeParse(data);
-  const emptyTimingResponse = EmptyTimingResponse.safeParse(data);
-
-  if (messageTimingResponse.success) {
-    return messageTimingResponse;
-  } else if (recapTimingResponse.success) {
-    return recapTimingResponse;
-  } else if (emptyTimingResponse.success) {
-    return emptyTimingResponse;
-  } else {
-    return {
-      success: false,
-      error: [recapTimingResponse.error, messageTimingResponse.error, emptyTimingResponse.error],
-    };
-  }
-};
+export type TimingResponse = [number, TimingResponseValue];
+export const RawTimingResponse = z.tuple([z.string(), z.any(), z.string().datetime()]);
+export type RawTimingResponse = z.infer<typeof RawTimingResponse>;

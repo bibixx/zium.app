@@ -44,7 +44,11 @@ export const getDataHandler = (abortSignal: AbortSignal): ContractHandler<PageTo
 
     for (let i = lastKnownStateIndex + 1; i <= endIndex; i++) {
       const response = data[i];
-      const mergedState = updateState(prevState, response);
+      if (response == null) {
+        continue;
+      }
+
+      const mergedState = updateState(prevState, response[1]);
 
       prevState = mergedState;
     }

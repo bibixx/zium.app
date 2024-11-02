@@ -604,6 +604,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@microsoft/signalr@npm:^8.0.7":
+  version: 8.0.7
+  resolution: "@microsoft/signalr@npm:8.0.7"
+  dependencies:
+    abort-controller: ^3.0.0
+    eventsource: ^2.0.2
+    fetch-cookie: ^2.0.3
+    node-fetch: ^2.6.7
+    ws: ^7.4.5
+  checksum: 4c285bc303bf51d785628d063f3499dbeae2fcf02eb99f0d24499c66b209b23daae207ab9e06283225f0ac731d4e783d49a3ed7f4344c9c0d0f9baefb8dd4414
+  languageName: node
+  linkType: hard
+
 "@nodelib/fs.scandir@npm:2.1.5":
   version: 2.1.5
   resolution: "@nodelib/fs.scandir@npm:2.1.5"
@@ -1394,13 +1407,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jquery@npm:1.10.45":
-  version: 1.10.45
-  resolution: "@types/jquery@npm:1.10.45"
-  checksum: db0d5d8cdd0fbbb0427fff7a349192d09fa902cd9f17851f8fbb08a57dffda62795545307a1da5b8e0196863939aa24b3fa5569a915f9011f8a297af2b9b68d4
-  languageName: node
-  linkType: hard
-
 "@types/json-schema@npm:^7.0.12":
   version: 7.0.13
   resolution: "@types/json-schema@npm:7.0.13"
@@ -1698,6 +1704,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"abort-controller@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "abort-controller@npm:3.0.0"
+  dependencies:
+    event-target-shim: ^5.0.0
+  checksum: 170bdba9b47b7e65906a28c8ce4f38a7a369d78e2271706f020849c1bfe0ee2067d4261df8bbb66eb84f79208fd5b710df759d64191db58cfba7ce8ef9c54b75
+  languageName: node
+  linkType: hard
+
 "acorn-jsx@npm:^5.3.2":
   version: 5.3.2
   resolution: "acorn-jsx@npm:5.3.2"
@@ -1974,13 +1989,6 @@ __metadata:
   version: 2.2.0
   resolution: "binary-extensions@npm:2.2.0"
   checksum: ccd267956c58d2315f5d3ea6757cf09863c5fc703e50fbeb13a7dc849b812ef76e3cf9ca8f35a0c48498776a7478d7b4a0418e1e2b8cb9cb9731f2922aaad7f8
-  languageName: node
-  linkType: hard
-
-"binary-searching@npm:^2.0.5":
-  version: 2.0.5
-  resolution: "binary-searching@npm:2.0.5"
-  checksum: bbc72ddee8dcbfc4db8072deff76e944313785c3935f79b42533ddab14c62b37e46239bfd10878844a7ec16074c7bddde9be2083772228db86b7f01ce2a8856c
   languageName: node
   linkType: hard
 
@@ -3103,10 +3111,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"event-target-shim@npm:^5.0.0":
+  version: 5.0.1
+  resolution: "event-target-shim@npm:5.0.1"
+  checksum: 1ffe3bb22a6d51bdeb6bf6f7cf97d2ff4a74b017ad12284cc9e6a279e727dc30a5de6bb613e5596ff4dc3e517841339ad09a7eec44266eccb1aa201a30448166
+  languageName: node
+  linkType: hard
+
 "eventemitter2@npm:^6.4.9":
   version: 6.4.9
   resolution: "eventemitter2@npm:6.4.9"
   checksum: be59577c1e1c35509c7ba0e2624335c35bbcfd9485b8a977384c6cc6759341ea1a98d3cb9dbaa5cea4fff9b687e504504e3f9c2cc1674cf3bd8a43a7c74ea3eb
+  languageName: node
+  linkType: hard
+
+"eventsource@npm:^2.0.2":
+  version: 2.0.2
+  resolution: "eventsource@npm:2.0.2"
+  checksum: c0072d972753e10c705d9b2285b559184bf29d011bc208973dde9c8b6b8b7b6fdad4ef0846cecb249f7b1585e860fdf324cbd2ac854a76bc53649e797496e99a
   languageName: node
   linkType: hard
 
@@ -3205,6 +3227,16 @@ __metadata:
   dependencies:
     reusify: ^1.0.4
   checksum: 0170e6bfcd5d57a70412440b8ef600da6de3b2a6c5966aeaf0a852d542daff506a0ee92d6de7679d1de82e644bce69d7a574a6c93f0b03964b5337eed75ada1a
+  languageName: node
+  linkType: hard
+
+"fetch-cookie@npm:^2.0.3":
+  version: 2.2.0
+  resolution: "fetch-cookie@npm:2.2.0"
+  dependencies:
+    set-cookie-parser: ^2.4.8
+    tough-cookie: ^4.0.0
+  checksum: 854fa03df596ddf0ed53cf9e52bae1c224d04d71e439b1c04732c05cadb677a6710aca654efa31ec5b8dd7223880821b12da153107d749a48fbfdc4f2d2540cd
   languageName: node
   linkType: hard
 
@@ -4145,20 +4177,6 @@ __metadata:
     "@pkgjs/parseargs":
       optional: true
   checksum: e29291c0d0f280a063fa18fbd1e891ab8c2d7519fd34052c0ebde38538a15c603140d60c2c7f432375ff7ee4c5f1c10daa8b2ae19a97c3d4affe308c8360c1df
-  languageName: node
-  linkType: hard
-
-"jquery@npm:1.11.0":
-  version: 1.11.0
-  resolution: "jquery@npm:1.11.0"
-  checksum: e0e734355e6ba3cdaa50ed39c913868282cdad564f86d51347e7c575768c188b85bde12501914004402d6476f5fdb3c53755b47f2720a193f80f33341ce45f3a
-  languageName: node
-  linkType: hard
-
-"jquery@npm:>=1.6.4":
-  version: 3.7.1
-  resolution: "jquery@npm:3.7.1"
-  checksum: 4370b8139d6ae82867eb6f7f21d1edccf1d1bdf41c0840920ea80d366c2cd5dbe1ceebb110ee9772aa839b04400faa1572c5c560b507c688ed7b61cea26c0e27
   languageName: node
   linkType: hard
 
@@ -5328,10 +5346,31 @@ __metadata:
   languageName: node
   linkType: hard
 
+"psl@npm:^1.1.33":
+  version: 1.9.0
+  resolution: "psl@npm:1.9.0"
+  checksum: 20c4277f640c93d393130673f392618e9a8044c6c7bf61c53917a0fddb4952790f5f362c6c730a9c32b124813e173733f9895add8d26f566ed0ea0654b2e711d
+  languageName: node
+  linkType: hard
+
 "punycode@npm:^2.1.0":
   version: 2.3.0
   resolution: "punycode@npm:2.3.0"
   checksum: 39f760e09a2a3bbfe8f5287cf733ecdad69d6af2fe6f97ca95f24b8921858b91e9ea3c9eeec6e08cede96181b3bb33f95c6ffd8c77e63986508aa2e8159fa200
+  languageName: node
+  linkType: hard
+
+"punycode@npm:^2.1.1":
+  version: 2.3.1
+  resolution: "punycode@npm:2.3.1"
+  checksum: bb0a0ceedca4c3c57a9b981b90601579058903c62be23c5e8e843d2c2d4148a3ecf029d5133486fb0e1822b098ba8bba09e89d6b21742d02fa26bda6441a6fb2
+  languageName: node
+  linkType: hard
+
+"querystringify@npm:^2.1.1":
+  version: 2.2.0
+  resolution: "querystringify@npm:2.2.0"
+  checksum: 5641ea231bad7ef6d64d9998faca95611ed4b11c2591a8cae741e178a974f6a8e0ebde008475259abe1621cb15e692404e6b6626e927f7b849d5c09392604b15
   languageName: node
   linkType: hard
 
@@ -5518,10 +5557,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"reselect@npm:^5.1.0":
-  version: 5.1.0
-  resolution: "reselect@npm:5.1.0"
-  checksum: 5bc9c5d03d7caea00d0c0e24330bf23d91801227346fec1cef6a60988ab8d3dd7cee76e6994ca0915bc1c20845bb2bd929b95753763e0a9db74c0f9dff5cb845
+"requires-port@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "requires-port@npm:1.0.0"
+  checksum: eee0e303adffb69be55d1a214e415cf42b7441ae858c76dfc5353148644f6fd6e698926fc4643f510d5c126d12a705e7c8ed7e38061113bdf37547ab356797ff
   languageName: node
   linkType: hard
 
@@ -5786,6 +5825,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"set-cookie-parser@npm:^2.4.8":
+  version: 2.7.1
+  resolution: "set-cookie-parser@npm:2.7.1"
+  checksum: 2ef8b351094712f8f7df6d63ed4b10350b24a5b515772690e7dec227df85fcef5bc451c7765f484fd9f36694ece5438d1456407d017f237d0d3351d7dbbd3587
+  languageName: node
+  linkType: hard
+
 "set-function-name@npm:^2.0.0, set-function-name@npm:^2.0.1":
   version: 2.0.1
   resolution: "set-function-name@npm:2.0.1"
@@ -5835,15 +5881,6 @@ __metadata:
   version: 4.0.2
   resolution: "signal-exit@npm:4.0.2"
   checksum: 41f5928431cc6e91087bf0343db786a6313dd7c6fd7e551dbc141c95bb5fb26663444fd9df8ea47c5d7fc202f60aa7468c3162a9365cbb0615fc5e1b1328fe31
-  languageName: node
-  linkType: hard
-
-"signalr@npm:^2.4.3":
-  version: 2.4.3
-  resolution: "signalr@npm:2.4.3"
-  dependencies:
-    jquery: ">=1.6.4"
-  checksum: 4bd2d007f98ade3e01d63dc0c562f9ae142a4170fc3476fec02572c49ae04985e85dc853f1ebedfb8275206780fda0cb8a0cd3a5b11af6f1dfec590f81d13def
   languageName: node
   linkType: hard
 
@@ -6226,6 +6263,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"tough-cookie@npm:^4.0.0":
+  version: 4.1.4
+  resolution: "tough-cookie@npm:4.1.4"
+  dependencies:
+    psl: ^1.1.33
+    punycode: ^2.1.1
+    universalify: ^0.2.0
+    url-parse: ^1.5.3
+  checksum: 5815059f014c31179a303c673f753f7899a6fce94ac93712c88ea5f3c26e0c042b5f0c7a599a00f8e0feeca4615dba75c3dffc54f3c1a489978aa8205e09307c
+  languageName: node
+  linkType: hard
+
 "tr46@npm:~0.0.3":
   version: 0.0.3
   resolution: "tr46@npm:0.0.3"
@@ -6434,6 +6483,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"universalify@npm:^0.2.0":
+  version: 0.2.0
+  resolution: "universalify@npm:0.2.0"
+  checksum: e86134cb12919d177c2353196a4cc09981524ee87abf621f7bc8d249dbbbebaec5e7d1314b96061497981350df786e4c5128dbf442eba104d6e765bc260678b5
+  languageName: node
+  linkType: hard
+
 "universalify@npm:^2.0.0":
   version: 2.0.0
   resolution: "universalify@npm:2.0.0"
@@ -6493,6 +6549,16 @@ __metadata:
   version: 1.1.0
   resolution: "url-join@npm:1.1.0"
   checksum: affa33998f671205e9bbfba95d840fa7445d548f903f79912836a4cdb068c8a926c1dfe94c220fe5fbd822b6be9a199561c78d0cb181abafee2075b4f03a9c28
+  languageName: node
+  linkType: hard
+
+"url-parse@npm:^1.5.3":
+  version: 1.5.10
+  resolution: "url-parse@npm:1.5.10"
+  dependencies:
+    querystringify: ^2.1.1
+    requires-port: ^1.0.0
+  checksum: fbdba6b1d83336aca2216bbdc38ba658d9cfb8fc7f665eb8b17852de638ff7d1a162c198a8e4ed66001ddbf6c9888d41e4798912c62b4fd777a31657989f7bdf
   languageName: node
   linkType: hard
 
@@ -6714,6 +6780,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ws@npm:^7.4.5":
+  version: 7.5.10
+  resolution: "ws@npm:7.5.10"
+  peerDependencies:
+    bufferutil: ^4.0.1
+    utf-8-validate: ^5.0.2
+  peerDependenciesMeta:
+    bufferutil:
+      optional: true
+    utf-8-validate:
+      optional: true
+  checksum: f9bb062abf54cc8f02d94ca86dcd349c3945d63851f5d07a3a61c2fcb755b15a88e943a63cf580cbdb5b74436d67ef6b67f745b8f7c0814e411379138e1863cb
+  languageName: node
+  linkType: hard
+
 "y18n@npm:^5.0.5":
   version: 5.0.8
   resolution: "y18n@npm:5.0.8"
@@ -6776,12 +6857,12 @@ __metadata:
   resolution: "zium@workspace:."
   dependencies:
     "@heroicons/react": ^2.0.18
+    "@microsoft/signalr": ^8.0.7
     "@popperjs/core": ^2.11.8
     "@radix-ui/react-tooltip": ^1.0.6
     "@sentry/browser": ^7.70.0
     "@sentry/cli": ^2.21.1
     "@sindresorhus/transliterate": ^1.6.0
-    "@types/jquery": 1.10.45
     "@types/lodash.merge": ^4.6.9
     "@types/lodash.throttle": ^4.1.9
     "@types/object-merge": ^2.5.1
@@ -6793,7 +6874,6 @@ __metadata:
     "@typescript-eslint/eslint-plugin": ^6.7.2
     "@typescript-eslint/parser": ^6.7.2
     "@vitejs/plugin-react-swc": ^3.3.2
-    binary-searching: ^2.0.5
     bitmovin-player: ^8.133.0
     bitmovin-player-ui: ^3.50.0
     classnames: ^2.3.2
@@ -6807,7 +6887,6 @@ __metadata:
     eventemitter2: ^6.4.9
     fast-deep-equal: ^3.1.3
     focus-trap-react: ^10.2.1
-    jquery: 1.11.0
     lodash.merge: ^4.6.2
     lodash.throttle: ^4.1.1
     lottie-react: ^2.4.0
@@ -6824,9 +6903,7 @@ __metadata:
     react-popper: ^2.3.0
     react-router-dom: ^6.16.0
     react-transition-group: ^4.4.5
-    reselect: ^5.1.0
     sass: ^1.68.0
-    signalr: ^2.4.3
     style-dictionary: ^3.8.0
     token-transformer: ^0.0.33
     ts-functional-pipe: ^3.1.2

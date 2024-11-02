@@ -4,8 +4,10 @@ import { getDataHandler } from "./eventHandlers/getDataHandler";
 import { PageToWorkerContract, WorkerToPageContract } from "./timingData.contract";
 import { WorkerMessenger } from "./timingData.workerMessenger";
 import { dataStore } from "./timingData.store";
-import { setupSocketConnection } from "./eventHandlers/setupSocketConnectionHandler";
-import { pushDataLineHandler } from "./eventHandlers/pushDataLineHandler";
+import {
+  destroyLiveSocketConnection,
+  setupLiveSocketConnection,
+} from "./eventHandlers/setupLiveSocketConnectionHandler";
 
 dataStore.init();
 
@@ -18,9 +20,13 @@ onmessage = (e) => {
 };
 
 const setupSocketConnectionWithMessagingClient = () => {
-  setupSocketConnection(messagingClient);
+  setupLiveSocketConnection(messagingClient);
 };
 messagingClient.handleContractualRequest("setupSocketConnection", setupSocketConnectionWithMessagingClient);
+const destroySocketConnectionWithMessagingClient = () => {
+  destroyLiveSocketConnection();
+};
+messagingClient.handleContractualRequest("destroySocketConnection", destroySocketConnectionWithMessagingClient);
 
 let abortController: AbortController | null = null;
 const getDataHandlerWithAbortSignal: ContractHandler<PageToWorkerContract["getData"]> = (searchedTime: number) => {
@@ -30,8 +36,3 @@ const getDataHandlerWithAbortSignal: ContractHandler<PageToWorkerContract["getDa
   return getDataHandler(abortController.signal)(searchedTime);
 };
 messagingClient.handleContractualRequest("getData", getDataHandlerWithAbortSignal);
-messagingClient.handleContractualRequest("pushDataLine", pushDataLineHandler);
-
-/*
-messagingClient.handleContractualRequest("getDataRange", getDataRangeHandler);
-*/

@@ -5,10 +5,11 @@ const { version } = chrome.runtime.getManifest();
 
 interface MessagesToPage {
   LOGGED_IN: { isLoggedIn: boolean; tier: F1TVTier };
-  LOGGED_IN_CHANGED: { isLoggedIn: boolean; tier: F1TVTier };
+  LOGGED_IN_CHANGED: { isLoggedIn: boolean; tier: F1TVTier; token: string | null };
   ALARMS: string[];
   ALARM_CHANGED: string[];
   VERSION: string;
+  GET_TIMING_URL: string;
 }
 
 const sendMessageToPage = <T extends keyof MessagesToPage>(type: T, data: MessagesToPage[T]) => {
@@ -77,10 +78,10 @@ window.addEventListener(
 
 chrome.storage.local.onChanged.addListener(async (changes) => {
   if ("token" in changes) {
-    const token = changes.token.newValue;
+    const token: string | null = changes.token.newValue ?? null;
     const tier = getF1TVTier(token);
 
-    sendMessageToPage("LOGGED_IN_CHANGED", { isLoggedIn: token != null, tier });
+    sendMessageToPage("LOGGED_IN_CHANGED", { isLoggedIn: token != null, tier, token });
   }
 
   if ("alarms" in changes) {

@@ -169,7 +169,7 @@ const Time = () => {
   const lapCount = useLoadedTimingData((s) => s.LapCount);
 
   let timeRemaining: string;
-  const now = addMilliseconds(new Date(time), -differenceInMilliseconds(new Date(currentTime), new Date(clock.Utc)));
+  const now = addMilliseconds(new Date(time), differenceInMilliseconds(new Date(currentTime), new Date(clock.Utc)));
 
   if (clock.Extrapolating && clock.Utc) {
     const [startRemainingHours, startRemainingMinutes, startRemainingSeconds] = clock.Remaining.split(":").map(Number);

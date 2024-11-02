@@ -1,22 +1,9 @@
-import "signalr";
-declare global {
-  interface Window {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    $: any;
-  }
-}
-
 import { useEffect, useMemo } from "react";
 import { useStore } from "zustand";
 import { MessagingClient } from "../../utils/messagingClient";
 import { TimingStoreApi } from "../useTiming/useTiming";
 import { PageToWorkerContract } from "./worker/timingData.contract";
-
-/*
-const USE_REPLAY = false;
-/*/
-const USE_REPLAY = true;
-//*/
+import { TimingRoot } from "./useTimingData.validator";
 
 const workerURL = new URL("./worker/timingData.worker.ts", import.meta.url);
 export const useTimingData = (store: TimingStoreApi) => {
@@ -35,63 +22,21 @@ export const useTimingData = (store: TimingStoreApi) => {
   }, []);
 
   useEffect(() => {
-    if (USE_REPLAY) {
-      worker.makeContractualRequest("setupSocketConnection", undefined);
-      return;
-    }
+    worker.makeContractualRequest("setupSocketConnection", undefined);
 
-    const onReceived = async function (data: unknown) {
-      const dataRange = await worker.makeContractualRequest("pushDataLine", data);
-      if (dataRange == null) {
-        return;
-      }
-
-      setDataRange(dataRange);
-      setCurrentTime(dataRange.start);
-    };
-
-    const $ = window.$;
-
-    const connection = $.hubConnection();
-
-    connection.logging = true;
-
-    connection.qs = { version: "1.5" };
-    connection.url = "https://livetiming.formula1.com/signalr";
-    const streamingHub = connection.createHubProxy("Streaming");
-
-    connection.received(onReceived);
-
-    connection.start().done(function () {
-      streamingHub.invoke("Subscribe", [
-        "Heartbeat",
-        "CarData.z",
-        "Position.z",
-        "ExtrapolatedClock",
-        "TopThree",
-        "RcmSeries", // still used?
-        "TimingStats",
-        "TimingAppData",
-        "WeatherData",
-        "TrackStatus",
-        "DriverList",
-        "RaceControlMessages",
-        "SessionInfo",
-        "SessionData",
-        "LapCount",
-        "TimingData",
-        "TeamRadio",
-      ]);
-    });
-
-    return () => connection.stop();
-  }, [setCurrentTime, setDataRange, worker]);
-
-  useEffect(() => {
+    let wasSet = false;
     worker.handleContractualRequest("pushDataRange", (dataRange) => {
       setDataRange(dataRange);
-      setCurrentTime(dataRange.start);
+
+      if (!wasSet) {
+        setCurrentTime(dataRange.start);
+        wasSet = true;
+      }
     });
+
+    return () => {
+      worker.makeContractualRequest("destroySocketConnection", undefined);
+    };
   }, [setCurrentTime, setDataRange, worker]);
 
   useEffect(() => {
@@ -102,7 +47,7 @@ export const useTimingData = (store: TimingStoreApi) => {
 
       const value = await worker.makeContractualRequest("getData", currentTime);
       if (value != null) {
-        setData(value);
+        setData(value as unknown as TimingRoot);
       }
     })();
   }, [currentTime, dataRange, setData, worker]);
