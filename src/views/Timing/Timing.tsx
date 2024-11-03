@@ -1,16 +1,11 @@
 import { addMilliseconds, differenceInMilliseconds, differenceInSeconds, formatISO } from "date-fns";
 import { useEffect, useRef, useState } from "react";
-import { TimingProvider, useLoadedTimingData, useTiming } from "../../hooks/useTiming/useTiming";
+import { useLoadedTimingData, useTiming } from "../../hooks/useTiming/useTiming";
 import { padStart } from "../../utils/padStart";
 import { CarDataValue, getCarDataValue, getLatestUtc } from "../../utils/extractTimingDataUtils";
+import styles from "./Timing.module.scss";
 
-export const TimingWithState = () => (
-  <TimingProvider>
-    <Timing />
-  </TimingProvider>
-);
-
-const Timing = () => {
+export const Timing = () => {
   const isLoaded = useTiming((s) => s.state.data != null);
   const header = <TimeSlider key="TimeSlider" />;
 
@@ -19,7 +14,7 @@ const Timing = () => {
   }
 
   return (
-    <div>
+    <div className={styles.wrapper}>
       {header}
       <Time />
       <Weather />

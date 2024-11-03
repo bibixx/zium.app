@@ -7,6 +7,7 @@ export type ChosenValueType =
   | { type: "main"; streamId: "f1live" }
   | { type: "main"; streamId: "international"; audioLanguage?: string }
   | { type: "data"; streamId: (DriverTrackerGridWindow | DataChannelGridWindow)["type"] }
+  | { type: "live-data" }
   | { type: "driver"; driverId: string };
 
 export type StreamPickerDataState =

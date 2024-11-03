@@ -6,6 +6,7 @@ import { useLoggedInStateWithEnsuredLoggedIn } from "../useLoggedInState";
 import { PageToWorkerContract } from "./worker/timingData.contract";
 import { TimingRoot } from "./useTimingData.validator";
 
+// TODO: Start timing worker only when needed
 const workerURL = new URL("./worker/timingData.worker.ts", import.meta.url);
 export const useTimingData = (store: TimingStoreApi) => {
   const data = useStore(store, (store) => store.state.data);
@@ -27,6 +28,7 @@ export const useTimingData = (store: TimingStoreApi) => {
     if (token == null) {
       return;
     }
+
     const socketUrl = new URL("https://livetiming.formula1.com/signalrcore");
     socketUrl.searchParams.set("authToken", token);
     worker.makeContractualRequest("setupSocketConnection", socketUrl.toString());

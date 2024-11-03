@@ -17,7 +17,6 @@ import { PrivacyPolicy } from "./views/PrivacyPolicy/PrivacyPolicy";
 import { DebugPanel } from "./components/DebugPanel/DebugPanel";
 import { SnackbarsList } from "./components/Snackbar/SnackbarsList";
 import { FeatureFlagsWrapper } from "./hooks/useFeatureFlags/FeatureFlagsWrapper";
-import { TimingWithState } from "./views/Timing/Timing";
 
 const WithCompanion = ({ children }: React.PropsWithChildren<unknown>) => {
   const companionState = useHasCompanion();
@@ -80,7 +79,6 @@ function App() {
             >
               <Route path="/" element={<Races />} />
               <Route path="/race/:raceId" element={<ViewerWithState />} />
-              <Route path="/timing" element={<TimingWithState />} />
             </Route>
           ) : (
             <Route path="/" element={<NotSupported />} />

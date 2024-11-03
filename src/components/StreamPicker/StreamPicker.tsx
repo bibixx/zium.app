@@ -53,11 +53,25 @@ export const StreamPicker = ({ availableDrivers, globalFeeds, mainFeeds }: Strea
         });
         return;
       }
+
+      if (selectedEntry.type === "live-data") {
+        onChoice({
+          type: "live-data",
+        });
+        return;
+      }
+
+      return assertNever(selectedEntry);
     },
     [onChoice],
   );
 
   const streamPickerEntries: StreamPickerEntry[] = useMemo(() => {
+    const liveDataEntry: StreamPickerEntry = {
+      id: "live-data",
+      type: "live-data",
+    };
+
     const globalEntries = globalFeeds.filter(isNotNullable).map((streamInfo): StreamPickerEntry => {
       return {
         id: streamInfo.type,
@@ -82,7 +96,7 @@ export const StreamPicker = ({ availableDrivers, globalFeeds, mainFeeds }: Strea
       }),
     );
 
-    const allEntries = [...mainEntries, ...globalEntries, ...driverEntries];
+    const allEntries = [liveDataEntry, ...mainEntries, ...globalEntries, ...driverEntries];
 
     const hiddenEntries = laggedState.isOpen ? laggedState.hiddenEntries : [];
     const pickerType: PickerType[] = laggedState.isOpen ? laggedState.pickerTypes : [];
@@ -123,6 +137,10 @@ export const StreamPicker = ({ availableDrivers, globalFeeds, mainFeeds }: Strea
       if (entry.type === "main") {
         const streamInfo = entry.streamInfo;
         return includes(streamInfo.title, searchText);
+      }
+
+      if (entry.type === "live-data") {
+        return includes("live data", searchText);
       }
 
       return assertNever(entry);
@@ -273,6 +291,23 @@ export const StreamPicker = ({ availableDrivers, globalFeeds, mainFeeds }: Strea
                   }}
                 >
                   <VideoFeedContent label={stream.title} icon={getIconForStreamInfo(stream.type, "outline")} />
+                </ListItem>
+              );
+            }
+
+            if (entry.type === "live-data") {
+              return (
+                <ListItem
+                  tabIndex={-1}
+                  key="live-data"
+                  onClick={() => onEntryChosen(entry)}
+                  isActive={fakeSelection === i}
+                  onMouseEnter={() => setFakeSelection(i)}
+                  ref={(ref) => {
+                    listItemsRefs.current[i] = ref;
+                  }}
+                >
+                  <VideoFeedContent label="Live Data" icon={getIconForStreamInfo("live-data", "outline")} />
                 </ListItem>
               );
             }

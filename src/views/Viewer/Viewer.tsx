@@ -24,6 +24,8 @@ import { ZiumOffsetsOverwriteOnStartDialog } from "../../components/ZiumOffsetsD
 import { GlobalShortcutsSnackbar } from "../../components/ShortcutsSnackbar/ShortcutsSnackbar";
 import { toggleFullScreen } from "../../utils/toggleFullScreen";
 import { useFeatureFlags } from "../../hooks/useFeatureFlags/useFeatureFlags";
+import { LiveDataWindow } from "../../components/VideoWindow/LiveDataWindow/LiveDataWindow";
+import { TimingProvider } from "../../hooks/useTiming/useTiming";
 import { getWindowStreamMap, getAvailableDrivers } from "./Viewer.utils";
 import { useGrid } from "./hooks/useGrid";
 import styles from "./Viewer.module.scss";
@@ -239,6 +241,17 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
           return;
         }
 
+        if (data.type === "live-data") {
+          dispatch({
+            type: "updateWindow",
+            window: {
+              type: "live-data",
+              id: gridWindow.id,
+            },
+          });
+          return;
+        }
+
         return assertNever(data);
       };
 
@@ -323,6 +336,10 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
         );
       }
 
+      if (gridWindow.type === "live-data") {
+        return <LiveDataWindow onDelete={onDelete} />;
+      }
+
       return assertNever(gridWindow);
     },
     [
@@ -350,71 +367,73 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
   );
 
   return (
-    <StreamPickerProvider>
-      <div className={styles.backgroundWrapper}>
-        <CookieBanner position="top" mode="fixed" />
-        <BackgroundDots baseGrid={baseGrid} />
-        <TransitionGroup component={null}>
-          {layout.map((l) => {
-            const gridWindow = windowsMap[l.id];
-            const dimension: Dimensions = {
-              width: l.width,
-              height: l.height,
-              x: l.x,
-              y: l.y,
-            };
+    <TimingProvider>
+      <StreamPickerProvider>
+        <div className={styles.backgroundWrapper}>
+          <CookieBanner position="top" mode="fixed" />
+          <BackgroundDots baseGrid={baseGrid} />
+          <TransitionGroup component={null}>
+            {layout.map((l) => {
+              const gridWindow = windowsMap[l.id];
+              const dimension: Dimensions = {
+                width: l.width,
+                height: l.height,
+                x: l.x,
+                y: l.y,
+              };
 
-            return (
-              <Transition timeout={300} key={gridWindow.id}>
-                {(transitionStatus) => (
-                  <RnDWindow
-                    grid={grid}
-                    dimensions={dimension}
-                    onChange={(dimensions: Dimensions) => {
-                      onLayoutChange(dimensions, l.id);
-                    }}
-                    zIndex={l.zIndex}
-                    bringToFront={() => dispatch({ type: "bringToFront", id: l.id })}
-                    transitionStatus={transitionStatus}
-                    onResize={onResize}
-                  >
-                    {getLayoutChild(gridWindow, l.fillMode)}
-                  </RnDWindow>
-                )}
-              </Transition>
-            );
-          })}
-        </TransitionGroup>
-        <StreamPicker
-          availableDrivers={availableDrivers}
-          globalFeeds={globalFeeds}
-          mainFeeds={streams.defaultStreams}
-        />
-        <Player
-          player={mainVideoPlayer}
-          raceInfo={raceInfo}
-          setVolume={setVolume}
-          volume={internalVolume}
-          isMuted={isMuted}
-          setIsMuted={setIsMuted}
-          usedWindows={usedWindows}
-          createWindow={createWindow}
-          loadLayout={loadLayout}
-          duplicateLayout={duplicateLayout}
-          renameLayout={renameLayout}
-          deleteLayout={deleteLayout}
-          viewerState={viewerState}
-          isPaused={areVideosPaused}
-          hasUsedAllStreams={usedWindows.length >= availableDrivers.length + globalFeeds.length}
-        />
-        <ZiumOffsetsOverwriteOnStartDialog
-          isOpen={ziumOffsetsDialogState.isOpen}
-          onClose={ziumOffsetsDialogState.onClose}
-          onApply={ziumOffsetsDialogState.onApply}
-        />
-        <GlobalShortcutsSnackbar />
-      </div>
-    </StreamPickerProvider>
+              return (
+                <Transition timeout={300} key={gridWindow.id}>
+                  {(transitionStatus) => (
+                    <RnDWindow
+                      grid={grid}
+                      dimensions={dimension}
+                      onChange={(dimensions: Dimensions) => {
+                        onLayoutChange(dimensions, l.id);
+                      }}
+                      zIndex={l.zIndex}
+                      bringToFront={() => dispatch({ type: "bringToFront", id: l.id })}
+                      transitionStatus={transitionStatus}
+                      onResize={onResize}
+                    >
+                      {getLayoutChild(gridWindow, l.fillMode)}
+                    </RnDWindow>
+                  )}
+                </Transition>
+              );
+            })}
+          </TransitionGroup>
+          <StreamPicker
+            availableDrivers={availableDrivers}
+            globalFeeds={globalFeeds}
+            mainFeeds={streams.defaultStreams}
+          />
+          <Player
+            player={mainVideoPlayer}
+            raceInfo={raceInfo}
+            setVolume={setVolume}
+            volume={internalVolume}
+            isMuted={isMuted}
+            setIsMuted={setIsMuted}
+            usedWindows={usedWindows}
+            createWindow={createWindow}
+            loadLayout={loadLayout}
+            duplicateLayout={duplicateLayout}
+            renameLayout={renameLayout}
+            deleteLayout={deleteLayout}
+            viewerState={viewerState}
+            isPaused={areVideosPaused}
+            hasUsedAllStreams={usedWindows.length >= availableDrivers.length + globalFeeds.length}
+          />
+          <ZiumOffsetsOverwriteOnStartDialog
+            isOpen={ziumOffsetsDialogState.isOpen}
+            onClose={ziumOffsetsDialogState.onClose}
+            onApply={ziumOffsetsDialogState.onApply}
+          />
+          <GlobalShortcutsSnackbar />
+        </div>
+      </StreamPickerProvider>
+    </TimingProvider>
   );
 }, deepEqual);
 

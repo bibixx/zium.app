@@ -3,19 +3,22 @@ import {
   MapIcon as MapOutlineIcon,
   TvIcon as TvOutlineIcon,
   GlobeAltIcon as GlobeOutlineIcon,
+  ClockIcon as ClockOutlineIcon,
 } from "@heroicons/react/24/outline";
-import {
-  ChartBarIcon as ChartBarMiniIcon,
-  MapIcon as MapMiniIcon,
-  TvIcon as TvMiniIcon,
-  GlobeAltIcon as GlobeMiniIcon,
-} from "@heroicons/react/20/solid";
 import {
   ChartBarIcon as ChartBarSolidIcon,
   MapIcon as MapSolidIcon,
   TvIcon as TvSolidIcon,
   GlobeAltIcon as GlobeSolidIcon,
+  ClockIcon as ClockSolidIcon,
 } from "@heroicons/react/24/solid";
+import {
+  ChartBarIcon as ChartBarMiniIcon,
+  MapIcon as MapMiniIcon,
+  TvIcon as TvMiniIcon,
+  GlobeAltIcon as GlobeMiniIcon,
+  ClockIcon as ClockMiniIcon,
+} from "@heroicons/react/20/solid";
 import { MainAndGlobalStreamInfo } from "../hooks/useVideoRaceDetails/useVideoRaceDetails.types";
 import { assertNever } from "./assertNever";
 
@@ -25,23 +28,26 @@ const icons = {
     chartbar: ChartBarOutlineIcon,
     map: MapOutlineIcon,
     international: GlobeOutlineIcon,
+    liveData: ClockOutlineIcon,
   },
   solid: {
     tv: TvSolidIcon,
     chartbar: ChartBarSolidIcon,
     map: MapSolidIcon,
     international: GlobeSolidIcon,
+    liveData: ClockSolidIcon,
   },
   mini: {
     tv: TvMiniIcon,
     chartbar: ChartBarMiniIcon,
     map: MapMiniIcon,
     international: GlobeMiniIcon,
+    liveData: ClockMiniIcon,
   },
 } as const;
 
 export const getIconForStreamInfo = (
-  streamType: MainAndGlobalStreamInfo["type"],
+  streamType: MainAndGlobalStreamInfo["type"] | "live-data",
   type: "outline" | "solid" | "mini",
 ) => {
   switch (streamType) {
@@ -53,6 +59,8 @@ export const getIconForStreamInfo = (
       return icons[type]["chartbar"];
     case "driver-tracker":
       return icons[type]["map"];
+    case "live-data":
+      return icons[type]["liveData"];
   }
 
   return assertNever(streamType);

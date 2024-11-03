@@ -242,6 +242,13 @@ const getNewWindow = (chosenValue: ChosenValueType): GridWindow | null => {
     };
   }
 
+  if (chosenValue.type === "live-data") {
+    return {
+      id: "",
+      type: "live-data",
+    };
+  }
+
   return assertNever(chosenValue);
 };
 

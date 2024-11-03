@@ -158,6 +158,8 @@ const getOffset = (
   let f1Offset = 0;
   if (w.type === "main") {
     f1Offset = playbackOffsets.f1[w.streamId]?.[mainWindow.streamId] ?? 0;
+  } else if (w.type === "live-data") {
+    f1Offset = 0;
   } else {
     f1Offset = playbackOffsets.f1[w.type]?.[mainWindow.streamId] ?? 0;
   }

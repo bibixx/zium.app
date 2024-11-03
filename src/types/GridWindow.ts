@@ -26,6 +26,15 @@ export interface DriverGridWindow extends BaseGridWindow {
   driverId: string;
 }
 
-export type GridWindow = MainGridWindow | DriverTrackerGridWindow | DataChannelGridWindow | DriverGridWindow;
+export interface LiveDataGridWindow extends BaseGridWindow {
+  type: "live-data";
+}
+
+export type GridWindow =
+  | MainGridWindow
+  | DriverTrackerGridWindow
+  | DataChannelGridWindow
+  | DriverGridWindow
+  | LiveDataGridWindow;
 
 export type GridWindowType = GridWindow["type"];

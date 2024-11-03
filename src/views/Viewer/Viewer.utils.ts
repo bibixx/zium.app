@@ -31,6 +31,10 @@ export const getWindowStreamMap = (windows: GridWindow[], streams: StreamsStateS
         return [w.id, driverStream.playbackUrl];
       }
 
+      if (w.type === "live-data") {
+        return [w.id, null];
+      }
+
       return assertNever(w);
     }),
   );
