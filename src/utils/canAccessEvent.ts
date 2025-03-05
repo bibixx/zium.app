@@ -11,9 +11,17 @@ export const canAccessEvent = (currentTier: F1TVTier, entitlement: RaceEntitleme
     return true;
   }
 
-  if (currentTier !== "Access") {
-    return assertNever(currentTier);
+  if (currentTier === "Premium") {
+    return true;
   }
 
-  return currentTier === entitlement;
+  if (currentTier === "Unknown") {
+    return true;
+  }
+
+  if (currentTier === "Access") {
+    return currentTier === entitlement;
+  }
+
+  return assertNever(currentTier);
 };

@@ -1,4 +1,5 @@
 export const SUPPORTED_SEASONS = [
+  "2025",
   "2024",
   "2023",
   "2022",
@@ -46,6 +47,7 @@ export const SUPPORTED_SEASONS = [
 ] as const;
 export type SupportedSeasons = (typeof SUPPORTED_SEASONS)[number];
 export const SEASON_TO_F1_ID_MAP: Record<SupportedSeasons, string> = {
+  "2025": "10295",
   "2024": "8192",
   "2023": "6603",
   "2022": "4319",

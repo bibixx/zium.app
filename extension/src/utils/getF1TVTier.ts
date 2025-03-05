@@ -1,4 +1,4 @@
-export type F1TVTier = "Pro" | "Access" | "None";
+export type F1TVTier = "Pro" | "Access" | "None" | "Premium" | "Unknown";
 
 export const getF1TVTier = (token: string | null): F1TVTier => {
   try {
@@ -11,8 +11,12 @@ export const getF1TVTier = (token: string | null): F1TVTier => {
     const parsedToken = JSON.parse(decodedToken);
 
     const SubscribedProduct = parsedToken.SubscribedProduct;
-    if (SubscribedProduct == null) {
+    if (!SubscribedProduct) {
       return "None";
+    }
+
+    if (SubscribedProduct.includes("TV Premium")) {
+      return "Premium";
     }
 
     if (SubscribedProduct.includes("TV Pro")) {
@@ -23,7 +27,7 @@ export const getF1TVTier = (token: string | null): F1TVTier => {
       return "Access";
     }
 
-    return "None";
+    return "Unknown";
   } catch (error) {
     console.error(error);
 
