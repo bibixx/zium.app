@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
+import { captureException } from "@sentry/browser";
 import { useStreamVideo } from "../useStreamVideo/useStreamVideo";
 import { MainStreamInfo } from "../useVideoRaceDetails/useVideoRaceDetails.types";
 import { Response } from "../../types/Response";
@@ -28,6 +29,7 @@ export const useInternationalStreamMedia = (defaultStreams: MainStreamInfo[]) =>
         setManifestState({ state: "done", data: result });
       } catch (error) {
         setManifestState({ state: "error", error: error });
+        captureException(error);
       }
     },
     [streamVideoState],

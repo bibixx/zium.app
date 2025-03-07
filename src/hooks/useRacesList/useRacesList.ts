@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useReducer, useRef, useState } from "react";
+import { captureException } from "@sentry/react";
 import { SupportedSeasons } from "../../constants/seasons";
 import { fetchRacesList } from "./useRacesList.api";
 import { RacesState, RacesStateAction } from "./useRacesList.types";
@@ -47,6 +48,7 @@ export const useRacesList = (seasonIds: readonly SupportedSeasons[]) => {
     } catch (error) {
       console.error(error);
       dispatch({ type: "error", error: error, seasonId });
+      captureException(error);
     }
   }, []);
 

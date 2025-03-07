@@ -4,7 +4,7 @@ import { z } from "zod";
 const isString = (v: unknown) => z.string().safeParse(v).success;
 
 export const setupSentry = () => {
-  const dsn = import.meta.env.VITE_GLITCH_TIP_DSN;
+  const dsn = import.meta.env.VITE_SENTRY_DSN;
   if (!isString(dsn)) {
     return;
   }
