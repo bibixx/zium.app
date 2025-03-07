@@ -18,6 +18,8 @@
     "@popperjs/core": "^2.11.8",
     "@radix-ui/react-tooltip": "^1.0.6",
     "@sentry/browser": "^7.70.0",
+    "@sentry/react": "^9.5.0",
+    "@sentry/vite-plugin": "^3.2.2",
     "@sindresorhus/transliterate": "^1.6.0",
     "bitmovin-player": "^8.133.0",
     "bitmovin-player-ui": "^3.50.0",

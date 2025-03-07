@@ -38,3 +38,6 @@ src/tokens/*.sd.json
 !**/.yarn/versions
 
 .env
+
+# Sentry Config File
+.env.sentry-build-plugin

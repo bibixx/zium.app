@@ -1,43 +1,25 @@
-import { execSync } from "child_process";
-import { defineConfig, loadEnv, resolvePackageData } from "vite";
+import { defineConfig, resolvePackageData } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import svgr from "vite-plugin-svgr";
-import { GlitchTipPlugin } from "./vite/vite.plugins";
+import { sentryVitePlugin } from "@sentry/vite-plugin";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
-  const { GLITCH_TIP_AUTH_TOKEN, GLITCH_TIP_ORG, GLITCH_TIP_PROJECT, GLITCH_TIP_URL } = loadEnv(
-    mode,
-    process.cwd(),
-    "GLITCH_TIP",
-  );
-
   const packageJsonPath = resolvePackageData("bitmovinf-player", process.cwd());
   if (packageJsonPath?.data) {
     process.env.VITE_BITMOVIN_PLAYER_VERSION = packageJsonPath.data.version;
   }
 
-  let glitchTipPlugin: GlitchTipPlugin | undefined = undefined;
-  if (
-    mode === "production" &&
-    GLITCH_TIP_AUTH_TOKEN != null &&
-    GLITCH_TIP_ORG != null &&
-    GLITCH_TIP_PROJECT != null &&
-    GLITCH_TIP_URL != null
-  ) {
-    const commitHash = execSync("git rev-parse HEAD").toString().trimEnd();
-
-    glitchTipPlugin = new GlitchTipPlugin({
-      authToken: GLITCH_TIP_AUTH_TOKEN,
-      org: GLITCH_TIP_ORG,
-      project: GLITCH_TIP_PROJECT,
-      url: GLITCH_TIP_URL,
-      releaseName: commitHash,
-    });
-  }
-
   return {
-    plugins: [react(), svgr(), glitchTipPlugin],
+    plugins: [
+      react(),
+      svgr(),
+      sentryVitePlugin({
+        authToken: process.env.SENTRY_AUTH_TOKEN,
+        org: "bibixx",
+        project: "zium-app",
+      }),
+    ],
     css: {
       modules: {
         localsConvention: "camelCaseOnly",

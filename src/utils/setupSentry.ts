@@ -1,20 +1,20 @@
-import { init } from "@sentry/browser";
+import * as Sentry from "@sentry/react";
 import { z } from "zod";
 
 const isString = (v: unknown) => z.string().safeParse(v).success;
 
 export const setupSentry = () => {
-  const releaseName = import.meta.env.VITE_GLITCH_TIP_RELEASE_NAME;
   const dsn = import.meta.env.VITE_GLITCH_TIP_DSN;
-  const environment = import.meta.env.VITE_GLITCH_TIP_ENVIRONMENT;
-
-  if (!isString(releaseName) || !isString(dsn) || !isString(environment)) {
+  if (!isString(dsn)) {
     return;
   }
 
-  init({
-    dsn: dsn,
-    environment,
-    release: releaseName,
+  Sentry.init({
+    dsn,
+    integrations: [],
+    // Learn more at
+    // https://docs.sentry.io/platforms/javascript/session-replay/configuration/#general-integration-configuration
+    replaysSessionSampleRate: 0.1,
+    replaysOnErrorSampleRate: 1.0,
   });
 };
