@@ -19,7 +19,7 @@
     "build-tokens:build:dark": "STYLE_DICTIONARY_MODE=dark yarn run build-tokens:build:base",
     "build-tokens:build": "yarn run build-tokens:build:light && yarn run build-tokens:build:dark",
     "build-tokens:cleanup": "rm -f src/tokens/*.sd.json",
-    "build-tokens": "yarn run build-tokens:prepare && yarn run build-tokens:build && yarn run build-tokens:cleanup"
+    "build-tokens": "yarn run build-tokens:prepare && yarn run build-tokens:build && yarn run build-tokens:cleanup && yarn run lint:css -w"
   },
   "dependencies": {
     "@heroicons/react": "^2.0.18",

@@ -3,9 +3,8 @@ name: "Tokens Studio for Figma Update"
 on:
   push:
     paths:
-      - 'src/tokens/global.json'
-    branches:
-      - dev
+      - "src/tokens/light.json"
+      - "src/tokens/dark.json"
   workflow_dispatch:
 
 jobs:
@@ -14,29 +13,19 @@ jobs:
     permissions:
       contents: write
     steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js v16
-      uses: actions/setup-node@v1
-      with:
-        node-version: 16
-    - name: Get yarn cache directory path
-      id: yarn-cache-dir-path
-      run: echo "::set-output name=dir::$(yarn cache dir)"
-    - uses: actions/cache@v1
-      id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
-      with:
-        path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-        key: ${{ runner.os }}-yarn-${{ hashFiles('yarn.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-yarn-
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "yarn"
 
-    - name: Install dependencies
-      run: yarn install
+      - name: Install dependencies
+        run: yarn install
 
-    - name: Build SCSS file
-      run: yarn run build-tokens
+      - name: Build SCSS file
+        run: yarn run build-tokens
 
-    - uses: stefanzweifel/git-auto-commit-action@v4
-      with:
-        commit_message: "Update tokens.scss after update of global.json from Figma"
-        file_pattern: 'src/styles/tokens.scss'
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "Update theme/*.scss after update of light.json/dark.json from Figma"
+          file_pattern: "src/styles/theme/*.scss"
