@@ -66,8 +66,8 @@
     <meta property="og:image:alt" content="A Zium logo on a strong grungy background" />
 
     <script>
-      const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: light)");
-      const currentThemeRaw = localStorage.getItem("theme");
+      const prefersLightScheme = window.matchMedia("(prefers-color-scheme: light)");
+      const currentThemeRaw = localStorage.getItem("theme") || "dark";
       const currentTheme = currentThemeRaw != null ? JSON.parse(currentThemeRaw) : null;
 
       function setTheme(theme) {
@@ -76,7 +76,7 @@
 
       if (currentTheme != null) {
         setTheme(currentTheme);
-      } else if (prefersDarkScheme.matches) {
+      } else if (prefersLightScheme.matches) {
         setTheme("light");
       } else {
         setTheme("dark");

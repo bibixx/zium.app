@@ -4,7 +4,19 @@ import { LocalStorageClient } from "../../utils/localStorageClient";
 import { useMediaQuery } from "../useMediaQuery/useMediaQuery";
 
 const THEME_STORAGE_KEY = "theme";
-const themeLocalStorageClient = new LocalStorageClient(THEME_STORAGE_KEY, z.enum(["light", "dark"]), null);
+const themeLocalStorageSchema = z.enum(["light", "dark"]);
+
+class ThemeLocalStorageClient extends LocalStorageClient<typeof themeLocalStorageSchema, null> {
+  constructor() {
+    super(THEME_STORAGE_KEY, themeLocalStorageSchema, null);
+  }
+
+  get() {
+    return "dark" as const;
+  }
+}
+
+const themeLocalStorageClient = new ThemeLocalStorageClient();
 
 type ThemeContextType = {
   theme: "light" | "dark" | "system";
