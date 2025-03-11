@@ -19,6 +19,11 @@ import { ReactComponent as ClosedCaptionsOffSvg } from "../../assets/custom-icon
 import { ReactComponent as ClosedCaptionsOnSvg } from "../../assets/custom-icons/closed-captions-on.svg";
 import { ReactComponent as TimeOffsetOnSvg } from "../../assets/custom-icons/time-offset-on.svg";
 import { ReactComponent as TimeOffsetOffSvg } from "../../assets/custom-icons/time-offset-off.svg";
+import { ReactComponent as Test1Svg } from "../../assets/custom-icons/test-1.svg";
+import { ReactComponent as Test2Svg } from "../../assets/custom-icons/test-2.svg";
+import { ReactComponent as Test3Svg } from "../../assets/custom-icons/test-3.svg";
+import { ReactComponent as TestGeneralSvg } from "../../assets/custom-icons/test-general.svg";
+
 import styles from "./CustomIcons.module.scss";
 
 export const ArrowLeft30Icon = (props: React.SVGProps<SVGSVGElement>) => {
@@ -99,4 +104,20 @@ export const TimeOffsetOffIcon = (props: React.SVGProps<SVGSVGElement>) => {
 
 export const RaceKidsIcon = (props: React.SVGProps<SVGSVGElement>) => {
   return <RaceKidsSvg {...props} className={cn(styles.wrapper, props.className)} />;
+};
+
+export const Test1Icon = (props: React.SVGProps<SVGSVGElement>) => {
+  return <Test1Svg {...props} className={cn(styles.wrapper, props.className)} />;
+};
+
+export const Test2Icon = (props: React.SVGProps<SVGSVGElement>) => {
+  return <Test2Svg {...props} className={cn(styles.wrapper, props.className)} />;
+};
+
+export const Test3Icon = (props: React.SVGProps<SVGSVGElement>) => {
+  return <Test3Svg {...props} className={cn(styles.wrapper, props.className)} />;
+};
+
+export const TestGeneralIcon = (props: React.SVGProps<SVGSVGElement>) => {
+  return <TestGeneralSvg {...props} className={cn(styles.wrapper, props.className)} />;
 };

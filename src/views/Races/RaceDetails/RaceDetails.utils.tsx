@@ -8,6 +8,10 @@ import {
   RaceKidsIcon,
   SprintIcon,
   SprintShootoutIcon,
+  Test1Icon,
+  Test2Icon,
+  Test3Icon,
+  TestGeneralIcon,
 } from "../../../components/CustomIcons/CustomIcons";
 import { RaceDetailsData } from "../../../hooks/useRaceDetails/useRacesDetails.types";
 import { IconComponent } from "../../../types/Icon";
@@ -15,16 +19,7 @@ import { fixReplayTitles } from "../../../utils/text";
 
 const TvIconWithStroke: IconComponent = (props) => <TvIcon {...props} stroke="currentColor" />;
 
-type RaceDetailsType =
-  | "race"
-  | "qualifying"
-  | "practice 1"
-  | "practice 2"
-  | "practice 3"
-  | "sprint qualifying"
-  | "race kids"
-  | "sprint race";
-export const raceDetailsTypeToIconMap: Record<RaceDetailsType, React.FC> = {
+export const raceDetailsTypeToIconMap = {
   race: RaceIcon,
   qualifying: QualificationsIcon,
   "practice 1": Practice1Icon,
@@ -33,7 +28,11 @@ export const raceDetailsTypeToIconMap: Record<RaceDetailsType, React.FC> = {
   "sprint qualifying": SprintShootoutIcon,
   "sprint race": SprintIcon,
   "race kids": RaceKidsIcon,
-};
+  "pre-season testing day 1": Test1Icon,
+  "pre-season testing day 2": Test2Icon,
+  "pre-season testing day 3": Test3Icon,
+  "pre-season testing": TestGeneralIcon,
+} satisfies Record<string, React.FC>;
 
 export const getRaceIcon = (raceDetails: RaceDetailsData, seasonId: string) => {
   const seasonIdAsNumber = Number.parseInt(seasonId, 10);
@@ -80,6 +79,22 @@ export const getRaceIcon = (raceDetails: RaceDetailsData, seasonId: string) => {
 
       if (adjustedTitle.toLowerCase().includes("practice")) {
         return raceDetailsTypeToIconMap["practice 1"];
+      }
+
+      if (raceDetails.description.toLowerCase().includes("pre-season testing")) {
+        if (raceDetails.description.toLowerCase().includes("day 1")) {
+          return raceDetailsTypeToIconMap["pre-season testing day 1"];
+        }
+
+        if (raceDetails.description.toLowerCase().includes("day 2")) {
+          return raceDetailsTypeToIconMap["pre-season testing day 2"];
+        }
+
+        if (raceDetails.description.toLowerCase().includes("day 3")) {
+          return raceDetailsTypeToIconMap["pre-season testing day 3"];
+        }
+
+        return raceDetailsTypeToIconMap["pre-season testing"];
       }
 
       return TvIconWithStroke;
