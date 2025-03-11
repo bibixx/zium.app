@@ -5,7 +5,7 @@
   transition-property: border-radius;
   border-radius: var(--radii-medium);
 
-  @include inner-border(var(--color-border-muted-alpha)) {
+  @include inner-border(var(--color-border-default)) {
     transition: var(--transition-medium);
     transition-property: box-shadow;
   }
@@ -41,7 +41,7 @@
 
 .headerFirstLine {
   @include typography(heading, 400, default);
-  color: var(--color-text-strong);
+  color: var(--color-content-strong);
 }
 
 .headerSecondLine {
@@ -51,11 +51,11 @@
   justify-content: space-between;
   gap: 4px;
 
-  color: var(--color-text-default);
+  color: var(--color-content-default);
 }
 
 .headerRound {
-  color: var(--color-text-muted);
+  color: var(--color-content-muted);
 }
 
 .content {
@@ -81,20 +81,11 @@
   text-align: left;
   user-select: none;
 
-  @include inner-border(var(--color-border-muted-alpha)) {
-    opacity: 0;
-    transition: var(--transition-medium);
-    transition-property: opacity;
-  }
-
   &:hover,
   &:focus-visible {
-    background: var(--color-background-default-default);
+    background: var(--color-background-interactive-neutral-rest);
+    @extend .pos-1dp;
     transform: scale(1.05);
-
-    &::after {
-      opacity: 1;
-    }
 
     .heroImage {
       opacity: 1;
@@ -106,7 +97,7 @@
       border-bottom-right-radius: 0;
 
       &::after {
-        box-shadow: inset 0 -1px 0 0px var(--color-border-muted-alpha);
+        box-shadow: inset 0 -1px 0 0px var(--color-border-default);
       }
     }
   }

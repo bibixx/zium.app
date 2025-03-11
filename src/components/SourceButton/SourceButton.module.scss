@@ -2,19 +2,16 @@
   appearance: none;
   border: none;
   height: 44px;
-  background: var(--color-core-neutral-darken-400);
+  background: var(--color-background-interactive-darken-rest);
   padding: 0 8px;
   border-radius: var(--radii-rounded);
   display: flex;
   align-items: center;
   user-select: none;
 
-  @include inner-border(var(--color-border-muted-alpha));
-
   transition:
     var(--transition-fast) transform,
     var(--transition-fast) background,
-    var(--transition-fast) box-shadow,
     var(--transition-slow) opacity;
   outline-offset: 1px;
 
@@ -35,32 +32,30 @@
 
     &:hover {
       transform: scale(1.0333);
-      background: var(--color-core-neutral-darken-500);
-
-      @include inner-border(var(--color-border-default-alpha));
+      background: var(--color-background-interactive-darken-hover);
     }
 
     &:active {
       transform: scale(1);
-      background: var(--color-core-neutral-darken-300);
+      background: var(--color-background-interactive-darken-press);
     }
   }
 }
 
 .label {
-  color: var(--color-text-strong);
+  color: var(--color-content-on-darken);
   padding: 0 8px;
   @include typography(heading, 300, display);
 }
 
 .imageWrapper {
-  @include inner-border(var(--color-border-muted-alpha));
   border-radius: var(--radii-rounded);
-  background-color: var(--color-background-muted-alpha);
-  color: var(--color-text-default);
+  background-color: var(--color-core-neutral-lighten-1100);
+  color: var(--color-content-on-darken);
   width: 28px;
   height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
 }

@@ -1,11 +1,11 @@
 .heading {
   @include typography(heading, 300, default);
-  color: var(--color-text-strong);
+  color: var(--color-content-strong);
   user-select: none;
 }
 
 .body {
-  color: var(--color-text-default);
+  color: var(--color-content-default);
   @include typography(text, 200, regular);
   user-select: none;
 
@@ -15,13 +15,13 @@
     transition-property: color;
 
     &:hover {
-      color: var(--color-text-strong);
+      color: var(--color-content-strong);
     }
   }
 }
 
 .wrapper {
-  background: var(--color-background-muted-default);
+  background: var(--color-background-static-muted);
   padding: 24px;
   padding-left: 40px;
   display: flex;
@@ -37,7 +37,7 @@
   }
 
   &.isOnTop {
-    box-shadow: inset 0 -1px 0 0 var(--color-border-muted-default);
+    box-shadow: inset 0 -1px 0 0 var(--color-border-default);
     top: -1px;
     padding-top: 25px;
 
@@ -47,7 +47,7 @@
   }
 
   &.isOnBottom {
-    box-shadow: inset 0 1px 0 0 var(--color-border-muted-default);
+    box-shadow: inset 0 1px 0 0 var(--color-border-default);
     bottom: -1px;
     padding-bottom: 25px;
 

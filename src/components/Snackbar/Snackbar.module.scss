@@ -3,7 +3,7 @@
 }
 
 .timeIndicatorTrack {
-  background: var(--color-border-default-alpha);
+  background: var(--color-border-default);
   border-radius: var(--radii-rounded);
   overflow: hidden;
   height: 2px;
@@ -26,9 +26,10 @@
   --drag-translate-x: 0px;
   --translate-x: var(--drag-translate-x);
 
-  background: var(--color-background-default-default);
-  @include inner-border(var(--color-border-default-default));
+  background: var(--color-background-static-default);
+  @extend .pos-3dp;
   position: absolute;
+  overflow: hidden;
   border-radius: var(--radii-medium);
   width: 360px;
   padding: 4px;
@@ -46,7 +47,7 @@
   &:hover,
   &.isDragging {
     .timeIndicator {
-      background: var(--color-border-default-inverted-default);
+      background: var(--color-border-strong);
     }
   }
 }
@@ -111,13 +112,13 @@
 }
 
 .title {
-  color: var(--color-text-strong);
+  color: var(--color-content-strong);
   user-select: none;
   @include typography(heading, 300, default);
 }
 
 .textContent {
-  color: var(--color-text-default);
+  color: var(--color-content-default);
   user-select: none;
   @include typography(text, 300, regular);
 }

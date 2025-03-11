@@ -2,13 +2,13 @@
   max-width: 748px;
   margin: 0 auto;
   padding: 128px 32px;
-  color: var(--color-text-default);
+  color: var(--color-content-default);
   @include typography(text, 400, regular);
   line-height: var(--typography-line-heights-xloose);
 
   h1 {
     @include typography(heading, 700, default);
-    color: var(--color-text-strong);
+    color: var(--color-content-strong);
     margin-top: 48px;
     margin-bottom: 32px;
     display: flex;
@@ -18,14 +18,14 @@
 
   h2 {
     @include typography(heading, 600, default);
-    color: var(--color-text-strong);
+    color: var(--color-content-strong);
     margin-top: 40px;
     margin-bottom: 16px;
   }
 
   h3 {
     @include typography(heading, 500, default);
-    color: var(--color-text-strong);
+    color: var(--color-content-strong);
     margin-top: 40px;
     margin-bottom: 16px;
   }
@@ -41,19 +41,19 @@
     transition-property: color;
 
     &:hover {
-      color: var(--color-text-strong);
+      color: var(--color-content-strong);
     }
   }
 }
 
 .lastUpdated {
-  color: var(--color-text-muted);
+  color: var(--color-content-muted);
   @include typography(text, 400, regular);
   margin-bottom: 40px;
 }
 
 .logo {
-  color: var(--color-text-muted);
+  color: var(--color-content-muted);
 
   @media (max-width: 800px) {
     display: none;

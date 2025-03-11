@@ -1,7 +1,7 @@
 body {
   margin: 0;
   background: var(--color-background-surface);
-  color: var(--color-text-default);
+  color: var(--color-content-default);
   -webkit-font-smoothing: antialiased;
   text-rendering: geometricprecision;
 
@@ -10,7 +10,7 @@ body {
 
 button,
 a {
-  color: var(--color-text-default);
+  color: var(--color-content-default);
 }
 
 button {
@@ -46,4 +46,8 @@ a {
 *:focus-visible {
   outline: 2px solid var(--color-border-accent);
   outline-offset: 2px;
+}
+
+.noTransition * {
+  transition: none !important;
 }

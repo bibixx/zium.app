@@ -47,3 +47,46 @@
     @content;
   }
 }
+
+// Manual shadows
+.neg-1dp {
+  box-shadow:
+    inset var(--elevation-neg-1dp-0-x) var(--elevation-neg-1dp-0-y) var(--elevation-neg-1dp-0-blur)
+      var(--elevation-neg-1dp-0-spread) var(--elevation-neg-1dp-0-color),
+    inset var(--elevation-neg-1dp-1-x) var(--elevation-neg-1dp-1-y) var(--elevation-neg-1dp-1-blur)
+      var(--elevation-neg-1dp-1-spread) var(--elevation-neg-1dp-1-color);
+}
+
+.pos-1dp {
+  box-shadow:
+    inset var(--elevation-1dp-0-x) var(--elevation-1dp-0-y) var(--elevation-1dp-0-blur) var(--elevation-1dp-0-spread)
+      var(--elevation-1dp-0-color),
+    inset var(--elevation-1dp-1-x) var(--elevation-1dp-1-y) var(--elevation-1dp-1-blur) var(--elevation-1dp-1-spread)
+      var(--elevation-1dp-1-color),
+    var(--elevation-1dp-2-x) var(--elevation-1dp-2-y) var(--elevation-1dp-2-blur) var(--elevation-1dp-2-spread)
+      var(--elevation-1dp-2-color);
+}
+
+.pos-2dp {
+  box-shadow:
+    inset var(--elevation-2dp-0-x) var(--elevation-2dp-0-y) var(--elevation-2dp-0-blur) var(--elevation-2dp-0-spread)
+      var(--elevation-2dp-0-color),
+    inset var(--elevation-2dp-1-x) var(--elevation-2dp-1-y) var(--elevation-2dp-1-blur) var(--elevation-2dp-1-spread)
+      var(--elevation-2dp-1-color),
+    var(--elevation-2dp-2-x) var(--elevation-2dp-2-y) var(--elevation-2dp-2-blur) var(--elevation-2dp-2-spread)
+      var(--elevation-2dp-2-color),
+    var(--elevation-2dp-3-x) var(--elevation-2dp-3-y) var(--elevation-2dp-3-blur) var(--elevation-2dp-3-spread)
+      var(--elevation-2dp-3-color);
+}
+
+.pos-3dp {
+  box-shadow:
+    inset var(--elevation-3dp-0-x) var(--elevation-3dp-0-y) var(--elevation-3dp-0-blur) var(--elevation-3dp-0-spread)
+      var(--elevation-3dp-0-color),
+    inset var(--elevation-3dp-1-x) var(--elevation-3dp-1-y) var(--elevation-3dp-1-blur) var(--elevation-3dp-1-spread)
+      var(--elevation-3dp-1-color),
+    var(--elevation-3dp-2-x) var(--elevation-3dp-2-y) var(--elevation-3dp-2-blur) var(--elevation-3dp-2-spread)
+      var(--elevation-3dp-2-color),
+    var(--elevation-3dp-3-x) var(--elevation-3dp-3-y) var(--elevation-3dp-3-blur) var(--elevation-3dp-3-spread)
+      var(--elevation-3dp-3-color);
+}

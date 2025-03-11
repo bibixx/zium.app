@@ -7,13 +7,13 @@
   left: 50%;
   padding: 2px 24px 2px;
   transform: translateX(-50%) translateY(0);
-  z-index: 2;
+  z-index: -1;
   border-top-right-radius: var(--radii-small);
   border-top-left-radius: var(--radii-small);
   transition: var(--transition-fast);
   transition-property: transform;
   cursor: grab;
-  color: var(--color-core-neutral-600);
+  color: var(--color-content-muted);
   background: none;
 
   &.dragHandleIsDragging {
@@ -31,8 +31,8 @@
   &::before {
     content: "";
     display: block;
-    background-color: var(--color-background-default-default);
-    @include inner-border(var(--color-border-default-default));
+    background-color: var(--color-background-static-default);
+    @extend .pos-1dp;
     position: absolute;
     z-index: -1;
     top: 0;
@@ -52,7 +52,7 @@
   height: 24px;
   width: 68px;
   transform: translateX(-50%) translateY(-100%);
-  z-index: 1;
+  z-index: -2;
   cursor: grab;
 }
 
@@ -98,18 +98,18 @@
 
 .content {
   display: flex;
-  @include inner-border(var(--color-border-muted-default), 1px);
   overflow: visible;
-  background: var(--color-background-muted-default);
+  background: var(--color-background-static-muted);
   border-radius: var(--radii-medium);
   width: 100%;
   height: 100%;
   z-index: 3;
+  @extend .pos-2dp;
 }
 
 .section {
   padding: 24px;
-  box-shadow: inset -1px 0 0 0 var(--color-border-muted-default);
+  box-shadow: inset -1px 0 0 0 var(--color-border-default);
 
   &:last-child {
     box-shadow: none;
@@ -149,6 +149,6 @@
   transform: translateX(-50%) translateY(calc(-100% - 6px));
 
   &::before {
-    background-color: var(--color-background-strong-default);
+    background-color: var(--color-background-static-strong);
   }
 }

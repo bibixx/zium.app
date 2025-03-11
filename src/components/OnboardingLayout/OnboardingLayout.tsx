@@ -19,12 +19,11 @@ export const OnboardingLayout = ({ children, stepsCount, selectedStepIndex }: On
     <div className={styles.fullHeightWrapper}>
       <div className={styles.wrapper}>
         <BackgroundDots baseGrid={baseGrid} />
-        <div className={styles.backgroundDotsOverlay} />
         <div className={styles.contentWrapper}>
           <div className={styles.mobileDivider}></div>
           <div className={styles.content}>
             <div className={styles.head}>
-              <Logo height={40} color="var(--color-core-red-500)" />
+              <Logo height={40} color="var(--color-content-accent)" />
               <h1 className={styles.heading}>Formula 1 Multi{NON_BREAKING_HYPHEN}View Experience</h1>
             </div>
             {children}

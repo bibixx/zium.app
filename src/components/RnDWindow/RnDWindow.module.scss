@@ -9,7 +9,7 @@
   z-index: var(--zIndex);
   cursor: grab;
   overflow: hidden;
-  background: var(--color-background-muted-default);
+  background: var(--color-background-static-muted);
   border-radius: var(--radii-small);
   --scale: 1;
 
@@ -23,7 +23,7 @@
     width: 100%;
     height: 100%;
     z-index: 1;
-    box-shadow: inset 0 0 0 0px var(--color-border-strong-alpha);
+    box-shadow: inset 0 0 0 0px var(--color-border-default);
     pointer-events: none;
     transition: 0.1s ease-in-out;
     transition-property: box-shadow;
@@ -31,7 +31,7 @@
   }
 
   &:hover::after {
-    box-shadow: inset 0 0 0 1px var(--color-border-strong-alpha);
+    box-shadow: inset 0 0 0 1px var(--color-border-default);
   }
 
   &.isDragging {

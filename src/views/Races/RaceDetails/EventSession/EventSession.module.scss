@@ -14,12 +14,12 @@
 
 .title {
   @include typography(heading, 300, display);
-  color: var(--color-text-strong);
+  color: var(--color-content-strong);
 }
 
 .subtitle {
   @include typography(text, 200, regular);
-  color: var(--color-text-default);
+  color: var(--color-content-default);
 
   &.isLive {
     @include typography(text, 200, strong);
@@ -33,29 +33,28 @@
   justify-content: center;
   height: 48px;
   width: 48px;
-  background: var(--color-background-muted-alpha);
-  color: var(--color-text-default);
+  background: var(--color-background-static-default);
+  color: var(--color-content-default);
   border-radius: var(--radii-xsmall);
-
-  @include inner-border(var(--color-border-muted-alpha), 1px);
+  @extend .pos-1dp;
 }
 
 .rightIconWrapper {
-  color: var(--color-text-default);
+  color: var(--color-content-default);
   opacity: 0;
   transition: var(--transition-medium);
   transition-property: color, opacity;
 }
 
 .skeletonLeftIcon {
-  background: var(--color-background-muted-alpha);
+  background: var(--color-background-interactive-disabled);
   border-radius: var(--radii-xsmall);
   height: 48px;
   width: 48px;
 }
 
 .skeletonFirstLine {
-  background: var(--color-background-muted-alpha);
+  background: var(--color-background-interactive-disabled);
   border-radius: var(--radii-rounded);
   height: 10px;
   width: 112px;
@@ -63,7 +62,7 @@
 }
 
 .skeletonSecondLine {
-  background: var(--color-background-muted-alpha);
+  background: var(--color-background-interactive-disabled);
   border-radius: var(--radii-rounded);
   height: 8px;
   width: 64px;

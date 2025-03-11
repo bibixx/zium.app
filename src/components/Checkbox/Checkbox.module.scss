@@ -7,17 +7,17 @@
 }
 
 .textLabel {
-  color: var(--color-text-default);
+  color: var(--color-content-default);
   transition: var(--transition-fast);
   transition-property: color;
   @include typography(text, 300, regular);
 
   .checkboxRow:hover & {
-    color: var(--color-text-strong);
+    color: var(--color-content-strong);
   }
 
   .checkboxRow:active & {
-    color: var(--color-text-default);
+    color: var(--color-content-default);
   }
 }
 
@@ -32,50 +32,43 @@
 }
 
 .checkboxButton {
-  background: var(--color-background-default-alpha);
-  @include inner-border(var(--color-border-muted-alpha));
+  background: var(--color-background-interactive-neutral-rest);
+  @extend .pos-1dp;
   border-radius: var(--radii-xsmall);
   width: 20px;
   height: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-text-strong);
+  color: var(--color-content-on-accent);
 
   &.isActive {
-    background: var(--color-background-accent-default);
-    @include inner-border(var(--color-border-default-alpha));
+    background: var(--color-background-interactive-accent-rest);
   }
 
   .checkboxRow:hover & {
-    background: var(--color-background-strong-alpha);
-    @include inner-border(var(--color-border-default-alpha));
+    background: var(--color-background-interactive-neutral-hover);
+    @extend .pos-2dp;
 
     &.isActive {
-      background: var(--color-background-accent-strong);
-      @include inner-border(var(--color-border-strong-alpha));
+      background: var(--color-background-interactive-accent-hover);
+      @extend .pos-2dp;
     }
   }
 
-  .checkboxRow:active & {
-    background: var(--color-background-muted-alpha);
-    @include inner-border(var(--color-border-muted-alpha));
+  .checkboxRow:active,
+  .checkboxRow:active:hover & {
+    background: var(--color-background-interactive-neutral-press);
+    @extend .neg-1dp;
 
     &.isActive {
-      background: var(--color-background-accent-muted);
-      @include inner-border(var(--color-border-default-alpha));
+      background: var(--color-background-interactive-accent-press);
+      @extend .neg-1dp;
     }
   }
 
   .checkboxInput:focus-visible + & {
-    background: var(--color-background-default-alpha);
-    @include inner-border(var(--color-border-muted-alpha));
     outline: 2px solid var(--color-border-accent);
     outline-offset: 2px;
-
-    &.isActive {
-      background: var(--color-background-accent-default);
-      @include inner-border(var(--color-border-default-alpha));
-    }
   }
 }

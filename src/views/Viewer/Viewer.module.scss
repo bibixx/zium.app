@@ -5,7 +5,7 @@
   position: relative;
 
   background-color: var(--color-background-surface);
-  --dotColor: var(--color-core-neutral-lighten-300);
+  --dotColor: var(--color-background-static-strong);
 
   @include feature-flag("increase-background-contrast", "true") {
     background-color: #154415;
@@ -43,9 +43,9 @@
   justify-content: center;
   text-align: center;
 
-  @include inner-border(var(--color-border-strong-default), 1px);
+  @include inner-border(var(--color-border-default), 1px);
   @include typography(text, 300, regular);
-  background: var(--color-background-strong-default);
+  background: var(--color-background-static-strong);
 
   &.isCmd {
     aspect-ratio: 1 / 1;

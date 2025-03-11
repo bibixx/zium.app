@@ -1,6 +1,4 @@
 .wrapper {
-  --wrapper-border-color: transparent;
-
   display: block;
   position: relative;
   padding: 8px;
@@ -12,11 +10,6 @@
   transition-property: background, transform;
   transform: scale(1);
 
-  @include inner-border(var(--wrapper-border-color)) {
-    transition: var(--transition-medium);
-    transition-property: box-shadow;
-  }
-
   &:not(&.disabled) {
     cursor: pointer;
 
@@ -24,24 +17,21 @@
       background: transparent;
 
       &:hover {
-        --wrapper-border-color: var(--color-border-muted-alpha);
-        background: var(--color-background-default-alpha);
+        background: var(--color-background-interactive-neutral-hover);
       }
 
       &:active {
-        --wrapper-border-color: var(--color-border-muted-alpha);
-        background: var(--color-background-muted-alpha);
+        background: var(--color-background-interactive-neutral-press);
       }
 
       &:focus-visible {
-        --wrapper-border-color: var(--color-border-muted-alpha);
-        background: var(--color-background-muted-alpha);
+        background: var(--color-background-interactive-neutral-hover);
       }
     }
 
     &.isActive {
-      --wrapper-border-color: var(--color-border-muted-alpha);
-      background: var(--color-background-default-alpha);
+      background: var(--color-background-interactive-neutral-rest);
+      @extend .pos-1dp;
     }
 
     &:hover:not(&.disabled) {

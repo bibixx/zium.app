@@ -22,14 +22,14 @@
 
 .title {
   @include typography(heading, 500, default);
-  color: var(--color-text-strong);
+  color: var(--color-content-strong);
   margin: 0;
   user-select: none;
 }
 
 .subtitle {
   @include typography(text, 300, regular);
-  color: var(--color-text-default);
+  color: var(--color-content-default);
   user-select: none;
 
   p {
@@ -46,11 +46,11 @@
 }
 
 .infoIcon {
-  color: var(--color-text-muted);
+  color: var(--color-content-muted);
 }
 
 .alertIcon {
-  color: var(--color-text-accent);
+  color: var(--color-content-accent);
 }
 
 .buttonFooter {

@@ -62,7 +62,7 @@ export const SHORTCUTS = {
   STREAM_PICKER_NEXT: brandKeyShortcut([Key.ArrowDown]),
   STREAM_PICKER_PREV: brandKeyShortcut([Key.ArrowUp]),
   STREAM_PICKER_SELECT: brandKeyShortcut([Key.Enter]),
-  DEBUG: brandKeyShortcut([Key.Control, "d"]),
+  DEBUG: brandKeyShortcut([Key.Control, Key.Shift, "d"]),
   HELP: brandKeyShortcut([CmdOrControl, "?"]),
 
   SELECT_LAYOUT_1: brandCodeShortcut([Key.Alt, "Digit1"]),

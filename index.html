@@ -1,36 +1,87 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-    <link media="(prefers-color-scheme: light)" rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32-light.png">
-    <link media="(prefers-color-scheme: light)" rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16-light.png">
-    <link media="(prefers-color-scheme: dark)" rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32-dark.png">
-    <link media="(prefers-color-scheme: dark)" rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16-dark.png">
-    <link rel="manifest" href="/site.webmanifest">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link
+      media="(prefers-color-scheme: light)"
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="/favicon-32x32-light.png"
+    />
+    <link
+      media="(prefers-color-scheme: light)"
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="/favicon-16x16-light.png"
+    />
+    <link
+      media="(prefers-color-scheme: dark)"
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="/favicon-32x32-dark.png"
+    />
+    <link
+      media="(prefers-color-scheme: dark)"
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="/favicon-16x16-dark.png"
+    />
+    <link rel="manifest" href="/site.webmanifest" />
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>zium.app | Formula 1 Multi-View Experience</title>
-    <meta name="description" content="Want to feel like you're a race engineer during a Formula 1 race? With zium.app, you can watch the race from multiple angles at once, all inside your browser. The Multi-View Experience lets you create your own responsive pit-wall with multiple onboard cameras, race details and the main F1 TV broadcast.">
+    <meta
+      name="description"
+      content="Want to feel like you're a race engineer during a Formula 1 race? With zium.app, you can watch the race from multiple angles at once, all inside your browser. The Multi-View Experience lets you create your own responsive pit-wall with multiple onboard cameras, race details and the main F1 TV broadcast."
+    />
 
     <!-- Facebook Meta Tags -->
-		<meta property="og:url" content="https://zium.app">
-		<meta property="og:type" content="website">
-		<meta property="og:title" content="zium.app | Formula 1 Multi-View Experience">
-		<meta property="og:description" content="Want to feel like you're a race engineer during a Formula 1 race? With zium.app, you can watch the race from multiple angles at once, all inside your browser. The Multi-View Experience lets you create your own responsive pit-wall with multiple onboard cameras, race details and the main F1 TV broadcast.">
-		<meta property="og:image" content="https://zium.app/og-image.png">
+    <meta property="og:url" content="https://zium.app" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="zium.app | Formula 1 Multi-View Experience" />
+    <meta
+      property="og:description"
+      content="Want to feel like you're a race engineer during a Formula 1 race? With zium.app, you can watch the race from multiple angles at once, all inside your browser. The Multi-View Experience lets you create your own responsive pit-wall with multiple onboard cameras, race details and the main F1 TV broadcast."
+    />
+    <meta property="og:image" content="https://zium.app/og-image.png" />
 
-		<!-- Twitter Meta Tags -->
-		<meta name="twitter:card" content="summary_large_image">
-		<meta property="twitter:domain" content="zium.app">
-		<meta property="twitter:url" content="https://zium.app">
-		<meta name="twitter:title" content="zium.app | Formula 1 Multi-View Experience">
-		<meta name="twitter:description" content="Want to feel like you're a race engineer during a Formula 1 race? With zium.app, you can watch the race from multiple angles at once, all inside your browser. The Multi-View Experience lets you create your own responsive pit-wall with multiple onboard cameras, race details and the main F1 TV broadcast.">
-		<meta name="twitter:image" content="https://zium.app/og-image.png">
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta property="twitter:domain" content="zium.app" />
+    <meta property="twitter:url" content="https://zium.app" />
+    <meta name="twitter:title" content="zium.app | Formula 1 Multi-View Experience" />
+    <meta
+      name="twitter:description"
+      content="Want to feel like you're a race engineer during a Formula 1 race? With zium.app, you can watch the race from multiple angles at once, all inside your browser. The Multi-View Experience lets you create your own responsive pit-wall with multiple onboard cameras, race details and the main F1 TV broadcast."
+    />
+    <meta name="twitter:image" content="https://zium.app/og-image.png" />
 
-		<meta property="og:image:width" content="1200" />
-		<meta property="og:image:height" content="630" />
-		<meta property="og:image:alt" content="A Zium logo on a strong grungy background" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="A Zium logo on a strong grungy background" />
+
+    <script>
+      const prefersLightScheme = window.matchMedia("(prefers-color-scheme: light)");
+      const currentThemeRaw = localStorage.getItem("theme") || "dark";
+      const currentTheme = currentThemeRaw != null ? JSON.parse(currentThemeRaw) : null;
+
+      function setTheme(theme) {
+        document.documentElement.classList.add(theme);
+      }
+
+      if (currentTheme != null) {
+        setTheme(currentTheme);
+      } else if (prefersLightScheme.matches) {
+        setTheme("light");
+      } else {
+        setTheme("dark");
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>

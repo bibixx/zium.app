@@ -21,6 +21,7 @@
 
   &.disabled {
     cursor: not-allowed;
+    box-shadow: none;
   }
 
   &:not(&.disabled) {
@@ -43,153 +44,156 @@
   }
 
   &.primary {
-    @include inner-border(var(--color-border-default-alpha));
-    background: var(--color-background-accent-default);
-    color: var(--color-text-strong);
+    background: var(--color-background-interactive-accent-rest);
+    color: var(--color-content-on-accent);
+    @extend .pos-1dp;
 
     .iconWrapper {
-      color: var(--color-text-strong);
+      color: var(--color-content-on-accent);
     }
 
     &:not(&.disabled) {
       &:hover {
-        background: var(--color-background-accent-strong);
-        color: var(--color-text-strong);
+        background: var(--color-background-interactive-accent-hover);
+        color: var(--color-content-on-accent);
+        @extend .pos-2dp;
       }
 
       &:active,
+      &:active:hover,
       &.isPressed,
       &.isPressed:hover {
-        background: var(--color-background-accent-muted);
-        color: var(--color-text-strong);
+        background: var(--color-background-interactive-accent-press);
+        color: var(--color-content-on-accent);
+        @extend .neg-1dp;
       }
     }
 
     &.disabled {
-      @include inner-border(transparent);
-      background: var(--color-background-muted-alpha);
-      color: var(--color-text-muted);
+      background: var(--color-background-interactive-disabled);
+      color: var(--color-content-muted);
 
       .iconWrapper {
-        color: var(--color-text-muted);
+        color: var(--color-content-muted);
       }
     }
   }
 
   &.secondary {
-    @include inner-border(var(--color-border-muted-alpha));
-    background: var(--color-background-default-alpha);
-    color: var(--color-text-strong);
+    background: var(--color-background-interactive-neutral-rest);
+    color: var(--color-content-strong);
+    @extend .pos-1dp;
 
     .iconWrapper {
-      color: var(--color-text-default);
+      color: var(--color-content-default);
     }
 
     &:not(&.disabled) {
       &:hover {
-        background: var(--color-background-strong-alpha);
-        color: var(--color-text-strong);
+        background: var(--color-background-interactive-neutral-hover);
+        color: var(--color-content-strong);
+        @extend .pos-2dp;
 
         .iconWrapper {
-          color: var(--color-text-strong);
+          color: var(--color-content-strong);
         }
       }
 
       &:active,
+      &:active:hover,
       &.isPressed,
       &.isPressed:hover {
-        background: var(--color-background-muted-alpha);
-        color: var(--color-text-strong);
+        background: var(--color-background-interactive-neutral-press);
+        color: var(--color-content-strong);
+        @extend .neg-1dp;
 
         .iconWrapper {
-          color: var(--color-text-default);
+          color: var(--color-content-default);
         }
       }
     }
 
     &.disabled {
-      @include inner-border(transparent);
-      background: var(--color-background-muted-alpha);
-      color: var(--color-text-muted);
+      background: var(--color-background-interactive-disabled);
+      color: var(--color-content-muted);
 
       .iconWrapper {
-        color: var(--color-text-muted);
+        color: var(--color-content-muted);
       }
     }
   }
 
   &.secondaryInverted {
-    @include inner-border(var(--color-border-muted-alpha));
-    background: var(--color-core-neutral-darken-400);
-    color: var(--color-text-strong);
+    background: var(--color-background-interactive-darken-rest);
+    color: var(--color-content-on-darken);
 
     .iconWrapper {
-      color: var(--color-text-strong);
+      color: var(--color-content-on-darken);
     }
 
     &:not(&.disabled) {
       &:hover {
-        background: var(--color-core-neutral-darken-500);
+        background: var(--color-background-interactive-darken-hover);
       }
 
       &:active,
       &.isPressed &.isPressed:hover {
-        background: var(--color-core-neutral-darken-500);
+        background: var(--color-background-interactive-darken-press);
       }
     }
 
     &:active {
-      background: var(--color-core-neutral-darken-300);
+      background: var(--color-background-interactive-darken-press);
     }
 
     &.disabled {
-      @include inner-border(transparent);
-      background: var(--color-background-muted-alpha);
-      color: var(--color-text-muted);
+      color: var(--color-content-muted);
 
       .iconWrapper {
-        color: var(--color-text-muted);
+        color: var(--color-content-muted);
       }
     }
   }
 
   &.tertiary {
-    @include inner-border(transparent);
     background: transparent;
-    color: var(--color-text-strong);
+    color: var(--color-content-strong);
 
     .iconWrapper {
-      color: var(--color-text-default);
+      color: var(--color-content-default);
     }
 
-    &:hover:not(&.disabled) {
-      @include inner-border(var(--color-border-default-alpha));
-      background: var(--color-background-strong-alpha);
-      color: var(--color-text-strong);
+    &:not(&.disabled) {
+      &:hover {
+        background: var(--color-background-interactive-neutral-hover);
+        color: var(--color-content-strong);
+        @extend .pos-2dp;
 
-      .iconWrapper {
-        color: var(--color-text-strong);
+        .iconWrapper {
+          color: var(--color-content-strong);
+        }
       }
-    }
 
-    &:active:not(&.disabled),
-    &.isPressed:not(&.disabled),
-    &.isPressed:hover {
-      @include inner-border(var(--color-border-muted-alpha));
-      background: var(--color-background-muted-alpha);
-      color: var(--color-text-strong);
+      &:active,
+      &:active:hover,
+      &.isPressed,
+      &.isPressed:hover {
+        background: var(--color-background-interactive-neutral-press);
+        color: var(--color-content-strong);
+        @extend .neg-1dp;
 
-      .iconWrapper {
-        color: var(--color-text-default);
+        .iconWrapper {
+          color: var(--color-content-default);
+        }
       }
     }
 
     &.disabled {
       @include inner-border(transparent);
-      color: var(--color-text-muted);
+      color: var(--color-content-muted);
 
       .iconWrapper {
-        color: var(--color-text-muted);
+        color: var(--color-content-muted);
       }
     }
   }

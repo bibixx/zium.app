@@ -6,17 +6,25 @@
   display: flex;
   width: 100%;
   border-radius: var(--radii-large);
-  background: var(--color-background-muted-default);
+  background: var(--color-background-static-muted);
   user-select: none;
   margin: 0;
   padding: 0;
   border: none;
   appearance: none;
   text-align: left;
-  @include inner-border(var(--color-border-muted-alpha)) {
-    z-index: 4;
+  position: relative;
+  &:before {
+    position: absolute;
+    content: "";
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    z-index: 2;
+    border-radius: var(--radii-large);
+    @extend .pos-1dp;
   }
-  overflow: visible;
 
   &:is(a) {
     cursor: pointer;
@@ -29,25 +37,7 @@
   left: 0;
   top: 0;
   width: calc((100% / 3) / (3 / 4));
-  background: linear-gradient(
-    90deg,
-    #0f0f12 0%,
-    rgba(15, 15, 18, 0.991353) 6.67%,
-    rgba(15, 15, 18, 0.96449) 13.33%,
-    rgba(15, 15, 18, 0.91834) 20%,
-    rgba(15, 15, 18, 0.852589) 26.67%,
-    rgba(15, 15, 18, 0.768225) 33.33%,
-    rgba(15, 15, 18, 0.668116) 40%,
-    rgba(15, 15, 18, 0.557309) 46.67%,
-    rgba(15, 15, 18, 0.442691) 53.33%,
-    rgba(15, 15, 18, 0.331884) 60%,
-    rgba(15, 15, 18, 0.231775) 66.67%,
-    rgba(15, 15, 18, 0.147411) 73.33%,
-    rgba(15, 15, 18, 0.0816599) 80%,
-    rgba(15, 15, 18, 0.03551) 86.67%,
-    rgba(15, 15, 18, 0.0086472) 93.33%,
-    rgba(15, 15, 18, 0) 100%
-  );
+  background: linear-gradient(90deg, var(--color-background-static-muted), transparent);
   z-index: 2;
 }
 
@@ -57,7 +47,6 @@
   left: 0;
   top: 0;
   width: 25%;
-  background: #0f0f12;
   z-index: 2;
   border-top-left-radius: var(--radii-large);
   border-bottom-left-radius: var(--radii-large);
@@ -134,7 +123,7 @@
 
 .raceTitle {
   @include typography(heading, 500, default);
-  color: var(--color-text-strong);
+  color: var(--color-content-strong);
   text-wrap: balance;
 }
 
@@ -150,17 +139,17 @@
 
 .raceCountry {
   @include typography(heading, 400, default);
-  color: var(--color-text-strong);
+  color: var(--color-content-strong);
 }
 
 .raceRound {
   @include typography(text, 300, regular);
-  color: var(--color-text-default);
+  color: var(--color-content-default);
 }
 
 .wrapperSkeleton {
   width: 100%;
   height: 404px;
   border-radius: var(--radii-large);
-  background: var(--color-background-muted-default);
+  background: var(--color-background-static-muted);
 }

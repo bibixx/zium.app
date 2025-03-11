@@ -1,6 +1,6 @@
 .iconWrapper {
   display: flex;
-  color: var(--color-text-muted);
+  color: var(--color-content-muted);
   transition: var(--transition-fast);
   transition-property: color;
 
@@ -37,7 +37,7 @@
 
 .closeWrapper {
   display: flex;
-  color: var(--color-text-muted);
+  color: var(--color-content-muted);
   transition: var(--transition-fast);
   transition-property: color, opacity;
   visibility: hidden;
@@ -55,7 +55,7 @@
   }
 
   &:hover {
-    color: var(--color-text-strong);
+    color: var(--color-content-strong);
   }
 
   &.isVisible {
@@ -68,32 +68,24 @@
   gap: 4px;
   padding: 12px 12px;
   border-radius: var(--radii-small);
-  background: var(--color-background-default-alpha);
+  background: var(--color-background-interactive-neutral-rest);
   overflow: hidden;
-  box-shadow: 0 0 0 2px transparent;
   transition: var(--transition-fast);
   transition-property: background, box-shadow;
   cursor: text;
   width: 100%;
+  @extend .pos-1dp;
 
   &.isRounded {
     border-radius: var(--radii-rounded);
   }
 
-  @include inner-border(var(--color-border-muted-alpha), 1px) {
-    transition: var(--transition-fast);
-    transition-property: opacity;
-  }
-
   &:not(:focus-within):hover {
-    background: var(--color-background-strong-alpha);
-    @include inner-border(var(--color-border-default-alpha), 1px) {
-      transition: var(--transition-fast);
-      transition-property: opacity;
-    }
+    background: var(--color-background-interactive-neutral-hover);
+    @extend .pos-2dp;
 
     .iconWrapper {
-      color: var(--color-text-strong);
+      color: var(--color-content-strong);
     }
   }
 
@@ -101,7 +93,7 @@
     box-shadow: 0 0 0 2px var(--color-border-accent);
 
     .iconWrapper {
-      color: var(--color-text-strong);
+      color: var(--color-content-strong);
     }
 
     &::after {
@@ -118,8 +110,8 @@
 .input {
   border: 0;
   background: none;
-  color: var(--color-text-strong);
-  caret-color: var(--color-background-accent-default);
+  color: var(--color-content-strong);
+  caret-color: var(--color-content-accent);
   padding: 0 4px;
   flex: 1;
   width: 100%;
@@ -131,6 +123,6 @@
   }
 
   &::placeholder {
-    color: var(--color-text-muted);
+    color: var(--color-content-muted);
   }
 }

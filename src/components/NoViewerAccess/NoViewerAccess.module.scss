@@ -23,8 +23,8 @@
 }
 
 .card {
-  background: var(--color-background-muted-default);
-  @include inner-border(var(--color-border-muted-default));
+  background: var(--color-background-static-muted);
+  @extend .pos-3dp;
   border-radius: var(--radii-medium);
 }
 
@@ -35,8 +35,8 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
-  background: var(--color-background-muted-default);
-  box-shadow: inset 0 0 0 1px var(--color-border-muted-default);
+  background: var(--color-background-static-muted);
+  @extend .pos-3dp;
   border-radius: var(--radii-large);
 }
 
@@ -48,7 +48,7 @@
     color: currentColor;
 
     &:hover {
-      color: var(--color-text-strong);
+      color: var(--color-content-strong);
     }
   }
 }

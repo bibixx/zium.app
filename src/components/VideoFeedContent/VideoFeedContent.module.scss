@@ -12,11 +12,11 @@
   justify-content: center;
   width: 48px;
   height: 48px;
-  background: var(--color-background-muted-alpha);
-  border: 1px solid var(--color-border-muted-alpha);
+  background: var(--color-background-static-default);
+  @extend .pos-1dp;
   border-radius: var(--radii-xsmall);
   user-select: none;
-  color: var(--color-text-default);
+  color: var(--color-content-default);
 
   *[fill] {
     fill: currentColor;
@@ -35,9 +35,9 @@
 
 .topLabel {
   @include typography(heading, 300, default);
-  color: var(--color-text-strong);
+  color: var(--color-content-strong);
 }
 .label {
   @include typography(heading, 300, display);
-  color: var(--color-text-strong);
+  color: var(--color-content-strong);
 }

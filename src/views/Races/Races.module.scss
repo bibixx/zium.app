@@ -20,7 +20,7 @@
 
 .heading {
   @include typography(heading, 600, default);
-  color: var(--color-text-strong);
+  color: var(--color-content-strong);
   margin-bottom: 24px;
   margin-top: 32px;
   scroll-margin-top: 32px;

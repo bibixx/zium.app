@@ -1,7 +1,7 @@
 .errorWrapper {
   padding: 32px 64px;
-  background: var(--color-background-muted-default);
-  @include inner-border(var(--color-border-muted-default));
+  background: var(--color-background-static-muted);
+  @extend .pos-1dp;
   border-radius: var(--radii-large);
   grid-column: 1 / -1;
 }
@@ -20,7 +20,7 @@
 
 .heading {
   @include typography(heading, 600, default);
-  color: var(--color-text-strong);
+  color: var(--color-content-strong);
   margin-bottom: var(--season-header-margin);
   margin-top: 0;
   height: var(--season-header-height);

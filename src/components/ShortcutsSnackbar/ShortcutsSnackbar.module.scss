@@ -10,7 +10,7 @@
   padding: 16px;
   padding-bottom: 0;
 
-  color: var(--color-text-strong);
+  color: var(--color-content-strong);
   @include typography(heading, 500, default);
 }
 
@@ -25,11 +25,11 @@
 
 .sectionHeader {
   @include typography(heading, 400, default);
-  color: var(--color-text-strong);
+  color: var(--color-content-strong);
 }
 
 .sectionIcon {
-  color: var(--color-text-muted);
+  color: var(--color-content-muted);
   display: flex;
 }
 
@@ -41,14 +41,14 @@
 
 .subSection {
   padding: 4px 16px;
-  background-color: var(--color-background-default-default);
-  @include inner-border(var(--color-border-default-default));
+  background-color: var(--color-background-static-default);
   border-radius: var(--radii-medium);
+  @extend .pos-1dp;
 }
 
 .subSectionHeader {
   @include typography(heading, 200, display);
-  color: var(--color-text-strong);
+  color: var(--color-content-strong);
   padding: 16px 0;
   user-select: none;
 }
@@ -58,8 +58,8 @@
   padding: 12px 0;
   gap: 8px;
   justify-content: space-between;
-  background-color: var(--color-background-default-default);
-  box-shadow: inset 0 -1px 0 var(--color-background-muted-alpha);
+  background-color: var(--color-background-static-default);
+  box-shadow: inset 0 -1px 0 var(--color-border-default);
   user-select: none;
 
   &:last-child {
@@ -69,5 +69,5 @@
 
 .shortcutRowText {
   @include typography(text, 300, regular);
-  color: var(--color-text-default);
+  color: var(--color-content-default);
 }

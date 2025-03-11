@@ -17,6 +17,7 @@ import { PrivacyPolicy } from "./views/PrivacyPolicy/PrivacyPolicy";
 import { DebugPanel } from "./components/DebugPanel/DebugPanel";
 import { SnackbarsList } from "./components/Snackbar/SnackbarsList";
 import { FeatureFlagsWrapper } from "./hooks/useFeatureFlags/FeatureFlagsWrapper";
+import { ThemeProvider } from "./hooks/useTheme/useTheme";
 
 const WithCompanion = ({ children }: React.PropsWithChildren<unknown>) => {
   const companionState = useHasCompanion();
@@ -63,31 +64,33 @@ function App() {
   }, []);
 
   return (
-    <BrowserRouter>
-      <FeatureFlagsWrapper>
-        <Routes>
-          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-          {isSupportedBrowser ? (
-            <Route
-              path="/"
-              element={
-                <WithCompanion>
-                  <WithLoggedIn />
-                  <DebugPanel />
-                </WithCompanion>
-              }
-            >
-              <Route path="/" element={<Races />} />
-              <Route path="/race/:raceId" element={<ViewerWithState />} />
-            </Route>
-          ) : (
-            <Route path="/" element={<NotSupported />} />
-          )}
-        </Routes>
-        <div id={OVERLAYS_PORTAL_ID} />
-      </FeatureFlagsWrapper>
-      <SnackbarsList />
-    </BrowserRouter>
+    <ThemeProvider>
+      <BrowserRouter>
+        <FeatureFlagsWrapper>
+          <Routes>
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            {isSupportedBrowser ? (
+              <Route
+                path="/"
+                element={
+                  <WithCompanion>
+                    <WithLoggedIn />
+                    <DebugPanel />
+                  </WithCompanion>
+                }
+              >
+                <Route path="/" element={<Races />} />
+                <Route path="/race/:raceId" element={<ViewerWithState />} />
+              </Route>
+            ) : (
+              <Route path="/" element={<NotSupported />} />
+            )}
+          </Routes>
+          <div id={OVERLAYS_PORTAL_ID} />
+        </FeatureFlagsWrapper>
+        <SnackbarsList />
+      </BrowserRouter>
+    </ThemeProvider>
   );
 }
 
