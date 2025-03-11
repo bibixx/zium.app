@@ -24,6 +24,10 @@ import { ZiumOffsetsOverwriteOnStartDialog } from "../../components/ZiumOffsetsD
 import { GlobalShortcutsSnackbar } from "../../components/ShortcutsSnackbar/ShortcutsSnackbar";
 import { toggleFullScreen } from "../../utils/toggleFullScreen";
 import { useFeatureFlags } from "../../hooks/useFeatureFlags/useFeatureFlags";
+import { useStores } from "../../hooks/liveTiming/useStores/useStores";
+import { useSocket } from "../../hooks/liveTiming/useSocket/useSocket";
+import { useDataEngine } from "../../hooks/liveTiming/useDataEngine/useDataEngine";
+import { LiveTimingWindow } from "../../components/VideoWindow/LiveTimingWindow/LiveTimingWindow";
 import { getWindowStreamMap, getAvailableDrivers } from "./Viewer.utils";
 import { useGrid } from "./hooks/useGrid";
 import styles from "./Viewer.module.scss";
@@ -46,7 +50,15 @@ interface ViewerProps {
   raceId: string;
 }
 
+const useSetupLiveTiming = () => {
+  const stores = useStores();
+  const { handleInitial, handleUpdate } = useDataEngine(stores);
+  useSocket({ handleInitial, handleUpdate });
+};
+
 export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets, raceId }: ViewerProps) => {
+  // useSetupLiveTiming();
+
   const { baseGrid, grid } = useGrid();
   const [viewerState, dispatch] = useViewerState();
   const { layout, windows } = useMemo(
@@ -239,6 +251,14 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
           return;
         }
 
+        if (data.type === "live-timing") {
+          dispatch({
+            type: "updateWindow",
+            window: { type: "live-timing", id: gridWindow.id, dataType: data.dataType },
+          });
+          return;
+        }
+
         return assertNever(data);
       };
 
@@ -321,6 +341,10 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
             updateFillMode={updateFillMode}
           />
         );
+      }
+
+      if (gridWindow.type === "live-timing") {
+        return <LiveTimingWindow gridWindow={gridWindow} onDelete={onDelete} onSourceChange={onSourceChange} />;
       }
 
       return assertNever(gridWindow);

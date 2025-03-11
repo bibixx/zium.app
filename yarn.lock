@@ -1815,6 +1815,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/pako@npm:^2.0.3":
+  version: 2.0.3
+  resolution: "@types/pako@npm:2.0.3"
+  checksum: 0746dd5d29eccf5b2e6cceb3ccb093851219e78bd2e2e20d25757e247987139e061e5d4ba37cb5295493f06e3c683c74f8876011cd8a3f3748a09244fbc841d9
+  languageName: node
+  linkType: hard
+
 "@types/piwik-react-router@npm:^0.12.0":
   version: 0.12.0
   resolution: "@types/piwik-react-router@npm:0.12.0"
@@ -5149,6 +5156,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"moment@npm:^2.30.1":
+  version: 2.30.1
+  resolution: "moment@npm:2.30.1"
+  checksum: 859236bab1e88c3e5802afcf797fc801acdbd0ee509d34ea3df6eea21eb6bcc2abd4ae4e4e64aa7c986aa6cba563c6e62806218e6412a765010712e5fa121ba6
+  languageName: node
+  linkType: hard
+
 "mpd-parser@npm:^1.2.2":
   version: 1.2.2
   resolution: "mpd-parser@npm:1.2.2"
@@ -5502,6 +5516,13 @@ __metadata:
   dependencies:
     aggregate-error: ^3.0.0
   checksum: cb0ab21ec0f32ddffd31dfc250e3afa61e103ef43d957cc45497afe37513634589316de4eb88abdfd969fe6410c22c0b93ab24328833b8eb1ccc087fc0442a1c
+  languageName: node
+  linkType: hard
+
+"pako@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "pako@npm:2.1.0"
+  checksum: 71666548644c9a4d056bcaba849ca6fd7242c6cf1af0646d3346f3079a1c7f4a66ffec6f7369ee0dc88f61926c10d6ab05da3e1fca44b83551839e89edd75a3e
   languageName: node
   linkType: hard
 
@@ -7309,6 +7330,7 @@ __metadata:
     "@sentry/vite-plugin": ^3.2.2
     "@sindresorhus/transliterate": ^1.6.0
     "@types/object-merge": ^2.5.1
+    "@types/pako": ^2.0.3
     "@types/piwik-react-router": ^0.12.0
     "@types/react": 18.2.21
     "@types/react-dom": ^18.2.7
@@ -7332,8 +7354,10 @@ __metadata:
     lottie-react: ^2.4.0
     lottie-web: ^5.12.2
     moize: ^6.1.6
+    moment: ^2.30.1
     mpd-parser: ^1.2.2
     object-merge: ^2.5.1
+    pako: ^2.1.0
     piwik-react-router: ^0.12.1
     prettier: ^3.0.3
     react: ^18.2.0

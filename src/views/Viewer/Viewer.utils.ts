@@ -31,6 +31,10 @@ export const getWindowStreamMap = (windows: GridWindow[], streams: StreamsStateS
         return [w.id, driverStream.playbackUrl];
       }
 
+      if (w.type === "live-timing") {
+        return [w.id, "https://livetiming.formula1.com/signalr/negotiate"];
+      }
+
       return assertNever(w);
     }),
   );

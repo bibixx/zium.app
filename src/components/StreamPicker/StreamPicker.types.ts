@@ -20,4 +20,13 @@ interface MainStreamPickerEntry extends StreamPickerEntryBase {
   streamInfo: MainStreamInfo;
 }
 
-export type StreamPickerEntry = DriverStreamPickerEntry | DataStreamPickerEntry | MainStreamPickerEntry;
+interface LiveTimingStreamPickerEntry extends StreamPickerEntryBase {
+  type: "live-timing";
+  dataType: "leaderboard" | "map";
+}
+
+export type StreamPickerEntry =
+  | DriverStreamPickerEntry
+  | DataStreamPickerEntry
+  | MainStreamPickerEntry
+  | LiveTimingStreamPickerEntry;

@@ -242,6 +242,14 @@ const getNewWindow = (chosenValue: ChosenValueType): GridWindow | null => {
     };
   }
 
+  if (chosenValue.type === "live-timing") {
+    return {
+      id: "",
+      type: "live-timing",
+      dataType: chosenValue.dataType,
+    };
+  }
+
   return assertNever(chosenValue);
 };
 

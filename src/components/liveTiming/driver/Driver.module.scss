@@ -1,0 +1,37 @@
+.driver {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.375rem;
+  user-select: none;
+
+  &.inactive {
+    opacity: 0.5;
+  }
+
+  &.favorite {
+    background-color: rgba(7, 89, 133, 0.3); // sky-800 with opacity
+  }
+
+  &.fastest {
+    background-color: rgba(109, 40, 217, 0.3); // violet-800 with opacity
+  }
+
+  &.danger {
+    background-color: rgba(153, 27, 27, 0.3); // red-800 with opacity
+  }
+
+  &Content {
+    display: grid;
+    align-items: center;
+    gap: 0.5rem;
+
+    &WithMetrics {
+      grid-template-columns: 5.5rem 4rem 5.5rem 4rem 5rem 5.5rem auto auto;
+    }
+
+    &WithoutMetrics {
+      grid-template-columns: 5.5rem 4rem 5.5rem 4rem 5rem 5.5rem auto;
+    }
+  }
+}

@@ -1,0 +1,37 @@
+.tag {
+  display: flex;
+  width: fit-content;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.125rem;
+  border-radius: 0.5rem;
+  padding: 0.25rem;
+  font-weight: 800;
+  background-color: #52525b; // zinc-600
+
+  &.fullWidth {
+    min-width: 100%;
+  }
+
+  .position {
+    padding: 0 0.25rem;
+    font-size: 1.25rem;
+    line-height: 1;
+  }
+
+  .driver {
+    display: flex;
+    height: min-content;
+    width: min-content;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.375rem;
+    padding: 0 0.25rem;
+    background-color: white;
+
+    .code {
+      font-family: ui-monospace, monospace;
+      color: #52525b; // zinc-600
+    }
+  }
+}

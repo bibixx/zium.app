@@ -1,0 +1,101 @@
+.container {
+  height: 100%;
+  width: 100%;
+  padding: 0.5rem;
+  min-height: 35rem;
+
+  &.loading {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    border-radius: 0.5rem;
+    background-color: #27272a; // zinc-800
+  }
+}
+
+.map {
+  height: 100%;
+  width: 100%;
+
+  @media (min-width: 1280px) {
+    max-height: 100vh;
+  }
+}
+
+.track {
+  stroke: #1f2937; // gray-800
+  stroke-width: 300;
+  stroke-linejoin: round;
+  fill: transparent;
+}
+
+.sector {
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: transparent;
+
+  &.white {
+    stroke: white;
+  }
+
+  &.yellow {
+    stroke: #fbbf24; // amber-400
+  }
+
+  &.red {
+    stroke: #ef4444; // red-500
+  }
+
+  &.green {
+    stroke: #10b981; // emerald-500
+  }
+
+  &.blue {
+    stroke: #3b82f6; // blue-500
+  }
+}
+
+.cornerNumber {
+  fill: #3f3f46; // zinc-700
+  font-size: 300px;
+  font-weight: 600;
+}
+
+.carDot {
+  fill: #3f3f46; // zinc-700
+  transition: all 1s linear;
+
+  &.pit {
+    opacity: 0.3;
+  }
+
+  &.hidden {
+    opacity: 0 !important;
+  }
+
+  .circle {
+    r: 120;
+  }
+
+  .text {
+    font-weight: bold;
+    font-size: 360px;
+    transform: translateX(150px) translateY(-120px);
+  }
+
+  .favorite {
+    r: 180;
+    fill: transparent;
+    stroke: #38bdf8; // sky-400
+    stroke-width: 40;
+    transition: all 1s linear;
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}

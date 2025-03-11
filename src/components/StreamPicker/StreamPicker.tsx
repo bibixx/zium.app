@@ -53,11 +53,32 @@ export const StreamPicker = ({ availableDrivers, globalFeeds, mainFeeds }: Strea
         });
         return;
       }
+
+      if (selectedEntry.type === "live-timing") {
+        onChoice({
+          type: "live-timing",
+          dataType: selectedEntry.dataType,
+        });
+        return;
+      }
+
+      return assertNever(selectedEntry);
     },
     [onChoice],
   );
 
   const streamPickerEntries: StreamPickerEntry[] = useMemo(() => {
+    const leaderboardEntry: StreamPickerEntry = {
+      id: "leaderboard",
+      type: "live-timing",
+      dataType: "leaderboard",
+    };
+    const mapEntry: StreamPickerEntry = {
+      id: "map",
+      type: "live-timing",
+      dataType: "map",
+    };
+
     const globalEntries = globalFeeds.filter(isNotNullable).map((streamInfo): StreamPickerEntry => {
       return {
         id: streamInfo.type,
@@ -82,7 +103,7 @@ export const StreamPicker = ({ availableDrivers, globalFeeds, mainFeeds }: Strea
       }),
     );
 
-    const allEntries = [...mainEntries, ...globalEntries, ...driverEntries];
+    const allEntries = [...mainEntries, ...globalEntries, leaderboardEntry, mapEntry, ...driverEntries];
 
     const hiddenEntries = laggedState.isOpen ? laggedState.hiddenEntries : [];
     const pickerType: PickerType[] = laggedState.isOpen ? laggedState.pickerTypes : [];
@@ -123,6 +144,10 @@ export const StreamPicker = ({ availableDrivers, globalFeeds, mainFeeds }: Strea
       if (entry.type === "main") {
         const streamInfo = entry.streamInfo;
         return includes(streamInfo.title, searchText);
+      }
+
+      if (entry.type === "live-timing") {
+        return includes("Live Timing", searchText);
       }
 
       return assertNever(entry);
@@ -273,6 +298,19 @@ export const StreamPicker = ({ availableDrivers, globalFeeds, mainFeeds }: Strea
                   }}
                 >
                   <VideoFeedContent label={stream.title} icon={getIconForStreamInfo(stream.type, "outline")} />
+                </ListItem>
+              );
+            }
+
+            if (entry.type === "live-timing") {
+              return (
+                <ListItem
+                  tabIndex={-1}
+                  key={entry.id}
+                  onClick={() => onEntryChosen(entry)}
+                  isActive={fakeSelection === i}
+                >
+                  {entry.dataType === "leaderboard" ? "Leaderboard" : "Map"}
                 </ListItem>
               );
             }
