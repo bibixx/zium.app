@@ -13,7 +13,9 @@
   border: none;
   appearance: none;
   text-align: left;
+  overflow: visible;
   position: relative;
+
   &:before {
     position: absolute;
     content: "";
@@ -21,8 +23,8 @@
     left: 0;
     bottom: 0;
     right: 0;
-    z-index: 2;
     border-radius: var(--radii-large);
+    z-index: 4;
     @extend .pos-1dp;
   }
 
@@ -37,8 +39,51 @@
   left: 0;
   top: 0;
   width: calc((100% / 3) / (3 / 4));
-  background: linear-gradient(90deg, var(--color-background-static-muted), transparent);
   z-index: 2;
+
+  // --color-background-static-muted
+  background: linear-gradient(
+    90deg,
+    rgba(19, 19, 21, 1) 0%,
+    rgba(19, 19, 21, 0.991353) 6.67%,
+    rgba(19, 19, 21, 0.96449) 13.33%,
+    rgba(19, 19, 21, 0.91834) 20%,
+    rgba(19, 19, 21, 0.852589) 26.67%,
+    rgba(19, 19, 21, 0.768225) 33.33%,
+    rgba(19, 19, 21, 0.668116) 40%,
+    rgba(19, 19, 21, 0.557309) 46.67%,
+    rgba(19, 19, 21, 0.442691) 53.33%,
+    rgba(19, 19, 21, 0.331884) 60%,
+    rgba(19, 19, 21, 0.231775) 66.67%,
+    rgba(19, 19, 21, 0.147411) 73.33%,
+    rgba(19, 19, 21, 0.0816599) 80%,
+    rgba(19, 19, 21, 0.03551) 86.67%,
+    rgba(19, 19, 21, 0.0086472) 93.33%,
+    rgba(19, 19, 21, 0) 100%
+  );
+
+  :global(.light) & {
+    // --color-background-static-muted
+    background: linear-gradient(
+      90deg,
+      rgba(248, 248, 249, 1) 0%,
+      rgba(248, 248, 249, 0.991353) 6.67%,
+      rgba(248, 248, 249, 0.96449) 13.33%,
+      rgba(248, 248, 249, 0.91834) 20%,
+      rgba(248, 248, 249, 0.852589) 26.67%,
+      rgba(248, 248, 249, 0.768225) 33.33%,
+      rgba(248, 248, 249, 0.668116) 40%,
+      rgba(248, 248, 249, 0.557309) 46.67%,
+      rgba(248, 248, 249, 0.442691) 53.33%,
+      rgba(248, 248, 249, 0.331884) 60%,
+      rgba(248, 248, 249, 0.231775) 66.67%,
+      rgba(248, 248, 249, 0.147411) 73.33%,
+      rgba(248, 248, 249, 0.0816599) 80%,
+      rgba(248, 248, 249, 0.03551) 86.67%,
+      rgba(248, 248, 249, 0.0086472) 93.33%,
+      rgba(248, 248, 249, 0) 100%
+    );
+  }
 }
 
 .contentBackground {
@@ -47,6 +92,7 @@
   left: 0;
   top: 0;
   width: 25%;
+  background: var(--color-background-static-muted);
   z-index: 2;
   border-top-left-radius: var(--radii-large);
   border-bottom-left-radius: var(--radii-large);

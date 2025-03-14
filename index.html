@@ -68,19 +68,21 @@
     <script>
       const prefersLightScheme = window.matchMedia("(prefers-color-scheme: light)");
       const currentThemeRaw = localStorage.getItem("theme") || "dark";
-      const currentTheme = currentThemeRaw != null ? JSON.parse(currentThemeRaw) : null;
+      const currentTheme = currentThemeRaw != null ? currentThemeRaw : null;
 
       function setTheme(theme) {
         document.documentElement.classList.add(theme);
       }
 
-      if (currentTheme != null) {
-        setTheme(currentTheme);
-      } else if (prefersLightScheme.matches) {
-        setTheme("light");
-      } else {
-        setTheme("dark");
-      }
+      // if (currentTheme != null) {
+      //   setTheme(currentTheme);
+      // } else if (prefersLightScheme.matches) {
+      //   setTheme("light");
+      // } else {
+      //   setTheme("dark");
+      // }
+
+      setTheme("dark");
     </script>
   </head>
   <body>

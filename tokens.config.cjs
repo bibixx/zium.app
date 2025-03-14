@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-undef
 const styleDictionaryMode = process.env.STYLE_DICTIONARY_MODE;
 
-const selector = styleDictionaryMode === "light" ? "body.light" : ":root";
+const selector = styleDictionaryMode === "light" ? "html.light" : ":root";
 
 // eslint-disable-next-line no-undef
 module.exports = {
