@@ -57,7 +57,7 @@ const useSetupLiveTiming = () => {
 };
 
 export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets, raceId }: ViewerProps) => {
-  // useSetupLiveTiming();
+  useSetupLiveTiming();
 
   const { baseGrid, grid } = useGrid();
   const [viewerState, dispatch] = useViewerState();

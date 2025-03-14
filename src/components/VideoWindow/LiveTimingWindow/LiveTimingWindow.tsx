@@ -11,6 +11,7 @@ import { LeaderBoard } from "../../liveTiming/LeaderBoard";
 import { Map } from "../../liveTiming/map/Map";
 import { VideoWindowWrapper } from "../VideoWindowWrapper/VideoWindowWrapper";
 import { useSettingsStore } from "../../../hooks/liveTiming/useStores/useSettingsStore";
+import { SessionInfo } from "../../liveTiming/SessionInfo/SessionInfo";
 
 interface LiveTimingWindowProps {
   gridWindow: LiveTimingGridWindow;
@@ -40,6 +41,7 @@ const LeaderBoardWindow = ({ onDelete }: LeaderBoardWindowProps) => {
 
   return (
     <VideoWindowWrapper>
+      <SessionInfo />
       <LeaderBoard />
 
       <VideoWindowButtonsTopLeftWrapper>
