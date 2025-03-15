@@ -4,8 +4,8 @@ import { F1TVTier, getF1TVTier } from "./utils/getF1TVTier";
 const { version } = chrome.runtime.getManifest();
 
 interface MessagesToPage {
-  LOGGED_IN: { isLoggedIn: boolean; tier: F1TVTier };
-  LOGGED_IN_CHANGED: { isLoggedIn: boolean; tier: F1TVTier };
+  LOGGED_IN: { isLoggedIn: boolean; tier: F1TVTier; rawTier: string | null };
+  LOGGED_IN_CHANGED: { isLoggedIn: boolean; tier: F1TVTier; rawTier: string | null };
   ALARMS: string[];
   ALARM_CHANGED: string[];
   VERSION: string;
@@ -17,9 +17,9 @@ const sendMessageToPage = <T extends keyof MessagesToPage>(type: T, data: Messag
 
 const isLoggedIn = async () => {
   const { token } = await chrome.storage.local.get("token");
-  const tier = getF1TVTier(token);
+  const { tier, rawTier } = getF1TVTier(token);
 
-  return { isLoggedIn: token != null, tier };
+  return { isLoggedIn: token != null, tier, rawTier };
 };
 
 const getAlarms = async () => {
@@ -78,9 +78,9 @@ window.addEventListener(
 chrome.storage.local.onChanged.addListener(async (changes) => {
   if ("token" in changes) {
     const token = changes.token.newValue;
-    const tier = getF1TVTier(token);
+    const { tier, rawTier } = getF1TVTier(token);
 
-    sendMessageToPage("LOGGED_IN_CHANGED", { isLoggedIn: token != null, tier });
+    sendMessageToPage("LOGGED_IN_CHANGED", { isLoggedIn: token != null, tier, rawTier });
   }
 
   if ("alarms" in changes) {

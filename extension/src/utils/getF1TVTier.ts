@@ -1,9 +1,9 @@
 export type F1TVTier = "Pro" | "Access" | "None" | "Premium" | "Unknown";
 
-export const getF1TVTier = (token: string | null): F1TVTier => {
+export const getF1TVTier = (token: string | null): { tier: F1TVTier; rawTier: string | null } => {
   try {
     if (token == null) {
-      return "None";
+      return { tier: "None", rawTier: null };
     }
 
     const [, payload] = token.split(".");
@@ -12,25 +12,25 @@ export const getF1TVTier = (token: string | null): F1TVTier => {
 
     const SubscribedProduct = parsedToken.SubscribedProduct;
     if (!SubscribedProduct) {
-      return "None";
+      return { tier: "None", rawTier: SubscribedProduct };
     }
 
     if (SubscribedProduct.includes("TV Premium")) {
-      return "Premium";
+      return { tier: "Premium", rawTier: SubscribedProduct };
     }
 
     if (SubscribedProduct.includes("TV Pro")) {
-      return "Pro";
+      return { tier: "Pro", rawTier: SubscribedProduct };
     }
 
     if (SubscribedProduct.includes("TV Access")) {
-      return "Access";
+      return { tier: "Access", rawTier: SubscribedProduct };
     }
 
-    return "Unknown";
+    return { tier: "Unknown", rawTier: "Unknown" };
   } catch (error) {
     console.error(error);
 
-    return "None";
+    return { tier: "None", rawTier: null };
   }
 };

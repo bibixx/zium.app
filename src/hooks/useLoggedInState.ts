@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import * as Sentry from "@sentry/react";
 import { create } from "zustand";
 import { F1TVTier, IsLoggedInArgs, getIsLoggedIn, listenOnTokenChange } from "../utils/extensionApi";
 import { useFeatureFlags } from "./useFeatureFlags/useFeatureFlags";
@@ -30,11 +31,13 @@ export const useLoggedInStateExecutor = () => {
   const setState = useLoggedInStore((state) => state.setState);
 
   useEffect(() => {
-    getIsLoggedIn().then(({ isLoggedIn, tier }) => {
+    getIsLoggedIn().then(({ isLoggedIn, tier, rawTier }) => {
+      Sentry.setContext("F1 TV Tier", { tier, rawTier });
       setState(isLoggedIn ? { type: "loggedIn", tier } : { type: "loggedOut" });
     });
 
-    const onTokenChange = ({ isLoggedIn, tier }: IsLoggedInArgs) => {
+    const onTokenChange = ({ isLoggedIn, tier, rawTier }: IsLoggedInArgs) => {
+      Sentry.setContext("F1 TV Tier", { tier, rawTier });
       setState(isLoggedIn ? { type: "loggedIn", tier } : { type: "loggedOut" });
     };
 

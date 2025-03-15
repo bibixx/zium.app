@@ -41,7 +41,7 @@ export const getVersion = async () => {
 };
 
 export type F1TVTier = "Pro" | "Access" | "None" | "Premium" | "Unknown";
-export type IsLoggedInArgs = { isLoggedIn: boolean; tier: F1TVTier };
+export type IsLoggedInArgs = { isLoggedIn: boolean; tier: F1TVTier; rawTier?: string | null };
 export const getIsLoggedIn = async () => {
   const isLoggedIn = await makeRequest<IsLoggedInArgs>("LOGGED_IN");
 
