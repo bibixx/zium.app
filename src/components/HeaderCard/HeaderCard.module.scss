@@ -16,7 +16,7 @@
   overflow: visible;
   position: relative;
 
-  &:before {
+  &::before {
     position: absolute;
     content: "";
     top: 0;
@@ -25,6 +25,7 @@
     right: 0;
     border-radius: var(--radii-large);
     z-index: 4;
+    pointer-events: none;
     @extend .pos-1dp;
   }
 
