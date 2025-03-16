@@ -52,7 +52,7 @@ export const useSettingsStore = create(
         carMetrics: false,
         setCarMetrics: (carMetrics: boolean) => set({ carMetrics }),
 
-        tableHeaders: false,
+        tableHeaders: true,
         setTableHeaders: (tableHeaders: boolean) => set({ tableHeaders }),
 
         showBestSectors: true,

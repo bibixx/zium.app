@@ -1,0 +1,101 @@
+.driver {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.375rem 2rem;
+  padding-bottom: 0;
+  user-select: none;
+
+  &.inactive {
+    opacity: 0.5;
+  }
+
+  &:nth-child(2n) {
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+
+  &.danger {
+    background-color: rgba(153, 27, 27, 0.3); // red-800 with opacity
+  }
+
+  &QueryContainer {
+    container-type: inline-size;
+  }
+
+  &Content {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    :global(#tag) {
+      flex-basis: 6rem;
+      flex-grow: 0;
+      flex-shrink: 0;
+    }
+    :global(#drs) {
+      flex-basis: 4rem;
+      flex-grow: 0;
+      flex-shrink: 0;
+    }
+    :global(#tire) {
+      flex-basis: 5.5rem;
+      flex-grow: 0;
+      flex-shrink: 0;
+    }
+    :global(#info) {
+      flex-basis: 4rem;
+      flex-grow: 0;
+      flex-shrink: 0;
+    }
+    :global(#gap) {
+      flex-basis: 5rem;
+      flex-grow: 0;
+      flex-shrink: 0;
+    }
+    :global(#lap-time) {
+      flex-basis: 5.5rem;
+      flex-grow: 0;
+      flex-shrink: 0;
+    }
+    :global(#mini-sectors) {
+      flex-basis: auto;
+      flex-grow: 1;
+      flex-shrink: 1;
+    }
+    :global(#car-metrics) {
+      flex-basis: auto;
+      flex-grow: 1;
+      flex-shrink: 1;
+    }
+
+    @container (max-width: 966px) {
+      :global(#info) {
+        display: none;
+      }
+    }
+
+    @container (max-width: 890px) {
+      :global(#tire) {
+        display: none;
+      }
+    }
+
+    @container (max-width: 794px) {
+      :global(#drs) {
+        display: none;
+      }
+    }
+
+    @container (max-width: 722px) {
+      :global(#mini-sectors) {
+        display: none;
+      }
+    }
+
+    @container (max-width: 270px) {
+      :global(#lap-time) {
+        display: none;
+      }
+    }
+  }
+}

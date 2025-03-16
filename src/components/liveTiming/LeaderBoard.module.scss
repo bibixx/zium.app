@@ -6,6 +6,7 @@
   width: 100%;
   height: 100%;
   overflow: auto;
+  font-family: "Geist Mono Variable", monospace;
 
   &Headers {
     display: grid;
@@ -16,6 +17,11 @@
     font-weight: 500;
     color: #71717a; // zinc-500
     grid-template-columns: 5.5rem 4rem 5.5rem 4rem 5rem 5.5rem auto auto;
+  }
+
+  p,
+  h1 {
+    margin: 0;
   }
 }
 

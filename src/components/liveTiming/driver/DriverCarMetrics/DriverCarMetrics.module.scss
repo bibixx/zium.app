@@ -1,0 +1,40 @@
+.metrics {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  place-self: start;
+
+  .gear {
+    display: flex;
+    height: 2rem;
+    width: 2rem;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.125rem;
+  }
+
+  .speed {
+    .value {
+      text-align: right;
+      font-weight: 500;
+      line-height: 1;
+    }
+
+    .unit {
+      font-size: 0.875rem;
+      line-height: 1;
+      color: #52525b; // zinc-600
+    }
+  }
+
+  .pedals {
+    display: flex;
+    flex-direction: column;
+
+    .group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+  }
+}

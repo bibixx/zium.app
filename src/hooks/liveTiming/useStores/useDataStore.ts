@@ -19,7 +19,7 @@ import type {
   TopThree,
   TrackStatus,
   WeatherData,
-} from "../../../types/liveTiming/types/state.type";
+} from "../../../components/liveTiming/types/state.type";
 
 // main store
 

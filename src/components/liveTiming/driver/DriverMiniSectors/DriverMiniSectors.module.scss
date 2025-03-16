@@ -1,0 +1,72 @@
+.sectors {
+  display: flex;
+  gap: 0.5rem;
+
+  .sector {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding-bottom: 0.75rem;
+
+    &WithMini {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.25rem;
+    }
+
+    .miniSectors {
+      display: flex;
+      flex-direction: row;
+      gap: 0.25rem;
+    }
+
+    .time {
+      font-size: 1.125rem;
+      font-weight: 600;
+      line-height: 1;
+
+      &.empty {
+        color: #52525b; // zinc-600
+      }
+
+      &.fastest {
+        color: #a855f7; // purple-500
+      }
+
+      &.personal {
+        color: #10b981; // emerald-500
+      }
+    }
+
+    .best {
+      font-size: 0.875rem;
+      font-weight: 500;
+      line-height: 1;
+      color: #52525b; // zinc-600
+    }
+  }
+}
+
+.miniSector {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 9999px;
+  background-color: #52525b; // zinc-600
+
+  &.wide {
+    width: 1rem;
+  }
+
+  &.fastest {
+    background-color: #a855f7; // purple-500
+  }
+
+  &.personal {
+    background-color: #10b981; // emerald-500
+  }
+
+  &.slower {
+    background-color: #ef4444; // red-500
+  }
+}

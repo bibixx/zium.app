@@ -1,41 +1,37 @@
+import { memo } from "react";
 import { useDataStore } from "../../hooks/liveTiming/useStores/useDataStore";
-import { useSettingsStore } from "../../hooks/liveTiming/useStores/useSettingsStore";
+// import { useSettingsStore } from "../../hooks/liveTiming/useStores/useSettingsStore";
 import { objectEntries } from "../../utils/liveTiming/driverHelper";
 import { sortPos } from "../../utils/liveTiming/sorting";
 import styles from "./LeaderBoard.module.scss";
-import Driver from "./driver/Driver";
+import Driver from "./driver/Driver/Driver";
 
-export function LeaderBoard() {
+export const LeaderBoard = memo(() => {
   const drivers = useDataStore((state) => state?.driverList);
   const driversTiming = useDataStore((state) => state?.timingData);
-  const showTableHeader = useSettingsStore((state) => state.tableHeaders);
+  // const showTableHeader = useSettingsStore((state) => state.tableHeaders);
 
   return (
     <div className={styles.leaderBoard}>
-      {showTableHeader && <TableHeaders />}
-
-      {(!drivers || !driversTiming) &&
-        new Array(20).fill("").map((_, index) => <SkeletonDriver key={`driver.loading.${index}`} />)}
-
-      <div>
-        {drivers && driversTiming && (
-          <>
-            {objectEntries(driversTiming.lines)
-              .sort(sortPos)
-              .map((timingDriver, index) => (
-                <Driver
-                  key={`leaderBoard.driver.${timingDriver.racingNumber}`}
-                  position={index + 1}
-                  driver={drivers[timingDriver.racingNumber]}
-                  timingDriver={timingDriver}
-                />
-              ))}
-          </>
-        )}
-      </div>
+      {drivers && driversTiming && (
+        <>
+          {objectEntries(driversTiming.lines)
+            .sort(sortPos)
+            .map((timingDriver, index) => (
+              <Driver
+                key={`leaderBoard.driver.${timingDriver.racingNumber}`}
+                position={index + 1}
+                driver={drivers[timingDriver.racingNumber]}
+                timingDriver={timingDriver}
+              />
+            ))}
+        </>
+      )}
     </div>
   );
-}
+});
+
+/*
 
 const TableHeaders = () => {
   return (
@@ -90,3 +86,9 @@ const SkeletonDriver = () => {
     </div>
   );
 };
+
+      {showTableHeader && <TableHeaders />}
+
+      {(!drivers || !driversTiming) &&
+        new Array(20).fill("").map((_, index) => <SkeletonDriver key={`driver.loading.${index}`} />)}
+*/

@@ -1,5 +1,5 @@
-import type { Map, TrackPosition } from "../../../types/liveTiming/types/map.type";
-import type { Message } from "../../../types/liveTiming/types/state.type";
+import type { Map, TrackPosition } from "../types/map.type";
+import type { Message } from "../types/state.type";
 import { sortUtc } from "../../../utils/liveTiming/sorting";
 
 type StatusMessage = {

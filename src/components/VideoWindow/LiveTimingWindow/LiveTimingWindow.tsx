@@ -41,8 +41,10 @@ const LeaderBoardWindow = ({ onDelete }: LeaderBoardWindowProps) => {
 
   return (
     <VideoWindowWrapper>
-      <SessionInfo />
-      <LeaderBoard />
+      <div style={{ height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+        <SessionInfo />
+        <LeaderBoard />
+      </div>
 
       <VideoWindowButtonsTopLeftWrapper>
         <VideoWindowButtonsOffset onOffsetChange={setDelay} currentOffset={delay} usesZiumOffsets={false} />

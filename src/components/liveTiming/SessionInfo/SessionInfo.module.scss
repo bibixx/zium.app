@@ -1,19 +1,19 @@
 .container {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 0.5rem;
-}
-
-.contentWrapper {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+  flex: 0 0 60px;
+  padding-right: 4rem;
+  padding-left: 4rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 2px;
+  font-family: "Geist Mono Variable", monospace;
 }
 
 .title {
   font-size: 0.875rem;
   font-weight: 500;
-  line-height: 1;
   color: white;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -35,7 +35,6 @@
 }
 
 .timeSkeleton {
-  composes: skeleton;
   margin-top: 0.25rem;
   height: 1.5rem;
   width: 150px;

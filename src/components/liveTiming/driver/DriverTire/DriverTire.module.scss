@@ -1,0 +1,49 @@
+.tire {
+  display: flex;
+  height: 100%;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+
+  .image {
+    display: flex;
+    height: 2rem;
+    width: 2rem;
+    align-items: center;
+    justify-content: center;
+
+    &.loading {
+      animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      border-radius: 9999px;
+      background-color: #27272a; // zinc-800
+    }
+  }
+
+  .info {
+    gap: 0.25rem;
+    display: flex;
+    flex-direction: column;
+
+    .laps {
+      font-weight: 700;
+      line-height: 1.125rem;
+    }
+
+    .stops {
+      font-size: 0.875rem;
+      font-weight: 500;
+      line-height: 1;
+      color: #52525b; // zinc-600
+    }
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}

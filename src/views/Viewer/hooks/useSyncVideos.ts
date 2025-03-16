@@ -146,6 +146,10 @@ const getOffset = (
   mainWindow: MainGridWindow,
   additionalOffset = 0,
 ): number => {
+  if (w.type === "live-timing") {
+    return 0;
+  }
+
   let userOffset = 0;
   if (w.type === "driver") {
     userOffset = userOffsets?.additionalStreams[w.driverId] ?? 0;

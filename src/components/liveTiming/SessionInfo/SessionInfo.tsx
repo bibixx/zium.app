@@ -1,4 +1,5 @@
 import moment from "moment";
+import { memo } from "react";
 import { useDataStore } from "../../../hooks/liveTiming/useStores/useDataStore";
 import { useSettingsStore } from "../../../hooks/liveTiming/useStores/useSettingsStore";
 import styles from "./SessionInfo.module.scss";
@@ -16,42 +17,51 @@ const sessionPartPrefix = (name: string) => {
 
 const { utc, duration } = moment;
 
-export function SessionInfo() {
+const calculateTimeRemaining = (
+  clock: { remaining: string; extrapolating: boolean; utc: string } | null | undefined,
+  delay: number | undefined,
+): string | undefined => {
+  if (clock == null || clock.remaining == null) {
+    return undefined;
+  }
+
+  if (clock.extrapolating == null) {
+    return clock.remaining;
+  }
+
+  const actualDelay = delay ?? 0;
+  const baseTime = duration(clock.remaining)
+    .subtract(utc().diff(utc(clock.utc)))
+    .asMilliseconds();
+
+  return utc(baseTime + actualDelay * 1000).format("HH:mm:ss");
+};
+
+export const SessionInfo = memo(() => {
   const clock = useDataStore((state) => state?.extrapolatedClock);
   const session = useDataStore((state) => state.sessionInfo);
   const timingData = useDataStore((state) => state.timingData);
 
   const delay = useSettingsStore((state) => state.delay);
 
-  const timeRemaining =
-    !!clock && !!clock.remaining
-      ? clock.extrapolating
-        ? utc(
-            duration(clock.remaining)
-              .subtract(utc().diff(utc(clock.utc)))
-              .asMilliseconds() + (delay ? delay * 1000 : 0),
-          ).format("HH:mm:ss")
-        : clock.remaining
-      : undefined;
+  const timeRemaining = calculateTimeRemaining(clock, delay);
 
   return (
     <div className={styles.container}>
-      <div className={styles.contentWrapper}>
-        {session ? (
-          <h1 className={styles.title}>
-            {session.meeting.name}: {session.name ?? "Unknown"}
-            {timingData?.sessionPart ? ` ${sessionPartPrefix(session.name)}${timingData.sessionPart}` : ""}
-          </h1>
-        ) : (
-          <div className={styles.skeleton} />
-        )}
+      {session ? (
+        <div className={styles.title}>
+          {session.meeting.name}: {session.name ?? "Unknown"}
+          {timingData?.sessionPart ? ` ${sessionPartPrefix(session.name)}${timingData.sessionPart}` : ""}
+        </div>
+      ) : (
+        <div className={styles.skeleton} />
+      )}
 
-        {timeRemaining !== undefined ? (
-          <p className={styles.time}>{timeRemaining}</p>
-        ) : (
-          <div className={styles.timeSkeleton} />
-        )}
-      </div>
+      {timeRemaining !== undefined ? (
+        <div className={styles.time}>{timeRemaining}</div>
+      ) : (
+        <div className={styles.timeSkeleton} />
+      )}
     </div>
   );
-}
+});

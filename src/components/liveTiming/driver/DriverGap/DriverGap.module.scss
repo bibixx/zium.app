@@ -1,0 +1,27 @@
+.gap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  font-size: 1.125rem;
+  font-weight: 600;
+  gap: 0.25rem;
+
+  .front {
+    line-height: 1;
+
+    &.catching {
+      color: #10b981; // emerald-500
+    }
+
+    &.empty {
+      color: #52525b; // zinc-600
+    }
+  }
+
+  .leader {
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1;
+    color: #52525b; // zinc-600
+  }
+}

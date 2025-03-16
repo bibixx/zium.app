@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 
-import type { PositionCar } from "../../../types/liveTiming/types/state.type";
-import type { Map, TrackPosition } from "../../../types/liveTiming/types/map.type";
+import type { PositionCar } from "../types/state.type";
+import type { Map, TrackPosition } from "../types/map.type";
 import { objectEntries } from "../../../utils/liveTiming/driverHelper";
 import { usePositionStore, useDataStore } from "../../../hooks/liveTiming/useStores/useDataStore";
 import { useSettingsStore } from "../../../hooks/liveTiming/useStores/useSettingsStore";
@@ -53,6 +53,7 @@ export function Map() {
     (async () => {
       if (!circuitKey) return;
       const mapJson = await fetchMap(circuitKey);
+      console.log(mapJson);
 
       const centerX = (Math.max(...mapJson.x) - Math.min(...mapJson.x)) / 2;
       const centerY = (Math.max(...mapJson.y) - Math.min(...mapJson.y)) / 2;
@@ -128,6 +129,7 @@ export function Map() {
         };
       })
       .sort(prioritizeColoredSectors);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [trackStatus, sectors]);
 
   if (!points || !minX || !minY || !widthX || !widthY) {

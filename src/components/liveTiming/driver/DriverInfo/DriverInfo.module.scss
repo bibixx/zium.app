@@ -1,0 +1,30 @@
+.info {
+  font-size: 1.125rem;
+  font-weight: 600;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+
+  .position {
+    line-height: 1;
+
+    &.gain {
+      color: #10b981; // emerald-500
+    }
+
+    &.loss {
+      color: #ef4444; // red-500
+    }
+
+    &.neutral {
+      color: #374151; // gray-700
+    }
+  }
+
+  .status {
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1;
+    color: #52525b; // zinc-600
+  }
+}
