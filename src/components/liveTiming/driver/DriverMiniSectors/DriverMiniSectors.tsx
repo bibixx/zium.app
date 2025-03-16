@@ -40,20 +40,18 @@ export default function DriverMiniSectors({ sectors = [], bestSectors, tla, id }
   return (
     <div className={styles.sectors} id={id}>
       {sectors.map((sector, i) => (
-        <div key={`sector.${tla}.${i}`} className={styles.sector}>
-          {showMiniSectors && (
-            <div className={styles.miniSectors}>
-              {sector.segments.map((segment, j) => (
-                <MiniSector
-                  wide={showBestSectors && showMiniSectors}
-                  status={segment.status}
-                  key={`sector.mini.${tla}.${j}`}
-                />
-              ))}
-            </div>
-          )}
+        <div key={`sector.${tla}.${i}`} data-sector className={styles.sector} style={{ flex: sector.segments.length }}>
+          <div className={styles.miniSectors} data-mini-sectors>
+            {sector.segments.map((segment, j) => (
+              <MiniSector
+                wide={showBestSectors && showMiniSectors}
+                status={segment.status}
+                key={`sector.mini.${tla}.${j}`}
+              />
+            ))}
+          </div>
 
-          <div className={showMiniSectors ? styles.sectorWithMini : ""}>
+          <div className={styles.sectorWithMini} data-sectors-data>
             <p
               className={[styles.time, getTimeClasses(sector.overallFastest, sector.personalFastest, sector.value)]
                 .filter(Boolean)

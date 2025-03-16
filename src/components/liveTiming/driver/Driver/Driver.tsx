@@ -45,18 +45,10 @@ export default function Driver({ driver, timingDriver, position }: Props) {
 
   const carMetrics = useSettingsStore((state) => state.carMetrics);
 
-  const favoriteDriver = useSettingsStore((state) => state.favoriteDrivers.includes(driver.racingNumber));
-
   const isInactive = timingDriver.knockedOut || timingDriver.retired || timingDriver.stopped;
   const isDanger = sessionPart != undefined && inDangerZone(position, sessionPart);
 
-  const driverClasses = [
-    styles.driver,
-    isInactive && styles.inactive,
-    favoriteDriver && styles.favorite,
-    hasFastest && styles.fastest,
-    isDanger && styles.danger,
-  ]
+  const driverClasses = [styles.driver, isInactive && styles.inactive, isDanger && styles.danger]
     .filter(Boolean)
     .join(" ");
 
