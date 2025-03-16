@@ -87,6 +87,8 @@
     }
 
     @container (max-width: 722px) {
+      padding-bottom: 0.5rem;
+
       :global(#mini-sectors) {
         display: none;
       }
