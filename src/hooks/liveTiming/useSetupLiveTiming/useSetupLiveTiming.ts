@@ -55,7 +55,7 @@ const useSetupDebugLiveTiming = () => {
   }, []);
 };
 
-// /*
+/*
 export const useSetupLiveTiming = useSetupRealLiveTiming;
 /*/
 export const useSetupLiveTiming = useSetupDebugLiveTiming;
