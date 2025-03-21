@@ -52,21 +52,25 @@
   width: 0.5rem;
   height: 0.5rem;
   border-radius: 9999px;
-  background-color: #52525b; // zinc-600
+  background-color: #52525b;
 
   &.wide {
     width: 100%;
   }
 
-  &.fastest {
-    background-color: #a855f7; // purple-500
+  &.slower {
+    background-color: #f59e0b;
   }
 
   &.personal {
-    background-color: #10b981; // emerald-500
+    background-color: #10b981;
   }
 
-  &.slower {
-    background-color: #ef4444; // red-500
+  &.overall {
+    background-color: #a855f7;
+  }
+
+  &.pit {
+    background-color: #0ea5e9;
   }
 }

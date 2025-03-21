@@ -1,3 +1,4 @@
+import cn from "classnames";
 import { useSettingsStore } from "../../../../hooks/liveTiming/useStores/useSettingsStore";
 import { TimingDataDriver, TimingStatsDriver } from "../../types/state.type";
 import styles from "./DriverMiniSectors.module.scss";
@@ -15,13 +16,15 @@ type MiniSectorProps = {
 };
 
 const MiniSector = ({ wide, status }: MiniSectorProps) => {
-  const miniSectorClasses = [
+  const textStatus = getMiniSectorStatus(status);
+  const miniSectorClasses = cn([
     styles.miniSector,
     wide && styles.wide,
-    status === 2 ? styles.fastest : status === 1 ? styles.personal : status === 0 ? styles.slower : "",
-  ]
-    .filter(Boolean)
-    .join(" ");
+    textStatus === "slower" && styles.slower,
+    textStatus === "personal" && styles.personal,
+    textStatus === "overall" && styles.overall,
+    textStatus === "pit" && styles.pit,
+  ]);
 
   return <div className={miniSectorClasses} />;
 };
@@ -69,3 +72,12 @@ export default function DriverMiniSectors({ sectors = [], bestSectors, tla, id }
     </div>
   );
 }
+
+type MiniSectorStatus = "slower" | "personal" | "overall" | "pit" | "last";
+const getMiniSectorStatus = (status: number): MiniSectorStatus => {
+  if (status === 2048 || status === 2052) return "slower";
+  if (status === 2049) return "personal";
+  if (status === 2051) return "overall";
+  if (status === 2064) return "pit";
+  return "last";
+};
