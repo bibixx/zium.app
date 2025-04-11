@@ -1,5 +1,6 @@
 import moment from "moment";
 import { memo } from "react";
+import cn from "classnames";
 import { useDataStore } from "../../../hooks/liveTiming/useStores/useDataStore";
 import { useSettingsStore } from "../../../hooks/liveTiming/useStores/useSettingsStore";
 import styles from "./SessionInfo.module.scss";
@@ -41,6 +42,7 @@ export const SessionInfo = memo(() => {
   const clock = useDataStore((state) => state?.extrapolatedClock);
   const session = useDataStore((state) => state.sessionInfo);
   const timingData = useDataStore((state) => state.timingData);
+  const lapCount = useDataStore((state) => state.lapCount);
 
   const delay = useSettingsStore((state) => state.delay);
 
@@ -57,7 +59,11 @@ export const SessionInfo = memo(() => {
         <div className={styles.skeleton} />
       )}
 
-      {timeRemaining !== undefined ? (
+      {lapCount != null ? (
+        <div className={cn(styles.lapCount)}>
+          {lapCount?.currentLap} / {lapCount?.totalLaps}
+        </div>
+      ) : timeRemaining !== undefined ? (
         <div className={styles.time}>{timeRemaining}</div>
       ) : (
         <div className={styles.timeSkeleton} />
