@@ -35,31 +35,23 @@
   top: 0;
   left: 0;
   right: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   height: calc(var(--header-height) + 64px);
   pointer-events: none;
 
-  &::before {
+  &::before,
+  &::after {
     content: "";
-    display: block;
-    height: 32px;
-    flex: none;
-    order: 0;
-    align-self: stretch;
-    flex-grow: 0;
-    background: var(--color-background-surface);
+    position: absolute;
+    inset: 0;
+  }
+
+  &::before {
+    backdrop-filter: blur(3px);
+    mask: linear-gradient(180deg, #000 33%, transparent);
   }
 
   &::after {
-    content: "";
-    display: block;
-    flex: none;
-    order: 1;
-    align-self: stretch;
-    flex-grow: 1;
-    background: linear-gradient(180deg, var(--color-background-surface), transparent);
+    background: linear-gradient(to bottom, var(--color-background-surface) 32px, transparent);
   }
 }
 
