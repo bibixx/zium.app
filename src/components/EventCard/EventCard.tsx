@@ -1,12 +1,15 @@
 import { useState } from "react";
+import { useImage } from "react-image";
+import cn from "classnames";
 import { withAs } from "../../utils/withAs";
 import { CountryImage } from "../CountryImage/CountryImage";
 import { WithVariables } from "../WithVariables/WithVariables";
-import { useFormulaImage } from "../../hooks/useFormulaImage/useFormulaImage";
+import { useFormulaImages } from "../../hooks/useFormulaImage/useFormulaImage";
+import { useImageLoadState } from "../../hooks/useImageLoadedState/useImageLoadedState";
 import styles from "./EventCard.module.scss";
 
 interface EventCardProps {
-  pictureUrl: string;
+  imgSrcList: string[];
   countryName: string;
   countryId?: string;
   displayDate: string;
@@ -14,10 +17,16 @@ interface EventCardProps {
   description?: string;
 }
 export const EventCard = withAs("button")<EventCardProps>((
-  { as: Component, pictureUrl, countryName, countryId, displayDate, caption, description, ...props },
+  { as: Component, imgSrcList, countryName, countryId, displayDate, caption, description, ...props },
   ref,
 ) => {
-  const fullPictureUrl = useFormulaImage(pictureUrl, 400, 195);
+  const fullImgSrcList = useFormulaImages(imgSrcList, 400, 195);
+  const { src } = useImage({
+    srcList: fullImgSrcList,
+    useSuspense: false,
+  });
+  const { imgProps, loadingState } = useImageLoadState(src);
+
   const [cursorPosition, setCursorPosition] = useState<{ x: number | undefined; y: number | undefined }>({
     x: undefined,
     y: undefined,
@@ -48,8 +57,8 @@ export const EventCard = withAs("button")<EventCardProps>((
       }}
     >
       <Component className={styles.wrapper} {...props} ref={ref}>
-        <div className={styles.heroImageWrapper}>
-          <img src={fullPictureUrl} alt="" className={styles.heroImage} draggable={false} />
+        <div className={cn(styles.heroImageWrapper, { [styles.isLoaded]: loadingState === "loaded" })}>
+          <img {...imgProps} src={src} alt="" className={styles.heroImage} draggable={false} />
         </div>
         <main className={styles.contentWrapper}>
           <div className={styles.header}>
@@ -68,3 +77,5 @@ export const EventCard = withAs("button")<EventCardProps>((
     </WithVariables>
   );
 });
+
+EventCard.displayName = "EventCard";

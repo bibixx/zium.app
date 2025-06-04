@@ -20,3 +20,5 @@ export const mapAndStripNullable = <InputType, OutputType>(
   array: InputType[],
   predicate: (value: InputType) => OutputType | null | undefined,
 ): OutputType[] => mapAndStrip(array, predicate, isNotNullable<OutputType>);
+
+export const stripNullables = <T>(array: (T | null | undefined)[]): T[] => array.filter(isNotNullable);

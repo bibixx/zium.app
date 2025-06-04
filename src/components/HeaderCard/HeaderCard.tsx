@@ -3,6 +3,7 @@ import cn from "classnames";
 import { differenceInMinutes, differenceInSeconds, sub } from "date-fns";
 import { ReactNode, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import { useImage } from "react-image";
 import { isRaceGenre } from "../../constants/races";
 import { useActiveAlarms } from "../../hooks/useActiveAlarms";
 import { RaceData } from "../../hooks/useRacesList/useRacesList.types";
@@ -12,7 +13,9 @@ import { Button } from "../Button/Button";
 import { CountryImage } from "../CountryImage/CountryImage";
 import { EventCardTag } from "../EventCardTag/EventCardTag";
 import { HeaderCardDataState } from "../../hooks/useHeaderCardData/useHeaderCardData.types";
-import { useFormulaImage } from "../../hooks/useFormulaImage/useFormulaImage";
+import { useFormulaImages } from "../../hooks/useFormulaImage/useFormulaImage";
+import { stripNullables } from "../../utils/mapAndStrip";
+import { useImageLoadState } from "../../hooks/useImageLoadedState/useImageLoadedState";
 import styles from "./HeaderCard.module.scss";
 
 interface HeaderCardWithZeroStateProps {
@@ -41,7 +44,14 @@ interface HeaderCardProps {
   activeAlarms: string[];
 }
 const HeaderCard = ({ raceDetails, activeAlarms }: HeaderCardProps) => {
-  const pictureUrl = useFormulaImage(raceDetails.pictureUrl, 1920, 800);
+  const imgSrcList = stripNullables([raceDetails.pictureLandscapeUrl, raceDetails.pictureUrl]);
+  const fullImgSrcList = useFormulaImages(imgSrcList, 400, 195);
+  const { src } = useImage({
+    srcList: fullImgSrcList,
+    useSuspense: false,
+  });
+  const { imgProps, loadingState } = useImageLoadState(src);
+
   const countryName = raceDetails.countryName;
   const caption = `Round ${raceDetails.roundNumber}`;
   const isRaceEvent = isRaceGenre(raceDetails.genre);
@@ -105,7 +115,7 @@ const HeaderCard = ({ raceDetails, activeAlarms }: HeaderCardProps) => {
                       ? sub(raceDetails.startDate, { minutes: 15 }).getTime()
                       : raceDetails.startDate.getTime(),
                     eventName: description,
-                    image: pictureUrl,
+                    image: src || raceDetails.pictureUrl,
                   });
                 }
               }}
@@ -128,7 +138,12 @@ const HeaderCard = ({ raceDetails, activeAlarms }: HeaderCardProps) => {
           <div className={styles.imageWrapper}>
             <div className={styles.shadow}></div>
             <div className={cn({ [styles.imageTrimAdjustment]: isRaceEvent })}>
-              <img src={pictureUrl} className={cn(styles.image, styles.isLive)} alt="" />
+              <img
+                src={src}
+                {...imgProps}
+                className={cn(styles.image, styles.isLive, { [styles.isLoaded]: loadingState === "loaded" })}
+                alt=""
+              />
             </div>
           </div>
         </div>
@@ -136,7 +151,12 @@ const HeaderCard = ({ raceDetails, activeAlarms }: HeaderCardProps) => {
       <div className={styles.imageWrapper}>
         <div className={styles.shadow}></div>
         <div className={cn({ [styles.imageTrimAdjustment]: isRaceEvent })}>
-          <img src={pictureUrl} className={cn(styles.image, { [styles.isLive]: isLive })} alt="" />
+          <img
+            src={src}
+            {...imgProps}
+            className={cn(styles.image, { [styles.isLive]: isLive, [styles.isLoaded]: loadingState === "loaded" })}
+            alt=""
+          />
         </div>
       </div>
     </Wrapper>

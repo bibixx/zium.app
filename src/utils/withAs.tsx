@@ -8,7 +8,7 @@ export function withAs<T extends React.ElementType>(defaultAs: T) {
       React.ElementRef<T>,
       Props & { as: React.ElementType } & Omit<React.ComponentPropsWithoutRef<T>, keyof Props>
     >,
-  ): (<U extends React.ElementType = T>(
+  ): { displayName?: string } & (<U extends React.ElementType = T>(
     props: Omit<Props, "as"> &
       Omit<React.ComponentPropsWithoutRef<U>, keyof Props> & { as?: U } & React.RefAttributes<React.ElementRef<U>>,
   ) => React.ReactNode) => {

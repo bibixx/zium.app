@@ -7,6 +7,7 @@ export interface RaceData {
   title: string;
   id: string | null;
   pictureUrl: string;
+  pictureLandscapeUrl?: string;
   countryName: string;
   startDate: Date;
   endDate: Date;

@@ -44,6 +44,9 @@ export const fetchRacesList = async (seasonId: SupportedSeasons, signal: AbortSi
       const racePageId = racePage.metadata.emfAttributes.PageID == null ? null : racePage.metadata.emfAttributes.PageID;
       const title = racePage.metadata.emfAttributes.Global_Meeting_Name;
       const pictureUrl = racePage.metadata.pictureUrl;
+      const pictureLandscapeUrl = racePage.metadata.pictureUrl.includes("portrait_web")
+        ? racePage.metadata.pictureUrl.replace("portrait_web", "landscape_web")
+        : undefined;
       const countryName = racePage.metadata.emfAttributes.Meeting_Country_Name;
       const { startDate, endDate } = getDates(racePage);
       const rawRoundNumber = racePage.metadata.emfAttributes.Championship_Meeting_Ordinal;
@@ -64,6 +67,7 @@ export const fetchRacesList = async (seasonId: SupportedSeasons, signal: AbortSi
         id: racePageId,
         title,
         pictureUrl,
+        pictureLandscapeUrl,
         countryName,
         startDate,
         endDate,

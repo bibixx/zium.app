@@ -5,6 +5,7 @@ export interface RaceDetailsData {
   title: string;
   id: string;
   pictureUrl: string;
+  pictureLandscapeUrl?: string;
   isLive: boolean;
   hasMedia: boolean;
   description: string;

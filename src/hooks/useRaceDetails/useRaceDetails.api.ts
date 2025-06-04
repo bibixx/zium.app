@@ -84,11 +84,15 @@ const mapEventToRaceDetailsData = (event: Event, isReplay: boolean): RaceDetails
   const [firstGenre] = event.metadata.genres;
   const isRace = isRaceGenre(firstGenre);
   const isKidsStream = event.metadata.title.startsWith("F1 Kids");
+  const pictureLandscapeUrl = event.metadata.pictureUrl.includes("portrait_web")
+    ? event.metadata.pictureUrl.replace("portrait_web", "landscape_web")
+    : undefined;
 
   return {
     title: event.metadata.titleBrief,
     id: String(event.metadata.contentId),
     pictureUrl: event.metadata.pictureUrl,
+    pictureLandscapeUrl,
     isLive: event.metadata.contentSubtype === "LIVE",
     hasMedia: isReplay,
     description: event.metadata.title,

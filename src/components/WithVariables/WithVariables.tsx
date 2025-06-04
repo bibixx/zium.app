@@ -12,6 +12,7 @@ export const WithVariables = forwardRef<HTMLDivElement, WithVariableProps>(
     return <Component ref={ref} style={getStylesWithVariables(variables, style)} {...props} />;
   },
 );
+WithVariables.displayName = "WithVariables";
 
 export const getStylesWithVariables = (variables: Variables, style: React.CSSProperties = {}) => {
   const variablesAsStyles = Object.fromEntries(

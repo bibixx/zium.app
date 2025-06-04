@@ -4,10 +4,18 @@
   transition: var(--transition-medium);
   transition-property: border-radius;
   border-radius: var(--radii-medium);
+  background: var(--color-background-static-muted);
+  overflow: hidden;
 
-  @include inner-border(var(--color-border-default)) {
-    transition: var(--transition-medium);
-    transition-property: box-shadow;
+  &.isLoaded {
+    @include inner-border(var(--color-border-default)) {
+      transition: var(--transition-medium);
+      transition-property: box-shadow;
+    }
+  }
+
+  &:not(.isLoaded) .heroImage {
+    opacity: 0;
   }
 }
 
