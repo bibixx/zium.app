@@ -134,13 +134,17 @@ const HeaderCard = ({ raceDetails, activeAlarms }: HeaderCardProps) => {
         <div className={styles.imageBlur}>
           <div className={styles.imageWrapper}>
             <div className={styles.shadow}></div>
-            <FadeInImage src={src} className={cn(styles.image, styles.isLive)} alt="" />
+            <div className={cn(styles.imageGrayscaleWrapper, styles.isLive)}>
+              <FadeInImage src={src} className={styles.image} alt="" />
+            </div>
           </div>
         </div>
       )}
       <div className={styles.imageWrapper}>
         <div className={styles.shadow}></div>
-        <FadeInImage src={src} className={cn(styles.image, { [styles.isLive]: isLive })} alt="" />
+        <div className={cn(styles.imageGrayscaleWrapper, { [styles.isLive]: isLive })}>
+          <FadeInImage src={src} className={styles.image} alt="" />
+        </div>
       </div>
     </Wrapper>
   );

@@ -111,6 +111,18 @@
   border-bottom-right-radius: var(--radii-large);
 }
 
+.imageGrayscaleWrapper {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  right: 0;
+
+  &:not(.isLive) {
+    filter: grayscale(1);
+    opacity: 0.5;
+  }
+}
+
 .image {
   position: absolute;
   width: 100%;
@@ -118,11 +130,6 @@
   object-fit: cover;
   right: 0;
   pointer-events: none;
-
-  &:not(.isLive) {
-    filter: grayscale(1);
-    opacity: 0.5;
-  }
 }
 
 .imageBlur {
