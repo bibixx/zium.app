@@ -45,7 +45,7 @@ interface HeaderCardProps {
 }
 const HeaderCard = ({ raceDetails, activeAlarms }: HeaderCardProps) => {
   const imgSrcList = stripNullables([raceDetails.pictureLandscapeUrl, raceDetails.pictureUrl]);
-  const fullImgSrcList = useFormulaImages(imgSrcList, 400, 195);
+  const fullImgSrcList = useFormulaImages(imgSrcList, 1920, 800);
   const { src } = useImage({
     srcList: fullImgSrcList,
     useSuspense: false,
