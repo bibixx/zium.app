@@ -4,6 +4,7 @@ import { isRaceGenre } from "../../constants/races";
 import { fetchJSON } from "../../utils/api";
 import { uniqueById } from "../../utils/uniqueById";
 import { validateArray } from "../../utils/validators";
+import { PictureId } from "../useFormulaImage/useFormulaImage";
 import { RaceDetailsData } from "./useRacesDetails.types";
 import { bodyRootValidator, eventValidator, scheduledContainerValidator, Event } from "./useRaceDetails.validator";
 
@@ -84,15 +85,12 @@ const mapEventToRaceDetailsData = (event: Event, isReplay: boolean): RaceDetails
   const [firstGenre] = event.metadata.genres;
   const isRace = isRaceGenre(firstGenre);
   const isKidsStream = event.metadata.title.startsWith("F1 Kids");
-  const pictureLandscapeUrl = event.metadata.pictureUrl.includes("portrait_web")
-    ? event.metadata.pictureUrl.replace("portrait_web", "landscape_web")
-    : undefined;
+  const pictureId = PictureId.parse(event.metadata.pictureUrl);
 
   return {
     title: event.metadata.titleBrief,
     id: String(event.metadata.contentId),
-    pictureUrl: event.metadata.pictureUrl,
-    pictureLandscapeUrl,
+    pictureId,
     isLive: event.metadata.contentSubtype === "LIVE",
     hasMedia: isReplay,
     description: event.metadata.title,

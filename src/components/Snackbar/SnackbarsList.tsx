@@ -41,7 +41,7 @@ export const SnackbarsList = () => {
               <Snackbar
                 title={snackbar.title}
                 content={snackbar.content}
-                image={snackbar.image}
+                pictureConfig={snackbar.pictureConfig}
                 onClose={() => closeSnackbar(snackbar.id)}
                 setShowDraggingOverlay={setShowDraggingOverlay}
                 ref={(ref) => {

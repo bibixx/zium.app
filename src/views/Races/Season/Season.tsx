@@ -11,7 +11,6 @@ import { formatRaceName } from "../../../utils/text";
 import { RaceDetails } from "../RaceDetails/RaceDetails";
 import { useHotkeys } from "../../../hooks/useHotkeys/useHotkeys";
 import { SHORTCUTS } from "../../../hooks/useHotkeys/useHotkeys.keys";
-import { stripNullables } from "../../../utils/mapAndStrip";
 import styles from "./Season.module.scss";
 
 interface SelectedRaceEvent {
@@ -89,8 +88,7 @@ export const Season = ({ season, ziumOffsetsInfo }: SeasonProps) => {
         {season.data.map(
           ({
             id,
-            pictureUrl,
-            pictureLandscapeUrl,
+            pictureId,
             countryName,
             startDate,
             endDate,
@@ -117,7 +115,7 @@ export const Season = ({ season, ziumOffsetsInfo }: SeasonProps) => {
               <EventCard
                 key={id ?? contentId}
                 {...props}
-                imgSrcList={stripNullables([pictureLandscapeUrl, pictureUrl])}
+                pictureConfig={{ id: pictureId, variants: ["landscape_web"] }}
                 countryName={countryName}
                 displayDate={formatDateDayShortMonthRange(startDate, endDate)}
                 caption={`Round ${roundNumber}`}

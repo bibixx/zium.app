@@ -6,6 +6,7 @@ import { uniqueById } from "../../utils/uniqueById";
 import { isNotNullable } from "../../utils/isNotNullable";
 import { validateArray } from "../../utils/validators";
 import { isGrandPrixTitle, isPreSeasonTestingTitle } from "../../constants/races";
+import { PictureId } from "../useFormulaImage/useFormulaImage";
 import { RaceData } from "./useRacesList.types";
 import { bodyRootValidator, containersValidator, raceValidator } from "./useRacesList.validator";
 
@@ -43,10 +44,7 @@ export const fetchRacesList = async (seasonId: SupportedSeasons, signal: AbortSi
     .map((racePage): RaceData | null => {
       const racePageId = racePage.metadata.emfAttributes.PageID == null ? null : racePage.metadata.emfAttributes.PageID;
       const title = racePage.metadata.emfAttributes.Global_Meeting_Name;
-      const pictureUrl = racePage.metadata.pictureUrl;
-      const pictureLandscapeUrl = racePage.metadata.pictureUrl.includes("portrait_web")
-        ? racePage.metadata.pictureUrl.replace("portrait_web", "landscape_web")
-        : undefined;
+      const pictureId = PictureId.parse(racePage.metadata.pictureUrl);
       const countryName = racePage.metadata.emfAttributes.Meeting_Country_Name;
       const { startDate, endDate } = getDates(racePage);
       const rawRoundNumber = racePage.metadata.emfAttributes.Championship_Meeting_Ordinal;
@@ -66,8 +64,7 @@ export const fetchRacesList = async (seasonId: SupportedSeasons, signal: AbortSi
         contentId,
         id: racePageId,
         title,
-        pictureUrl,
-        pictureLandscapeUrl,
+        pictureId,
         countryName,
         startDate,
         endDate,

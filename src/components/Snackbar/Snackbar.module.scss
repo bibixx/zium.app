@@ -153,11 +153,11 @@
 }
 
 .image {
-  width: calc(100% + 8px);
-  height: 200px;
-  margin: -4px;
-  margin-bottom: 0;
   user-select: none;
   object-fit: cover;
   pointer-events: none;
+  width: 360px;
+  height: 200px;
+  margin: -4px;
+  margin-bottom: 0;
 }

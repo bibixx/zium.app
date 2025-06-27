@@ -8,7 +8,7 @@ import { useSnackbars } from "../Snackbar/SnackbarsList.hooks";
 import { useFeatureFlags } from "../../hooks/useFeatureFlags/useFeatureFlags";
 import { storeLocalStorageClient } from "../../views/Viewer/hooks/useViewerState/useViewerState.utils";
 import { getNewEventSnackbarData } from "../../views/Viewer/hooks/useNotifyAboutNewEvent/useNotifyAboutNewEvent.utils";
-import { useFormulaImage } from "../../hooks/useFormulaImage/useFormulaImage";
+import { PictureConfig, PictureId } from "../../hooks/useFormulaImage/useFormulaImage";
 import { SHORTCUTS } from "../../hooks/useHotkeys/useHotkeys.keys";
 import { useHotkeys } from "../../hooks/useHotkeys/useHotkeys";
 import { Checkbox } from "../Checkbox/Checkbox";
@@ -66,9 +66,10 @@ const DebugPanelContents = (props: DebugPanelContentsProps) => {
   );
 };
 
+const debugPictureId = PictureId.parse("1000009056-c5aa10c6-c5b7-4cb6-b122-201cbb5b4dc0");
+const debugPictureConfig: PictureConfig = { id: debugPictureId, variants: ["landscape_hero_web", "landscape_web"] };
 const DebugSnackbars = () => {
   const { openSnackbar, closeSnackbar } = useSnackbars();
-  const pictureUrl = useFormulaImage("1000007241-9dda9a2d-b17d-4b87-9432-3cab3171889e/landscape_hero_web", 360, 200);
 
   return (
     <div className={styles.section}>
@@ -89,7 +90,9 @@ const DebugSnackbars = () => {
           variant="Secondary"
           onClick={() => {
             const id = openSnackbar(
-              getNewEventSnackbarData("Weekend Warm-Up — Austria", "1000007241", pictureUrl, () => closeSnackbar(id)),
+              getNewEventSnackbarData("Weekend Warm-Up — Austria", "1000007241", debugPictureConfig, () =>
+                closeSnackbar(id),
+              ),
             );
           }}
         >

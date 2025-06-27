@@ -1,10 +1,10 @@
 import { useMemo } from "react";
+import { z } from "zod";
 import { addQueryParams } from "../../utils/addQueryParams";
 import { useDevicePixelRatio } from "../useDevicePixelRatio/useDevicePixelRatio";
+import { useImage } from "../useImage/useImage";
 
-function getUrl(id: string, width: number, height: number, devicePixelRatio: number) {
-  const url = id.startsWith("https://") ? id : `https://f1tv.formula1.com/image-resizer/image/${id}`;
-
+function getUrl(url: string, width: number, height: number, devicePixelRatio: number) {
   return addQueryParams(url, {
     w: width * devicePixelRatio,
     h: height * devicePixelRatio,
@@ -13,16 +13,34 @@ function getUrl(id: string, width: number, height: number, devicePixelRatio: num
   });
 }
 
-export const useFormulaImage = (id: string, width: number, height: number) => {
-  const devicePixelRatio = useDevicePixelRatio();
+export const PictureId = z
+  .string()
+  .transform((v) => v.split("/").at(0))
+  .brand("PictureId");
+export type PictureId = z.infer<typeof PictureId>;
 
-  return useMemo(() => getUrl(id, width, height, devicePixelRatio), [devicePixelRatio, height, id, width]);
+export const PictureUrl = z.string().url().brand("PictureUrl");
+export type PictureUrl = z.infer<typeof PictureUrl>;
+
+type PictureVariant = "landscape_hero_web" | "landscape_web" | "portrait_web" | "portrait_hero_web";
+export type PictureConfig = {
+  id: PictureId;
+  variants: PictureVariant[];
 };
 
-export const useFormulaImages = (ids: string[], width: number, height: number) => {
+export const useFormulaImage = (config: PictureConfig | undefined, width: number, height: number) => {
   const devicePixelRatio = useDevicePixelRatio();
 
-  return useMemo(() => {
-    return ids.map((id) => getUrl(id, width, height, devicePixelRatio));
-  }, [devicePixelRatio, height, ids, width]);
+  const fullImgSrcList = useMemo(() => {
+    return (
+      config?.variants.map((variant) => {
+        const baseUrl = `https://f1tv.formula1.com/image-resizer/image/${config.id}/${variant}}`;
+        return getUrl(baseUrl, width, height, devicePixelRatio);
+      }) ?? []
+    );
+  }, [config, devicePixelRatio, height, width]);
+
+  const src = useImage(fullImgSrcList);
+
+  return src;
 };

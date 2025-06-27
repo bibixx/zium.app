@@ -1,6 +1,7 @@
 import { createRef, MutableRefObject, ReactNode, useMemo } from "react";
 import { create } from "zustand";
 import { generateUID } from "../../utils/generateUID";
+import { PictureConfig } from "../../hooks/useFormulaImage/useFormulaImage";
 
 export interface SnackbarData {
   id: string;
@@ -8,7 +9,7 @@ export interface SnackbarData {
   content?: ReactNode;
   actions?: ReactNode;
   time?: number;
-  image?: string;
+  pictureConfig?: PictureConfig;
   nodeRef: MutableRefObject<HTMLElement | undefined>;
 }
 

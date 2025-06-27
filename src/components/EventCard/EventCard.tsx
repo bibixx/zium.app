@@ -1,15 +1,15 @@
 import { useState } from "react";
-import { useImage } from "react-image";
 import cn from "classnames";
+import { useInView } from "react-intersection-observer";
 import { withAs } from "../../utils/withAs";
 import { CountryImage } from "../CountryImage/CountryImage";
 import { WithVariables } from "../WithVariables/WithVariables";
-import { useFormulaImages } from "../../hooks/useFormulaImage/useFormulaImage";
+import { PictureConfig, useFormulaImage } from "../../hooks/useFormulaImage/useFormulaImage";
 import { useImageLoadState } from "../../hooks/useImageLoadedState/useImageLoadedState";
 import styles from "./EventCard.module.scss";
 
 interface EventCardProps {
-  imgSrcList: string[];
+  pictureConfig: PictureConfig;
   countryName: string;
   countryId?: string;
   displayDate: string;
@@ -17,14 +17,11 @@ interface EventCardProps {
   description?: string;
 }
 export const EventCard = withAs("button")<EventCardProps>((
-  { as: Component, imgSrcList, countryName, countryId, displayDate, caption, description, ...props },
+  { as: Component, pictureConfig, countryName, countryId, displayDate, caption, description, ...props },
   ref,
 ) => {
-  const fullImgSrcList = useFormulaImages(imgSrcList, 400, 195);
-  const { src } = useImage({
-    srcList: fullImgSrcList,
-    useSuspense: false,
-  });
+  const [inViewRef, inView] = useInView({ triggerOnce: true, rootMargin: "50% 0px" });
+  const src = useFormulaImage(inView ? pictureConfig : undefined, 400, 195);
   const { imgProps, loadingState } = useImageLoadState(src);
 
   const [cursorPosition, setCursorPosition] = useState<{ x: number | undefined; y: number | undefined }>({
@@ -55,6 +52,7 @@ export const EventCard = withAs("button")<EventCardProps>((
           y: undefined,
         });
       }}
+      ref={inViewRef}
     >
       <Component className={styles.wrapper} {...props} ref={ref}>
         <div className={cn(styles.heroImageWrapper, { [styles.isLoaded]: loadingState === "loaded" })}>

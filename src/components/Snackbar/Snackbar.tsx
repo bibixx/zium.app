@@ -4,6 +4,8 @@ import { forwardRef, ReactNode, useCallback, useRef, useState } from "react";
 import { Button } from "../Button/Button";
 import { WithVariables } from "../WithVariables/WithVariables";
 import { useElementSize } from "../../hooks/useElementSize/useElementSize";
+import { PictureConfig, useFormulaImage } from "../../hooks/useFormulaImage/useFormulaImage";
+import { FadeInImage } from "../FadeInImage/FadeInImage";
 import { useSnackbarDrag, useSnackbarTime } from "./Snackbar.hooks";
 import styles from "./Snackbar.module.scss";
 
@@ -12,7 +14,7 @@ interface SnackbarProps {
   title: ReactNode;
   content?: ReactNode;
   actions?: ReactNode;
-  image?: string;
+  pictureConfig?: PictureConfig;
   time?: number;
   offsetY: number;
   onClose: () => void;
@@ -28,7 +30,7 @@ export const Snackbar = forwardRef<HTMLDivElement | null, SnackbarProps>(
       actions,
       offsetY,
       time = DEFAULT_SNACKBAR_TIME,
-      image,
+      pictureConfig,
       onClose,
       setShowDraggingOverlay,
       onHeightChange,
@@ -59,6 +61,7 @@ export const Snackbar = forwardRef<HTMLDivElement | null, SnackbarProps>(
     });
 
     useElementSize(onHeightChange, wrapperRef);
+    const imageSrc = useFormulaImage(pictureConfig, 360, 200);
 
     return (
       <>
@@ -76,7 +79,7 @@ export const Snackbar = forwardRef<HTMLDivElement | null, SnackbarProps>(
             data-css-transition
           >
             <div className={styles.mainWrapper}>
-              {image && <img alt="" src={image} className={styles.image} />}
+              {pictureConfig && <FadeInImage src={imageSrc} className={cn(styles.image)} />}
               <div className={styles.textContentWrapper}>
                 <div className={cn(styles.content)}>
                   <div className={styles.title}>{title}</div>

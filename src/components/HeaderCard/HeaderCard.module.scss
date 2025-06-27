@@ -118,24 +118,11 @@
   object-fit: cover;
   right: 0;
   pointer-events: none;
-  transition: var(--transition-medium);
-  transition-property: opacity;
 
   &:not(.isLive) {
     filter: grayscale(1);
     opacity: 0.5;
   }
-
-  &:not(.isLoaded) {
-    opacity: 0;
-  }
-}
-
-.imageTrimAdjustment {
-  position: absolute;
-  left: 0;
-  right: -30%;
-  height: 100%;
 }
 
 .imageBlur {

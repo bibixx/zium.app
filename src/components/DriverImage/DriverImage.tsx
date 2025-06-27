@@ -1,5 +1,6 @@
 import classNames from "classnames";
-import { useImage } from "react-image";
+import { FadeInImage } from "../FadeInImage/FadeInImage";
+import { useImage } from "../../hooks/useImage/useImage";
 import styles from "./DriverImage.module.scss";
 
 interface DriverImageProps {
@@ -7,17 +8,7 @@ interface DriverImageProps {
   className?: string;
 }
 export const DriverImage = ({ srcList, className }: DriverImageProps) => {
-  const { src, isLoading } = useImage({
-    srcList,
-    useSuspense: false,
-  });
+  const src = useImage(srcList);
 
-  return (
-    <img
-      src={src}
-      alt=""
-      draggable={false}
-      className={classNames(styles.image, { [styles.isLoading]: isLoading }, className)}
-    />
-  );
+  return <FadeInImage src={src} className={classNames(styles.image, className)} />;
 };

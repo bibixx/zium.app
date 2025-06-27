@@ -35,7 +35,8 @@ export const useNotifyAboutNewEvent = (currentRaceId: string) => {
       ? formatRaceName(latestEvent.description, false)
       : fixEmDashes(toTitleCase(latestEvent.description));
 
-    const url = addQueryParams(`https://f1tv.formula1.com/image-resizer/image/${latestEvent.pictureUrl}`, {
+    // TODO: add image
+    const url = addQueryParams(`https://f1tv.formula1.com/image-resizer/image/${latestEvent.pictureId}`, {
       w: 360 * devicePixelRatio,
       h: 200 * devicePixelRatio,
       q: "HI",

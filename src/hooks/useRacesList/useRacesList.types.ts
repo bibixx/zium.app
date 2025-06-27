@@ -1,13 +1,13 @@
 import { EventGenre } from "../../constants/races";
 import { SupportedSeasons } from "../../constants/seasons";
 import { Response } from "../../types/Response";
+import { PictureId } from "../useFormulaImage/useFormulaImage";
 
 export interface RaceData {
   contentId: number;
   title: string;
   id: string | null;
-  pictureUrl: string;
-  pictureLandscapeUrl?: string;
+  pictureId: PictureId;
   countryName: string;
   startDate: Date;
   endDate: Date;

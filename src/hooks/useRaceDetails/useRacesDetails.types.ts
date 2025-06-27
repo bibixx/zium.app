@@ -1,11 +1,11 @@
 import { EventGenre } from "../../constants/races";
 import { Response, ResponseAction } from "../../types/Response";
+import { PictureId } from "../useFormulaImage/useFormulaImage";
 
 export interface RaceDetailsData {
   title: string;
   id: string;
-  pictureUrl: string;
-  pictureLandscapeUrl?: string;
+  pictureId: PictureId;
   isLive: boolean;
   hasMedia: boolean;
   description: string;

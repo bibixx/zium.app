@@ -4,6 +4,7 @@ import { uniqueById } from "../../utils/uniqueById";
 import { validateArray } from "../../utils/validators";
 import { RaceData } from "../useRacesList/useRacesList.types";
 import { mapAndStripNullable } from "../../utils/mapAndStrip";
+import { PictureId } from "../useFormulaImage/useFormulaImage";
 import { bodyRootValidator, containerValidator } from "./useLiveEvents.validator";
 
 export const fetchLiveEvents = async (signal: AbortSignal): Promise<RaceData[]> => {
@@ -19,15 +20,15 @@ export const fetchLiveEvents = async (signal: AbortSignal): Promise<RaceData[]> 
   const uniqueContainers = uniqueById(containers);
 
   const liveEvents: RaceData[] = mapAndStripNullable(uniqueContainers, (racePage) => {
-    if (racePage.metadata.contentSubtype !== "LIVE") {
-      return null;
-    }
+    // if (racePage.metadata.contentSubtype !== "LIVE") {
+    //   return null;
+    // }
 
     const genre = racePage.metadata.genres[0];
 
     const racePageId = String(racePage.metadata.contentId);
     const title = racePage.metadata.shortDescription;
-    const pictureUrl = racePage.metadata.pictureUrl;
+    const pictureId = PictureId.parse(racePage.metadata.pictureUrl);
     const countryName = racePage.metadata.emfAttributes.Meeting_Country_Name;
     const startDate = new Date(
       racePage.metadata.emfAttributes.Meeting_Start_Date || racePage.metadata.emfAttributes.sessionStartDate,
@@ -45,7 +46,7 @@ export const fetchLiveEvents = async (signal: AbortSignal): Promise<RaceData[]> 
       id: racePageId,
       contentId,
       title,
-      pictureUrl,
+      pictureId,
       countryName,
       startDate,
       endDate,

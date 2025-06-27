@@ -2,11 +2,12 @@ import { Link } from "react-router-dom";
 import { ArgumentSnackbarData } from "../../../../components/Snackbar/SnackbarsList.hooks";
 import { Button } from "../../../../components/Button/Button";
 import { isOpenInNewWindowLinkClick } from "../../../../utils/isOpenInNewWindowLinkClick";
+import { PictureConfig } from "../../../../hooks/useFormulaImage/useFormulaImage";
 
 export const getNewEventSnackbarData = (
   title: string,
   latestEventId: string | null,
-  pictureUrl: string,
+  pictureConfig: PictureConfig,
   closeSnackbar: () => void,
 ): ArgumentSnackbarData => {
   const onWatchClick = (e: React.MouseEvent) => {
@@ -18,7 +19,7 @@ export const getNewEventSnackbarData = (
   return {
     title: "Now LIVE",
     content: `Tune in to watch the ${title}`,
-    image: pictureUrl,
+    pictureConfig,
     actions: (
       <>
         <Button variant="Secondary" size="Action" fluid onClick={closeSnackbar}>

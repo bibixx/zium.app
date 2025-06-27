@@ -1,0 +1,9 @@
+.image {
+  transition: var(--transition-medium);
+  transition-property: opacity;
+  opacity: 0;
+
+  &.isLoaded {
+    opacity: 1;
+  }
+}
