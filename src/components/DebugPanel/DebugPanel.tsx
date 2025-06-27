@@ -67,7 +67,7 @@ const DebugPanelContents = (props: DebugPanelContentsProps) => {
 };
 
 const debugPictureId = PictureId.parse("1000009056-c5aa10c6-c5b7-4cb6-b122-201cbb5b4dc0");
-const debugPictureConfig: PictureConfig = { id: debugPictureId, variants: ["landscape_hero_web", "landscape_web"] };
+const debugPictureConfig: PictureConfig = { id: debugPictureId, variants: ["landscape_web", "landscape_hero_web"] };
 const DebugSnackbars = () => {
   const { openSnackbar, closeSnackbar } = useSnackbars();
 

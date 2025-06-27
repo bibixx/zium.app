@@ -67,6 +67,7 @@ const HeaderCard = ({ raceDetails, activeAlarms }: HeaderCardProps) => {
   }, [raceDetails.hasMedia, isLive]);
 
   const canRemindFifteenMinutesBefore = differenceInMinutes(raceDetails.startDate, new Date()) >= 15;
+  const fallbackImage = `${window.location.origin}/android-chrome-512x512.png`;
 
   return (
     <Wrapper raceDetails={raceDetails} variant={variant}>
@@ -111,8 +112,7 @@ const HeaderCard = ({ raceDetails, activeAlarms }: HeaderCardProps) => {
                       ? sub(raceDetails.startDate, { minutes: 15 }).getTime()
                       : raceDetails.startDate.getTime(),
                     eventName: description,
-                    // TODO: add image
-                    image: src || raceDetails.pictureId,
+                    image: src ?? fallbackImage,
                   });
                 }
               }}

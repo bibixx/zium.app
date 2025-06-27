@@ -20,9 +20,9 @@ export const fetchLiveEvents = async (signal: AbortSignal): Promise<RaceData[]> 
   const uniqueContainers = uniqueById(containers);
 
   const liveEvents: RaceData[] = mapAndStripNullable(uniqueContainers, (racePage) => {
-    // if (racePage.metadata.contentSubtype !== "LIVE") {
-    //   return null;
-    // }
+    if (racePage.metadata.contentSubtype !== "LIVE") {
+      return null;
+    }
 
     const genre = racePage.metadata.genres[0];
 

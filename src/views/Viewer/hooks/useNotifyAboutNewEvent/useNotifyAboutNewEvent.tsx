@@ -6,8 +6,8 @@ import { isRaceGenre } from "../../../../constants/races";
 import { fixEmDashes, formatRaceName, toTitleCase } from "../../../../utils/text";
 import { useCloseAllSnackbarsOnUnmount } from "../../../../hooks/useCloseAllSnackbarsOnUnmount/useCloseAllSnackbarsOnUnmount";
 import { useDevicePixelRatio } from "../../../../hooks/useDevicePixelRatio/useDevicePixelRatio";
-import { addQueryParams } from "../../../../utils/addQueryParams";
 import { useFeatureFlags } from "../../../../hooks/useFeatureFlags/useFeatureFlags";
+import { PictureConfig } from "../../../../hooks/useFormulaImage/useFormulaImage";
 import { getNewEventSnackbarData } from "./useNotifyAboutNewEvent.utils";
 
 export const useNotifyAboutNewEvent = (currentRaceId: string) => {
@@ -35,15 +35,13 @@ export const useNotifyAboutNewEvent = (currentRaceId: string) => {
       ? formatRaceName(latestEvent.description, false)
       : fixEmDashes(toTitleCase(latestEvent.description));
 
-    // TODO: add image
-    const url = addQueryParams(`https://f1tv.formula1.com/image-resizer/image/${latestEvent.pictureId}`, {
-      w: 360 * devicePixelRatio,
-      h: 200 * devicePixelRatio,
-      q: "HI",
-      o: "L",
-    });
-
-    const id = openSnackbar(getNewEventSnackbarData(eventDescription, latestEvent.id, url, () => closeSnackbar(id)));
+    const pictureConfig: PictureConfig = {
+      id: latestEvent.pictureId,
+      variants: ["landscape_web", "landscape_hero_web"],
+    };
+    const id = openSnackbar(
+      getNewEventSnackbarData(eventDescription, latestEvent.id, pictureConfig, () => closeSnackbar(id)),
+    );
     registerSnackbarForUnmount(id);
   }, [
     closeSnackbar,
