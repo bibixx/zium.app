@@ -27,5 +27,5 @@ jobs:
 
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          commit_message: "Update theme/*.scss after update of light.json/dark.json from Figma"
-          file_pattern: "src/styles/theme/*.scss"
+          commit_message: "Update theme/*.css after update of light.json/dark.json from Figma"
+          file_pattern: "src/styles/theme/*.css"
