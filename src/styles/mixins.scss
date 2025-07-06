@@ -1,3 +1,4 @@
+/* stylelint-disable csstools/value-no-unknown-custom-properties */
 @mixin typography($style, $size, $weight: __default__) {
   $prefix: #{$style}-#{$size};
 
@@ -16,6 +17,7 @@
   text-transform: var(--typography-text-styles-#{$prefix}-text-case);
   letter-spacing: var(--typography-text-styles-#{$prefix}-letter-spacing);
 }
+/* stylelint-enable csstools/value-no-unknown-custom-properties */
 
 @mixin inner-border($color, $size: 1px, $element: after) {
   position: relative;

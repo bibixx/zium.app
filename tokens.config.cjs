@@ -11,7 +11,7 @@ module.exports = {
       transformGroup: "css",
       files: [
         {
-          destination: `src/styles/theme/${styleDictionaryMode}.scss`,
+          destination: `src/styles/theme/${styleDictionaryMode}.css`,
           format: "css/variables",
         },
       ],

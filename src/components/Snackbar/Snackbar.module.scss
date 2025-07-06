@@ -53,6 +53,7 @@
 }
 
 .offsetWrapper {
+  /* stylelint-disable-next-line csstools/value-no-unknown-custom-properties */
   transform: translateY(var(--offset-y));
   transition: var(--transition-slow);
   transition-property: transform;

@@ -1,5 +1,5 @@
 import "./generalSans.scss";
-import "./theme/dark.scss";
-import "./theme/light.scss";
-import "./variables.scss";
+import "./theme/dark.css";
+import "./theme/light.css";
+import "./variables.css";
 import "./global.scss";

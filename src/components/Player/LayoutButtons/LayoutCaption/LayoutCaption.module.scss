@@ -15,6 +15,7 @@
   transition-property: opacity;
 
   display: inline-block;
+  /* stylelint-disable-next-line csstools/value-no-unknown-custom-properties */
   min-width: var(--captionWidth);
   text-align: right;
 }
@@ -27,7 +28,9 @@
   transform: translateY(-50%);
   right: 0;
 
+  /* stylelint-disable-next-line csstools/value-no-unknown-custom-properties */
   -webkit-mask-image: linear-gradient(to left, transparent 0px, transparent var(--captionWidth), black 100%);
+  /* stylelint-disable-next-line csstools/value-no-unknown-custom-properties */
   mask-image: linear-gradient(to left, transparent 0px, transparent var(--captionWidth), black 100%);
 }
 

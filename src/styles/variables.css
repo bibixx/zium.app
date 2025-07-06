@@ -28,7 +28,7 @@
 
 :root {
   --heading-margin-bottom: 64px;
-  --header-height: 0px; // <- defined in Races.tsx
+  --header-height: 0px;
 
   --season-header-height: 44px;
   --season-header-margin: 24px;

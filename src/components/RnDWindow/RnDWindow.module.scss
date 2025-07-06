@@ -6,6 +6,7 @@
 
 .rndWrapper {
   position: absolute;
+  /* stylelint-disable-next-line csstools/value-no-unknown-custom-properties */
   z-index: var(--zIndex);
   cursor: grab;
   overflow: hidden;
@@ -79,7 +80,7 @@
     &.rndHandleE,
     &.rndHandleW,
     &.rndHandleS {
-      background: var(--color-text-accent);
+      background: var(--color-content-accent);
     }
 
     &.rndHandleNw,

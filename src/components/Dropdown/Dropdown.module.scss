@@ -7,6 +7,7 @@
   flex-direction: column;
   gap: 4px;
   padding: 8px;
+  /* stylelint-disable-next-line csstools/value-no-unknown-custom-properties */
   width: calc(var(--width) * 1px);
   background: var(--color-background-static-default);
   @extend .pos-3dp;

@@ -9,6 +9,7 @@
   border-radius: var(--radii-large);
   z-index: var(--z-index-overlay);
   overflow: auto;
+  /* stylelint-disable-next-line csstools/value-no-unknown-custom-properties */
   width: var(--width);
   opacity: 1;
   visibility: visible;

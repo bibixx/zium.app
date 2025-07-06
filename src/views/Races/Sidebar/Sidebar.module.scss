@@ -25,6 +25,7 @@
 .carrot {
   position: absolute;
   top: 0;
+  /* stylelint-disable-next-line csstools/value-no-unknown-custom-properties */
   transform: translateY(calc(-6px + var(--i) * 100%));
   left: -24px;
   height: 52px;

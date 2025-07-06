@@ -72,6 +72,7 @@
 }
 
 .hoverPositionWrapper {
+  /* stylelint-disable-next-line csstools/value-no-unknown-custom-properties */
   transform: perspective(1000px) rotateX(calc(var(--y-pos) * -2deg)) rotateY(calc(var(--x-pos) * 2deg));
 }
 
