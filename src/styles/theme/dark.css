@@ -1,6 +1,6 @@
 /**
  * Do not edit directly
- * Generated on Sun, 06 Jul 2025 16:48:45 GMT
+ * Generated on Sun, 06 Jul 2025 16:52:34 GMT
  */
 
 :root {
@@ -286,54 +286,54 @@
   --motion-timing-fast: 300ms;
   --motion-timing-medium: 400ms;
   --motion-timing-slow: 600ms;
-  --motion-function: 0, 0.67, 0.2, 1;
+  --motion-function: 0,0.67,0.2,1;
   --elevation-neg-1dp-0-x: 0px;
   --elevation-neg-1dp-0-y: 0px;
   --elevation-neg-1dp-0-blur: 0px;
   --elevation-neg-1dp-0-spread: 1px;
-  --elevation-neg-1dp-0-color: #05051a2e;
+  --elevation-neg-1dp-0-color: #05051A2E;
   --elevation-neg-1dp-0-type: innerShadow;
   --elevation-neg-1dp-1-x: 0px;
   --elevation-neg-1dp-1-y: -1px;
   --elevation-neg-1dp-1-blur: 0.5px;
   --elevation-neg-1dp-1-spread: 0px;
-  --elevation-neg-1dp-1-color: #e7e7fe21;
+  --elevation-neg-1dp-1-color: #E7E7FE21;
   --elevation-neg-1dp-1-type: innerShadow;
   --elevation-1dp-0-x: 0px;
   --elevation-1dp-0-y: 0px;
   --elevation-1dp-0-blur: 0px;
   --elevation-1dp-0-spread: 1px;
-  --elevation-1dp-0-color: #d3d3e917;
+  --elevation-1dp-0-color: #D3D3E917;
   --elevation-1dp-0-type: innerShadow;
   --elevation-1dp-1-x: 0px;
   --elevation-1dp-1-y: 1px;
   --elevation-1dp-1-blur: 0.5px;
   --elevation-1dp-1-spread: 0px;
-  --elevation-1dp-1-color: #e7e7fe21;
+  --elevation-1dp-1-color: #E7E7FE21;
   --elevation-1dp-1-type: innerShadow;
   --elevation-1dp-2-x: 0px;
   --elevation-1dp-2-y: 2px;
   --elevation-1dp-2-blur: 4px;
   --elevation-1dp-2-spread: -2px;
-  --elevation-1dp-2-color: #04040b8a;
+  --elevation-1dp-2-color: #04040B8A;
   --elevation-1dp-2-type: dropShadow;
   --elevation-2dp-0-x: 0px;
   --elevation-2dp-0-y: 0px;
   --elevation-2dp-0-blur: 0px;
   --elevation-2dp-0-spread: 1px;
-  --elevation-2dp-0-color: #d3d3e917;
+  --elevation-2dp-0-color: #D3D3E917;
   --elevation-2dp-0-type: innerShadow;
   --elevation-2dp-1-x: 0px;
   --elevation-2dp-1-y: 1px;
   --elevation-2dp-1-blur: 1px;
   --elevation-2dp-1-spread: 0px;
-  --elevation-2dp-1-color: #ededfc3b;
+  --elevation-2dp-1-color: #EDEDFC3B;
   --elevation-2dp-1-type: innerShadow;
   --elevation-2dp-2-x: 0px;
   --elevation-2dp-2-y: 8px;
   --elevation-2dp-2-blur: 16px;
   --elevation-2dp-2-spread: -2px;
-  --elevation-2dp-2-color: #04040b8a;
+  --elevation-2dp-2-color: #04040B8A;
   --elevation-2dp-2-type: dropShadow;
   --elevation-2dp-3-x: 0px;
   --elevation-2dp-3-y: 0;
@@ -345,19 +345,19 @@
   --elevation-3dp-0-y: 0px;
   --elevation-3dp-0-blur: 0px;
   --elevation-3dp-0-spread: 1px;
-  --elevation-3dp-0-color: #d3d3e917;
+  --elevation-3dp-0-color: #D3D3E917;
   --elevation-3dp-0-type: innerShadow;
   --elevation-3dp-1-x: 0px;
   --elevation-3dp-1-y: 1px;
   --elevation-3dp-1-blur: 1px;
   --elevation-3dp-1-spread: 0px;
-  --elevation-3dp-1-color: #ededfc3b;
+  --elevation-3dp-1-color: #EDEDFC3B;
   --elevation-3dp-1-type: innerShadow;
   --elevation-3dp-2-x: 0px;
   --elevation-3dp-2-y: 24px;
   --elevation-3dp-2-blur: 32px;
   --elevation-3dp-2-spread: -4px;
-  --elevation-3dp-2-color: #04040b8a;
+  --elevation-3dp-2-color: #04040B8A;
   --elevation-3dp-2-type: dropShadow;
   --elevation-3dp-3-x: 0px;
   --elevation-3dp-3-y: 0px;
