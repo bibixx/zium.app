@@ -29,6 +29,11 @@ export const fetchVideoStream = async (playbackUrl: string, signal: AbortSignal)
     return { videoUrl: parsedBody.resultObj.url, streamType: "HLS" };
   }
 
+  const isUrlM3u8 = parsedBody.resultObj.url.endsWith(".m3u8");
+  if (isUrlM3u8) {
+    return { videoUrl: parsedBody.resultObj.url, streamType: "HLS" };
+  }
+
   return {
     videoUrl: parsedBody.resultObj.url,
     laURL: parsedBody.resultObj.laURL,

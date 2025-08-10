@@ -2,6 +2,7 @@ import { z } from "zod";
 import { fetchJSON } from "../../utils/api";
 import { validateArray } from "../../utils/validators";
 import {
+  StreamData,
   streamDataValidator,
   videoRaceStreamsContainerValidator,
   videoRaceStreamsRootBodyValidator,
@@ -17,10 +18,7 @@ export const fetchRaceStreams = async (raceId: string, signal: AbortSignal) => {
     [] as z.output<typeof videoRaceStreamsContainerValidator>[],
   );
 
-  const streams = container.metadata.additionalStreams?.reduce(
-    validateArray(streamDataValidator),
-    [] as z.output<typeof streamDataValidator>[],
-  );
+  const streams = container.metadata.additionalStreams?.reduce<StreamData[]>(validateArray(streamDataValidator), []);
   const season = container.metadata.season;
   const isLive = container.metadata.contentSubtype === "LIVE";
   const countryName = container.metadata.emfAttributes.Meeting_Country_Name;
