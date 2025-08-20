@@ -2,7 +2,7 @@ import cn from "classnames";
 import { ReactNode, useEffect, useMemo, useRef } from "react";
 import { createPortal } from "react-dom";
 import { CSSTransition } from "react-transition-group";
-import FocusTrap from "focus-trap-react";
+import { FocusTrap } from "focus-trap-react";
 import { XMarkIcon } from "@heroicons/react/20/solid";
 import { OVERLAYS_PORTAL_ID } from "../../constants/portals";
 import { Button } from "../Button/Button";

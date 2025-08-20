@@ -1,5 +1,5 @@
 import { Placement } from "@popperjs/core";
-import FocusTrap from "focus-trap-react";
+import { FocusTrap } from "focus-trap-react";
 import { Fragment, ReactNode, useMemo, useRef } from "react";
 import { createPortal } from "react-dom";
 import { usePopper } from "react-popper";
