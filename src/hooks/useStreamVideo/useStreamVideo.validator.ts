@@ -5,5 +5,6 @@ export const streamVideoBodyValidator = z.object({
     streamType: z.string(),
     url: z.string(),
     laURL: z.string().optional(),
+    entitlementToken: z.string().optional(),
   }),
 });

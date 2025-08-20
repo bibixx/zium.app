@@ -27,9 +27,15 @@ export interface StreamsStateData {
 export type StreamsState = Response<StreamsStateData>;
 export type StreamsStateAction = ResponseAction<StreamsStateData>;
 
+export interface PlaybackUrl {
+  url: string;
+  needsFetching: boolean;
+  isDebug?: boolean;
+}
+
 export interface BaseStreamInfo {
   channelId: number;
-  playbackUrl: string;
+  playbackUrl: PlaybackUrl;
   title: string;
   identifier: string;
 }

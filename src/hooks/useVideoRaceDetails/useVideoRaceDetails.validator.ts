@@ -51,9 +51,26 @@ export const videoRaceStreamsContainerValidator = z.object({
     genres: eventGenresValidator.array(),
     entitlement: entitlementValidator,
     additionalStreams: z.unknown().array().optional(),
+    videoType: z.string().optional(),
     emfAttributes: z.object({
       Meeting_Country_Name: z.string(),
       MeetingCountryKey: z.string(),
     }),
   }),
+});
+
+export const contentPlayValidator = z.object({
+  resultObj: z.object({
+    url: z.string(),
+    entitlementToken: z.string(),
+  }),
+});
+
+export const tmeManifestValidator = z.object({
+  feeds: z.array(
+    z.object({
+      metadata: z.object({ channel_id: z.number() }),
+      url: z.string(),
+    }),
+  ),
 });

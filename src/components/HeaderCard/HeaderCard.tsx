@@ -12,14 +12,19 @@ import { Button } from "../Button/Button";
 import { CountryImage } from "../CountryImage/CountryImage";
 import { EventCardTag } from "../EventCardTag/EventCardTag";
 import { HeaderCardDataState } from "../../hooks/useHeaderCardData/useHeaderCardData.types";
-import { useFormulaImage } from "../../hooks/useFormulaImage/useFormulaImage";
+import { PictureId, useFormulaImage } from "../../hooks/useFormulaImage/useFormulaImage";
 import { FadeInImage } from "../FadeInImage/FadeInImage";
+import { stripNullables } from "../../utils/mapAndStrip";
 import styles from "./HeaderCard.module.scss";
 
 interface HeaderCardWithZeroStateProps {
   eventState: HeaderCardDataState;
+  fallbackImage?: PictureId;
 }
-export const HeaderCardWithZeroState = ({ eventState: liveEventState }: HeaderCardWithZeroStateProps) => {
+export const HeaderCardWithZeroState = ({
+  eventState: liveEventState,
+  fallbackImage,
+}: HeaderCardWithZeroStateProps) => {
   const activeAlarms = useActiveAlarms();
 
   if (liveEventState.state === "loading") {
@@ -32,7 +37,7 @@ export const HeaderCardWithZeroState = ({ eventState: liveEventState }: HeaderCa
 
   return (
     <div className={styles.marginWrapper}>
-      <HeaderCard raceDetails={liveEventState.data} activeAlarms={activeAlarms} />
+      <HeaderCard raceDetails={liveEventState.data} activeAlarms={activeAlarms} fallbackImage={fallbackImage} />
     </div>
   );
 };
@@ -40,10 +45,11 @@ export const HeaderCardWithZeroState = ({ eventState: liveEventState }: HeaderCa
 interface HeaderCardProps {
   raceDetails: RaceData;
   activeAlarms: string[];
+  fallbackImage?: PictureId;
 }
-const HeaderCard = ({ raceDetails, activeAlarms }: HeaderCardProps) => {
+const HeaderCard = ({ raceDetails, activeAlarms, fallbackImage }: HeaderCardProps) => {
   const src = useFormulaImage(
-    { id: raceDetails.pictureId, variants: ["landscape_hero_web", "landscape_web"] },
+    { id: stripNullables([raceDetails.pictureId, fallbackImage]), variants: ["landscape_hero_web", "landscape_web"] },
     1920,
     800,
   );
@@ -67,7 +73,7 @@ const HeaderCard = ({ raceDetails, activeAlarms }: HeaderCardProps) => {
   }, [raceDetails.hasMedia, isLive]);
 
   const canRemindFifteenMinutesBefore = differenceInMinutes(raceDetails.startDate, new Date()) >= 15;
-  const fallbackImage = `${window.location.origin}/android-chrome-512x512.png`;
+  const alertFallbackImage = `${window.location.origin}/android-chrome-512x512.png`;
 
   return (
     <Wrapper raceDetails={raceDetails} variant={variant}>
@@ -112,7 +118,7 @@ const HeaderCard = ({ raceDetails, activeAlarms }: HeaderCardProps) => {
                       ? sub(raceDetails.startDate, { minutes: 15 }).getTime()
                       : raceDetails.startDate.getTime(),
                     eventName: description,
-                    image: src ?? fallbackImage,
+                    image: src ?? alertFallbackImage,
                   });
                 }
               }}

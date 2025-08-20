@@ -24,7 +24,7 @@ export type PictureUrl = z.infer<typeof PictureUrl>;
 
 type PictureVariant = "landscape_hero_web" | "landscape_web" | "portrait_web" | "portrait_hero_web";
 export type PictureConfig = {
-  id: PictureId;
+  id: PictureId | PictureId[];
   variants: PictureVariant[];
 };
 
@@ -32,12 +32,20 @@ export const useFormulaImage = (config: PictureConfig | undefined, width: number
   const devicePixelRatio = useDevicePixelRatio();
 
   const fullImgSrcList = useMemo(() => {
-    return (
-      config?.variants.map((variant) => {
-        const baseUrl = `https://f1tv.formula1.com/image-resizer/image/${config.id}/${variant}}`;
-        return getUrl(baseUrl, width, height, devicePixelRatio);
-      }) ?? []
-    );
+    if (config?.id == null) {
+      return [];
+    }
+
+    const urls: string[] = [];
+    const ids = Array.isArray(config.id) ? config.id : [config.id];
+    for (const id of ids) {
+      for (const variant of config.variants) {
+        const baseUrl = `https://f1tv.formula1.com/image-resizer/image/${id}/${variant}}`;
+        urls.push(getUrl(baseUrl, width, height, devicePixelRatio));
+      }
+    }
+
+    return urls;
   }, [config, devicePixelRatio, height, width]);
 
   const src = useImage(fullImgSrcList);

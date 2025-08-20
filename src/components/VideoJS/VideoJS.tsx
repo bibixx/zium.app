@@ -206,12 +206,20 @@ function getSourceConfig(videoStreamInfo: VideoStreamInfo): SourceConfig {
     };
   }
 
+  const headers: Record<string, string> = {};
+  if (videoStreamInfo.entitlementToken != null) {
+    headers.entitlementtoken = videoStreamInfo.entitlementToken;
+  }
+
   return {
     dash: videoStreamInfo.videoUrl,
     drm: {
       widevine: {
         LA_URL: videoStreamInfo.laURL,
       },
+    },
+    options: {
+      headers,
     },
   };
 }
@@ -244,5 +252,9 @@ function setAudioTrack(player: PlayerAPI | null, selectedAudioTrackId: string | 
   }
 
   const [firstAudioTrack] = player.getAvailableAudio();
+  if (firstAudioTrack == null) {
+    return;
+  }
+
   player.setAudio(firstAudioTrack.id);
 }

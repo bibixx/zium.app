@@ -48,8 +48,10 @@ class ApiError extends Error {
 
 export const fetchJSON = async (url: string, init: RequestInit | undefined, signal: AbortSignal): Promise<unknown> => {
   let res: Response | null = null;
+
   try {
-    res = await fetch(`https://f1tv.formula1.com${url}`, {
+    const finalUrl = url.startsWith("http") ? url : `https://f1tv.formula1.com${url}`;
+    res = await fetch(finalUrl, {
       ...init,
       headers: {
         ...defaultHeaders,

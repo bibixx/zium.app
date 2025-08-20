@@ -2,7 +2,8 @@ import { useCallback, useEffect, useReducer } from "react";
 import { captureException } from "@sentry/browser";
 import { fetchRaceStreams } from "./useVideoRaceDetails.api";
 import { RaceInfo, StreamsState, StreamsStateAction } from "./useVideoRaceDetails.types";
-import { collectStreams, createF1OffsetsMap } from "./useVideoRaceDetails.utils";
+import { createF1OffsetsMap } from "./useVideoRaceDetails.utils";
+import { collectStreams } from "./collectStreams/collectStreams";
 
 export const useVideoRaceDetails = (raceId: string): StreamsState => {
   const [streams, dispatch] = useReducer(
@@ -42,7 +43,7 @@ export const useVideoRaceDetails = (raceId: string): StreamsState => {
         const { streams, season, isLive, countryId, countryName, title, playbackOffsets, genre, entitlement } =
           await fetchRaceStreams(raceId, signal);
 
-        const collectedStreams = collectStreams(streams, raceId);
+        const collectedStreams = await collectStreams(streams, raceId, signal);
         const raceInfo: RaceInfo = {
           countryId,
           countryName,
@@ -97,7 +98,7 @@ const debugLiveStreams: StreamsState & { state: "done" } = {
         {
           type: "f1live",
           channelId: 1033,
-          playbackUrl: "__DEBUG__",
+          playbackUrl: { url: "__DEBUG__", needsFetching: false, isDebug: true },
           title: "F1 Live",
           identifier: "PRES",
         },
@@ -106,7 +107,7 @@ const debugLiveStreams: StreamsState & { state: "done" } = {
         {
           type: "driver",
           channelId: 1009,
-          playbackUrl: "__DEBUG__",
+          playbackUrl: { url: "__DEBUG__", needsFetching: false, isDebug: true },
           title: "VER",
           identifier: "OBC",
           racingNumber: 1,
@@ -120,7 +121,7 @@ const debugLiveStreams: StreamsState & { state: "done" } = {
         {
           type: "driver",
           channelId: 1024,
-          playbackUrl: "__DEBUG__",
+          playbackUrl: { url: "__DEBUG__", needsFetching: false, isDebug: true },
           title: "SAR",
           identifier: "OBC",
           racingNumber: 2,
@@ -134,7 +135,7 @@ const debugLiveStreams: StreamsState & { state: "done" } = {
         {
           type: "driver",
           channelId: 1016,
-          playbackUrl: "__DEBUG__",
+          playbackUrl: { url: "__DEBUG__", needsFetching: false, isDebug: true },
           title: "NOR",
           identifier: "OBC",
           racingNumber: 4,
@@ -148,7 +149,7 @@ const debugLiveStreams: StreamsState & { state: "done" } = {
         {
           type: "driver",
           channelId: 1012,
-          playbackUrl: "__DEBUG__",
+          playbackUrl: { url: "__DEBUG__", needsFetching: false, isDebug: true },
           title: "GAS",
           identifier: "OBC",
           racingNumber: 10,
@@ -162,7 +163,7 @@ const debugLiveStreams: StreamsState & { state: "done" } = {
         {
           type: "driver",
           channelId: 1011,
-          playbackUrl: "__DEBUG__",
+          playbackUrl: { url: "__DEBUG__", needsFetching: false, isDebug: true },
           title: "PER",
           identifier: "OBC",
           racingNumber: 11,
@@ -176,7 +177,7 @@ const debugLiveStreams: StreamsState & { state: "done" } = {
         {
           type: "driver",
           channelId: 1018,
-          playbackUrl: "__DEBUG__",
+          playbackUrl: { url: "__DEBUG__", needsFetching: false, isDebug: true },
           title: "ALO",
           identifier: "OBC",
           racingNumber: 14,
@@ -190,7 +191,7 @@ const debugLiveStreams: StreamsState & { state: "done" } = {
         {
           type: "driver",
           channelId: 1008,
-          playbackUrl: "__DEBUG__",
+          playbackUrl: { url: "__DEBUG__", needsFetching: false, isDebug: true },
           title: "LEC",
           identifier: "OBC",
           racingNumber: 16,
@@ -204,7 +205,7 @@ const debugLiveStreams: StreamsState & { state: "done" } = {
         {
           type: "driver",
           channelId: 1017,
-          playbackUrl: "__DEBUG__",
+          playbackUrl: { url: "__DEBUG__", needsFetching: false, isDebug: true },
           title: "STR",
           identifier: "OBC",
           racingNumber: 18,
@@ -218,7 +219,7 @@ const debugLiveStreams: StreamsState & { state: "done" } = {
         {
           type: "driver",
           channelId: 1013,
-          playbackUrl: "__DEBUG__",
+          playbackUrl: { url: "__DEBUG__", needsFetching: false, isDebug: true },
           title: "MAG",
           identifier: "OBC",
           racingNumber: 20,
@@ -232,7 +233,7 @@ const debugLiveStreams: StreamsState & { state: "done" } = {
         {
           type: "driver",
           channelId: 1021,
-          playbackUrl: "__DEBUG__",
+          playbackUrl: { url: "__DEBUG__", needsFetching: false, isDebug: true },
           title: "DEV",
           identifier: "OBC",
           racingNumber: 21,
@@ -246,7 +247,7 @@ const debugLiveStreams: StreamsState & { state: "done" } = {
         {
           type: "driver",
           channelId: 1022,
-          playbackUrl: "__DEBUG__",
+          playbackUrl: { url: "__DEBUG__", needsFetching: false, isDebug: true },
           title: "TSU",
           identifier: "OBC",
           racingNumber: 22,
@@ -260,7 +261,7 @@ const debugLiveStreams: StreamsState & { state: "done" } = {
         {
           type: "driver",
           channelId: 1023,
-          playbackUrl: "__DEBUG__",
+          playbackUrl: { url: "__DEBUG__", needsFetching: false, isDebug: true },
           title: "ALB",
           identifier: "OBC",
           racingNumber: 23,
@@ -274,7 +275,7 @@ const debugLiveStreams: StreamsState & { state: "done" } = {
         {
           type: "driver",
           channelId: 1020,
-          playbackUrl: "__DEBUG__",
+          playbackUrl: { url: "__DEBUG__", needsFetching: false, isDebug: true },
           title: "ZHO",
           identifier: "OBC",
           racingNumber: 24,
@@ -288,7 +289,7 @@ const debugLiveStreams: StreamsState & { state: "done" } = {
         {
           type: "driver",
           channelId: 1014,
-          playbackUrl: "__DEBUG__",
+          playbackUrl: { url: "__DEBUG__", needsFetching: false, isDebug: true },
           title: "HUL",
           identifier: "OBC",
           racingNumber: 27,
@@ -302,7 +303,7 @@ const debugLiveStreams: StreamsState & { state: "done" } = {
         {
           type: "driver",
           channelId: 1005,
-          playbackUrl: "__DEBUG__",
+          playbackUrl: { url: "__DEBUG__", needsFetching: false, isDebug: true },
           title: "OCO",
           identifier: "OBC",
           racingNumber: 31,
@@ -316,7 +317,7 @@ const debugLiveStreams: StreamsState & { state: "done" } = {
         {
           type: "driver",
           channelId: 1010,
-          playbackUrl: "__DEBUG__",
+          playbackUrl: { url: "__DEBUG__", needsFetching: false, isDebug: true },
           title: "HAM",
           identifier: "OBC",
           racingNumber: 44,
@@ -330,7 +331,7 @@ const debugLiveStreams: StreamsState & { state: "done" } = {
         {
           type: "driver",
           channelId: 1007,
-          playbackUrl: "__DEBUG__",
+          playbackUrl: { url: "__DEBUG__", needsFetching: false, isDebug: true },
           title: "SAI",
           identifier: "OBC",
           racingNumber: 55,
@@ -344,7 +345,7 @@ const debugLiveStreams: StreamsState & { state: "done" } = {
         {
           type: "driver",
           channelId: 1006,
-          playbackUrl: "__DEBUG__",
+          playbackUrl: { url: "__DEBUG__", needsFetching: false, isDebug: true },
           title: "RUS",
           identifier: "OBC",
           racingNumber: 63,
@@ -358,7 +359,7 @@ const debugLiveStreams: StreamsState & { state: "done" } = {
         {
           type: "driver",
           channelId: 1019,
-          playbackUrl: "__DEBUG__",
+          playbackUrl: { url: "__DEBUG__", needsFetching: false, isDebug: true },
           title: "BOT",
           identifier: "OBC",
           racingNumber: 77,
@@ -372,7 +373,7 @@ const debugLiveStreams: StreamsState & { state: "done" } = {
         {
           type: "driver",
           channelId: 1015,
-          playbackUrl: "__DEBUG__",
+          playbackUrl: { url: "__DEBUG__", needsFetching: false, isDebug: true },
           title: "PIA",
           identifier: "OBC",
           racingNumber: 81,
@@ -387,14 +388,14 @@ const debugLiveStreams: StreamsState & { state: "done" } = {
       driverTrackerStream: {
         type: "driver-tracker",
         channelId: 1003,
-        playbackUrl: "__DEBUG__",
+        playbackUrl: { url: "__DEBUG__", needsFetching: false, isDebug: true },
         title: "Driver Tracker",
         identifier: "TRACKER",
       },
       dataChannelStream: {
         type: "data-channel",
         channelId: 1004,
-        playbackUrl: "__DEBUG__",
+        playbackUrl: { url: "__DEBUG__", needsFetching: false, isDebug: true },
         title: "Data Channel",
         identifier: "DATA",
       },
