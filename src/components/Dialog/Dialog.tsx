@@ -2,7 +2,7 @@ import cn from "classnames";
 import { ReactNode, useEffect, useMemo, useRef } from "react";
 import { createPortal } from "react-dom";
 import { CSSTransition } from "react-transition-group";
-import FocusTrap from "focus-trap-react";
+import { FocusTrap } from "focus-trap-react";
 import { OVERLAYS_PORTAL_ID } from "../../constants/portals";
 import { WithVariables } from "../WithVariables/WithVariables";
 import styles from "./Dialog.module.scss";

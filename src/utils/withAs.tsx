@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { forwardRef, useMemo } from "react";
+import React, { forwardRef, useMemo } from "react";
 
 /* eslint-disable react/prop-types */
 export function withAs<T extends React.ElementType>(defaultAs: T) {
   return <Props extends object>(
     C: React.ForwardRefRenderFunction<
       React.ElementRef<T>,
-      Props & { as: React.ElementType } & Omit<React.ComponentPropsWithoutRef<T>, keyof Props>
+      React.PropsWithoutRef<Props & { as: React.ElementType } & Omit<React.ComponentPropsWithoutRef<T>, keyof Props>>
     >,
   ): { displayName?: string } & (<U extends React.ElementType = T>(
     props: Omit<Props, "as"> &
