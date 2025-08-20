@@ -41,7 +41,7 @@ function getF1DeviceInfo() {
     browserVersion,
     model,
     osVersion,
-    appVersion: "release-R29.0.3",
+    appVersion: "release-R44.0.3",
     playerVersion,
   };
 
@@ -50,5 +50,4 @@ function getF1DeviceInfo() {
     .join(";");
 }
 
-export const defaultHeaders = new Headers();
-defaultHeaders.set("x-f1-device-info", getF1DeviceInfo());
+export const defaultHeaders = { "x-f1-device-info": getF1DeviceInfo() };

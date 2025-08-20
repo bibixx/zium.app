@@ -9,7 +9,7 @@ import {
 } from "./useVideoRaceDetails.validator";
 
 export const fetchRaceStreams = async (raceId: string, signal: AbortSignal) => {
-  const url = `/3.0/R/ENG/BIG_SCREEN_HLS/ALL/CONTENT/VIDEO/${raceId}/F1_TV_Pro_Annual/14`;
+  const url = `/4.0/R/ENG/WEB_DASH/ALL/CONTENT/VIDEO/${raceId}/PREMIUM/2`;
   const body = await fetchJSON(url, undefined, signal);
   const parsedBody = videoRaceStreamsRootBodyValidator.parse(body);
 

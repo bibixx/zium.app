@@ -41,7 +41,7 @@ export const Races = () => {
   const { racesState: seasonsList } = useRacesList(seasonsToRender);
   const ziumOffsetsInfo = useZiumOffsetsInfo();
 
-  const fallbackRaceId = useMemo(() => {
+  const headerRace = useMemo(() => {
     const latestSeason = seasonsList.find((season) => !isSeasonComingSoon(season.seasonId));
     if (latestSeason?.state !== "done") {
       return null;
@@ -56,19 +56,19 @@ export const Races = () => {
     }
 
     if (upcomingRace == null) {
-      return lastRace.id;
+      return lastRace;
     }
 
     const daysSinceLastRace = differenceInDays(new Date(), lastRace.endDate);
     const daysTillNextRace = differenceInDays(upcomingRace.endDate, new Date());
 
     if (daysSinceLastRace < daysTillNextRace) {
-      return lastRace.id;
+      return lastRace;
     }
 
-    return upcomingRace.id;
+    return upcomingRace;
   }, [seasonsList]);
-  const headerCardData = useHeaderCardData(fallbackRaceId);
+  const headerCardData = useHeaderCardData(headerRace?.id ?? null);
 
   const filteredRacesState = useMemo((): RacesState[] => {
     const transliteratedSearchQuery = prepareForSearch(searchQuery);
@@ -115,7 +115,7 @@ export const Races = () => {
           overwriteVisibleSeason={overwriteVisibleSeason}
         />
         <div className={styles.seasons}>
-          <HeaderCardWithZeroState eventState={headerCardData} />
+          <HeaderCardWithZeroState eventState={headerCardData} fallbackImage={headerRace?.pictureId} />
           {!wasSearchSuccessful && <ZeroState />}
           {filteredRacesState.map((season, i) => {
             const prevSeason = filteredRacesState[i - 1];
