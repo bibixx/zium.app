@@ -65,7 +65,12 @@ function App() {
 
   return (
     <ThemeProvider>
-      <BrowserRouter>
+      <BrowserRouter
+        future={{
+          v7_relativeSplatPath: false,
+          v7_startTransition: false,
+        }}
+      >
         <FeatureFlagsWrapper>
           <Routes>
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
