@@ -5,7 +5,12 @@
         "name": "typescript-plugin-css-modules",
         "options": {
           "classnameTransform": "camelCaseOnly",
-          "additionalData": "@use \"@@\" as *;\n"
+          "additionalData": "@use \"@@\" as *;\n",
+          "rendererOptions": {
+            "sass": {
+              "loadPaths": ["src/styles"]
+            }
+          }
         }
       }
     ],
