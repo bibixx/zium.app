@@ -2745,10 +2745,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bitmovin-player-ui@npm:^3.102.0":
+"bitmovin-player-ui@npm:3.102.0":
   version: 3.102.0
   resolution: "bitmovin-player-ui@npm:3.102.0"
   checksum: 98a52e916a97ec66096f0d706c735aaaae92e12457690ff63fe51abbee768f30e8aa062aaa002b0a8e3acf71994133607de4e115039983877a88faf42c613c4e
+  languageName: node
+  linkType: hard
+
+"bitmovin-player-ui@patch:bitmovin-player-ui@npm%3A3.102.0#./.yarn/patches/bitmovin-player-ui-npm-3.102.0-0a2d45de4d.patch::locator=zium%40workspace%3A.":
+  version: 3.102.0
+  resolution: "bitmovin-player-ui@patch:bitmovin-player-ui@npm%3A3.102.0#./.yarn/patches/bitmovin-player-ui-npm-3.102.0-0a2d45de4d.patch::version=3.102.0&hash=4de316&locator=zium%40workspace%3A."
+  checksum: d8511c3f69f95c95e63ececbea94f3af9d301bcf8a75551ef1745d3def03587e59db819191ab72ced15295e3d16829d3a2e47dcba4b08b0b49cb666d049e989f
   languageName: node
   linkType: hard
 
