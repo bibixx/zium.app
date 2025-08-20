@@ -1,3 +1,5 @@
+@use "mixins.scss" as *;
+
 @mixin slider-hover {
   :global {
     .bmpui-seekbar-playbackposition-marker {

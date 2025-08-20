@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-declare module "child_process" {
+declare module "node:child_process" {
   interface Buffer {
     toString(): string;
   }
@@ -171,7 +171,7 @@ declare module "child_process" {
   ): ChildProcess;
 }
 
-declare module "path" {
+declare module "node:path" {
   /**
    * The right-most parameter is considered {to}. Other parameters are considered an array of {from}.
    *
@@ -186,6 +186,59 @@ declare module "path" {
    * @throws {TypeError} if any of the arguments is not a string.
    */
   export function resolve(...paths: string[]): string;
+  /**
+   * Return the directory name of a path. Similar to the Unix dirname command.
+   *
+   * @param path the path to evaluate.
+   * @throws {TypeError} if `path` is not a string.
+   */
+  export function dirname(path: string): string;
+}
+
+declare module "node:url" {
+  interface FileUrlToPathOptions {
+    /**
+     * `true` if the `path` should be return as a windows filepath, `false` for posix, and `undefined` for the system default.
+     * @default undefined
+     * @since v22.1.0
+     */
+    windows?: boolean | undefined;
+  }
+
+  /**
+   * This function ensures the correct decodings of percent-encoded characters as
+   * well as ensuring a cross-platform valid absolute path string.
+   *
+   * ```js
+   * import { fileURLToPath } from 'node:url';
+   *
+   * const __filename = fileURLToPath(import.meta.url);
+   *
+   * new URL('file:///C:/path/').pathname;      // Incorrect: /C:/path/
+   * fileURLToPath('file:///C:/path/');         // Correct:   C:\path\ (Windows)
+   *
+   * new URL('file://nas/foo.txt').pathname;    // Incorrect: /foo.txt
+   * fileURLToPath('file://nas/foo.txt');       // Correct:   \\nas\foo.txt (Windows)
+   *
+   * new URL('file:///你好.txt').pathname;      // Incorrect: /%E4%BD%A0%E5%A5%BD.txt
+   * fileURLToPath('file:///你好.txt');         // Correct:   /你好.txt (POSIX)
+   *
+   * new URL('file:///hello world').pathname;   // Incorrect: /hello%20world
+   * fileURLToPath('file:///hello world');      // Correct:   /hello world (POSIX)
+   * ```
+   * @since v10.12.0
+   * @param url The file URL string or URL object to convert to a path.
+   * @return The fully-resolved platform-specific Node.js file path.
+   */
+  function fileURLToPath(url: string | URL, options?: FileUrlToPathOptions): string;
+}
+
+declare module "node:fs" {
+  interface Buffer {
+    toString(): string;
+  }
+
+  function readFileSync(path: string, encoding: "utf-8"): string;
 }
 
 declare module "process" {

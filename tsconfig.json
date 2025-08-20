@@ -5,7 +5,7 @@
         "name": "typescript-plugin-css-modules",
         "options": {
           "classnameTransform": "camelCaseOnly",
-          "additionalData": "@import \"@@\";\n",
+          "additionalData": "@use \"@@\" as *;\n"
         }
       }
     ],

@@ -44,9 +44,13 @@
         "groups": ["builtin", "external", "parent", "sibling", "index"]
       }
     ],
+    "import/no-unresolved": "off",
     "no-restricted-globals": ["error", "chrome"],
-    "react-hooks/exhaustive-deps": ["warn", {
-      "additionalHooks": "^useHotkeys$"
-    }]
+    "react-hooks/exhaustive-deps": [
+      "warn",
+      {
+        "additionalHooks": "^useHotkeys$"
+      }
+    ]
   }
 }

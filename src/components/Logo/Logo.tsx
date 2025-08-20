@@ -1,5 +1,5 @@
 import cn from "classnames";
-import { ReactComponent as LogoSvg } from "../../assets/logo.svg";
+import LogoSvg from "../../assets/logo.svg?react";
 import styles from "./Logo.module.scss";
 
 type OptionalHeight = {
