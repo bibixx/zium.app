@@ -31,8 +31,9 @@ export const useStreamVideo = (playbackUrl: PlaybackUrl | null) => {
         dispatch({
           type: "done",
           data: {
-            streamType: "HLS",
-            videoUrl: "https://cph-msl.akamaized.net/hls/live/2000341/test/master.m3u8",
+            streamType: "other",
+            // videoUrl: "https://dash.akamaized.net/akamai/bbb_30fps/bbb_with_multiple_tiled_thumbnails.mpd",
+            videoUrl: "http://dash.edgesuite.net/akamai/bbb_30fps/bbb_with_tiled_thumbnails.mpd",
           },
         });
         return;

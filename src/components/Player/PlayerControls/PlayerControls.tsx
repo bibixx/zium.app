@@ -21,8 +21,11 @@ import { ArrowLeft30Icon, ArrowRight30Icon } from "../../CustomIcons/CustomIcons
 import { Spinner } from "../../Spinner/Spinner";
 import { assertNever } from "../../../utils/assertNever";
 import { isBitmovinPlayerDestroyed } from "../../../utils/isBitmovinPlayerDestroyed";
+import { getStylesWithVariables } from "../../WithVariables/WithVariables";
+import { boundTo } from "../../../utils/boundTo";
 import { OptionsButtons } from "./OptionsButtons/OptionsButtons";
 import styles from "./PlayerControls.module.scss";
+import "./PlayerControls.scss";
 
 interface PlayerControlsProps {
   player: PlayerAPI;
@@ -114,13 +117,33 @@ export const PlayerControls = ({ player, setVolume, volume, isMuted, setIsMuted 
     };
   }, [player]);
 
+  const thumbnailSize = useMemo(() => {
+    const thumbnail = player.getThumbnail(0);
+    if (thumbnail == null) {
+      return null;
+    }
+
+    const aspectRatio = thumbnail.width / thumbnail.height;
+    const width = boundTo(thumbnail.width, 160, 260);
+    const height = width / aspectRatio;
+
+    return { width, height };
+  }, [player]);
+  const hasLargeThumbnail = useMemo(() => thumbnailSize && thumbnailSize.height > 160, [thumbnailSize]);
   return (
     <div className={cn(styles.wrapper)}>
       <PlaybackButtons player={isBitmovinPlayerDestroyed(player) ? undefined : player} isReady={isReady} />
       <div
-        className={cn(styles.bitmovinWrapper, { [styles.isReady]: isReady })}
+        className={cn(styles.bitmovinWrapper, {
+          [styles.isReady]: isReady,
+          [styles.hasLargeThumbnail]: hasLargeThumbnail,
+        })}
         ref={wrapperRef}
         inert={!isReady ? "" : undefined}
+        style={getStylesWithVariables({
+          "thumbnail-width": thumbnailSize ? thumbnailSize.width + "px" : undefined,
+          "thumbnail-height": thumbnailSize ? thumbnailSize.height + "px" : undefined,
+        })}
       />
       <OptionsButtons player={player} setVolume={setVolume} volume={volume} isMuted={isMuted} setIsMuted={setIsMuted} />
     </div>
