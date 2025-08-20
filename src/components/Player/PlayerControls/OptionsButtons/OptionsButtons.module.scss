@@ -1,4 +1,4 @@
-@import "../../PlayerMixins.scss";
+@use "../../PlayerMixins.scss" as playerMixins;
 
 .buttonsWrapper {
   display: flex;
@@ -30,7 +30,7 @@
 
   &:hover,
   &.isFocusWithin {
-    @include slider-hover();
+    @include playerMixins.slider-hover();
 
     .volumeSliderContainer {
       opacity: 1;
@@ -54,5 +54,5 @@
   display: flex;
   align-items: center;
 
-  @include slider();
+  @include playerMixins.slider();
 }

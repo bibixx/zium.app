@@ -1,13 +1,20 @@
-import { defineConfig, resolvePackageData } from "vite";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+import { readFileSync } from "node:fs";
+import { defineConfig } from "vite";
+// eslint-disable-next-line
 import react from "@vitejs/plugin-react-swc";
 import svgr from "vite-plugin-svgr";
 import { sentryVitePlugin } from "@sentry/vite-plugin";
 
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
-  const packageJsonPath = resolvePackageData("bitmovinf-player", process.cwd());
-  if (packageJsonPath?.data) {
-    process.env.VITE_BITMOVIN_PLAYER_VERSION = packageJsonPath.data.version;
+  const packageJsonPath = fileURLToPath(import.meta.resolve("bitmovin-player/package.json"));
+  const packageJsonData = JSON.parse(readFileSync(packageJsonPath, "utf-8"));
+  if (packageJsonData) {
+    process.env.VITE_BITMOVIN_PLAYER_VERSION = packageJsonData.version;
   }
 
   return {
@@ -27,7 +34,8 @@ export default defineConfig(({ mode }) => {
       },
       preprocessorOptions: {
         scss: {
-          additionalData: `@import "src/styles/mixins.scss";`,
+          additionalData: `@use "mixins.scss" as *;`,
+          loadPaths: [resolve(__dirname, "src", "styles")],
         },
       },
     },

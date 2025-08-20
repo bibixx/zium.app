@@ -1,4 +1,4 @@
-@import "../PlayerMixins.scss";
+@use "../PlayerMixins.scss" as playerMixins;
 
 .wrapper {
   display: flex;
@@ -53,7 +53,7 @@
     }
 
     .bmpui-controlbar-bottom {
-      @include slider();
+      @include playerMixins.slider();
     }
 
     .bmpui-controlbar-top {
