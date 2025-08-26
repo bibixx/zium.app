@@ -8,6 +8,7 @@ import { PlayerAPI, UIConfig } from "bitmovin-player";
 import { UIContainer, UIManager, SeekBarLabel } from "bitmovin-player-ui";
 import classNames from "classnames";
 import { useState, useEffect, useRef, useCallback } from "react";
+import whatInput from "what-input";
 import { Button } from "../../../Button/Button";
 import { toggleFullScreen } from "../../../../utils/toggleFullScreen";
 import { useHotkeys } from "../../../../hooks/useHotkeys/useHotkeys";
@@ -144,8 +145,8 @@ const VolumeButton = ({ player, volume, setVolume, isMuted, setIsMuted }: Volume
   return (
     <div
       className={classNames(styles.volumeWrapper, { [styles.isFocusWithin]: isFocusWithin || isDragScrubbing })}
-      onFocus={(e) => {
-        const isFocusVisible = e.currentTarget.querySelector(":focus-visible") !== null;
+      onFocus={() => {
+        const isFocusVisible = whatInput.ask("input") === "keyboard";
 
         if (isFocusVisible) {
           setIsFocusWithin(true);

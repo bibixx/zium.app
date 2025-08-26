@@ -91,7 +91,7 @@
   user-select: none;
 
   &:hover,
-  &:focus-visible {
+  :global([data-whatinput="keyboard"]) &:focus {
     background: var(--color-background-interactive-neutral-rest);
     @extend .pos-1dp;
     transform: scale(1.05);

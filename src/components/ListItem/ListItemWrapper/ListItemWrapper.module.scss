@@ -24,7 +24,7 @@
         background: var(--color-background-interactive-neutral-press);
       }
 
-      &:focus-visible {
+      :global([data-whatinput="keyboard"]) &:focus {
         background: var(--color-background-interactive-neutral-hover);
       }
     }

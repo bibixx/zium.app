@@ -12,12 +12,12 @@ interface ListItemProps {
 }
 
 export const ListItem = withAs("button")<ListItemProps>((
-  { as, children, caption, isActive = false, disabled, ...props },
+  { as, children, caption, isActive = false, disabled, className, ...props },
   ref,
 ) => {
   return (
     <ListItemWrapper
-      className={styles.listItemWrapper}
+      className={cn(styles.listItemWrapper, className)}
       isActive={isActive}
       as={as}
       disabled={disabled}

@@ -26,7 +26,8 @@
 .listItemWrapper {
   text-decoration: none;
 
-  &:hover:not(:active):not(:focus-visible) .text:not(.isActive) {
+  &:hover:not(:active) .text:not(.isActive),
+  :global([data-whatinput="keyboard"]) &:focus .text:not(.isActive) {
     color: var(--color-content-strong);
   }
 }
