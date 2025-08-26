@@ -1,10 +1,10 @@
-import classNames from "classnames";
+import cn from "classnames";
 import { ReactNode } from "react";
-import { NON_BREAKING_HYPHEN } from "../../utils/text";
-import { BackgroundDots } from "../../views/Viewer/BackgroundDots/BackgroundDots";
-import { useGrid } from "../../views/Viewer/hooks/useGrid";
+import { Link } from "react-router-dom";
+import { MIDDLE_DOT, NON_BREAKING_HYPHEN } from "../../utils/text";
 import { CookieBanner } from "../CookieBanner/CookieBanner";
 import { Logo } from "../Logo/Logo";
+import { FigmaIcon, GitHubIcon, TwitterIcon } from "../CustomIcons/CustomIcons";
 import styles from "./OnboardingLayout.module.scss";
 
 interface OnboardingLayoutProps {
@@ -13,12 +13,9 @@ interface OnboardingLayoutProps {
   selectedStepIndex: number;
 }
 export const OnboardingLayout = ({ children, stepsCount, selectedStepIndex }: OnboardingLayoutProps) => {
-  const { baseGrid } = useGrid();
-
   return (
     <div className={styles.fullHeightWrapper}>
       <div className={styles.wrapper}>
-        <BackgroundDots baseGrid={baseGrid} />
         <div className={styles.contentWrapper}>
           <div className={styles.mobileDivider}></div>
           <div className={styles.content}>
@@ -38,6 +35,44 @@ export const OnboardingLayout = ({ children, stepsCount, selectedStepIndex }: On
         </div>
       </div>
       <CookieBanner position="bottom" mode="sticky" />
+      <footer className={styles.footer}>
+        <div className={styles.footerTextSection}>
+          <Link to="/privacy-policy" className={styles.footerLink}>
+            Privacy policy
+          </Link>
+          <span>{MIDDLE_DOT}</span>
+          <a href="mailto:zium@zium.app" className={styles.footerLink}>
+            Contact us
+          </a>
+          <span className={styles.potentiallyLonelyMiddleDot}>{MIDDLE_DOT}</span>
+        </div>
+        <div className={styles.footerButtonsWrapper}>
+          <a
+            href="https://twitter.com/ziumapp"
+            className={cn(styles.footerLink, styles.footerIconLink)}
+            target="_blank"
+            rel="noreferrer noopener"
+          >
+            <TwitterIcon height={20} />
+          </a>
+          <a
+            href="https://github.com/bibixx/zium.app"
+            className={cn(styles.footerLink, styles.footerIconLink)}
+            target="_blank"
+            rel="noreferrer noopener"
+          >
+            <GitHubIcon height={20} />
+          </a>
+          <a
+            href="https://www.figma.com/community/file/1250905585551204036"
+            className={cn(styles.footerLink, styles.footerIconLink)}
+            target="_blank"
+            rel="noreferrer noopener"
+          >
+            <FigmaIcon height={20} />
+          </a>
+        </div>
+      </footer>
     </div>
   );
 };
@@ -54,7 +89,7 @@ export const Steps = ({ count, selectedIndex }: StepsProps) => {
   return (
     <div className={styles.stepsContainer}>
       {Array.from({ length: count }).map((_, i) => (
-        <div key={i} className={classNames(styles.step, { [styles.isSelected]: i === selectedIndex })}></div>
+        <div key={i} className={cn(styles.step, { [styles.isSelected]: i === selectedIndex })}></div>
       ))}
     </div>
   );
