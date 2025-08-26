@@ -39,11 +39,11 @@ a {
   text-decoration: none;
 }
 
-*:focus:not(:focus-visible) {
+*:focus {
   outline: none;
 }
 
-*:focus-visible {
+[data-whatinput="keyboard"] *:focus {
   outline: 2px solid var(--color-border-accent);
   outline-offset: 2px;
 }

@@ -118,7 +118,7 @@
 
   @include typography(text, 300, regular);
 
-  &:focus-visible {
+  &:focus {
     outline: none;
   }
 

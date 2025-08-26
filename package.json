@@ -52,6 +52,7 @@
     "react-transition-group": "^4.4.5",
     "ts-functional-pipe": "^3.1.2",
     "ts-key-enum": "^2.0.12",
+    "what-input": "^5.2.12",
     "zod": "^3.22.2",
     "zustand": "^4.4.1"
   },

@@ -218,7 +218,7 @@ export const StreamPicker = ({ availableDrivers, globalFeeds, mainFeeds }: Strea
           />
         </div>
 
-        <div className={styles.streamsWrapper}>
+        <div className={styles.streamsWrapper} tabIndex={-1}>
           {streamPickerEntries.map((entry, i) => {
             if (entry.type === "driver") {
               const driver = entry.driver;

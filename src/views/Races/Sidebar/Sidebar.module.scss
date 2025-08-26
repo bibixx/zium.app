@@ -68,7 +68,7 @@
   cursor: pointer;
 
   &:hover,
-  &:focus-visible {
+  :global([data-whatinput="keyboard"]) &:focus {
     color: var(--color-content-strong);
   }
 }

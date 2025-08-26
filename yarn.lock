@@ -7820,6 +7820,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"what-input@npm:^5.2.12":
+  version: 5.2.12
+  resolution: "what-input@npm:5.2.12"
+  checksum: 05edbb24c8a5a3711cec647cdc36686924e13829b63d8b5ca46a95be9eb0663b767b1b1e229b7b0707a63bffe5fb5225935aaf098db56ebe1f7728ed792988a1
+  languageName: node
+  linkType: hard
+
 "whatwg-url@npm:^5.0.0":
   version: 5.0.0
   resolution: "whatwg-url@npm:5.0.0"
@@ -8074,6 +8081,7 @@ __metadata:
     typescript-plugin-css-modules: ^5.0.1
     vite: ^4.4.9
     vite-plugin-svgr: ^3.3.0
+    what-input: ^5.2.12
     zod: ^3.22.2
     zustand: ^4.4.1
   languageName: unknown

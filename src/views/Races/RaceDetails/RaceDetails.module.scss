@@ -5,7 +5,7 @@
 
 .raceDetailsListItem {
   &:hover,
-  &:focus-visible {
+  :global([data-whatinput="keyboard"]) &:focus {
     .raceDetailsListItemRightIconWrapper {
       opacity: 1;
     }

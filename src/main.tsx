@@ -2,6 +2,7 @@ import ReactDOM from "react-dom/client";
 import "./styles/styles";
 import App from "./App";
 import { setupSentry } from "./utils/setupSentry";
+import "./utils/whatInput";
 
 setupSentry();
 
