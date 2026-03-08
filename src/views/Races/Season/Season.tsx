@@ -8,6 +8,7 @@ import { useLaggedBehindData } from "../../../hooks/useLaggedBehindData/useLagge
 import { RacesState } from "../../../hooks/useRacesList/useRacesList.types";
 import { formatDateDayShortMonthRange } from "../../../utils/date";
 import { formatRaceName } from "../../../utils/text";
+import { isSeasonComingSoon } from "../../../utils/SeasonUtils";
 import { RaceDetails } from "../RaceDetails/RaceDetails";
 import { useHotkeys } from "../../../hooks/useHotkeys/useHotkeys";
 import { SHORTCUTS } from "../../../hooks/useHotkeys/useHotkeys.keys";
@@ -46,6 +47,17 @@ export const Season = ({ season, ziumOffsetsInfo }: SeasonProps) => {
       Season {season.seasonId}
     </h2>
   );
+
+  if (isSeasonComingSoon(season.seasonId)) {
+    return (
+      <>
+        {heading}
+        <div className={styles.comingSoonWrapper}>
+          <p className={styles.comingSoonText}>Coming Soon</p>
+        </div>
+      </>
+    );
+  }
 
   if (season.state === "loading") {
     return (

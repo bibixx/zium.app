@@ -18,6 +18,22 @@
   margin-bottom: 32px;
 }
 
+.comingSoonWrapper {
+  padding: 96px 64px;
+  background: var(--color-background-static-muted);
+  @extend .pos-1dp;
+  border-radius: var(--radii-large);
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.comingSoonText {
+  @include typography(heading, 400, default);
+  color: var(--color-content-muted);
+  margin: 0;
+  user-select: none;
+}
+
 .heading {
   @include typography(heading, 600, default);
   color: var(--color-content-strong);
