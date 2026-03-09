@@ -10,14 +10,22 @@ export default defineConfig(({ mode }) => {
     process.env.VITE_BITMOVIN_PLAYER_VERSION = packageJsonPath.data.version;
   }
 
+  const posthogProjectId = process.env.POSTHOG_PROJECT_ID;
+  const posthogPersonalApiKey = process.env.POSTHOG_PERSONAL_API_KEY;
+
   return {
     plugins: [
       react(),
       svgr(),
-      posthogRollupPlugin({
-        apiKey: process.env.POSTHOG_API_KEY,
-        host: process.env.POSTHOG_HOST || "https://us.i.posthog.com",
-      }),
+      ...(posthogProjectId && posthogPersonalApiKey
+        ? [
+            posthogRollupPlugin({
+              projectId: posthogProjectId,
+              personalApiKey: posthogPersonalApiKey,
+              host: process.env.POSTHOG_HOST || "https://us.i.posthog.com",
+            }),
+          ]
+        : []),
     ],
     css: {
       modules: {
