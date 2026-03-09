@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import posthog from "posthog-js";
+import { posthog } from "posthog-js";
 import { useStreamVideo } from "../useStreamVideo/useStreamVideo";
 import { MainStreamInfo } from "../useVideoRaceDetails/useVideoRaceDetails.types";
 import { Response } from "../../types/Response";

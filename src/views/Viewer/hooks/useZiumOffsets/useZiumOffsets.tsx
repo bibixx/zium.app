@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import posthog from "posthog-js";
+import { posthog } from "posthog-js";
 import { useSnackbars } from "../../../../components/Snackbar/SnackbarsList.hooks";
 import { Button } from "../../../../components/Button/Button";
 import { UserOffsets, useUserOffsets } from "../../../../hooks/useUserOffests/useUserOffests";

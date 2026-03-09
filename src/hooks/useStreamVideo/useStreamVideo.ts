@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useReducer } from "react";
-import posthog from "posthog-js";
+import { posthog } from "posthog-js";
 import { fetchVideoStream } from "./useStreamVideo.api";
 import { StreamVideoState, StreamVideoStateAction } from "./useStreamVideo.types";
 import { StreamVideoError } from "./useStreamVideo.utils";

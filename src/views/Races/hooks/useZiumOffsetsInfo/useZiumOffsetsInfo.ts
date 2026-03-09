@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import posthog from "posthog-js";
+import { posthog } from "posthog-js";
 import { fetchZiumOffsetsInfo } from "./useZiumOffsetsInfo.api";
 
 export const useZiumOffsetsInfo = () => {

@@ -1,5 +1,5 @@
 import { Component, ReactNode } from "react";
-import posthog from "posthog-js";
+import { posthog } from "posthog-js";
 import { FullScreenError } from "../FullScreenError/FullScreenError";
 
 interface ErrorBoundaryProps {

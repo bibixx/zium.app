@@ -1,4 +1,4 @@
-import posthog from "posthog-js";
+import { posthog } from "posthog-js";
 import { z } from "zod";
 
 const isString = (v: unknown) => z.string().safeParse(v).success;

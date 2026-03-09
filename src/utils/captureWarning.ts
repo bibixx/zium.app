@@ -1,4 +1,4 @@
-import posthog from "posthog-js";
+import { posthog } from "posthog-js";
 
 export const captureWarning = (message: string, extra?: Record<string, unknown>) => {
   console.warn(message, extra);

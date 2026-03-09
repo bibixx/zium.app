@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useReducer, useRef, useState } from "react";
-import posthog from "posthog-js";
+import { posthog } from "posthog-js";
 import { SupportedSeasons } from "../../constants/seasons";
 import { fetchRacesList } from "./useRacesList.api";
 import { RacesState, RacesStateAction } from "./useRacesList.types";

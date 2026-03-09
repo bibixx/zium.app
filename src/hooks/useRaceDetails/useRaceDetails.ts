@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useReducer, useRef } from "react";
-import posthog from "posthog-js";
+import { posthog } from "posthog-js";
 import { fetchRaceDetailsId } from "./useRaceDetails.api";
 import { RaceDetailsState, RaceDetailsStateAction } from "./useRacesDetails.types";
 

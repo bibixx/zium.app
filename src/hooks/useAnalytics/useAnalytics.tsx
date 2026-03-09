@@ -1,4 +1,4 @@
-import posthog from "posthog-js";
+import { posthog } from "posthog-js";
 import { Location, useLocation } from "react-router-dom";
 import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { assertNotNullable } from "../../utils/assertExistence";
@@ -21,25 +21,22 @@ export const useAnalytics = () => {
     posthog.identify(userId);
   }, []);
 
-  const track = useCallback(
-    (location: Location, title?: string) => {
-      const currentPath = location.pathname + location.search;
-      const currentTitle = title ?? document.title;
+  const track = useCallback((location: Location, title?: string) => {
+    const currentPath = location.pathname + location.search;
+    const currentTitle = title ?? document.title;
 
-      if (previousPath === currentPath && previousTitle === currentTitle) {
-        return;
-      }
+    if (previousPath === currentPath && previousTitle === currentTitle) {
+      return;
+    }
 
-      posthog.capture("$pageview", {
-        $current_url: currentPath,
-        title: currentTitle,
-      });
+    posthog.capture("$pageview", {
+      $current_url: currentPath,
+      title: currentTitle,
+    });
 
-      previousPath = currentPath;
-      previousTitle = currentTitle;
-    },
-    [],
-  );
+    previousPath = currentPath;
+    previousTitle = currentTitle;
+  }, []);
 
   const setConsent = useCallback(
     (consentGiven: boolean) => {
@@ -95,8 +92,6 @@ export const AnalyticsContextProvider = ({ children }: AnalyticsContextProviderP
   }, [wasConsentGiven]);
 
   return (
-    <AnalyticsContext.Provider value={{ wasConsentGiven, setWasConsentGiven }}>
-      {children}
-    </AnalyticsContext.Provider>
+    <AnalyticsContext.Provider value={{ wasConsentGiven, setWasConsentGiven }}>{children}</AnalyticsContext.Provider>
   );
 };
