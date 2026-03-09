@@ -1,7 +1,7 @@
 import { defineConfig, resolvePackageData } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import svgr from "vite-plugin-svgr";
-import { posthogRollupPlugin } from "@posthog/rollup-plugin";
+import posthogRollupPlugin from "@posthog/rollup-plugin";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
