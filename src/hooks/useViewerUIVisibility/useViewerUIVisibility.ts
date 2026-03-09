@@ -42,7 +42,7 @@ export const useViewerUIVisibilityState = (): ViewerUIVisibilityContextState => 
 
       clearTimeout(timeout);
 
-      timeout = setTimeout(() => {
+      timeout = window.setTimeout(() => {
         setIsUIVisible(false);
       }, UI_VISIBILITY_TIMEOUT);
     };

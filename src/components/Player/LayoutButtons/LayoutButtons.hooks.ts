@@ -31,7 +31,7 @@ export const useLayoutsDropdownState = ({ loadLayout }: UseLayoutsDropdownStateA
           return;
         }
 
-        altTimeout.current = setTimeout(() => {
+        altTimeout.current = window.setTimeout(() => {
           setWithShortcutVisible(true);
           dropdownState.setIsOpen(true);
         }, ALT_HOLD_TIP_DURATION);

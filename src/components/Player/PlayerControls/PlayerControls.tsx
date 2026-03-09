@@ -179,7 +179,7 @@ const PlaybackButtons = ({ player, isReady }: PlaybackButtonsProps) => {
     let overlayTimeout = -1;
     const showOverlay = () => {
       clearTimeout(overlayTimeout);
-      overlayTimeout = setTimeout(() => {
+      overlayTimeout = window.setTimeout(() => {
         setIsLoading(true);
       }, OVERLAY_TIMEOUT_DELAY);
     };
