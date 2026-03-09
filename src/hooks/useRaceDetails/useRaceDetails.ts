@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useReducer, useRef } from "react";
-import { captureException } from "@sentry/browser";
+import posthog from "posthog-js";
 import { fetchRaceDetailsId } from "./useRaceDetails.api";
 import { RaceDetailsState, RaceDetailsStateAction } from "./useRacesDetails.types";
 
@@ -42,7 +42,7 @@ export const useRaceDetails = (racePageId: string | null) => {
     } catch (error) {
       console.error(error);
       dispatch({ type: "error", error: error });
-      captureException(error);
+      posthog.captureException(error);
     }
   }, [racePageId]);
 

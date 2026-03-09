@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import * as Sentry from "@sentry/react";
+import posthog from "posthog-js";
 import { create } from "zustand";
 import { F1TVTier, IsLoggedInArgs, getIsLoggedIn, listenOnTokenChange } from "../utils/extensionApi";
 import { useFeatureFlags } from "./useFeatureFlags/useFeatureFlags";
@@ -32,12 +32,12 @@ export const useLoggedInStateExecutor = () => {
 
   useEffect(() => {
     getIsLoggedIn().then(({ isLoggedIn, tier, rawTier }) => {
-      Sentry.setContext("F1 TV Tier", { tier, rawTier });
+      posthog.register({ f1TvTier: tier, f1TvRawTier: rawTier });
       setState(isLoggedIn ? { type: "loggedIn", tier } : { type: "loggedOut" });
     });
 
     const onTokenChange = ({ isLoggedIn, tier, rawTier }: IsLoggedInArgs) => {
-      Sentry.setContext("F1 TV Tier", { tier, rawTier });
+      posthog.register({ f1TvTier: tier, f1TvRawTier: rawTier });
       setState(isLoggedIn ? { type: "loggedIn", tier } : { type: "loggedOut" });
     };
 

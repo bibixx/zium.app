@@ -20,7 +20,7 @@ export const PrivacyPolicy = () => {
         <Logo className={styles.logo} height={40} aria-hidden />
       </h1>
 
-      <div className={styles.lastUpdated}>Last update: Jun 22, 2023</div>
+      <div className={styles.lastUpdated}>Last update: Mar 9, 2026</div>
 
       <p>
         We take your privacy seriously. This privacy policy explains how we collect, use, and protect your personal
@@ -30,7 +30,7 @@ export const PrivacyPolicy = () => {
       <h2>Information we collect</h2>
 
       <p>
-        We use Matomo to collect analytics data on our website. This includes information such as your IP address,
+        We use PostHog to collect analytics data on our website. This includes information such as your IP address,
         browser type, device type, and pages visited. This information is used to analyze website traffic and improve
         our website.
       </p>

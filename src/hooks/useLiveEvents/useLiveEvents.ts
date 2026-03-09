@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { captureException } from "@sentry/react";
+import posthog from "posthog-js";
 import { fetchLiveEvents } from "./useLiveEvents.api";
 import { LiveEventState } from "./useLiveEvents.types";
 
@@ -13,7 +13,7 @@ export const useLiveEvents = (refetchInterval: number) => {
     } catch (error) {
       setState({ state: "error", error: error });
       console.error(error);
-      captureException(error);
+      posthog.captureException(error);
     }
   }, []);
 

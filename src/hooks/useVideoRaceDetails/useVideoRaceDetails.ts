@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useReducer } from "react";
-import { captureException } from "@sentry/browser";
+import posthog from "posthog-js";
 import { fetchRaceStreams } from "./useVideoRaceDetails.api";
 import { RaceInfo, StreamsState, StreamsStateAction } from "./useVideoRaceDetails.types";
 import { collectStreams, createF1OffsetsMap } from "./useVideoRaceDetails.utils";
@@ -68,7 +68,7 @@ export const useVideoRaceDetails = (raceId: string): StreamsState => {
         console.error(error);
 
         dispatch({ type: "error", error: error });
-        captureException(error);
+        posthog.captureException(error);
       }
     },
     [raceId],

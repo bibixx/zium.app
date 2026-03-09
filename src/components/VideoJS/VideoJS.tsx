@@ -56,7 +56,7 @@ export const VideoJS = forwardRef<PlayerAPI | null, VideoJSProps>(
     const playerRef = useRef<PlayerAPI | null>(null);
     const uiManagerRef = useRef<UIManager | null>(null);
     const [isVisible, setIsVisible] = useState(false);
-    const { push } = useAnalytics();
+    const { capture } = useAnalytics();
 
     useEffect(() => {
       async function run() {
@@ -108,7 +108,7 @@ export const VideoJS = forwardRef<PlayerAPI | null, VideoJSProps>(
 
         player.on(PlayerEvent.Ready, () => {
           onReady?.(player);
-          push(["trackEvent", "impression", "impression count"]);
+          capture("video_impression");
           setIsVisible(true);
         });
 

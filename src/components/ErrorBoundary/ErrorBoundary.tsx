@@ -1,5 +1,5 @@
 import { Component, ReactNode } from "react";
-import { captureException } from "@sentry/browser";
+import posthog from "posthog-js";
 import { FullScreenError } from "../FullScreenError/FullScreenError";
 
 interface ErrorBoundaryProps {
@@ -22,7 +22,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
   }
 
   componentDidCatch(error: Error): void {
-    captureException(error);
+    posthog.captureException(error);
   }
 
   render() {

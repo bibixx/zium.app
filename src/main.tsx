@@ -1,9 +1,9 @@
 import ReactDOM from "react-dom/client";
 import "./styles/styles";
 import App from "./App";
-import { setupSentry } from "./utils/setupSentry";
+import { setupPostHog } from "./utils/setupPostHog";
 import "./utils/whatInput";
 
-setupSentry();
+setupPostHog();
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(<App />);

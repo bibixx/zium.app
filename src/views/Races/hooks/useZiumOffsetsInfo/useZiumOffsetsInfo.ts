@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { captureException } from "@sentry/browser";
+import posthog from "posthog-js";
 import { fetchZiumOffsetsInfo } from "./useZiumOffsetsInfo.api";
 
 export const useZiumOffsetsInfo = () => {
@@ -10,7 +10,7 @@ export const useZiumOffsetsInfo = () => {
       const data = await fetchZiumOffsetsInfo(signal);
       setOffsetsInfo(data);
     } catch (error) {
-      captureException(error);
+      posthog.captureException(error);
     }
   }, []);
 

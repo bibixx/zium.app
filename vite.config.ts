@@ -1,7 +1,7 @@
 import { defineConfig, resolvePackageData } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import svgr from "vite-plugin-svgr";
-import { sentryVitePlugin } from "@sentry/vite-plugin";
+import { posthogRollupPlugin } from "@posthog/rollup-plugin";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
@@ -14,10 +14,9 @@ export default defineConfig(({ mode }) => {
     plugins: [
       react(),
       svgr(),
-      sentryVitePlugin({
-        authToken: process.env.SENTRY_AUTH_TOKEN,
-        org: "bibixx",
-        project: "zium-app",
+      posthogRollupPlugin({
+        apiKey: process.env.POSTHOG_API_KEY,
+        host: process.env.POSTHOG_HOST || "https://us.i.posthog.com",
       }),
     ],
     css: {

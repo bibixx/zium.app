@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useReducer } from "react";
-import { captureException } from "@sentry/browser";
+import posthog from "posthog-js";
 import { fetchVideoStream } from "./useStreamVideo.api";
 import { StreamVideoState, StreamVideoStateAction } from "./useStreamVideo.types";
 import { StreamVideoError } from "./useStreamVideo.utils";
@@ -63,7 +63,7 @@ export const useStreamVideo = (playbackUrl: string | null) => {
         dispatch({ type: "done", data });
       } catch (error) {
         dispatch({ type: "error", error: error });
-        captureException(error);
+        posthog.captureException(error);
       }
     },
     [playbackUrl],

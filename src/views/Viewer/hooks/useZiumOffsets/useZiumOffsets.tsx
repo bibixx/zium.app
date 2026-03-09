@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { captureException } from "@sentry/browser";
+import posthog from "posthog-js";
 import { useSnackbars } from "../../../../components/Snackbar/SnackbarsList.hooks";
 import { Button } from "../../../../components/Button/Button";
 import { UserOffsets, useUserOffsets } from "../../../../hooks/useUserOffests/useUserOffests";
@@ -84,7 +84,7 @@ export const useZiumOffsets = (raceId: string, hasOnlyOneStream: boolean, setPau
 
         registerSnackbarForUnmount(id);
       } catch (error) {
-        captureException(error);
+        posthog.captureException(error);
       }
     },
     [
