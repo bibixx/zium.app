@@ -20,7 +20,6 @@ import { StreamPicker } from "../../components/StreamPicker/StreamPicker";
 import { Player } from "../../components/Player/Player";
 import { isNotNullable } from "../../utils/isNotNullable";
 import { CookieBanner } from "../../components/CookieBanner/CookieBanner";
-import { ZiumOffsetsOverwriteOnStartDialog } from "../../components/ZiumOffsetsDialogs/ZiumOffsetsOverwriteOnStartDialog";
 import { GlobalShortcutsSnackbar } from "../../components/ShortcutsSnackbar/ShortcutsSnackbar";
 import { toggleFullScreen } from "../../utils/toggleFullScreen";
 import { registerSyncDebugSources, unregisterSyncDebugSources } from "../../components/DebugPanel/syncDebugState";
@@ -35,7 +34,6 @@ import { useViewerState } from "./hooks/useViewerState/useViewerState";
 import { useGlobalShortcuts } from "./hooks/useGlobalShortcuts";
 import { useCmdTutorial } from "./hooks/useCmdTutorial";
 import { GridLayoutFillMode } from "./hooks/useViewerState/useViewerState.utils";
-import { useZiumOffsets } from "./hooks/useZiumOffsets/useZiumOffsets";
 import { useNotifyAboutNewEvent } from "./hooks/useNotifyAboutNewEvent/useNotifyAboutNewEvent";
 
 interface ViewerProps {
@@ -159,8 +157,6 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
 
     return allStreams.length === 1;
   }, [streams]);
-  const { dialogState: ziumOffsetsDialogState } = useZiumOffsets(raceId, hasOnlyOneStream, setAreVideosPaused);
-
   const getLayoutChild = useCallback(
     (gridWindow: GridWindow, fillMode: GridLayoutFillMode) => {
       const setRef = (video: VideoPlayerRef | null) => {
@@ -416,11 +412,6 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
           viewerState={viewerState}
           isPaused={areVideosPaused}
           hasUsedAllStreams={usedWindows.length >= availableDrivers.length + globalFeeds.length}
-        />
-        <ZiumOffsetsOverwriteOnStartDialog
-          isOpen={ziumOffsetsDialogState.isOpen}
-          onClose={ziumOffsetsDialogState.onClose}
-          onApply={ziumOffsetsDialogState.onApply}
         />
         <GlobalShortcutsSnackbar />
       </div>

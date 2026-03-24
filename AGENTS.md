@@ -193,6 +193,6 @@ Located in `extension/` — required for the app to function:
 ### Feature Flags
 
 Debug flags in `src/hooks/useFeatureFlags/` (Zustand + persist + Zod validation):
-`forceUiVisibility`, `forceTVAccess`, `showInternationalOffsets`, `useKidsAvatars`, `increaseBackgroundContrast`, `showWindowBorders`, `disableLiveNotifications`
+`forceUiVisibility`, `forceTVAccess`, `increaseBackgroundContrast`, `showWindowBorders`, `disableLiveNotifications`
 
 Toggle via Debug Panel: `Ctrl+Shift+D`

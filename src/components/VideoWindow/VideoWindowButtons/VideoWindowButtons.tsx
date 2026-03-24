@@ -42,15 +42,10 @@ export const VideoWindowButtonsBottomRightWrapper = ({ children }: VideoWindowBu
 type VideoWindowButtonsOffsetProps = {
   onOffsetChange: (value: number) => void;
   currentOffset: number;
-  usesZiumOffsets: boolean;
 };
 export const VideoWindowButtonsOffset = (props: VideoWindowButtonsOffsetProps) => (
   <div className={styles.hideWhenUiHidden}>
-    <OffsetInput
-      onChange={props.onOffsetChange}
-      initialValue={props.currentOffset}
-      usesZiumOffsets={props.usesZiumOffsets}
-    />
+    <OffsetInput onChange={props.onOffsetChange} initialValue={props.currentOffset} />
   </div>
 );
 

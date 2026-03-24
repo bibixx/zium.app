@@ -16,8 +16,6 @@ import { assertNotNullable } from "../../utils/assertExistence";
 import { getInitialOffsets, saveOffsets } from "./useUserOffests.utils";
 
 export type UserOffsets = {
-  isUserDefined: boolean;
-  lastAppliedZiumOffsets: number | null;
   additionalStreams: Partial<Record<AutoComplete<MainAndGlobalStreamInfo["type"]>, number>>;
 };
 
@@ -41,14 +39,11 @@ export const useUserOffsetsState = (raceId: string | undefined) => {
   }, [offsetEmitter, raceId]);
 
   const updateOffset = useCallback(
-    (key: keyof UserOffsets["additionalStreams"], value: number, isUserDefined = true) => {
+    (key: keyof UserOffsets["additionalStreams"], value: number) => {
       const oldOffsets: UserOffsets = offsets.current ?? {
-        isUserDefined,
         additionalStreams: {},
-        lastAppliedZiumOffsets: null,
       };
 
-      oldOffsets.isUserDefined = isUserDefined;
       oldOffsets.additionalStreams = {
         ...oldOffsets.additionalStreams,
         [key]: value,
@@ -62,23 +57,12 @@ export const useUserOffsetsState = (raceId: string | undefined) => {
     [offsetEmitter, raceId],
   );
 
-  const overrideOffsets = useCallback(
-    (value: UserOffsets) => {
-      offsets.current = value;
-
-      offsetEmitter.emit("change");
-      saveOffsets(raceId, offsets.current);
-    },
-    [offsetEmitter, raceId],
-  );
-
-  return { offsets, offsetEmitter, updateOffset, overrideOffsets };
+  return { offsets, offsetEmitter, updateOffset };
 };
 
 interface UserOffsetsContextType {
   offsets: MutableRefObject<UserOffsets | null>;
   updateOffset: (key: keyof UserOffsets["additionalStreams"], value: number) => void;
-  overrideOffsets: (value: UserOffsets) => void;
   offsetEmitter: EventEmitter<UserOffsetsEmitterHandlers>;
 }
 const UserOffsetsContext = createContext<UserOffsetsContextType | null>(null);

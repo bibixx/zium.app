@@ -21,6 +21,12 @@
   margin-bottom: 8px;
   @include typography(text, 300, regular);
   color: var(--color-content-default);
+  user-select: none;
+
+  &.hasMaxHeight {
+    max-height: 300px;
+    overflow: auto;
+  }
 
   &:last-child {
     margin-bottom: 0;

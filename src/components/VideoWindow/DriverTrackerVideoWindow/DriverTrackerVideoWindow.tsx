@@ -100,7 +100,6 @@ export const DriverTrackerVideoWindow = forwardRef<VideoPlayerRef | null, Driver
           <VideoWindowButtonsOffset
             onOffsetChange={onOffsetChange}
             currentOffset={offsets?.additionalStreams["driver-tracker"] ?? 0}
-            usesZiumOffsets={offsets?.isUserDefined === false}
           />
         </VideoWindowButtonsTopLeftWrapper>
         <VideoWindowButtonsTopRightWrapper>

@@ -15,7 +15,6 @@ import { useHotkeys } from "../../../hooks/useHotkeys/useHotkeys";
 import { SHORTCUTS } from "../../../hooks/useHotkeys/useHotkeys.keys";
 import {
   VideoWindowButtonsBottomRightWrapper,
-  VideoWindowButtonsOffset,
   VideoWindowButtonsOnAudioFocusClick,
   VideoWindowButtonsSetClosedCaptions,
   VideoWindowButtonsSetVideoTrack,
@@ -24,8 +23,6 @@ import {
   VideoWindowButtonsUpdateFillMode,
 } from "../VideoWindowButtons/VideoWindowButtons";
 import { MainStreamInfo } from "../../../hooks/useVideoRaceDetails/useVideoRaceDetails.types";
-import { useReactiveUserOffsets, useUserOffsets } from "../../../hooks/useUserOffests/useUserOffests";
-import { useFeatureFlags } from "../../../hooks/useFeatureFlags/useFeatureFlags";
 import { useInternationalStreamMedia } from "../../../hooks/useInternationalStreamMedia/useInternationalStreamMedia";
 import { DropdownSection, DropdownSectionElement } from "../../Dropdown/Dropdown";
 import { ChosenValueType } from "../../../hooks/useStreamPicker/useStreamPicker";
@@ -71,16 +68,6 @@ export const MainVideoWindow = forwardRef<VideoPlayerRef | null, MainVideoWindow
     const [selectedSubtitleId, setSelectedSubtitleId] = useState<string | null>(null);
     const areClosedCaptionsOn = useMemo(() => selectedSubtitleId != null, [selectedSubtitleId]);
     const hasMultipleCaptionsTracks = availableSubtitleTracks.length > 1;
-    const showInternationalOffsets = useFeatureFlags((state) => state.flags.showInternationalOffsets);
-
-    const { updateOffset } = useUserOffsets();
-    const offsets = useReactiveUserOffsets();
-    const onOffsetChange = useCallback(
-      (value: number) => {
-        updateOffset("international", value);
-      },
-      [updateOffset],
-    );
 
     const [availableAudioTracks, setAvailableAudioTracks] = useState<AudioTrackInfo[]>([]);
     const selectedAudioLanguage = useMemo(() => {
@@ -301,14 +288,6 @@ export const MainVideoWindow = forwardRef<VideoPlayerRef | null, MainVideoWindow
         />
         <VideoWindowButtonsTopLeftWrapper>
           <SourceButton label="Main stream" icon={getIconForStreamInfo("f1live", "mini")} hideWhenUiHidden />
-
-          {showInternationalOffsets && gridWindow.streamId !== "f1live" && (
-            <VideoWindowButtonsOffset
-              onOffsetChange={onOffsetChange}
-              currentOffset={offsets?.additionalStreams.international ?? 0}
-              usesZiumOffsets={offsets?.isUserDefined === false}
-            />
-          )}
         </VideoWindowButtonsTopLeftWrapper>
         <VideoWindowButtonsBottomRightWrapper>
           <VideoWindowButtonsUpdateFillMode

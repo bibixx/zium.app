@@ -126,7 +126,6 @@ export const DriverVideoWindow = forwardRef<VideoPlayerRef | null, DriverVideoWi
           <VideoWindowButtonsOffset
             onOffsetChange={onOffsetChange}
             currentOffset={offsets?.additionalStreams[gridWindow.driverId] ?? 0}
-            usesZiumOffsets={offsets?.isUserDefined === false}
           />
         </VideoWindowButtonsTopLeftWrapper>
         <VideoWindowButtonsTopRightWrapper>

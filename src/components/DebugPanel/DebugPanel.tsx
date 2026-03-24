@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import cn from "classnames";
+import { Link } from "react-router-dom";
 import { XMarkIcon } from "@heroicons/react/20/solid";
 import { Dialog } from "../Dialog/Dialog";
 import { DialogContent, DialogContentAlert, DialogContentButtonFooter } from "../Dialog/DialogContent/DialogContent";
@@ -14,7 +15,7 @@ import { useHotkeys } from "../../hooks/useHotkeys/useHotkeys";
 import { Checkbox } from "../Checkbox/Checkbox";
 import { useTheme } from "../../hooks/useTheme/useTheme";
 import styles from "./DebugPanel.module.scss";
-import { debugStore, downloadOffsetsForCurrentRace, getLorem } from "./DebugPanel.utils";
+import { debugStore, getLorem } from "./DebugPanel.utils";
 import { getSyncDebugSnapshot, SyncDebugSnapshot } from "./syncDebugState";
 
 export const DebugPanel = () => {
@@ -70,7 +71,7 @@ const DebugSyncMonitor = () => {
   }
 
   return (
-    <div className={styles.section}>
+    <div className={cn(styles.section, styles.hasMaxHeight)}>
       <div className={styles.sectionHeader}>Sync Monitor</div>
       <div className={styles.syncTable}>
         <div className={styles.syncHeaderRow}>
@@ -260,29 +261,11 @@ const DebugColorModeSection = () => {
 
 const DebugRaceSettings = ({ closePanel }: DebugPanelContentsProps) => {
   const { flags, updateFlag } = useFeatureFlags();
-  const { raceId } = useParams();
-  const { openSnackbar } = useSnackbars();
 
   return (
     <div className={styles.section}>
       <div className={styles.sectionHeader}>Race</div>
       <div className={styles.buttonsRow}>
-        <Button
-          variant={"Secondary"}
-          onClick={
-            raceId
-              ? () =>
-                  downloadOffsetsForCurrentRace(raceId, () =>
-                    openSnackbar({
-                      title: "No offsets set for the current race",
-                    }),
-                  )
-              : undefined
-          }
-          disabled={raceId == null}
-        >
-          Download offsets for current event
-        </Button>
         <Button variant={"Secondary"} as={Link} to="/race/__DEBUG__" onClick={closePanel}>
           Open debug live stream
         </Button>
@@ -316,11 +299,6 @@ const DebugRaceSettings = ({ closePanel }: DebugPanelContentsProps) => {
         label="Force F1 TV Access subscription"
         checked={flags.forceTVAccess}
         onChange={updateFlag("forceTVAccess")}
-      />
-      <Checkbox
-        label="Show offset picker for International stream"
-        checked={flags.showInternationalOffsets}
-        onChange={updateFlag("showInternationalOffsets")}
       />
     </div>
   );

@@ -17,10 +17,6 @@ import { ListItem } from "../../../components/ListItem/ListItem";
 import { isRaceGenre } from "../../../constants/races";
 import { useRaceDetails } from "../../../hooks/useRaceDetails/useRaceDetails";
 import { RaceDetailsData } from "../../../hooks/useRaceDetails/useRacesDetails.types";
-import { MIDDLE_DOT } from "../../../utils/text";
-import { TimeOffsetOffIcon } from "../../../components/CustomIcons/CustomIcons";
-import { joinReactNodes } from "../../../utils/joinReactNodes";
-import { isNotFalse } from "../../../utils/isNotFalse";
 import { Tooltip } from "../../../components/Tooltip/Tooltip";
 import { formatDateDayShortMonthYear, formatDateDayLongMonthYearTime } from "../../../utils/date";
 import { AdditionalEvents } from "./AdditionalEvents/AdditionalEvents";
@@ -33,10 +29,9 @@ interface RaceDetailsProps {
   endDate: Date;
   onClose: () => void;
   seasonId: string;
-  ziumOffsetsInfo: string[];
 }
 
-export const RaceDetails = ({ id, endDate, onClose, seasonId, ziumOffsetsInfo }: RaceDetailsProps) => {
+export const RaceDetails = ({ id, endDate, onClose, seasonId }: RaceDetailsProps) => {
   const { racesDetailsState } = useRaceDetails(id);
   const firstListItemRef = useRef<HTMLAnchorElement | null>(null);
 
@@ -124,7 +119,7 @@ export const RaceDetails = ({ id, endDate, onClose, seasonId, ziumOffsetsInfo }:
           >
             <EventSession
               title={adjustTitle(raceDetails.title, raceDetails.isLive)}
-              subtitle={getSubtitle(raceDetails, ziumOffsetsInfo)}
+              subtitle={getSubtitle(raceDetails)}
               rightIconWrapperClassName={styles.raceDetailsListItemRightIconWrapper}
               isLive={raceDetails.isLive}
               disabled={isDisabled}
@@ -154,8 +149,12 @@ const formatDateRelative = (date: Date) => {
   return "Starts in " + formatDistanceStrict(now, date, { addSuffix: false, roundingMethod: "ceil" });
 };
 
-const getSubtitle = (raceDetails: RaceDetailsData, ziumOffsetsInfo: string[]) => {
-  const subtitleDatePart = raceDetails.startDate !== null && (
+const getSubtitle = (raceDetails: RaceDetailsData) => {
+  if (raceDetails.startDate === null) {
+    return null;
+  }
+
+  return (
     <Tooltip
       content={isFuture(raceDetails.startDate) ? formatDateDayLongMonthYearTime(raceDetails.startDate) : null}
       delayDuration={0}
@@ -164,20 +163,6 @@ const getSubtitle = (raceDetails: RaceDetailsData, ziumOffsetsInfo: string[]) =>
       <span>{formatDateRelative(raceDetails.startDate)}</span>
     </Tooltip>
   );
-
-  const subtitleZiumInfoPart = ziumOffsetsInfo.includes(raceDetails.id) && (
-    <>
-      <TimeOffsetOffIcon className={styles.syncedIcon} width={16} height={16} />
-      <span>Time synced</span>
-    </>
-  );
-
-  if (!subtitleDatePart && !subtitleZiumInfoPart) {
-    return null;
-  }
-
-  const divider = <span>{MIDDLE_DOT}</span>;
-  return joinReactNodes([subtitleDatePart, subtitleZiumInfoPart].filter(isNotFalse), divider);
 };
 
 const isKidsEvent = (raceDetails: RaceDetailsData) => {

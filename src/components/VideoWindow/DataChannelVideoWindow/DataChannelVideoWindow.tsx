@@ -100,7 +100,6 @@ export const DataChannelVideoWindow = forwardRef<VideoPlayerRef | null, DataChan
           <VideoWindowButtonsOffset
             onOffsetChange={onOffsetChange}
             currentOffset={offsets?.additionalStreams["data-channel"] ?? 0}
-            usesZiumOffsets={offsets?.isUserDefined === false}
           />
         </VideoWindowButtonsTopLeftWrapper>
         <VideoWindowButtonsTopRightWrapper>

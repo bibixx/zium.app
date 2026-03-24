@@ -21,10 +21,9 @@ interface SelectedRaceEvent {
 
 interface SeasonProps {
   season: RacesState;
-  ziumOffsetsInfo: string[];
 }
 
-export const Season = ({ season, ziumOffsetsInfo }: SeasonProps) => {
+export const Season = ({ season }: SeasonProps) => {
   const [selectedRaceEvent, setSelectedRaceEvent] = useState<SelectedRaceEvent | null>(null);
 
   const onSheetClose = useCallback(() => setSelectedRaceEvent(null), []);
@@ -90,12 +89,7 @@ export const Season = ({ season, ziumOffsetsInfo }: SeasonProps) => {
   return (
     <>
       {heading}
-      <RaceDetailsSheet
-        onClose={onSheetClose}
-        selectedRaceEvent={selectedRaceEvent}
-        seasonId={season.seasonId}
-        ziumOffsetsInfo={ziumOffsetsInfo}
-      />
+      <RaceDetailsSheet onClose={onSheetClose} selectedRaceEvent={selectedRaceEvent} seasonId={season.seasonId} />
       <div className={styles.grid}>
         {season.data.map(
           ({
@@ -147,9 +141,8 @@ interface RaceDetailsSheetProps {
   selectedRaceEvent: SelectedRaceEvent | null;
   onClose: () => void;
   seasonId: string;
-  ziumOffsetsInfo: string[];
 }
-const RaceDetailsSheet = ({ selectedRaceEvent, onClose, seasonId, ziumOffsetsInfo }: RaceDetailsSheetProps) => {
+const RaceDetailsSheet = ({ selectedRaceEvent, onClose, seasonId }: RaceDetailsSheetProps) => {
   const isOpen = selectedRaceEvent != null;
   const { data: laggedSelectedRaceEvent, reset: resetLaggedState } = useLaggedBehindData(selectedRaceEvent, isOpen);
 
@@ -161,7 +154,6 @@ const RaceDetailsSheet = ({ selectedRaceEvent, onClose, seasonId, ziumOffsetsInf
           id={laggedSelectedRaceEvent.id}
           endDate={laggedSelectedRaceEvent.endDate}
           seasonId={seasonId}
-          ziumOffsetsInfo={ziumOffsetsInfo}
         />
       )}
     </Sheet>
