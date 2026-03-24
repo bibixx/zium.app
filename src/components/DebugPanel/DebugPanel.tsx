@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { XMarkIcon } from "@heroicons/react/20/solid";
 import { Dialog } from "../Dialog/Dialog";
@@ -15,6 +15,7 @@ import { Checkbox } from "../Checkbox/Checkbox";
 import { useTheme } from "../../hooks/useTheme/useTheme";
 import styles from "./DebugPanel.module.scss";
 import { debugStore, downloadOffsetsForCurrentRace, getLorem } from "./DebugPanel.utils";
+import { getSyncDebugSnapshot, SyncDebugSnapshot } from "./syncDebugState";
 
 export const DebugPanel = () => {
   const [isDebugPanelOpen, setIsDebugPanelOpen] = useState(false);
@@ -48,6 +49,66 @@ export const DebugPanel = () => {
   );
 };
 
+const DebugSyncMonitor = () => {
+  const [snapshot, setSnapshot] = useState<SyncDebugSnapshot | null>(null);
+
+  useEffect(() => {
+    const interval = window.setInterval(() => {
+      setSnapshot(getSyncDebugSnapshot());
+    }, 500);
+
+    return () => window.clearInterval(interval);
+  }, []);
+
+  if (snapshot == null || snapshot.windows.length === 0) {
+    return (
+      <div className={styles.section}>
+        <div className={styles.sectionHeader}>Sync Monitor</div>
+        <span>No active players</span>
+      </div>
+    );
+  }
+
+  return (
+    <div className={styles.section}>
+      <div className={styles.sectionHeader}>Sync Monitor</div>
+      <div className={styles.syncTable}>
+        <div className={styles.syncHeaderRow}>
+          <span>Window</span>
+          <span>Drift</span>
+          <span>Rate</span>
+          <span>Res</span>
+          <span>Dropped</span>
+          <span>Buffer</span>
+          <span>BW</span>
+        </div>
+        {snapshot.windows.map((w) => (
+          <div key={w.windowId} className={styles.syncRow}>
+            <span className={styles.syncCell}>{w.windowId.slice(0, 8)}</span>
+            <span
+              className={styles.syncCell}
+              style={{ color: Math.abs(w.driftMs) > 100 ? "var(--color-core-red-500)" : undefined }}
+            >
+              {w.driftMs > 0 ? "+" : ""}
+              {w.driftMs}ms
+            </span>
+            <span className={styles.syncCell}>{w.playbackRate !== 1.0 ? `${w.playbackRate}x` : "1x"}</span>
+            <span className={styles.syncCell}>{w.resolution}</span>
+            <span
+              className={styles.syncCell}
+              style={{ color: w.droppedFrames > 0 ? "var(--color-core-red-500)" : undefined }}
+            >
+              {w.droppedFrames}
+            </span>
+            <span className={styles.syncCell}>{w.bufferFullness}s</span>
+            <span className={styles.syncCell}>{w.estimatedBandwidth}kbps</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
 interface DebugPanelContentsProps {
   closePanel: () => void;
 }
@@ -58,6 +119,7 @@ const DebugPanelContents = (props: DebugPanelContentsProps) => {
         <span>Debug options</span>
         <Button variant="Tertiary" iconLeft={XMarkIcon} onClick={props.closePanel} aria-label="Close" />
       </div>
+      <DebugSyncMonitor />
       <DebugGeneralSection />
       <DebugColorModeSection />
       <DebugSnackbars />

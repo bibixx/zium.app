@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useRef, useState } from "react";
+import { forwardRef, useCallback, useEffect, useRef, useState } from "react";
 import shaka from "shaka-player";
 import classNames from "classnames";
 import { posthog } from "posthog-js";
@@ -7,9 +7,13 @@ import { toggleFullScreen } from "../../utils/toggleFullScreen";
 import { VideoStreamInfo } from "../../hooks/useStreamVideo/useStreamVideo.api";
 import { GridLayoutFillMode } from "../../views/Viewer/hooks/useViewerState/useViewerState.utils";
 import { useAnalytics } from "../../hooks/useAnalytics/useAnalytics";
+import { useDeferLoad } from "../../views/Viewer/hooks/useStaggeredLoad";
 import { VideoPlayerRef, VideoPlayerOptions, TextTrackInfo, AudioTrackInfo } from "./VideoPlayer.types";
 import { BufferingOverlay } from "./BufferingOverlay";
+import { registerSharedBandwidthPlugin, sharedBandwidthEstimate } from "./sharedBandwidthPlugin";
 import styles from "./VideoPlayer.module.scss";
+
+registerSharedBandwidthPlugin();
 
 interface VideoPlayerProps {
   videoStreamInfo: VideoStreamInfo;
@@ -53,6 +57,11 @@ export const VideoPlayer = forwardRef<VideoPlayerRef | null, VideoPlayerProps>(
     const { capture } = useAnalytics();
     const showBufferingUI = !options.noBufferUI;
     const loadIdRef = useRef(0);
+    const isDeferred = useDeferLoad();
+    const isDeferredRef = useRef(isDeferred);
+    isDeferredRef.current = isDeferred;
+    const preloadManagerRef = useRef<shaka.media.PreloadManager | null>(null);
+    const pendingLoadRef = useRef(false);
 
     // Create and destroy the Shaka Player instance with the component lifecycle
     useEffect(() => {
@@ -61,6 +70,21 @@ export const VideoPlayer = forwardRef<VideoPlayerRef | null, VideoPlayerProps>(
 
       const player = new shaka.Player();
       playerRef.current = player;
+
+      player.configure({
+        abr: {
+          enabled: true,
+          restrictToElementSize: true,
+          ignoreDevicePixelRatio: false,
+          defaultBandwidthEstimate: sharedBandwidthEstimate.value,
+        },
+        streaming: {
+          bufferingGoal: 5,
+          rebufferingGoal: 0.5,
+          bufferBehind: 5,
+          segmentPrefetchLimit: 0,
+        },
+      });
 
       player.addEventListener("error", (event) => {
         const detail = (event as Event & { detail: unknown }).detail;
@@ -90,9 +114,70 @@ export const VideoPlayer = forwardRef<VideoPlayerRef | null, VideoPlayerProps>(
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    const doFullLoad = useCallback(async () => {
+      const currentLoadId = loadIdRef.current;
+      const player = playerRef.current;
+      const videoEl = videoRef.current;
+      if (player == null || videoEl == null) return;
+
+      try {
+        configureDrm(player, videoStreamInfo);
+
+        if (options.audioLanguage != null) {
+          player.configure({ preferredAudioLanguage: options.audioLanguage[0] });
+        }
+
+        const preloadManager = preloadManagerRef.current;
+        if (preloadManager != null) {
+          preloadManagerRef.current = null;
+          await player.load(preloadManager);
+        } else {
+          await player.load(videoStreamInfo.videoUrl, startAt ?? undefined);
+        }
+
+        if (currentLoadId !== loadIdRef.current) return;
+
+        if (options.autoplay !== false && !isPaused) {
+          videoEl.play().catch(() => {});
+        }
+
+        videoEl.volume = volume / 100;
+        videoEl.muted = isMuted;
+
+        const videoPlayerRef: VideoPlayerRef = { player, video: videoEl };
+
+        updateSubtitles(player, selectedSubtitleId);
+        if (setAvailableSubtitles != null) {
+          setAvailableSubtitles(getTextTracks(player));
+        }
+
+        updateAudioLanguage(player, selectedAudioLanguage);
+        if (setAvailableAudioTracks != null) {
+          setAvailableAudioTracks(getAudioTracks(player));
+        }
+
+        setRef(ref, videoPlayerRef);
+        onReady?.(videoPlayerRef);
+        capture("video_impression");
+        setIsVisible(true);
+        pendingLoadRef.current = false;
+      } catch (error) {
+        if (currentLoadId !== loadIdRef.current) return;
+        // Suppress expected LOAD_INTERRUPTED (7000) and OPERATION_ABORTED (7001) errors
+        if (isShakaInterruptError(error)) return;
+        console.error("[VideoPlayer] Load error:", error);
+        posthog.captureException(error instanceof Error ? error : new Error(String(error)), {
+          source: "shaka_player_load",
+          videoUrl: videoStreamInfo.videoUrl,
+        });
+        onError?.(error);
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [videoStreamInfo]);
+
     // Load a new source whenever videoStreamInfo changes
     useEffect(() => {
-      const currentLoadId = ++loadIdRef.current;
+      ++loadIdRef.current;
 
       async function loadSource() {
         // Wait for player.attach() to complete before loading
@@ -101,56 +186,38 @@ export const VideoPlayer = forwardRef<VideoPlayerRef | null, VideoPlayerProps>(
         }
 
         const player = playerRef.current;
-        const videoEl = videoRef.current;
-        if (player == null || videoEl == null) return;
+        if (player == null) return;
 
         try {
           await player.unload();
-
-          if (currentLoadId !== loadIdRef.current) return;
-
-          configureDrm(player, videoStreamInfo);
-
-          if (options.audioLanguage != null) {
-            player.configure({ preferredAudioLanguage: options.audioLanguage[0] });
-          }
-
-          await player.load(videoStreamInfo.videoUrl, startAt ?? undefined);
-
-          if (currentLoadId !== loadIdRef.current) return;
-
-          if (options.autoplay !== false && !isPaused) {
-            videoEl.play().catch(() => {});
-          }
-
-          videoEl.volume = volume / 100;
-          videoEl.muted = isMuted;
-
-          const videoPlayerRef: VideoPlayerRef = { player, video: videoEl };
-
-          updateSubtitles(player, selectedSubtitleId);
-          if (setAvailableSubtitles != null) {
-            setAvailableSubtitles(getTextTracks(player));
-          }
-
-          updateAudioLanguage(player, selectedAudioLanguage);
-          if (setAvailableAudioTracks != null) {
-            setAvailableAudioTracks(getAudioTracks(player));
-          }
-
-          setRef(ref, videoPlayerRef);
-          onReady?.(videoPlayerRef);
-          capture("video_impression");
-          setIsVisible(true);
-        } catch (error) {
-          if (currentLoadId !== loadIdRef.current) return;
-          console.error("[VideoPlayer] Load error:", error);
-          posthog.captureException(error instanceof Error ? error : new Error(String(error)), {
-            source: "shaka_player_load",
-            videoUrl: videoStreamInfo.videoUrl,
-          });
-          onError?.(error);
+        } catch {
+          // Ignore unload errors (e.g. player already destroyed)
         }
+
+        // Destroy any previous preload
+        if (preloadManagerRef.current != null) {
+          try {
+            await preloadManagerRef.current.destroy();
+          } catch {
+            // Ignore destroy errors on stale preloads
+          }
+          preloadManagerRef.current = null;
+        }
+
+        if (isDeferredRef.current) {
+          // Preload manifest + init segments without starting playback
+          try {
+            configureDrm(player, videoStreamInfo);
+            const manager = await player.preload(videoStreamInfo.videoUrl, startAt ?? undefined);
+            preloadManagerRef.current = manager;
+            pendingLoadRef.current = true;
+          } catch {
+            // Preload can fail if interrupted — that's OK
+          }
+          return;
+        }
+
+        await doFullLoad();
       }
 
       setIsVisible(false);
@@ -158,6 +225,13 @@ export const VideoPlayer = forwardRef<VideoPlayerRef | null, VideoPlayerProps>(
 
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [videoStreamInfo]);
+
+    // When deferred load is released, do the full load
+    useEffect(() => {
+      if (!isDeferred && pendingLoadRef.current) {
+        doFullLoad();
+      }
+    }, [isDeferred, doFullLoad]);
 
     // Listen for track changes (separate from load to avoid stale closures)
     useEffect(() => {
@@ -223,6 +297,13 @@ export const VideoPlayer = forwardRef<VideoPlayerRef | null, VideoPlayerProps>(
     );
   },
 );
+
+function isShakaInterruptError(error: unknown): boolean {
+  if (error == null || typeof error !== "object") return false;
+  const code = (error as { code?: number }).code;
+  // 7000 = LOAD_INTERRUPTED, 7001 = OPERATION_ABORTED
+  return code === 7000 || code === 7001;
+}
 
 function configureDrm(player: shaka.Player, videoStreamInfo: VideoStreamInfo) {
   if (videoStreamInfo.streamType === "HLS") {

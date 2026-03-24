@@ -24,11 +24,13 @@ import { ZiumOffsetsOverwriteOnStartDialog } from "../../components/ZiumOffsetsD
 import { GlobalShortcutsSnackbar } from "../../components/ShortcutsSnackbar/ShortcutsSnackbar";
 import { toggleFullScreen } from "../../utils/toggleFullScreen";
 import { useFeatureFlags } from "../../hooks/useFeatureFlags/useFeatureFlags";
+import { registerSyncDebugSources, unregisterSyncDebugSources } from "../../components/DebugPanel/syncDebugState";
 import { getWindowStreamMap, getAvailableDrivers } from "./Viewer.utils";
 import { useGrid } from "./hooks/useGrid";
 import styles from "./Viewer.module.scss";
 import { useVideoAudio } from "./hooks/useVideoAudio";
 import { useSyncVideos } from "./hooks/useSyncVideos";
+import { useStaggeredLoad, DeferLoadGate } from "./hooks/useStaggeredLoad";
 import { BackgroundDots } from "./BackgroundDots/BackgroundDots";
 import { useViewerState } from "./hooks/useViewerState/useViewerState";
 import { useGlobalShortcuts } from "./hooks/useGlobalShortcuts";
@@ -340,7 +342,19 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
     ],
   );
 
-  useSyncVideos({ windows, windowPlayerRefMapRef: windowVideojsRefMapRef, isLive, playbackOffsets });
+  const { syncStateRef } = useSyncVideos({
+    windows,
+    windowPlayerRefMapRef: windowVideojsRefMapRef,
+    isLive,
+    playbackOffsets,
+  });
+  const { isWindowReady } = useStaggeredLoad(windows, mainVideoPlayer);
+
+  useEffect(() => {
+    registerSyncDebugSources(syncStateRef, windowVideojsRefMapRef);
+    return unregisterSyncDebugSources;
+  }, [syncStateRef]);
+
   useGlobalShortcuts(mainVideoPlayer, setAreVideosPaused, setIsMuted);
   useNotifyAboutNewEvent(raceId);
 
@@ -378,7 +392,9 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
                     transitionStatus={transitionStatus}
                     onResize={onResize}
                   >
-                    {getLayoutChild(gridWindow, l.fillMode)}
+                    <DeferLoadGate shouldDefer={!isWindowReady(gridWindow.id)}>
+                      {getLayoutChild(gridWindow, l.fillMode)}
+                    </DeferLoadGate>
                   </RnDWindow>
                 )}
               </Transition>

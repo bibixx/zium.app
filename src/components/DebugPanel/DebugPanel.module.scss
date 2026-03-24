@@ -39,3 +39,31 @@
   gap: 8px;
   flex-wrap: wrap;
 }
+
+.syncTable {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-variant-numeric: tabular-nums;
+  @include typography(text, 200, regular);
+}
+
+.syncHeaderRow {
+  display: grid;
+  grid-template-columns: 70px 60px 40px 80px 55px 50px 70px;
+  gap: 4px;
+  @include typography(text, 200, strong);
+  color: var(--color-content-muted);
+}
+
+.syncRow {
+  display: grid;
+  grid-template-columns: 70px 60px 40px 80px 55px 50px 70px;
+  gap: 4px;
+}
+
+.syncCell {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
