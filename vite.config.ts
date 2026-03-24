@@ -1,6 +1,6 @@
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { defineConfig } from "vite";
 // eslint-disable-next-line
 import react from "@vitejs/plugin-react-swc";
@@ -24,6 +24,22 @@ export default defineConfig(({ mode }) => {
     plugins: [
       react(),
       svgr(),
+      {
+        name: "images-404",
+        configureServer(server) {
+          server.middlewares.use((req, res, next) => {
+            if (req.url?.startsWith("/images/")) {
+              const filePath = resolve(__dirname, "public", req.url.slice(1).split("?")[0]);
+              if (!existsSync(filePath)) {
+                res.statusCode = 404;
+                res.end();
+                return;
+              }
+            }
+            next();
+          });
+        },
+      },
       ...(posthogProjectId && posthogPersonalApiKey
         ? [
             posthogRollupPlugin({
