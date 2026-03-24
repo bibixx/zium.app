@@ -352,7 +352,7 @@ const PlaybackButtons = ({ player, isReady }: PlaybackButtonsProps) => {
   );
 };
 
-const setupEvents = (player: PlayerAPI, eventMap: Partial<Record<PlayerEvent, PlayerEventCallback>>) => {
+const setupEvents = (player: PlayerAPI, eventMap: Partial<Record<PlayerEvent, PlayerEventCallback<PlayerEvent>>>) => {
   Object.entries(eventMap).map(([e, callback]) => {
     player.on(e as PlayerEvent, callback);
   });
