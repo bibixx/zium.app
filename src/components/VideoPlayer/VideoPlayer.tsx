@@ -211,6 +211,12 @@ export const VideoPlayer = forwardRef<VideoPlayerRef | null, VideoPlayerProps>(
             const manager = await player.preload(videoStreamInfo.videoUrl, startAt ?? undefined);
             preloadManagerRef.current = manager;
             pendingLoadRef.current = true;
+
+            // If the stagger released while we were preloading, the deferred
+            // release effect already fired and missed pendingLoadRef. Load now.
+            if (!isDeferredRef.current) {
+              await doFullLoad();
+            }
           } catch {
             // Preload can fail if interrupted — that's OK
           }
