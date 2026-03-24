@@ -336,7 +336,7 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
     ],
   );
 
-  const { syncStateRef } = useSyncVideos({
+  const { syncStateRef, manifestOffsetsRef, presentationStartTimesRef } = useSyncVideos({
     windows,
     windowPlayerRefMapRef: windowVideojsRefMapRef,
     isLive,
@@ -345,9 +345,9 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
   const { isWindowReady } = useStaggeredLoad(windows, mainVideoPlayer);
 
   useEffect(() => {
-    registerSyncDebugSources(syncStateRef, windowVideojsRefMapRef);
+    registerSyncDebugSources(syncStateRef, windowVideojsRefMapRef, manifestOffsetsRef, presentationStartTimesRef);
     return unregisterSyncDebugSources;
-  }, [syncStateRef]);
+  }, [syncStateRef, manifestOffsetsRef, presentationStartTimesRef]);
 
   useGlobalShortcuts(mainVideoPlayer, setAreVideosPaused, setIsMuted);
   useNotifyAboutNewEvent(raceId);

@@ -3,6 +3,7 @@ import { PlaybackOffsets } from "../../../hooks/useVideoRaceDetails/useVideoRace
 import { GridWindow, MainGridWindow } from "../../../types/GridWindow";
 import { UserOffsets, useUserOffsets } from "../../../hooks/useUserOffests/useUserOffests";
 import { VideoPlayerRef } from "../../../components/VideoPlayer/VideoPlayer.types";
+import { ManifestOffsets, useManifestOffsets } from "../../../hooks/useManifestOffsets/useManifestOffsets";
 
 // Drift thresholds (in seconds)
 const DRIFT_IGNORE_THRESHOLD = 0.05; // < 50ms — imperceptible
@@ -30,6 +31,7 @@ const supportsRVFC = "requestVideoFrameCallback" in HTMLVideoElement.prototype;
 export const useSyncVideos = ({ windows, windowPlayerRefMapRef, isLive, playbackOffsets }: UseSyncVideosArguments) => {
   const { offsets: userOffsetsRef, offsetEmitter } = useUserOffsets();
   const syncStateRef = useRef<SyncStateSnapshot>([]);
+  const { manifestOffsetsRef, presentationStartTimesRef } = useManifestOffsets({ windows, windowPlayerRefMapRef });
 
   useEffect(() => {
     const mainWindow = windows.find((w): w is MainGridWindow => w.type === "main");
@@ -39,7 +41,6 @@ export const useSyncVideos = ({ windows, windowPlayerRefMapRef, isLive, playback
     let masterTime = 0;
     let masterSeekRangeEnd = 0;
     let masterTimeShift = 0; // for live: distance from live edge
-    let forceSyncNeeded = false;
 
     // --- Play/pause sync (runs periodically) ---
     const syncPlayPause = () => {
@@ -98,10 +99,18 @@ export const useSyncVideos = ({ windows, windowPlayerRefMapRef, isLive, playback
         const mainWindowToF1TVOffset = getOffset(
           playbackOffsets,
           userOffsetsRef.current,
+          manifestOffsetsRef.current,
           f1TVPlaceholderWindow,
           mainWindow,
         );
-        const offset = getOffset(playbackOffsets, userOffsetsRef.current, w, mainWindow, mainWindowToF1TVOffset);
+        const offset = getOffset(
+          playbackOffsets,
+          userOffsetsRef.current,
+          manifestOffsetsRef.current,
+          w,
+          mainWindow,
+          mainWindowToF1TVOffset,
+        );
 
         let drift: number;
         if (isLive) {
@@ -115,7 +124,7 @@ export const useSyncVideos = ({ windows, windowPlayerRefMapRef, isLive, playback
 
         const absDrift = Math.abs(drift);
 
-        if (forceSyncNeeded || absDrift > DRIFT_HARD_SEEK_THRESHOLD) {
+        if (absDrift > DRIFT_HARD_SEEK_THRESHOLD) {
           // Hard seek — too far for gradual correction
           if (isLive) {
             const playerRef2 = windowPlayerRefMapRef.current[w.id];
@@ -189,16 +198,53 @@ export const useSyncVideos = ({ windows, windowPlayerRefMapRef, isLive, playback
     };
 
     // Force sync handler (for seeking, offset changes, visibility)
+    // Directly seeks all minion videos instead of relying on rVFC,
+    // which doesn't fire on paused videos (needed for frame-by-frame stepping).
     const forceSync = () => {
-      forceSyncNeeded = true;
-      // The rVFC callbacks will pick this up on the next frame
-      // Also do an immediate sync for responsiveness
-      syncPlayPause();
+      const mainRef = windowPlayerRefMapRef.current[mainWindow.id];
+      if (mainRef == null) return;
 
-      // Clear force flag after one frame
-      requestAnimationFrame(() => {
-        forceSyncNeeded = false;
+      const currentMasterTime = mainRef.video.currentTime;
+
+      windows.forEach((w) => {
+        if (w.id === mainWindow.id) return;
+        const playerRef = windowPlayerRefMapRef.current[w.id];
+        if (playerRef == null) return;
+
+        const { video, player } = playerRef;
+
+        const f1TVPlaceholderWindow: GridWindow = { type: "main", id: "", streamId: "f1live" };
+        const mainWindowToF1TVOffset = getOffset(
+          playbackOffsets,
+          userOffsetsRef.current,
+          manifestOffsetsRef.current,
+          f1TVPlaceholderWindow,
+          mainWindow,
+        );
+        const offset = getOffset(
+          playbackOffsets,
+          userOffsetsRef.current,
+          manifestOffsetsRef.current,
+          w,
+          mainWindow,
+          mainWindowToF1TVOffset,
+        );
+
+        if (isLive) {
+          const masterSeekEnd = mainRef.player.seekRange().end;
+          const masterShift = masterSeekEnd - currentMasterTime;
+          video.currentTime = player.seekRange().end - (masterShift + offset);
+        } else {
+          const targetTime = currentMasterTime - offset;
+          if (targetTime >= 0) {
+            video.currentTime = targetTime;
+          }
+        }
+
+        video.playbackRate = 1.0;
       });
+
+      syncPlayPause();
     };
 
     // --- Event listeners ---
@@ -270,14 +316,15 @@ export const useSyncVideos = ({ windows, windowPlayerRefMapRef, isLive, playback
         }
       });
     };
-  }, [isLive, offsetEmitter, playbackOffsets, userOffsetsRef, windowPlayerRefMapRef, windows]);
+  }, [isLive, manifestOffsetsRef, offsetEmitter, playbackOffsets, userOffsetsRef, windowPlayerRefMapRef, windows]);
 
-  return { syncStateRef };
+  return { syncStateRef, manifestOffsetsRef, presentationStartTimesRef };
 };
 
 const getOffset = (
   playbackOffsets: PlaybackOffsets,
   userOffsets: UserOffsets | null,
+  manifestOffsets: ManifestOffsets,
   w: GridWindow,
   mainWindow: MainGridWindow,
   additionalOffset = 0,
@@ -289,6 +336,13 @@ const getOffset = (
     userOffset = userOffsets?.additionalStreams[mainWindow.streamId] ?? 0;
   } else {
     userOffset = userOffsets?.additionalStreams[w.type] ?? 0;
+  }
+
+  // Prefer manifest-derived offsets (from HLS #EXT-X-PROGRAM-DATE-TIME tags)
+  // over F1's static playbackOffsets, as they're measured per-session and more accurate.
+  const manifestOffset = manifestOffsets[w.id];
+  if (manifestOffset != null) {
+    return manifestOffset + userOffset + additionalOffset;
   }
 
   let f1Offset = 0;

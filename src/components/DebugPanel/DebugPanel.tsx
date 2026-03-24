@@ -77,6 +77,7 @@ const DebugSyncMonitor = () => {
           <span>Window</span>
           <span>Drift</span>
           <span>Rate</span>
+          <span>PDT Offset</span>
           <span>Res</span>
           <span>Dropped</span>
           <span>Buffer</span>
@@ -93,6 +94,9 @@ const DebugSyncMonitor = () => {
               {w.driftMs}ms
             </span>
             <span className={styles.syncCell}>{w.playbackRate !== 1.0 ? `${w.playbackRate}x` : "1x"}</span>
+            <span className={styles.syncCell}>
+              {w.manifestOffsetMs != null ? `${w.manifestOffsetMs > 0 ? "+" : ""}${w.manifestOffsetMs}ms` : "—"}
+            </span>
             <span className={styles.syncCell}>{w.resolution}</span>
             <span
               className={styles.syncCell}
