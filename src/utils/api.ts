@@ -1,5 +1,7 @@
 import { defaultHeaders } from "./apiDefaultHeaders";
 
+const sessionId = `WEB-${crypto.randomUUID()}`;
+
 interface ApiErrorResponseData {
   status: number;
   statusText: string;
@@ -55,6 +57,8 @@ export const fetchJSON = async (url: string, init: RequestInit | undefined, sign
       ...init,
       headers: {
         ...defaultHeaders,
+        sessionid: sessionId,
+        correlationid: `WEB-${crypto.randomUUID()}`,
         ...init?.headers,
       },
       signal,

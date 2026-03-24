@@ -100,7 +100,6 @@ export const COMING_SOON_SEASONS_DATA: Partial<Record<SupportedSeasons, Date>> =
   "2022": new Date(2022, 2, 3),
   "2023": new Date(2023, 2, 3),
   "2024": new Date(2024, 1, 21),
-  "2026": new Date(3000, 1, 21),
 };
 
 export const LATEST_SEASON = Object.entries(COMING_SOON_SEASONS_DATA).sort(

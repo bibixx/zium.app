@@ -14,6 +14,8 @@ export const baseStreamDataValidator = z.object({
   title: z.string(),
   reportingName: z.string(),
   default: z.boolean(),
+  audioTrackNames: z.record(z.string()).optional(),
+  audioDefault: z.string().optional(),
 });
 const driverStreamDataValidator = baseStreamDataValidator.extend({
   identifier: z.literal("OBC"),
@@ -69,8 +71,8 @@ export const contentPlayValidator = z.object({
 export const tmeManifestValidator = z.object({
   feeds: z.array(
     z.object({
-      metadata: z.object({ channel_id: z.number() }),
+      metadata: z.object({ channel_id: z.number() }).passthrough(),
       url: z.string(),
-    }),
+    }).passthrough(),
   ),
 });

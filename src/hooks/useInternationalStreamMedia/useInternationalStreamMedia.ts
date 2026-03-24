@@ -7,12 +7,29 @@ import { Response } from "../../types/Response";
 import { fetchManifest } from "./useInternationalStreamMedia.api";
 import { VideoStreamMedia } from "./useInternationalStreamMedia.types";
 
+function buildMediaFromApiData(audioTrackNames: Record<string, string>, audioDefault?: string): VideoStreamMedia {
+  return {
+    AUDIO: Object.entries(audioTrackNames).map(([lang, name]) => ({
+      AUTOSELECT: lang === audioDefault,
+      DEFAULT: lang === audioDefault,
+      TYPE: "AUDIO" as const,
+      "GROUP-ID": "audio",
+      LANGUAGE: lang,
+      NAME: name,
+      URI: "",
+    })),
+  };
+}
+
 export const useInternationalStreamMedia = (defaultStreams: MainStreamInfo[]) => {
   const internationalStream = useMemo(
     () => defaultStreams.find((stream) => stream.type === "international"),
     [defaultStreams],
   );
-  const streamVideoState = useStreamVideo(internationalStream?.playbackUrl ?? null);
+
+  const hasApiAudioData = internationalStream?.audioTrackNames != null;
+
+  const streamVideoState = useStreamVideo(hasApiAudioData ? null : (internationalStream?.playbackUrl ?? null));
   const [manifestState, setManifestState] = useState<Response<VideoStreamMedia | null>>({ state: "loading" });
 
   const fetchData = useCallback(
@@ -41,11 +58,20 @@ export const useInternationalStreamMedia = (defaultStreams: MainStreamInfo[]) =>
       return;
     }
 
+    if (hasApiAudioData) {
+      setManifestState({
+        state: "done",
+        data: buildMediaFromApiData(internationalStream.audioTrackNames!, internationalStream.audioDefault),
+      });
+      return;
+    }
+
+    // Fallback for older races that don't have audioTrackNames in the API response.
     const abortController = new AbortController();
     fetchData(abortController.signal);
 
     return () => abortController.abort();
-  }, [fetchData, internationalStream]);
+  }, [fetchData, internationalStream, hasApiAudioData]);
 
   return manifestState;
 };

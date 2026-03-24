@@ -109,6 +109,8 @@ export const collectStreams = async (
       playbackUrl,
       title: getStreamPrettyName(stream.title),
       identifier: stream.identifier,
+      audioTrackNames: stream.audioTrackNames,
+      audioDefault: stream.audioDefault,
     };
 
     if (streamType === null) {

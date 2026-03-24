@@ -38,6 +38,8 @@ export interface BaseStreamInfo {
   playbackUrl: PlaybackUrl;
   title: string;
   identifier: string;
+  audioTrackNames?: Record<string, string>;
+  audioDefault?: string;
 }
 
 export interface MainStreamInfo extends BaseStreamInfo {

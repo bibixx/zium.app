@@ -41,8 +41,10 @@ function getF1DeviceInfo() {
     browserVersion,
     model,
     osVersion,
-    appVersion: "release-R44.0.3",
+    appVersion: "51.1.0",
     playerVersion,
+    p: "true",
+    tms: "1",
   };
 
   return Object.entries(info)
