@@ -256,7 +256,6 @@ export const MainVideoWindow = memo(
       }, [defaultStreams, gridWindow, internationalStreamMedia, onSourceChange, selectedAudioTrackId]);
 
       if (streamVideoState.state === "loading") {
-        console.log("[MainVideoWindow] returning null — streamVideoState is loading");
         return null;
       }
 

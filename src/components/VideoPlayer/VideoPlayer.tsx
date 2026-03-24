@@ -65,7 +65,6 @@ export const VideoPlayer = forwardRef<VideoPlayerRef | null, VideoPlayerProps>(
 
     // Create and destroy the Shaka Player instance with the component lifecycle
     useEffect(() => {
-      console.log("[VideoPlayer] MOUNT — creating Shaka player", videoStreamInfo.videoUrl);
       const videoEl = videoRef.current;
       if (videoEl == null) return;
 
@@ -106,8 +105,6 @@ export const VideoPlayer = forwardRef<VideoPlayerRef | null, VideoPlayerProps>(
       }) as Promise<void>;
 
       return () => {
-        console.log("[VideoPlayer] UNMOUNT — destroying Shaka player", videoStreamInfo.videoUrl);
-        console.trace("[VideoPlayer] unmount stack");
         playerRef.current = null;
         attachedRef.current = null;
         setRef(ref, null);
@@ -118,7 +115,6 @@ export const VideoPlayer = forwardRef<VideoPlayerRef | null, VideoPlayerProps>(
     }, []);
 
     const doFullLoad = useCallback(async () => {
-      console.log("[VideoPlayer] doFullLoad called", videoStreamInfo.videoUrl);
       const currentLoadId = loadIdRef.current;
       const player = playerRef.current;
       const videoEl = videoRef.current;
@@ -181,8 +177,6 @@ export const VideoPlayer = forwardRef<VideoPlayerRef | null, VideoPlayerProps>(
 
     // Load a new source whenever videoStreamInfo changes
     useEffect(() => {
-      console.log("[VideoPlayer] source-load effect triggered — videoStreamInfo changed", videoStreamInfo.videoUrl);
-      console.trace("[VideoPlayer] source-load trigger");
       ++loadIdRef.current;
 
       async function loadSource() {
