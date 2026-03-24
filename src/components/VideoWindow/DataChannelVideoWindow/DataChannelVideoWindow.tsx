@@ -1,4 +1,4 @@
-import { forwardRef, useCallback, useRef, useState } from "react";
+import { forwardRef, memo, useCallback, useRef, useState } from "react";
 import { useStreamVideo } from "../../../hooks/useStreamVideo/useStreamVideo";
 import { BaseGridWindow } from "../../../types/GridWindow";
 import { VideoWindowProps } from "../../../types/VideoWindowBaseProps";
@@ -24,96 +24,98 @@ import { ChosenValueType, useStreamPicker } from "../../../hooks/useStreamPicker
 
 interface DataChannelVideoWindowProps extends VideoWindowProps {
   gridWindow: BaseGridWindow;
-  onDelete: () => void;
-  onSourceChange: (data: ChosenValueType) => void;
+  onDelete: (windowId: string) => void;
+  onSourceChange: (windowId: string, data: ChosenValueType) => void;
 }
 
-export const DataChannelVideoWindow = forwardRef<VideoPlayerRef | null, DataChannelVideoWindowProps>(
-  ({ isPaused, streamUrl, onDelete, fillMode, updateFillMode, onSourceChange }, forwardedRef) => {
-    const playerRef = useRef<VideoPlayerRef | null>(null);
-    const streamVideoState = useStreamVideo(streamUrl);
-    const [playerError, setPlayerError] = useState<unknown>(null);
-    const { updateOffset } = useUserOffsets();
-    const offsets = useReactiveUserOffsets();
+export const DataChannelVideoWindow = memo(
+  forwardRef<VideoPlayerRef | null, DataChannelVideoWindowProps>(
+    ({ isPaused, streamUrl, onDelete, fillMode, updateFillMode, onSourceChange, gridWindow }, forwardedRef) => {
+      const playerRef = useRef<VideoPlayerRef | null>(null);
+      const streamVideoState = useStreamVideo(streamUrl);
+      const [playerError, setPlayerError] = useState<unknown>(null);
+      const { updateOffset } = useUserOffsets();
+      const offsets = useReactiveUserOffsets();
 
-    const { requestStream } = useStreamPicker();
-    const onRequestSourceChange = async () => {
-      const chosenData = await requestStream(["drivers", "data"], ["data-channel"]);
+      const { requestStream } = useStreamPicker();
+      const onRequestSourceChange = async () => {
+        const chosenData = await requestStream(["drivers", "data"], ["data-channel"]);
 
-      if (chosenData == null) {
-        return;
+        if (chosenData == null) {
+          return;
+        }
+
+        onSourceChange(gridWindow.id, chosenData);
+      };
+
+      const ref = (r: VideoPlayerRef | null) => {
+        setRef(forwardedRef, r);
+        playerRef.current = r;
+      };
+
+      const onOffsetChange = useCallback(
+        (value: number) => {
+          updateOffset("data-channel", value);
+        },
+        [updateOffset],
+      );
+
+      if (streamVideoState.state === "loading") {
+        return null;
       }
 
-      onSourceChange(chosenData);
-    };
+      if (
+        streamVideoState.state === "error" &&
+        streamVideoState.error instanceof StreamVideoError &&
+        streamVideoState.error.type === "NO_PLAYBACK_URL"
+      ) {
+        return <NoFeed onDelete={() => onDelete(gridWindow.id)} />;
+      }
 
-    const ref = (r: VideoPlayerRef | null) => {
-      setRef(forwardedRef, r);
-      playerRef.current = r;
-    };
+      if (streamVideoState.state === "error") {
+        return <FeedError error={streamVideoState.error} onDelete={() => onDelete(gridWindow.id)} />;
+      }
 
-    const onOffsetChange = useCallback(
-      (value: number) => {
-        updateOffset("data-channel", value);
-      },
-      [updateOffset],
-    );
+      if (playerError != null) {
+        return <FeedError error={playerError} onDelete={() => onDelete(gridWindow.id)} />;
+      }
 
-    if (streamVideoState.state === "loading") {
-      return null;
-    }
-
-    if (
-      streamVideoState.state === "error" &&
-      streamVideoState.error instanceof StreamVideoError &&
-      streamVideoState.error.type === "NO_PLAYBACK_URL"
-    ) {
-      return <NoFeed onDelete={onDelete} />;
-    }
-
-    if (streamVideoState.state === "error") {
-      return <FeedError error={streamVideoState.error} onDelete={onDelete} />;
-    }
-
-    if (playerError != null) {
-      return <FeedError error={playerError} onDelete={onDelete} />;
-    }
-
-    return (
-      <VideoWindowWrapper>
-        <VideoPlayer
-          videoStreamInfo={streamVideoState.data}
-          options={ADDITIONAL_OPTIONS}
-          ref={ref}
-          onError={setPlayerError}
-          isPaused={isPaused}
-          isMuted
-          fillMode={fillMode}
-        />
-        <VideoWindowButtonsTopLeftWrapper>
-          <SourceButton
-            onClick={onRequestSourceChange}
-            label="Data"
-            icon={getIconForStreamInfo("data-channel", "mini")}
-            hideWhenUiHidden
-          />
-          <VideoWindowButtonsOffset
-            onOffsetChange={onOffsetChange}
-            currentOffset={offsets?.additionalStreams["data-channel"] ?? 0}
-          />
-        </VideoWindowButtonsTopLeftWrapper>
-        <VideoWindowButtonsTopRightWrapper>
-          <VideoWindowButtonsClose onClose={onDelete} />
-        </VideoWindowButtonsTopRightWrapper>
-        <VideoWindowButtonsBottomRightWrapper>
-          <VideoWindowButtonsUpdateFillMode
-            updateFillMode={() => updateFillMode(fillMode === "fill" ? "fit" : "fill")}
+      return (
+        <VideoWindowWrapper>
+          <VideoPlayer
+            videoStreamInfo={streamVideoState.data}
+            options={ADDITIONAL_OPTIONS}
+            ref={ref}
+            onError={setPlayerError}
+            isPaused={isPaused}
+            isMuted
             fillMode={fillMode}
           />
-        </VideoWindowButtonsBottomRightWrapper>
-      </VideoWindowWrapper>
-    );
-  },
+          <VideoWindowButtonsTopLeftWrapper>
+            <SourceButton
+              onClick={onRequestSourceChange}
+              label="Data"
+              icon={getIconForStreamInfo("data-channel", "mini")}
+              hideWhenUiHidden
+            />
+            <VideoWindowButtonsOffset
+              onOffsetChange={onOffsetChange}
+              currentOffset={offsets?.additionalStreams["data-channel"] ?? 0}
+            />
+          </VideoWindowButtonsTopLeftWrapper>
+          <VideoWindowButtonsTopRightWrapper>
+            <VideoWindowButtonsClose onClose={() => onDelete(gridWindow.id)} />
+          </VideoWindowButtonsTopRightWrapper>
+          <VideoWindowButtonsBottomRightWrapper>
+            <VideoWindowButtonsUpdateFillMode
+              updateFillMode={() => updateFillMode(gridWindow.id, fillMode === "fill" ? "fit" : "fill")}
+              fillMode={fillMode}
+            />
+          </VideoWindowButtonsBottomRightWrapper>
+        </VideoWindowWrapper>
+      );
+    },
+  ),
 );
 
 const ADDITIONAL_OPTIONS: VideoPlayerOptions = {

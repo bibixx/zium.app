@@ -19,6 +19,10 @@ export const BufferingOverlay = ({ videoRef, playerRef }: BufferingOverlayProps)
   const showTimeoutRef = useRef(-1);
   const hideAnimationTimeoutRef = useRef(-1);
 
+  console.log(
+    `[VideoPlayer][BufferingOverlay] ${isVisible ? "visible" : "hidden"}, ${isAnimating ? "animating" : "not animating"}`,
+  );
+
   useEffect(() => {
     const video = videoRef.current;
     const player = playerRef.current;

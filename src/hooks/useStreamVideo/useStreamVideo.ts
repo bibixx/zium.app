@@ -44,6 +44,8 @@ export const useStreamVideo = (playbackUrl: PlaybackUrl | null) => {
         return;
       }
 
+      console.log("[useStreamVideo] dispatching load — playbackUrl changed", playbackUrl);
+      console.trace("[useStreamVideo] fetch trigger");
       dispatch({ type: "load" });
 
       try {

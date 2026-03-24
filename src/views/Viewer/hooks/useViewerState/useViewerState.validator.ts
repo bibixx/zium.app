@@ -39,6 +39,10 @@ const gridWindowValidator = z.union([
     type: z.literal("driver"),
     driverId: z.string(),
   }),
+  z.object({
+    id: z.string(),
+    type: z.literal("live-timing"),
+  }),
 ]);
 validateZodValidator<GridWindow, typeof gridWindowValidator>(gridWindowValidator);
 

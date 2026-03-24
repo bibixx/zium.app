@@ -5,5 +5,5 @@ export interface VideoWindowProps {
   isPaused: boolean;
   streamUrl: PlaybackUrl | null;
   fillMode: GridLayoutFillMode;
-  updateFillMode: (fillMode: GridLayoutFillMode) => void;
+  updateFillMode: (windowId: string, fillMode: GridLayoutFillMode) => void;
 }

@@ -13,6 +13,7 @@ export interface RaceInfo {
   countryId: string;
   title: string;
   genre: EventGenre;
+  startDate: Date;
 }
 
 export interface StreamsStateData {

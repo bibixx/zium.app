@@ -1,4 +1,4 @@
-import { forwardRef, useCallback, useRef, useState } from "react";
+import { forwardRef, memo, useCallback, useRef, useState } from "react";
 import { useStreamVideo } from "../../../hooks/useStreamVideo/useStreamVideo";
 import { DriverGridWindow } from "../../../types/GridWindow";
 import { VideoWindowProps } from "../../../types/VideoWindowBaseProps";
@@ -26,121 +26,134 @@ import { SourceButton } from "../../SourceButton/SourceButton";
 interface DriverVideoWindowProps extends VideoWindowProps {
   gridWindow: DriverGridWindow;
   availableDrivers: DriverData[];
-  onDriverChange: (data: ChosenValueType) => void;
+  onDriverChange: (windowId: string, data: ChosenValueType) => void;
   isAudioFocused: boolean;
-  onWindowAudioFocus: () => void;
+  onWindowAudioFocus: (windowId: string) => void;
   focusMainWindow: () => void;
   volume: number;
-  onDelete: () => void;
+  onDelete: (windowId: string) => void;
   hasOnlyOneStream: boolean;
 }
 
-export const DriverVideoWindow = forwardRef<VideoPlayerRef | null, DriverVideoWindowProps>(
-  (
-    {
-      gridWindow,
-      streamUrl,
-      availableDrivers,
-      onDriverChange,
-      isPaused,
-      isAudioFocused,
-      onWindowAudioFocus,
-      focusMainWindow,
-      volume,
-      onDelete,
-      hasOnlyOneStream,
-      fillMode,
-      updateFillMode,
-    },
-    forwardedRef,
-  ) => {
-    const playerRef = useRef<VideoPlayerRef | null>(null);
-    const streamVideoState = useStreamVideo(streamUrl);
-    const [playerError, setPlayerError] = useState<unknown>(null);
-    const currentDriver = availableDrivers.find((driver) => driver.id === gridWindow.driverId);
-    const { updateOffset } = useUserOffsets();
-    const offsets = useReactiveUserOffsets();
-
-    const ref = (r: VideoPlayerRef | null) => {
-      setRef(forwardedRef, r);
-      playerRef.current = r;
-    };
-
-    const onAudioFocusClick = () => {
-      if (isAudioFocused) {
-        focusMainWindow();
-      } else {
-        onWindowAudioFocus();
-      }
-    };
-
-    const onOffsetChange = useCallback(
-      (value: number) => {
-        updateOffset(gridWindow.driverId, value);
+export const DriverVideoWindow = memo(
+  forwardRef<VideoPlayerRef | null, DriverVideoWindowProps>(
+    (
+      {
+        gridWindow,
+        streamUrl,
+        availableDrivers,
+        onDriverChange,
+        isPaused,
+        isAudioFocused,
+        onWindowAudioFocus,
+        focusMainWindow,
+        volume,
+        onDelete,
+        hasOnlyOneStream,
+        fillMode,
+        updateFillMode,
       },
-      [gridWindow.driverId, updateOffset],
-    );
+      forwardedRef,
+    ) => {
+      const playerRef = useRef<VideoPlayerRef | null>(null);
+      const streamVideoState = useStreamVideo(streamUrl);
+      const [playerError, setPlayerError] = useState<unknown>(null);
+      const currentDriver = availableDrivers.find((driver) => driver.id === gridWindow.driverId);
+      const { updateOffset } = useUserOffsets();
+      const offsets = useReactiveUserOffsets();
 
-    if (streamVideoState.state === "loading") {
-      return null;
-    }
+      const ref = (r: VideoPlayerRef | null) => {
+        setRef(forwardedRef, r);
+        playerRef.current = r;
+      };
 
-    if (
-      streamVideoState.state === "error" &&
-      streamVideoState.error instanceof StreamVideoError &&
-      streamVideoState.error.type === "NO_PLAYBACK_URL"
-    ) {
-      return (
-        <NoFeed onDelete={onDelete}>
-          {!hasOnlyOneStream && (
-            <VideoWindowButtonsTopLeftWrapper>
-              <DriverPickerButton currentDriver={currentDriver} onDriverChange={onDriverChange} />
-            </VideoWindowButtonsTopLeftWrapper>
-          )}
-        </NoFeed>
+      const onAudioFocusClick = () => {
+        if (isAudioFocused) {
+          focusMainWindow();
+        } else {
+          onWindowAudioFocus(gridWindow.id);
+        }
+      };
+
+      const onOffsetChange = useCallback(
+        (value: number) => {
+          updateOffset(gridWindow.driverId, value);
+        },
+        [gridWindow.driverId, updateOffset],
       );
-    }
 
-    if (streamVideoState.state === "error") {
-      return <FeedError error={streamVideoState.error} onDelete={onDelete} />;
-    }
+      if (streamVideoState.state === "loading") {
+        return null;
+      }
 
-    if (playerError != null) {
-      return <FeedError error={playerError} onDelete={onDelete} />;
-    }
+      if (
+        streamVideoState.state === "error" &&
+        streamVideoState.error instanceof StreamVideoError &&
+        streamVideoState.error.type === "NO_PLAYBACK_URL"
+      ) {
+        return (
+          <NoFeed onDelete={() => onDelete(gridWindow.id)}>
+            {!hasOnlyOneStream && (
+              <VideoWindowButtonsTopLeftWrapper>
+                <DriverPickerButton
+                  currentDriver={currentDriver}
+                  onDriverChange={(data) => onDriverChange(gridWindow.id, data)}
+                />
+              </VideoWindowButtonsTopLeftWrapper>
+            )}
+          </NoFeed>
+        );
+      }
 
-    return (
-      <VideoWindowWrapper>
-        <VideoPlayer
-          videoStreamInfo={streamVideoState.data}
-          options={ADDITIONAL_OPTIONS}
-          ref={ref}
-          onError={setPlayerError}
-          isPaused={isPaused}
-          volume={isAudioFocused ? volume : 0}
-          fillMode={fillMode}
-        />
+      if (streamVideoState.state === "error") {
+        return <FeedError error={streamVideoState.error} onDelete={() => onDelete(gridWindow.id)} />;
+      }
 
-        <VideoWindowButtonsTopLeftWrapper>
-          {!hasOnlyOneStream && <DriverPickerButton currentDriver={currentDriver} onDriverChange={onDriverChange} />}
-          <VideoWindowButtonsOffset
-            onOffsetChange={onOffsetChange}
-            currentOffset={offsets?.additionalStreams[gridWindow.driverId] ?? 0}
-          />
-        </VideoWindowButtonsTopLeftWrapper>
-        <VideoWindowButtonsTopRightWrapper>
-          <VideoWindowButtonsClose onClose={onDelete} />
-        </VideoWindowButtonsTopRightWrapper>
-        <VideoWindowButtonsBottomRightWrapper>
-          <VideoWindowButtonsUpdateFillMode
-            updateFillMode={() => updateFillMode(fillMode === "fill" ? "fit" : "fill")}
+      if (playerError != null) {
+        return <FeedError error={playerError} onDelete={() => onDelete(gridWindow.id)} />;
+      }
+
+      return (
+        <VideoWindowWrapper>
+          <VideoPlayer
+            videoStreamInfo={streamVideoState.data}
+            options={ADDITIONAL_OPTIONS}
+            ref={ref}
+            onError={setPlayerError}
+            isPaused={isPaused}
+            volume={isAudioFocused ? volume : 0}
             fillMode={fillMode}
           />
-          <VideoWindowButtonsOnAudioFocusClick onAudioFocusClick={onAudioFocusClick} isAudioFocused={isAudioFocused} />
-        </VideoWindowButtonsBottomRightWrapper>
-      </VideoWindowWrapper>
-    );
-  },
+
+          <VideoWindowButtonsTopLeftWrapper>
+            {!hasOnlyOneStream && (
+              <DriverPickerButton
+                currentDriver={currentDriver}
+                onDriverChange={(data) => onDriverChange(gridWindow.id, data)}
+              />
+            )}
+            <VideoWindowButtonsOffset
+              onOffsetChange={onOffsetChange}
+              currentOffset={offsets?.additionalStreams[gridWindow.driverId] ?? 0}
+            />
+          </VideoWindowButtonsTopLeftWrapper>
+          <VideoWindowButtonsTopRightWrapper>
+            <VideoWindowButtonsClose onClose={() => onDelete(gridWindow.id)} />
+          </VideoWindowButtonsTopRightWrapper>
+          <VideoWindowButtonsBottomRightWrapper>
+            <VideoWindowButtonsUpdateFillMode
+              updateFillMode={() => updateFillMode(gridWindow.id, fillMode === "fill" ? "fit" : "fill")}
+              fillMode={fillMode}
+            />
+            <VideoWindowButtonsOnAudioFocusClick
+              onAudioFocusClick={onAudioFocusClick}
+              isAudioFocused={isAudioFocused}
+            />
+          </VideoWindowButtonsBottomRightWrapper>
+        </VideoWindowWrapper>
+      );
+    },
+  ),
 );
 
 const ADDITIONAL_OPTIONS: VideoPlayerOptions = {

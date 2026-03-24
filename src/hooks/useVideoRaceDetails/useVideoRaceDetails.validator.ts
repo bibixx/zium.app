@@ -54,10 +54,13 @@ export const videoRaceStreamsContainerValidator = z.object({
     entitlement: entitlementValidator,
     additionalStreams: z.unknown().array().optional(),
     videoType: z.string().optional(),
-    emfAttributes: z.object({
-      Meeting_Country_Name: z.string(),
-      MeetingCountryKey: z.string(),
-    }),
+    emfAttributes: z
+      .object({
+        Meeting_Country_Name: z.string(),
+        MeetingCountryKey: z.string(),
+        sessionStartDate: z.string().optional(),
+      })
+      .passthrough(),
   }),
 });
 

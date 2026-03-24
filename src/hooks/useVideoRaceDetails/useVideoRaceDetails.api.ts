@@ -23,6 +23,7 @@ export const fetchRaceStreams = async (raceId: string, signal: AbortSignal) => {
   const isLive = container.metadata.contentSubtype === "LIVE";
   const countryName = container.metadata.emfAttributes.Meeting_Country_Name;
   const countryId = container.metadata.emfAttributes.MeetingCountryKey;
+  const sessionStartDate = container.metadata.emfAttributes.sessionStartDate;
   const title = container.metadata.titleBrief;
   const playbackOffsets = container.playbackOffsets;
   const meetingKey = container.metadata.meetingKey;
@@ -35,6 +36,7 @@ export const fetchRaceStreams = async (raceId: string, signal: AbortSignal) => {
     isLive,
     countryName,
     countryId,
+    sessionStartDate,
     title,
     playbackOffsets,
     meetingKey,

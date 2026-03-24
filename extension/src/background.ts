@@ -16,6 +16,40 @@ const removeRule = () =>
     removeRuleIds: [2, 3, 4],
   });
 
+const setupLiveTimingCorsRule = () => {
+  const appDomains = import.meta.env.VITE_APP_DOMAINS.split(",").map((d: string) => d.trim());
+  const initiatorDomains = appDomains.map((domain) => domain.replace(/^\*\./, ""));
+
+  return chrome.declarativeNetRequest.updateDynamicRules({
+    removeRuleIds: [5],
+    addRules: [
+      {
+        id: 5,
+        priority: 1,
+        action: {
+          type: RuleActionType.MODIFY_HEADERS,
+          responseHeaders: [
+            {
+              header: "Access-Control-Allow-Origin",
+              operation: HeaderOperation.SET,
+              value: "*",
+            },
+            {
+              header: "Access-Control-Allow-Credentials",
+              operation: HeaderOperation.SET,
+              value: "true",
+            },
+          ],
+        },
+        condition: {
+          urlFilter: "livetiming.formula1.com",
+          initiatorDomains,
+        },
+      },
+    ],
+  });
+};
+
 const addRule = (token: string) => {
   const appDomains = import.meta.env.VITE_APP_DOMAINS.split(",").map((d: string) => d.trim());
   const initiatorDomains = appDomains.map((domain) => domain.replace(/^\*\./, ""));
@@ -270,6 +304,7 @@ chrome.runtime.onMessage.addListener(function (msg, _sender, sendResponse) {
 
 chrome.runtime.onInstalled.addListener(async (details) => {
   checkForCookieOnInstall();
+  setupLiveTimingCorsRule();
 
   if (details.reason !== "install") {
     return;
@@ -277,6 +312,9 @@ chrome.runtime.onInstalled.addListener(async (details) => {
 
   focusOrOpenZium();
 });
+
+// Ensure live timing CORS rule is always active (survives extension updates)
+setupLiveTimingCorsRule();
 
 chrome.cookies.onChanged.addListener((changeInfo) => {
   if (changeInfo.cookie.name !== "login-session") {

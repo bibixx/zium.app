@@ -7,6 +7,7 @@ import { MainVideoWindow } from "../../components/VideoWindow/MainVideoWindow/Ma
 import { DriverVideoWindow } from "../../components/VideoWindow/DriverVideoWindow/DriverVideoWindow";
 import { assertNever } from "../../utils/assertNever";
 import { DataChannelVideoWindow } from "../../components/VideoWindow/DataChannelVideoWindow/DataChannelVideoWindow";
+import { LiveTimingWindow } from "../../components/VideoWindow/LiveTimingWindow/LiveTimingWindow";
 import {
   PlaybackOffsets,
   RaceInfo,
@@ -59,7 +60,25 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
       windows,
     });
 
-  const windowStreamMap = useMemo(() => getWindowStreamMap(windows, streams), [windows, streams]);
+  const windowsRef = useRef(windows);
+  windowsRef.current = windows;
+
+  // Derive a stable key that only changes when window identity changes (type, ID, streamId/driverId),
+  // NOT when layout positions change. This prevents getLayoutChild from being recreated on drag/resize.
+  const windowStreamMapKey = useMemo(
+    () =>
+      windows
+        .map((w) => {
+          if (w.type === "main")
+            return `${w.id}:main:${w.streamId}:${w.streamId === "international" ? w.audioLanguage : ""}`;
+          if (w.type === "driver") return `${w.id}:driver:${w.driverId}`;
+          return `${w.id}:${w.type}`;
+        })
+        .join(","),
+    [windows],
+  );
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const windowStreamMap = useMemo(() => getWindowStreamMap(windowsRef.current, streams), [windowStreamMapKey, streams]);
   const windowVideojsRefMapRef = useRef<Record<string, VideoPlayerRef | null>>({});
   const [mainVideoPlayer, setMainVideoPlayer] = useState<VideoPlayerRef | null>(null);
   const { onResize } = useCmdTutorial();
@@ -71,10 +90,26 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
     };
   }, []);
 
+  // Stabilize individual GridWindow references — structuredClone in the reducer creates new
+  // objects even when content is identical. By reusing old references, memo on children can bail out.
+  const prevWindowsMapRef = useRef<Record<string, GridWindow>>({});
   const windowsMap = useMemo((): Record<string, GridWindow> => {
-    const entries = windows.map((w) => [w.id, w]);
-    return Object.fromEntries(entries);
+    const prev = prevWindowsMapRef.current;
+    const result: Record<string, GridWindow> = {};
+    for (const w of windows) {
+      result[w.id] = prev[w.id] && deepEqual(prev[w.id], w) ? prev[w.id] : w;
+    }
+    prevWindowsMapRef.current = result;
+    return result;
   }, [windows]);
+
+  const mainVideoWindowRefCallback = useCallback((ref: VideoPlayerRef | null) => {
+    const mainWindow = windowsRef.current.find((w) => w.type === "main");
+    if (mainWindow) {
+      windowVideojsRefMapRef.current[mainWindow.id] = ref;
+    }
+    setMainVideoPlayer(ref);
+  }, []);
 
   const onLayoutChange = (dimensions: Dimensions, i: string) => {
     dispatch({
@@ -157,180 +192,158 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
 
     return allStreams.length === 1;
   }, [streams]);
-  const getLayoutChild = useCallback(
-    (gridWindow: GridWindow, fillMode: GridLayoutFillMode) => {
-      const setRef = (video: VideoPlayerRef | null) => {
-        windowVideojsRefMapRef.current[gridWindow.id] = video;
-      };
+  // --- Stable callbacks for child components (accept windowId to avoid per-window closures) ---
+  const onDeleteWindow = useCallback(
+    (windowId: string) => {
+      dispatch({ type: "deleteWindow", windowId });
+    },
+    [dispatch],
+  );
 
-      const onDelete = () => {
-        dispatch({
-          type: "deleteWindow",
-          windowId: gridWindow.id,
-        });
-      };
+  const onUpdateFillMode = useCallback(
+    (windowId: string, fillMode: GridLayoutFillMode) => {
+      dispatch({ type: "updateFillMode", id: windowId, fillMode });
+    },
+    [dispatch],
+  );
 
-      const updateFillMode = (fillMode: GridLayoutFillMode) => {
-        dispatch({
-          type: "updateFillMode",
-          id: gridWindow.id,
-          fillMode,
-        });
-      };
-
-      const onSourceChange = (data: ChosenValueType) => {
-        if (data.type === "main") {
-          if (data.streamId === "f1live") {
-            dispatch({
-              type: "updateWindow",
-              window: {
-                type: "main",
-                streamId: "f1live",
-                id: gridWindow.id,
-              },
-            });
-            return;
-          }
-
-          if (data.streamId === "international") {
-            dispatch({
-              type: "updateWindow",
-              window: {
-                type: "main",
-                streamId: "international",
-                audioLanguage: data.audioLanguage,
-                id: gridWindow.id,
-              },
-            });
-            return;
-          }
-
-          return assertNever(data);
-        }
-
-        if (data.type === "data") {
-          dispatch({
-            type: "updateWindow",
-            window: {
-              type: data.streamId,
-              id: gridWindow.id,
-            },
-          });
+  const onWindowSourceChange = useCallback(
+    (windowId: string, data: ChosenValueType) => {
+      if (data.type === "main") {
+        if (data.streamId === "f1live") {
+          dispatch({ type: "updateWindow", window: { type: "main", streamId: "f1live", id: windowId } });
           return;
         }
 
-        if (data.type === "driver") {
+        if (data.streamId === "international") {
           dispatch({
             type: "updateWindow",
-            window: {
-              type: "driver",
-              driverId: data.driverId,
-              id: gridWindow.id,
-            },
+            window: { type: "main", streamId: "international", audioLanguage: data.audioLanguage, id: windowId },
           });
           return;
         }
 
         return assertNever(data);
-      };
-
-      if (gridWindow.type === "main") {
-        return (
-          <MainVideoWindow
-            ref={(ref) => {
-              setRef(ref);
-              setMainVideoPlayer(ref);
-            }}
-            gridWindow={gridWindow}
-            onSourceChange={onSourceChange}
-            onPlayingChange={(isPaused: boolean) => setAreVideosPaused(isPaused)}
-            isPaused={areVideosPaused}
-            isAudioFocused={audioFocusedWindow === gridWindow.id}
-            onWindowAudioFocus={() => onWindowAudioFocus(gridWindow.id)}
-            volume={volume}
-            setVolume={setVolume}
-            streamUrl={windowStreamMap[gridWindow.streamId]}
-            fillMode={fillMode}
-            updateFillMode={updateFillMode}
-            hasOnlyOneStream={hasOnlyOneStream}
-            defaultStreams={streams.defaultStreams}
-          />
-        );
       }
 
-      if (gridWindow.type === "driver") {
-        return (
-          <DriverVideoWindow
-            gridWindow={gridWindow}
-            ref={setRef}
-            availableDrivers={availableDrivers}
-            onDriverChange={onSourceChange}
-            isPaused={areVideosPaused}
-            isAudioFocused={audioFocusedWindow === gridWindow.id}
-            onWindowAudioFocus={() => onWindowAudioFocus(gridWindow.id)}
-            focusMainWindow={() => {
-              const mainWindow = windows.find((w) => w.type === "main");
-
-              if (mainWindow) {
-                onWindowAudioFocus(mainWindow.id);
-              }
-            }}
-            volume={volume}
-            streamUrl={windowStreamMap[gridWindow.id]}
-            onDelete={onDelete}
-            hasOnlyOneStream={hasOnlyOneStream}
-            fillMode={fillMode}
-            updateFillMode={updateFillMode}
-          />
-        );
+      if (data.type === "data") {
+        dispatch({ type: "updateWindow", window: { type: data.streamId, id: windowId } });
+        return;
       }
 
-      if (gridWindow.type === "driver-tracker") {
-        return (
-          <DriverTrackerVideoWindow
-            gridWindow={gridWindow}
-            onSourceChange={onSourceChange}
-            ref={setRef}
-            isPaused={areVideosPaused}
-            streamUrl={windowStreamMap[gridWindow.id]}
-            onDelete={onDelete}
-            fillMode={fillMode}
-            updateFillMode={updateFillMode}
-          />
-        );
+      if (data.type === "driver") {
+        dispatch({ type: "updateWindow", window: { type: "driver", driverId: data.driverId, id: windowId } });
+        return;
       }
 
-      if (gridWindow.type === "data-channel") {
-        return (
-          <DataChannelVideoWindow
-            gridWindow={gridWindow}
-            onSourceChange={onSourceChange}
-            ref={setRef}
-            isPaused={areVideosPaused}
-            streamUrl={windowStreamMap[gridWindow.id]}
-            onDelete={onDelete}
-            fillMode={fillMode}
-            updateFillMode={updateFillMode}
-          />
-        );
-      }
-
-      return assertNever(gridWindow);
+      return assertNever(data);
     },
-    [
-      dispatch,
-      areVideosPaused,
-      audioFocusedWindow,
-      volume,
-      setVolume,
-      windowStreamMap,
-      hasOnlyOneStream,
-      streams.defaultStreams,
-      onWindowAudioFocus,
-      availableDrivers,
-      windows,
-    ],
+    [dispatch],
   );
+
+  const focusMainWindow = useCallback(() => {
+    const mainWindow = windowsRef.current.find((w) => w.type === "main");
+    if (mainWindow) {
+      onWindowAudioFocus(mainWindow.id);
+    }
+  }, [onWindowAudioFocus]);
+
+  const getLayoutChild = (gridWindow: GridWindow, fillMode: GridLayoutFillMode) => {
+    const setRef = (video: VideoPlayerRef | null) => {
+      windowVideojsRefMapRef.current[gridWindow.id] = video;
+    };
+
+    if (gridWindow.type === "main") {
+      return (
+        <MainVideoWindow
+          ref={mainVideoWindowRefCallback}
+          gridWindow={gridWindow}
+          onSourceChange={onWindowSourceChange}
+          onPlayingChange={setAreVideosPaused}
+          isPaused={areVideosPaused}
+          isAudioFocused={audioFocusedWindow === gridWindow.id}
+          onWindowAudioFocus={onWindowAudioFocus}
+          volume={volume}
+          setVolume={setVolume}
+          streamUrl={windowStreamMap[gridWindow.streamId]}
+          fillMode={fillMode}
+          updateFillMode={onUpdateFillMode}
+          hasOnlyOneStream={hasOnlyOneStream}
+          defaultStreams={streams.defaultStreams}
+        />
+      );
+    }
+
+    if (gridWindow.type === "driver") {
+      return (
+        <DriverVideoWindow
+          gridWindow={gridWindow}
+          ref={setRef}
+          availableDrivers={availableDrivers}
+          onDriverChange={onWindowSourceChange}
+          isPaused={areVideosPaused}
+          isAudioFocused={audioFocusedWindow === gridWindow.id}
+          onWindowAudioFocus={onWindowAudioFocus}
+          focusMainWindow={focusMainWindow}
+          volume={volume}
+          streamUrl={windowStreamMap[gridWindow.id]}
+          onDelete={onDeleteWindow}
+          hasOnlyOneStream={hasOnlyOneStream}
+          fillMode={fillMode}
+          updateFillMode={onUpdateFillMode}
+        />
+      );
+    }
+
+    if (gridWindow.type === "driver-tracker") {
+      return (
+        <DriverTrackerVideoWindow
+          gridWindow={gridWindow}
+          onSourceChange={onWindowSourceChange}
+          ref={setRef}
+          isPaused={areVideosPaused}
+          streamUrl={windowStreamMap[gridWindow.id]}
+          onDelete={onDeleteWindow}
+          fillMode={fillMode}
+          updateFillMode={onUpdateFillMode}
+        />
+      );
+    }
+
+    if (gridWindow.type === "data-channel") {
+      return (
+        <DataChannelVideoWindow
+          gridWindow={gridWindow}
+          onSourceChange={onWindowSourceChange}
+          ref={setRef}
+          isPaused={areVideosPaused}
+          streamUrl={windowStreamMap[gridWindow.id]}
+          onDelete={onDeleteWindow}
+          fillMode={fillMode}
+          updateFillMode={onUpdateFillMode}
+        />
+      );
+    }
+
+    if (gridWindow.type === "live-timing") {
+      return (
+        <LiveTimingWindow
+          gridWindow={gridWindow}
+          onSourceChange={onWindowSourceChange}
+          onDelete={onDeleteWindow}
+          fillMode={fillMode}
+          updateFillMode={onUpdateFillMode}
+          mainVideoPlayer={mainVideoPlayer}
+          season={season}
+          raceStartDate={raceInfo.startDate}
+          genre={raceInfo.genre}
+          isLive={isLive}
+        />
+      );
+    }
+
+    return assertNever(gridWindow);
+  };
 
   const { syncStateRef, manifestOffsetsRef, presentationStartTimesRef } = useSyncVideos({
     windows,

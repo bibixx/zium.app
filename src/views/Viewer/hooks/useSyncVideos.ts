@@ -1,4 +1,4 @@
-import { MutableRefObject, useEffect, useRef } from "react";
+import { MutableRefObject, useEffect, useMemo, useRef } from "react";
 import { PlaybackOffsets } from "../../../hooks/useVideoRaceDetails/useVideoRaceDetails.types";
 import { GridWindow, MainGridWindow } from "../../../types/GridWindow";
 import { UserOffsets, useUserOffsets } from "../../../hooks/useUserOffests/useUserOffests";
@@ -33,8 +33,17 @@ export const useSyncVideos = ({ windows, windowPlayerRefMapRef, isLive, playback
   const syncStateRef = useRef<SyncStateSnapshot>([]);
   const { manifestOffsetsRef, presentationStartTimesRef } = useManifestOffsets({ windows, windowPlayerRefMapRef });
 
+  // Keep a ref to windows so the effect can read the current value without re-running
+  // when only layout positions change (structuredClone creates new refs on every dispatch).
+  const windowsRef = useRef(windows);
+  windowsRef.current = windows;
+
+  // Only re-run the sync effect when the set of window IDs changes, not on every position update.
+  const windowIds = useMemo(() => windows.map((w) => w.id).join(","), [windows]);
+
   useEffect(() => {
-    const mainWindow = windows.find((w): w is MainGridWindow => w.type === "main");
+    const currentWindows = windowsRef.current;
+    const mainWindow = currentWindows.find((w): w is MainGridWindow => w.type === "main");
     if (mainWindow == null) return;
 
     // Shared master time — updated every frame by the master's rVFC callback
@@ -50,7 +59,7 @@ export const useSyncVideos = ({ windows, windowPlayerRefMapRef, isLive, playback
       const mainVideo = mainRef.video;
       const isMainPlaying = !mainVideo.paused && !mainVideo.ended;
 
-      windows.forEach((w) => {
+      windowsRef.current.forEach((w) => {
         if (w.id === mainWindow.id) return;
         const playerRef = windowPlayerRefMapRef.current[w.id];
         if (playerRef == null) return;
@@ -164,7 +173,7 @@ export const useSyncVideos = ({ windows, windowPlayerRefMapRef, isLive, playback
     const minionCallbacks: Array<{ windowId: string; callback: () => void }> = [];
 
     // Initialize sync state
-    syncStateRef.current = windows
+    syncStateRef.current = currentWindows
       .filter((w) => w.id !== mainWindow.id)
       .map((w) => ({ windowId: w.id, driftMs: 0, playbackRate: 1.0 }));
 
@@ -181,7 +190,7 @@ export const useSyncVideos = ({ windows, windowPlayerRefMapRef, isLive, playback
 
     // Start minion sync loops
     const startMinions = () => {
-      windows.forEach((w) => {
+      currentWindows.forEach((w) => {
         if (w.id === mainWindow.id) return;
 
         const playerRef = windowPlayerRefMapRef.current[w.id];
@@ -206,7 +215,7 @@ export const useSyncVideos = ({ windows, windowPlayerRefMapRef, isLive, playback
 
       const currentMasterTime = mainRef.video.currentTime;
 
-      windows.forEach((w) => {
+      windowsRef.current.forEach((w) => {
         if (w.id === mainWindow.id) return;
         const playerRef = windowPlayerRefMapRef.current[w.id];
         if (playerRef == null) return;
@@ -309,14 +318,15 @@ export const useSyncVideos = ({ windows, windowPlayerRefMapRef, isLive, playback
       masterListenerCleanup?.();
 
       // Reset playback rates on cleanup
-      windows.forEach((w) => {
+      currentWindows.forEach((w) => {
         const playerRef = currentPlayerRefMap[w.id];
         if (playerRef != null) {
           playerRef.video.playbackRate = 1.0;
         }
       });
     };
-  }, [isLive, manifestOffsetsRef, offsetEmitter, playbackOffsets, userOffsetsRef, windowPlayerRefMapRef, windows]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLive, manifestOffsetsRef, offsetEmitter, playbackOffsets, userOffsetsRef, windowPlayerRefMapRef, windowIds]);
 
   return { syncStateRef, manifestOffsetsRef, presentationStartTimesRef };
 };
@@ -348,7 +358,7 @@ const getOffset = (
   let f1Offset = 0;
   if (w.type === "main") {
     f1Offset = playbackOffsets.f1[w.streamId]?.[mainWindow.streamId] ?? 0;
-  } else {
+  } else if (w.type !== "live-timing") {
     f1Offset = playbackOffsets.f1[w.type]?.[mainWindow.streamId] ?? 0;
   }
 

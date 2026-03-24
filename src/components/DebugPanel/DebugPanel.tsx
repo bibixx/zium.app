@@ -300,6 +300,7 @@ const DebugRaceSettings = ({ closePanel }: DebugPanelContentsProps) => {
         checked={flags.forceTVAccess}
         onChange={updateFlag("forceTVAccess")}
       />
+      <Checkbox label="Show Live Timing" checked={flags.showLiveTiming} onChange={updateFlag("showLiveTiming")} />
     </div>
   );
 };

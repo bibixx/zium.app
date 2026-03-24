@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useRef, useState } from "react";
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
+import { ClockIcon as ClockOutlineIcon } from "@heroicons/react/24/outline";
 import { PickerType, useStreamPicker } from "../../hooks/useStreamPicker/useStreamPicker";
 import { DriverData } from "../../views/Viewer/Viewer.utils";
 import { Input } from "../Input/Input";
@@ -13,6 +14,7 @@ import { useLaggedBehindData } from "../../hooks/useLaggedBehindData/useLaggedBe
 import { getIconForStreamInfo } from "../../utils/getIconForStreamInfo";
 import { useHotkeys } from "../../hooks/useHotkeys/useHotkeys";
 import { SHORTCUTS } from "../../hooks/useHotkeys/useHotkeys.keys";
+import { useFeatureFlags } from "../../hooks/useFeatureFlags/useFeatureFlags";
 import styles from "./StreamPicker.module.scss";
 import { StreamPickerEntry } from "./StreamPicker.types";
 
@@ -23,6 +25,7 @@ interface StreamPickerProps {
 }
 export const StreamPicker = ({ availableDrivers, globalFeeds, mainFeeds }: StreamPickerProps) => {
   const { state, onCancel, onChoice } = useStreamPicker();
+  const showLiveTiming = useFeatureFlags((state) => state.flags.showLiveTiming);
   const { data: laggedState, reset: resetLaggedState } = useLaggedBehindData(state, state.isOpen);
   const [searchText, setSearchText] = useState("");
   const [fakeSelection, setFakeSelection] = useState<number>(0);
@@ -50,6 +53,14 @@ export const StreamPicker = ({ availableDrivers, globalFeeds, mainFeeds }: Strea
         onChoice({
           type: "data",
           streamId: selectedEntry.streamInfo.type,
+        });
+        return;
+      }
+
+      if (selectedEntry.type === "live-timing") {
+        onChoice({
+          type: "data",
+          streamId: "live-timing",
         });
         return;
       }
@@ -82,7 +93,9 @@ export const StreamPicker = ({ availableDrivers, globalFeeds, mainFeeds }: Strea
       }),
     );
 
-    const allEntries = [...mainEntries, ...globalEntries, ...driverEntries];
+    const liveTimingEntries: StreamPickerEntry[] = showLiveTiming ? [{ id: "live-timing", type: "live-timing" }] : [];
+
+    const allEntries = [...mainEntries, ...globalEntries, ...liveTimingEntries, ...driverEntries];
 
     const hiddenEntries = laggedState.isOpen ? laggedState.hiddenEntries : [];
     const pickerType: PickerType[] = laggedState.isOpen ? laggedState.pickerTypes : [];
@@ -106,6 +119,10 @@ export const StreamPicker = ({ availableDrivers, globalFeeds, mainFeeds }: Strea
         return false;
       }
 
+      if (entry.type === "live-timing" && !pickerType.includes("data")) {
+        return false;
+      }
+
       if (searchText === "") {
         return true;
       }
@@ -125,11 +142,15 @@ export const StreamPicker = ({ availableDrivers, globalFeeds, mainFeeds }: Strea
         return includes(streamInfo.title, searchText);
       }
 
+      if (entry.type === "live-timing") {
+        return includes("Live Timing", searchText);
+      }
+
       return assertNever(entry);
     });
 
     return filteredEntires;
-  }, [availableDrivers, globalFeeds, mainFeeds, searchText, laggedState]);
+  }, [availableDrivers, globalFeeds, mainFeeds, searchText, laggedState, showLiveTiming]);
 
   const onClosed = () => {
     setSearchText("");
@@ -273,6 +294,23 @@ export const StreamPicker = ({ availableDrivers, globalFeeds, mainFeeds }: Strea
                   }}
                 >
                   <VideoFeedContent label={stream.title} icon={getIconForStreamInfo(stream.type, "outline")} />
+                </ListItem>
+              );
+            }
+
+            if (entry.type === "live-timing") {
+              return (
+                <ListItem
+                  tabIndex={-1}
+                  key="live-timing"
+                  onClick={() => onEntryChosen(entry)}
+                  isActive={fakeSelection === i}
+                  onMouseEnter={() => setFakeSelection(i)}
+                  ref={(ref) => {
+                    listItemsRefs.current[i] = ref;
+                  }}
+                >
+                  <VideoFeedContent label="Live Timing" icon={ClockOutlineIcon} />
                 </ListItem>
               );
             }
