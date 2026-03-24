@@ -1,7 +1,6 @@
 import { DriverStreamInfo, StreamsStateStreamsData } from "../../hooks/useVideoRaceDetails/useVideoRaceDetails.types";
 import { GridWindow } from "../../types/GridWindow";
 import { assertNever } from "../../utils/assertNever";
-import { isNotFalse } from "../../utils/isNotFalse";
 
 export const getWindowStreamMap = (windows: GridWindow[], streams: StreamsStateStreamsData) => {
   return Object.fromEntries(
@@ -44,7 +43,7 @@ export interface DriverData {
   id: string;
   imageUrls: string[];
 }
-export const getAvailableDrivers = (streams: StreamsStateStreamsData, season: number, isKidsStream: boolean) =>
+export const getAvailableDrivers = (streams: StreamsStateStreamsData, season: number) =>
   streams.driverStreams.map((driverStream): DriverData => {
     const id = driverStream.title;
     return {
@@ -54,11 +53,10 @@ export const getAvailableDrivers = (streams: StreamsStateStreamsData, season: nu
       team: driverStream.teamName,
       id,
       imageUrls: [
-        isKidsStream && `/images/avatars/kids/${season}/${id}.png`,
         `/images/avatars/${season}/${id}.png`,
         getDriverUrl(driverStream, false),
         `/images/avatars/default.png`,
-      ].filter(isNotFalse),
+      ],
     };
   });
 

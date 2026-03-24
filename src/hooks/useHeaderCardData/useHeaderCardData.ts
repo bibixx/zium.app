@@ -1,6 +1,5 @@
 import { isRaceGenre } from "../../constants/races";
 import { findEndingLastEvent } from "../../utils/findEndingLastEvent";
-import { includesCaseInsensitive } from "../../utils/text";
 import { useLiveEvents } from "../useLiveEvents/useLiveEvents";
 import { useRaceDetails } from "../useRaceDetails/useRaceDetails";
 import { RaceDetailsData } from "../useRaceDetails/useRacesDetails.types";
@@ -44,7 +43,7 @@ const findClosestToNow = (races: RaceDetailsData[]) => {
   for (let i = 0; i < races.length; i++) {
     const race = races[i];
 
-    if (!isRaceGenre(race.genre) || includesCaseInsensitive(race.title, "kids")) {
+    if (!isRaceGenre(race.genre)) {
       continue;
     }
 

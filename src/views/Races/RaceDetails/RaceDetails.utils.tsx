@@ -5,7 +5,6 @@ import {
   Practice3Icon,
   QualificationsIcon,
   RaceIcon,
-  RaceKidsIcon,
   SprintIcon,
   SprintShootoutIcon,
   Test1Icon,
@@ -27,7 +26,6 @@ export const raceDetailsTypeToIconMap = {
   "practice 3": Practice3Icon,
   "sprint qualifying": SprintShootoutIcon,
   "sprint race": SprintIcon,
-  "race kids": RaceKidsIcon,
   "pre-season testing day 1": Test1Icon,
   "pre-season testing day 2": Test2Icon,
   "pre-season testing day 3": Test3Icon,
@@ -40,10 +38,6 @@ export const getRaceIcon = (raceDetails: RaceDetailsData, seasonId: string) => {
   switch (raceDetails.genre) {
     case "race":
     case "qualifying": {
-      if (raceDetails.isKidsStream) {
-        return raceDetailsTypeToIconMap["race kids"];
-      }
-
       return raceDetailsTypeToIconMap[raceDetails.genre];
     }
     case "sprint race":

@@ -105,7 +105,7 @@ export const RaceDetails = ({ id, endDate, onClose, seasonId, ziumOffsetsInfo }:
     ({ endDate, hasMedia, isLive }) => hasMedia || isLive || endDate == null || isPast(endDate),
   );
   const additionalEvents = racesDetailsState.data.filter(
-    (race) => !isRaceGenre(race.genre) && (race.hasMedia || race.isLive),
+    (race) => !isRaceGenre(race.genre) && !isKidsEvent(race) && (race.hasMedia || race.isLive),
   );
 
   return (
@@ -178,4 +178,8 @@ const getSubtitle = (raceDetails: RaceDetailsData, ziumOffsetsInfo: string[]) =>
 
   const divider = <span>{MIDDLE_DOT}</span>;
   return joinReactNodes([subtitleDatePart, subtitleZiumInfoPart].filter(isNotFalse), divider);
+};
+
+const isKidsEvent = (raceDetails: RaceDetailsData) => {
+  return raceDetails.genre === "race kids";
 };

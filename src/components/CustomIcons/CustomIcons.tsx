@@ -6,7 +6,6 @@ import Practice1Svg from "../../assets/custom-icons/practice-1.svg?react";
 import Practice2Svg from "../../assets/custom-icons/practice-2.svg?react";
 import Practice3Svg from "../../assets/custom-icons/practice-3.svg?react";
 import QualificationsSvg from "../../assets/custom-icons/qualifications.svg?react";
-import RaceKidsSvg from "../../assets/custom-icons/race-kids.svg?react";
 import RaceSvg from "../../assets/custom-icons/race.svg?react";
 import SprintShootoutSvg from "../../assets/custom-icons/sprint-shootout.svg?react";
 import SprintSvg from "../../assets/custom-icons/sprint.svg?react";
@@ -100,10 +99,6 @@ export const TimeOffsetOnIcon = (props: React.SVGProps<SVGSVGElement>) => {
 
 export const TimeOffsetOffIcon = (props: React.SVGProps<SVGSVGElement>) => {
   return <TimeOffsetOffSvg {...props} className={cn(styles.wrapper, props.className)} />;
-};
-
-export const RaceKidsIcon = (props: React.SVGProps<SVGSVGElement>) => {
-  return <RaceKidsSvg {...props} className={cn(styles.wrapper, props.className)} />;
 };
 
 export const Test1Icon = (props: React.SVGProps<SVGSVGElement>) => {

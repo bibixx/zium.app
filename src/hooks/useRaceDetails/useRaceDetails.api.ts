@@ -15,8 +15,14 @@ export const fetchRaceDetailsId = async (raceId: string, signal: AbortSignal): P
   const liveAndReplayEvents = getReplayEvents(body);
   const scheduledEvents = getScheduledEvents(body);
 
-  const liveAndReplayDetails = liveAndReplayEvents.map((e) => mapEventToRaceDetailsData(e, true));
-  const scheduledDetails = scheduledEvents.map((e) => mapEventToRaceDetailsData(e, false));
+  const isKidsEvent = (e: Event) => e.metadata.titleBrief.toLowerCase().includes("f1 kids");
+
+  const liveAndReplayDetails = liveAndReplayEvents
+    .filter((e) => !isKidsEvent(e))
+    .map((e) => mapEventToRaceDetailsData(e, true));
+  const scheduledDetails = scheduledEvents
+    .filter((e) => !isKidsEvent(e))
+    .map((e) => mapEventToRaceDetailsData(e, false));
 
   const raceDetails = uniqueById([...liveAndReplayDetails, ...scheduledDetails]).sort(
     (a, b) => (a.startDate?.getTime() ?? 0) - (b.startDate?.getTime() ?? 0),
@@ -84,7 +90,6 @@ const mapEventToRaceDetailsData = (event: Event, isReplay: boolean): RaceDetails
 
   const [firstGenre] = event.metadata.genres;
   const isRace = isRaceGenre(firstGenre);
-  const isKidsStream = event.metadata.title.startsWith("F1 Kids");
   const pictureId = PictureId.parse(event.metadata.pictureUrl);
 
   return {
@@ -101,7 +106,6 @@ const mapEventToRaceDetailsData = (event: Event, isReplay: boolean): RaceDetails
     endDate,
     roundNumber: event.metadata.emfAttributes.Meeting_Number,
     isSingleEvent: false,
-    isKidsStream,
     genre: !isRace || event.metadata.emfAttributes.ContentCategory === "EPISODIC" ? "show" : firstGenre,
   };
 };
