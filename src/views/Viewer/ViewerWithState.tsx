@@ -18,6 +18,7 @@ import { assertNotNullable } from "../../utils/assertExistence";
 import { canAccessEvent } from "../../utils/canAccessEvent";
 import { useCurrentTier } from "../../hooks/useLoggedInState";
 import { NoViewerAccess } from "../../components/NoViewerAccess/NoViewerAccess";
+import { PlayerShell } from "../../components/Player/PlayerShell";
 import { useGrid } from "./hooks/useGrid";
 import styles from "./Viewer.module.scss";
 import { BackgroundDots } from "./BackgroundDots/BackgroundDots";
@@ -43,7 +44,11 @@ export const ViewerWithState = () => {
   }
 
   if (state.state === "loading") {
-    return <LoadingState />;
+    return (
+      <ViewerUIVisibilityContext.Provider value={viewerUIVisibilityState}>
+        <LoadingState />
+      </ViewerUIVisibilityContext.Provider>
+    );
   }
 
   if (!canAccessEvent(currentTier, state.data.entitlement)) {
@@ -51,8 +56,8 @@ export const ViewerWithState = () => {
   }
 
   return (
-    <Suspense fallback={<LoadingState />}>
-      <ViewerUIVisibilityContext.Provider value={viewerUIVisibilityState}>
+    <ViewerUIVisibilityContext.Provider value={viewerUIVisibilityState}>
+      <Suspense fallback={<LoadingState />}>
         <UserOffsetsProvider raceId={raceId}>
           <div
             className={cn(styles.cursorWrapper, {
@@ -69,8 +74,8 @@ export const ViewerWithState = () => {
             />
           </div>
         </UserOffsetsProvider>
-      </ViewerUIVisibilityContext.Provider>
-    </Suspense>
+      </Suspense>
+    </ViewerUIVisibilityContext.Provider>
   );
 };
 
@@ -88,6 +93,7 @@ const LoadingState = () => {
           <Loader width={64} />
         </div>
       </TimedOutWrapper>
+      <PlayerShell />
     </div>
   );
 };

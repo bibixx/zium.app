@@ -1,0 +1,27 @@
+.overlay {
+  background: var(--color-core-neutral-darken-400);
+  height: 100%;
+  left: 0;
+  margin: 0;
+  opacity: 1;
+  position: absolute;
+  top: 0;
+  transition: var(--transition-medium);
+  transition-property: opacity, visibility;
+  visibility: visible;
+  width: 100%;
+  pointer-events: none;
+
+  &.hidden {
+    visibility: hidden;
+    opacity: 0;
+  }
+}
+
+.animation {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 64px;
+}

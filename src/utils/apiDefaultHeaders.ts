@@ -1,6 +1,6 @@
 import { isLinux, isMac, isWindows } from "./platform";
 
-const playerVersion = import.meta.env.VITE_BITMOVIN_PLAYER_VERSION;
+const playerVersion = import.meta.env.VITE_SHAKA_PLAYER_VERSION;
 
 function getF1DeviceInfo() {
   let os: string = "";

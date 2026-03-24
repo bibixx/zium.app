@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { lazy, useEffect } from "react";
 import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
 import { useHotkeysExecutor } from "./hooks/useHotkeys/useHotkeys";
 import { ViewerWithState, preloadViewer } from "./views/Viewer/ViewerWithState";
@@ -18,6 +18,8 @@ import { DebugPanel } from "./components/DebugPanel/DebugPanel";
 import { SnackbarsList } from "./components/Snackbar/SnackbarsList";
 import { FeatureFlagsWrapper } from "./hooks/useFeatureFlags/FeatureFlagsWrapper";
 import { ThemeProvider } from "./hooks/useTheme/useTheme";
+
+const LazyPlayground = lazy(() => import("./views/Playground/Playground").then((m) => ({ default: m.Playground })));
 
 const WithCompanion = ({ children }: React.PropsWithChildren<unknown>) => {
   const companionState = useHasCompanion();
@@ -73,6 +75,16 @@ function App() {
       >
         <FeatureFlagsWrapper>
           <Routes>
+            {import.meta.env.DEV && (
+              <Route
+                path="/playground/*"
+                element={
+                  <React.Suspense fallback={null}>
+                    <LazyPlayground />
+                  </React.Suspense>
+                }
+              />
+            )}
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             {isSupportedBrowser ? (
               <Route

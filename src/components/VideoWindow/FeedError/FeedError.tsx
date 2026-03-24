@@ -10,7 +10,7 @@ interface FeedErrorProps {
 }
 export const FeedError = ({ error, onDelete }: FeedErrorProps) => {
   return (
-    <VideoWindowWrapper>
+    <VideoWindowWrapper hasOutline>
       <div className={styles.errorContent}>
         <div className={styles.errorContentWrapper}>
           <ErrorMessage error={error} />

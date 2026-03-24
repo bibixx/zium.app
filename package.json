@@ -28,8 +28,6 @@
     "@popperjs/core": "^2.11.8",
     "@radix-ui/react-tooltip": "^1.2.8",
     "@sindresorhus/transliterate": "^1.6.0",
-    "bitmovin-player": "^8.223.0",
-    "bitmovin-player-ui": "^3.102.0",
     "classnames": "^2.5.1",
     "date-fns": "^4.1.0",
     "eventemitter2": "^6.4.9",
@@ -47,6 +45,7 @@
     "react-popper": "^2.3.0",
     "react-router-dom": "^6.30.1",
     "react-transition-group": "^4.4.5",
+    "shaka-player": "^5.0.8",
     "ts-functional-pipe": "^3.1.2",
     "ts-key-enum": "^2.0.13",
     "what-input": "^5.2.12",
@@ -83,7 +82,6 @@
   },
   "packageManager": "yarn@3.5.0",
   "resolutions": {
-    "lottie-react@^2.4.0": "patch:lottie-react@npm%3A2.4.0#./.yarn/patches/lottie-react-npm-2.4.0-d4d95c55aa.patch",
-    "bitmovin-player-ui@^3.102.0": "patch:bitmovin-player-ui@npm%3A3.102.0#./.yarn/patches/bitmovin-player-ui-npm-3.102.0-0a2d45de4d.patch"
+    "lottie-react@^2.4.0": "patch:lottie-react@npm%3A2.4.0#./.yarn/patches/lottie-react-npm-2.4.0-d4d95c55aa.patch"
   }
 }

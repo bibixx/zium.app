@@ -1,0 +1,38 @@
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.skeleton {
+  border-radius: var(--radii-small);
+  background: linear-gradient(
+    90deg,
+    var(--color-background-static-strong) 25%,
+    var(--color-background-static-muted) 50%,
+    var(--color-background-static-strong) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s ease-in-out infinite;
+}
+
+.flag {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radii-rounded);
+}
+
+.countryName {
+  width: 120px;
+  height: 18px;
+}
+
+.eventTitle {
+  width: 80px;
+  height: 14px;
+  margin-top: 4px;
+}

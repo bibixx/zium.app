@@ -1,4 +1,3 @@
-import { PlayerAPI } from "bitmovin-player";
 import classNames from "classnames";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { RaceInfo } from "../../hooks/useVideoRaceDetails/useVideoRaceDetails.types";
@@ -7,6 +6,7 @@ import { GridWindow } from "../../types/GridWindow";
 import { Dimensions } from "../../types/Dimensions";
 import { DoubleEllipsisIcon } from "../CustomIcons/CustomIcons";
 import { WindowGridState } from "../../views/Viewer/hooks/useViewerState/useViewerState.utils";
+import { VideoPlayerRef } from "../VideoPlayer/VideoPlayer.types";
 import { PlayerControls } from "./PlayerControls/PlayerControls";
 import styles from "./Player.module.scss";
 import { PlayerRaceInfo } from "./PlayerRaceInfo/PlayerRaceInfo";
@@ -15,7 +15,7 @@ import { usePlayerDrag } from "./hooks/usePlayerDrag";
 import { PLAYER_COLLAPSED_ZONE_WHEN_COLLAPSED, PLAYER_COLLAPSED_ZONE_WHEN_OPEN } from "./Player.constants";
 
 interface PlayerProps {
-  player: PlayerAPI | null;
+  player: VideoPlayerRef | null;
   raceInfo: RaceInfo;
   volume: number;
   setVolume: (newVolume: number) => void;
@@ -92,7 +92,7 @@ export const Player = ({
         onMouseLeave={() => preventHiding(isPaused || isDragging)}
         className={classNames(styles.wrapper, {
           [styles.isCollapsed]: isCollapsed,
-          [styles.isVisible]: isUIVisible && player != null,
+          [styles.isVisible]: isUIVisible,
           [styles.wrapperIsDragging]: isDragging,
           [styles.isSpringing]: isSpringing,
         })}
@@ -127,7 +127,7 @@ export const Player = ({
           <div className={classNames(styles.section, styles.middle)}>
             {player != null && (
               <PlayerControls
-                player={player}
+                playerRef={player}
                 setVolume={setVolume}
                 volume={volume}
                 isMuted={isMuted}

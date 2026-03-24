@@ -1,10 +1,10 @@
-import { forwardRef, useCallback, useRef } from "react";
-import { PlayerAPI } from "bitmovin-player";
+import { forwardRef, useCallback, useRef, useState } from "react";
 import { useStreamVideo } from "../../../hooks/useStreamVideo/useStreamVideo";
 import { DriverGridWindow } from "../../../types/GridWindow";
 import { VideoWindowProps } from "../../../types/VideoWindowBaseProps";
 import { setRef } from "../../../utils/setRef";
-import { AdditionalVideoJSOptions, VideoJS } from "../../VideoJS/VideoJS";
+import { VideoPlayer } from "../../VideoPlayer/VideoPlayer";
+import { VideoPlayerRef, VideoPlayerOptions } from "../../VideoPlayer/VideoPlayer.types";
 import { VideoWindowWrapper } from "../VideoWindowWrapper/VideoWindowWrapper";
 import { DriverData } from "../../../views/Viewer/Viewer.utils";
 import { ChosenValueType, useStreamPicker } from "../../../hooks/useStreamPicker/useStreamPicker";
@@ -35,7 +35,7 @@ interface DriverVideoWindowProps extends VideoWindowProps {
   hasOnlyOneStream: boolean;
 }
 
-export const DriverVideoWindow = forwardRef<PlayerAPI | null, DriverVideoWindowProps>(
+export const DriverVideoWindow = forwardRef<VideoPlayerRef | null, DriverVideoWindowProps>(
   (
     {
       gridWindow,
@@ -54,13 +54,14 @@ export const DriverVideoWindow = forwardRef<PlayerAPI | null, DriverVideoWindowP
     },
     forwardedRef,
   ) => {
-    const playerRef = useRef<PlayerAPI | null>(null);
+    const playerRef = useRef<VideoPlayerRef | null>(null);
     const streamVideoState = useStreamVideo(streamUrl);
+    const [playerError, setPlayerError] = useState<unknown>(null);
     const currentDriver = availableDrivers.find((driver) => driver.id === gridWindow.driverId);
     const { updateOffset } = useUserOffsets();
     const offsets = useReactiveUserOffsets();
 
-    const ref = (r: PlayerAPI | null) => {
+    const ref = (r: VideoPlayerRef | null) => {
       setRef(forwardedRef, r);
       playerRef.current = r;
     };
@@ -104,12 +105,17 @@ export const DriverVideoWindow = forwardRef<PlayerAPI | null, DriverVideoWindowP
       return <FeedError error={streamVideoState.error} onDelete={onDelete} />;
     }
 
+    if (playerError != null) {
+      return <FeedError error={playerError} onDelete={onDelete} />;
+    }
+
     return (
       <VideoWindowWrapper>
-        <VideoJS
+        <VideoPlayer
           videoStreamInfo={streamVideoState.data}
           options={ADDITIONAL_OPTIONS}
           ref={ref}
+          onError={setPlayerError}
           isPaused={isPaused}
           volume={isAudioFocused ? volume : 0}
           fillMode={fillMode}
@@ -138,11 +144,8 @@ export const DriverVideoWindow = forwardRef<PlayerAPI | null, DriverVideoWindowP
   },
 );
 
-const ADDITIONAL_OPTIONS: AdditionalVideoJSOptions = {
-  ui: false,
-  playback: {
-    audioLanguage: ["teamradio"],
-  },
+const ADDITIONAL_OPTIONS: VideoPlayerOptions = {
+  audioLanguage: ["teamradio"],
 };
 
 interface DriverPickerButtonProps {

@@ -1,10 +1,10 @@
-import { forwardRef, useCallback, useRef } from "react";
-import { PlayerAPI } from "bitmovin-player";
+import { forwardRef, useCallback, useRef, useState } from "react";
 import { useStreamVideo } from "../../../hooks/useStreamVideo/useStreamVideo";
 import { BaseGridWindow } from "../../../types/GridWindow";
 import { VideoWindowProps } from "../../../types/VideoWindowBaseProps";
 import { setRef } from "../../../utils/setRef";
-import { AdditionalVideoJSOptions, VideoJS } from "../../VideoJS/VideoJS";
+import { VideoPlayer } from "../../VideoPlayer/VideoPlayer";
+import { VideoPlayerRef, VideoPlayerOptions } from "../../VideoPlayer/VideoPlayer.types";
 import { StreamVideoError } from "../../../hooks/useStreamVideo/useStreamVideo.utils";
 import { VideoWindowWrapper } from "../VideoWindowWrapper/VideoWindowWrapper";
 import { NoFeed } from "../NoFeed/NoFeed";
@@ -28,10 +28,11 @@ interface DataChannelVideoWindowProps extends VideoWindowProps {
   onSourceChange: (data: ChosenValueType) => void;
 }
 
-export const DataChannelVideoWindow = forwardRef<PlayerAPI | null, DataChannelVideoWindowProps>(
+export const DataChannelVideoWindow = forwardRef<VideoPlayerRef | null, DataChannelVideoWindowProps>(
   ({ isPaused, streamUrl, onDelete, fillMode, updateFillMode, onSourceChange }, forwardedRef) => {
-    const playerRef = useRef<PlayerAPI | null>(null);
+    const playerRef = useRef<VideoPlayerRef | null>(null);
     const streamVideoState = useStreamVideo(streamUrl);
+    const [playerError, setPlayerError] = useState<unknown>(null);
     const { updateOffset } = useUserOffsets();
     const offsets = useReactiveUserOffsets();
 
@@ -46,7 +47,7 @@ export const DataChannelVideoWindow = forwardRef<PlayerAPI | null, DataChannelVi
       onSourceChange(chosenData);
     };
 
-    const ref = (r: PlayerAPI | null) => {
+    const ref = (r: VideoPlayerRef | null) => {
       setRef(forwardedRef, r);
       playerRef.current = r;
     };
@@ -74,13 +75,19 @@ export const DataChannelVideoWindow = forwardRef<PlayerAPI | null, DataChannelVi
       return <FeedError error={streamVideoState.error} onDelete={onDelete} />;
     }
 
+    if (playerError != null) {
+      return <FeedError error={playerError} onDelete={onDelete} />;
+    }
+
     return (
       <VideoWindowWrapper>
-        <VideoJS
+        <VideoPlayer
           videoStreamInfo={streamVideoState.data}
           options={ADDITIONAL_OPTIONS}
           ref={ref}
+          onError={setPlayerError}
           isPaused={isPaused}
+          isMuted
           fillMode={fillMode}
         />
         <VideoWindowButtonsTopLeftWrapper>
@@ -110,9 +117,6 @@ export const DataChannelVideoWindow = forwardRef<PlayerAPI | null, DataChannelVi
   },
 );
 
-const ADDITIONAL_OPTIONS: AdditionalVideoJSOptions = {
-  ui: false,
-  playback: {
-    muted: true,
-  },
+const ADDITIONAL_OPTIONS: VideoPlayerOptions = {
+  muted: true,
 };

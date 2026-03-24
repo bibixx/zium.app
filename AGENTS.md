@@ -19,7 +19,7 @@
 | State | Zustand (global), React Context (providers), useReducer (async) |
 | Validation | Zod (runtime schema validation for all API responses + localStorage) |
 | Styling | SCSS + CSS Modules (camelCase), Design Tokens via Style Dictionary |
-| Video | Bitmovin Player 8 (primary), MPD/M3U8 manifest parsing |
+| Video | Shaka Player 5 (primary), HLS/DASH with Widevine DRM |
 | Analytics | PostHog (migrated from Sentry & Matomo) |
 | Icons | Heroicons (20/solid, 24/outline) |
 | Animations | React Transition Group, Lottie, CSS @keyframes + spring physics |
@@ -176,7 +176,7 @@ yarn build-tokens     # Regenerate CSS from design tokens
 ### Code Splitting
 
 - `lazyWithPreload()` utility for lazy loading with early prefetch (Viewer component)
-- Vite manual chunks: `bitmovin`, `lottie`, `vendor` bundles separated from app code
+- Vite manual chunks: `shaka`, `lottie`, `vendor` bundles separated from app code
 
 ### Chrome Extension
 

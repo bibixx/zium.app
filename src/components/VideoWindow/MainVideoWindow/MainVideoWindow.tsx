@@ -1,9 +1,9 @@
 import { forwardRef, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { AudioTrack, PlayerAPI, PlayerEvent, SubtitleTrack, TimeMode } from "bitmovin-player";
 import { useStreamVideo } from "../../../hooks/useStreamVideo/useStreamVideo";
 import { VideoWindowProps } from "../../../types/VideoWindowBaseProps";
 import { setRef } from "../../../utils/setRef";
-import { AdditionalVideoJSOptions, VideoJS } from "../../VideoJS/VideoJS";
+import { VideoPlayer } from "../../VideoPlayer/VideoPlayer";
+import { VideoPlayerRef, TextTrackInfo, AudioTrackInfo, VideoPlayerOptions } from "../../VideoPlayer/VideoPlayer.types";
 import { VideoWindowWrapper } from "../VideoWindowWrapper/VideoWindowWrapper";
 import { NoFeed } from "../NoFeed/NoFeed";
 import { FeedError } from "../FeedError/FeedError";
@@ -44,7 +44,7 @@ interface MainVideoWindowProps extends VideoWindowProps {
   defaultStreams: MainStreamInfo[];
 }
 
-export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps>(
+export const MainVideoWindow = forwardRef<VideoPlayerRef | null, MainVideoWindowProps>(
   (
     {
       gridWindow,
@@ -62,12 +62,13 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
     },
     forwardedRef,
   ) => {
-    const playerRef = useRef<PlayerAPI | null>(null);
+    const playerRef = useRef<VideoPlayerRef | null>(null);
     const streamVideoState = useStreamVideo(streamUrl);
     const internationalStreamMedia = useInternationalStreamMedia(defaultStreams);
-    const [availableSubtitleTracks, setAvailableSubtitleTracks] = useState<SubtitleTrack[]>([]);
-    const previousSelectedSubtitleIdRef = useRef<SubtitleTrack["id"] | null>(null);
-    const [selectedSubtitleId, setSelectedSubtitleId] = useState<SubtitleTrack["id"] | null>(null);
+    const [playerError, setPlayerError] = useState<unknown>(null);
+    const [availableSubtitleTracks, setAvailableSubtitleTracks] = useState<TextTrackInfo[]>([]);
+    const previousSelectedSubtitleIdRef = useRef<string | null>(null);
+    const [selectedSubtitleId, setSelectedSubtitleId] = useState<string | null>(null);
     const areClosedCaptionsOn = useMemo(() => selectedSubtitleId != null, [selectedSubtitleId]);
     const hasMultipleCaptionsTracks = availableSubtitleTracks.length > 1;
     const showInternationalOffsets = useFeatureFlags((state) => state.flags.showInternationalOffsets);
@@ -80,6 +81,17 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
       },
       [updateOffset],
     );
+
+    const [availableAudioTracks, setAvailableAudioTracks] = useState<AudioTrackInfo[]>([]);
+    const selectedAudioLanguage = useMemo(() => {
+      return gridWindow.streamId === "international" ? (gridWindow.audioLanguage ?? null) : null;
+    }, [gridWindow]);
+
+    const selectedAudioTrackId = useMemo(() => {
+      if (selectedAudioLanguage == null) return null;
+      const selectedAudioTrack = availableAudioTracks.find((track) => track.lang === selectedAudioLanguage);
+      return selectedAudioTrack?.id ?? null;
+    }, [availableAudioTracks, selectedAudioLanguage]);
 
     const toggleClosedCaptions = useCallback(() => {
       const toggleClosedCaptionsWithMultipleTracks = () => {
@@ -121,46 +133,35 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
       [toggleClosedCaptions],
     );
 
-    const [availableAudioTracks, setAvailableAudioTracks] = useState<AudioTrack[]>([]);
-    const selectedAudioTrackId = useMemo(() => {
-      const selectedAudioTrackLang = gridWindow.streamId === "international" ? gridWindow.audioLanguage : null;
-      if (selectedAudioTrackLang === null) {
-        return null;
-      }
-
-      const selectedAudioTrack = availableAudioTracks.find((track) => track.lang === selectedAudioTrackLang);
-      return selectedAudioTrack?.id ?? null;
-    }, [availableAudioTracks, gridWindow]);
-
     useEffect(() => {
       setAvailableSubtitleTracks([]);
       setAvailableAudioTracks([]);
       setSelectedSubtitleId(null);
+      setPlayerError(null);
     }, [streamUrl]);
 
-    const ref = (r: PlayerAPI | null) => {
+    const ref = (r: VideoPlayerRef | null) => {
       setRef(forwardedRef, r);
       playerRef.current = r;
     };
 
     const oldTimeRef = useRef<number | null>(null);
-    useEffect(
-      function savePreviousTimeBeforeStreamUrlChange() {
-        oldTimeRef.current = playerRef.current?.getCurrentTime(TimeMode.AbsoluteTime) ?? null;
-      },
-      [streamUrl],
-    );
+    const prevStreamUrlRef = useRef(streamUrl);
+    if (prevStreamUrlRef.current !== streamUrl) {
+      oldTimeRef.current = playerRef.current?.video.currentTime ?? null;
+      prevStreamUrlRef.current = streamUrl;
+    }
 
-    const onReady = (player: PlayerAPI) => {
+    const onReady = (videoPlayerRef: VideoPlayerRef) => {
       if (oldTimeRef.current === null) {
         onPlayingChange(false);
       }
 
-      player.on(PlayerEvent.Paused, () => {
+      videoPlayerRef.video.addEventListener("pause", () => {
         onPlayingChange(true);
       });
 
-      player.on(PlayerEvent.Play, () => {
+      videoPlayerRef.video.addEventListener("play", () => {
         onPlayingChange(false);
       });
     };
@@ -277,19 +278,24 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
       return <FeedError error={streamVideoState.error} />;
     }
 
+    if (playerError != null) {
+      return <FeedError error={playerError} />;
+    }
+
     return (
       <VideoWindowWrapper>
-        <VideoJS
+        <VideoPlayer
           videoStreamInfo={streamVideoState.data}
           options={ADDITIONAL_OPTIONS}
           ref={ref}
           onReady={onReady}
+          onError={setPlayerError}
           isPaused={isPaused}
           volume={isAudioFocused ? volume : 0}
           fillMode={fillMode}
           selectedSubtitleId={selectedSubtitleId}
           setAvailableSubtitles={setAvailableSubtitleTracks}
-          selectedAudioTrackId={selectedAudioTrackId}
+          selectedAudioLanguage={selectedAudioLanguage}
           setAvailableAudioTracks={setAvailableAudioTracks}
           startAt={oldTimeRef.current ?? undefined}
         />
@@ -329,18 +335,6 @@ export const MainVideoWindow = forwardRef<PlayerAPI | null, MainVideoWindowProps
   },
 );
 
-const ADDITIONAL_OPTIONS: AdditionalVideoJSOptions = {
-  ui: false,
+const ADDITIONAL_OPTIONS: VideoPlayerOptions = {
   noBufferUI: true,
-  playback: {
-    muted: false,
-  },
-  // controlBar: {
-  //   playToggle: true,
-  //   remainingTimeDisplay: true,
-  //   progressControl: true,
-  //   volumePanel: true,
-  //   audioTrackButton: true,
-  //   fullscreenToggle: true,
-  // },
 };

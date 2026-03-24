@@ -1,0 +1,102 @@
+.seekbarWrapper {
+  flex: 1;
+  position: relative;
+
+  &.isReady {
+    .timePlaceholder {
+      opacity: 0;
+    }
+
+    .timeLabel {
+      opacity: 1;
+    }
+  }
+
+  &:not(.isReady) {
+    .timePlaceholder {
+      opacity: 1;
+    }
+
+    .timeLabel {
+      opacity: 0;
+    }
+  }
+}
+
+.seekbar {
+  z-index: 3;
+}
+
+.timeLabels {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.timePlaceholder,
+.timeLabel {
+  display: block;
+  height: 20px;
+  @include typography(text, 300, regular);
+  user-select: none;
+  transition: var(--transition-fast);
+  transition-property: opacity, visibility;
+}
+
+.timePlaceholder {
+  position: absolute;
+}
+
+.currentTime,
+.totalTime {
+  position: relative;
+}
+
+.currentTime {
+  color: var(--color-content-strong);
+
+  .timePlaceholder {
+    left: 0;
+  }
+}
+
+.totalTime {
+  color: var(--color-content-muted);
+
+  .timePlaceholder {
+    right: 0;
+  }
+}
+
+.liveIndicator {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  color: var(--color-content-strong);
+  @include typography(text, 300, regular);
+
+  &:not(.liveEdge) {
+    cursor: pointer;
+
+    .signalIcon {
+      background: var(--color-content-muted);
+    }
+  }
+
+  &.liveEdge {
+    cursor: default;
+  }
+}
+
+.signalIcon {
+  display: block;
+  -webkit-mask-image: url(../../../../assets/signal.svg);
+  mask-image: url(../../../../assets/signal.svg);
+  background: var(--color-content-accent);
+  width: 20px;
+  height: 20px;
+}

@@ -2734,27 +2734,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bitmovin-player-ui@npm:3.102.0":
-  version: 3.102.0
-  resolution: "bitmovin-player-ui@npm:3.102.0"
-  checksum: 98a52e916a97ec66096f0d706c735aaaae92e12457690ff63fe51abbee768f30e8aa062aaa002b0a8e3acf71994133607de4e115039983877a88faf42c613c4e
-  languageName: node
-  linkType: hard
-
-"bitmovin-player-ui@patch:bitmovin-player-ui@npm%3A3.102.0#./.yarn/patches/bitmovin-player-ui-npm-3.102.0-0a2d45de4d.patch::locator=zium%40workspace%3A.":
-  version: 3.102.0
-  resolution: "bitmovin-player-ui@patch:bitmovin-player-ui@npm%3A3.102.0#./.yarn/patches/bitmovin-player-ui-npm-3.102.0-0a2d45de4d.patch::version=3.102.0&hash=4de316&locator=zium%40workspace%3A."
-  checksum: d8511c3f69f95c95e63ececbea94f3af9d301bcf8a75551ef1745d3def03587e59db819191ab72ced15295e3d16829d3a2e47dcba4b08b0b49cb666d049e989f
-  languageName: node
-  linkType: hard
-
-"bitmovin-player@npm:^8.223.0":
-  version: 8.251.0
-  resolution: "bitmovin-player@npm:8.251.0"
-  checksum: fba7e462e4fea1fbdbd061785ef6b1e3e540bb60998d2123168d0b6eb29c8cf67e8e75b43dd0dbbf0f9d1b13633ee0e70c89fdbad4dc2f40ba31b24b0e047907
-  languageName: node
-  linkType: hard
-
 "brace-expansion@npm:^1.1.7":
   version: 1.1.11
   resolution: "brace-expansion@npm:1.1.11"
@@ -7971,6 +7950,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"shaka-player@npm:^5.0.8":
+  version: 5.0.8
+  resolution: "shaka-player@npm:5.0.8"
+  checksum: b69d3f03e6e9fa9c7c2ee4fcb29cd7610cdd4adaa32d225a077dae7d3a7d9838e282382ac2e43d5dd3d3479064864a7522687eaa92b822f5614456b246946c7d
+  languageName: node
+  linkType: hard
+
 "shebang-command@npm:^2.0.0":
   version: 2.0.0
   resolution: "shebang-command@npm:2.0.0"
@@ -9370,8 +9356,6 @@ __metadata:
     "@typescript-eslint/eslint-plugin": ^6.21.0
     "@typescript-eslint/parser": ^6.21.0
     "@vitejs/plugin-react-swc": ^4.0.1
-    bitmovin-player: ^8.223.0
-    bitmovin-player-ui: ^3.102.0
     classnames: ^2.5.1
     date-fns: ^4.1.0
     eslint: ^8.57.1
@@ -9398,6 +9382,7 @@ __metadata:
     react-router-dom: ^6.30.1
     react-transition-group: ^4.4.5
     sass-embedded: ^1.90.0
+    shaka-player: ^5.0.8
     style-dictionary: ^3.9.2
     stylelint: ^16.23.1
     stylelint-config-standard-scss: ^15.0.1

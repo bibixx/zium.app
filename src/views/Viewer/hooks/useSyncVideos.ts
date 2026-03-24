@@ -1,17 +1,16 @@
-import { PlayerAPI, PlayerEvent, TimeMode } from "bitmovin-player";
 import { MutableRefObject, useEffect } from "react";
 import { PlaybackOffsets } from "../../../hooks/useVideoRaceDetails/useVideoRaceDetails.types";
 import { GridWindow, MainGridWindow } from "../../../types/GridWindow";
 import { UserOffsets, useUserOffsets } from "../../../hooks/useUserOffests/useUserOffests";
-import { isBitmovinPlayerDestroyed } from "../../../utils/isBitmovinPlayerDestroyed";
+import { VideoPlayerRef } from "../../../components/VideoPlayer/VideoPlayer.types";
 
 interface UseSyncVideosArguments {
   windows: GridWindow[];
-  windowVideojsRefMapRef: MutableRefObject<Record<string, PlayerAPI | null>>;
+  windowPlayerRefMapRef: MutableRefObject<Record<string, VideoPlayerRef | null>>;
   isLive: boolean;
   playbackOffsets: PlaybackOffsets;
 }
-export const useSyncVideos = ({ windows, windowVideojsRefMapRef, isLive, playbackOffsets }: UseSyncVideosArguments) => {
+export const useSyncVideos = ({ windows, windowPlayerRefMapRef, isLive, playbackOffsets }: UseSyncVideosArguments) => {
   const { offsets: userOffsetsRef, offsetEmitter } = useUserOffsets();
 
   useEffect(() => {
@@ -22,22 +21,27 @@ export const useSyncVideos = ({ windows, windowVideojsRefMapRef, isLive, playbac
         return;
       }
 
-      const mainWindowPlayer = windowVideojsRefMapRef.current[mainWindow.id];
+      const mainRef = windowPlayerRefMapRef.current[mainWindow.id];
 
-      if (mainWindowPlayer == null) {
+      if (mainRef == null) {
         return;
       }
+
+      const mainVideo = mainRef.video;
+      const mainPlayer = mainRef.player;
 
       windows.forEach((w) => {
         if (w.id === mainWindow.id) {
           return;
         }
 
-        const player = windowVideojsRefMapRef.current[w.id];
+        const playerRef = windowPlayerRefMapRef.current[w.id];
 
-        if (player == null) {
+        if (playerRef == null) {
           return;
         }
+
+        const { video, player } = playerRef;
 
         const f1TVPlaceholderWindowWindow: GridWindow = {
           type: "main",
@@ -52,27 +56,32 @@ export const useSyncVideos = ({ windows, windowVideojsRefMapRef, isLive, playbac
         );
         const offset = getOffset(playbackOffsets, userOffsetsRef.current, w, mainWindow, mainWindowToF1TVOffset);
 
-        if (player.isPlaying() !== mainWindowPlayer.isPlaying()) {
-          if (!mainWindowPlayer.isPlaying()) {
-            player.pause();
+        const isMainPlaying = !mainVideo.paused && !mainVideo.ended;
+        const isPlaying = !video.paused && !video.ended;
+
+        if (isPlaying !== isMainPlaying) {
+          if (!isMainPlaying) {
+            video.pause();
           } else {
-            player.play();
+            video.play().catch(() => {});
           }
         }
 
         if (isLive) {
-          const diff = Math.abs(player.getTimeShift() + offset + mainWindowPlayer.getTimeShift());
+          const mainTimeShift = mainPlayer.seekRange().end - mainVideo.currentTime;
+          const playerTimeShift = player.seekRange().end - video.currentTime;
+          const diff = Math.abs(playerTimeShift + offset - mainTimeShift);
 
           if (diff < 1 && !forceSync) {
             return;
           }
 
-          player.timeShift(-offset + mainWindowPlayer.getTimeShift());
+          video.currentTime = player.seekRange().end - (mainTimeShift + offset);
           return;
         }
 
-        const targetTime = mainWindowPlayer.getCurrentTime(TimeMode.AbsoluteTime) - offset;
-        const diff = Math.abs(player.getCurrentTime(TimeMode.AbsoluteTime) - targetTime);
+        const targetTime = mainVideo.currentTime - offset;
+        const diff = Math.abs(video.currentTime - targetTime);
 
         if (!forceSync) {
           if (diff < 1 || targetTime < 0) {
@@ -80,7 +89,7 @@ export const useSyncVideos = ({ windows, windowVideojsRefMapRef, isLive, playbac
           }
         }
 
-        player.seek(targetTime);
+        video.currentTime = targetTime;
       });
     };
 
@@ -92,23 +101,20 @@ export const useSyncVideos = ({ windows, windowVideojsRefMapRef, isLive, playbac
         return;
       }
 
-      const mainWindowPlayer = windowVideojsRefMapRef.current[mainWindow.id];
+      const mainRef = windowPlayerRefMapRef.current[mainWindow.id];
 
-      if (mainWindowPlayer == null) {
+      if (mainRef == null) {
         return;
       }
 
+      const mainVideo = mainRef.video;
+
       const forceSync = () => syncVideos(true);
-      mainWindowPlayer.on(PlayerEvent.Seek, forceSync);
-      mainWindowPlayer.on(PlayerEvent.TimeShift, forceSync);
+      mainVideo.addEventListener("seeking", forceSync);
       offsetEmitter.addEventListener("change", forceSync);
 
       cleanupFunction = () => {
-        if (!isBitmovinPlayerDestroyed(mainWindowPlayer)) {
-          mainWindowPlayer.off(PlayerEvent.Seek, forceSync);
-          mainWindowPlayer.off(PlayerEvent.TimeShift, forceSync);
-        }
-
+        mainVideo.removeEventListener("seeking", forceSync);
         offsetEmitter.removeEventListener("change", forceSync);
       };
     };
@@ -136,7 +142,7 @@ export const useSyncVideos = ({ windows, windowVideojsRefMapRef, isLive, playbac
       document.removeEventListener("visibilitychange", onVisibilityChange);
       cleanupFunction?.();
     };
-  }, [isLive, offsetEmitter, playbackOffsets, userOffsetsRef, windowVideojsRefMapRef, windows]);
+  }, [isLive, offsetEmitter, playbackOffsets, userOffsetsRef, windowPlayerRefMapRef, windows]);
 };
 
 const getOffset = (

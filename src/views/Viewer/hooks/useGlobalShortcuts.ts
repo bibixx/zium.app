@@ -1,12 +1,12 @@
-import { PlayerAPI } from "bitmovin-player";
 import { useCallback } from "react";
+import { VideoPlayerRef } from "../../../components/VideoPlayer/VideoPlayer.types";
 import { toggleFullScreen } from "../../../utils/toggleFullScreen";
 import { useHotkeys } from "../../../hooks/useHotkeys/useHotkeys";
 import { SHORTCUTS } from "../../../hooks/useHotkeys/useHotkeys.keys";
 import { useEasterEgg } from "../../../hooks/useEasterEgg/useEasterEgg";
 
 export const useGlobalShortcuts = (
-  player: PlayerAPI | null,
+  playerRef: VideoPlayerRef | null,
   setAreVideosPaused: (fn: (oldValue: boolean) => boolean) => void,
   setIsMuted: (fn: (oldValue: boolean) => boolean) => void,
 ) => {
@@ -21,40 +21,34 @@ export const useGlobalShortcuts = (
   }, [setAreVideosPaused]);
 
   const onBigSkipAhead = useCallback(() => {
-    const timeDiff = 30;
-
-    player?.seek(player.getCurrentTime() + timeDiff);
-  }, [player]);
+    if (playerRef == null) return;
+    playerRef.video.currentTime += 30;
+  }, [playerRef]);
 
   const onSmallSkipAhead = useCallback(() => {
-    const timeDiff = 1;
-
-    player?.seek(player.getCurrentTime() + timeDiff);
-  }, [player]);
+    if (playerRef == null) return;
+    playerRef.video.currentTime += 1;
+  }, [playerRef]);
 
   const onSuperSmallSkipAhead = useCallback(() => {
-    const timeDiff = 0.1;
-
-    player?.seek(player.getCurrentTime() + timeDiff);
-  }, [player]);
+    if (playerRef == null) return;
+    playerRef.video.currentTime += 0.1;
+  }, [playerRef]);
 
   const onBigSkipBackwards = useCallback(() => {
-    const timeDiff = 30;
-
-    player?.seek(player.getCurrentTime() - timeDiff);
-  }, [player]);
+    if (playerRef == null) return;
+    playerRef.video.currentTime -= 30;
+  }, [playerRef]);
 
   const onSmallSkipBackwards = useCallback(() => {
-    const timeDiff = 1;
-
-    player?.seek(player.getCurrentTime() - timeDiff);
-  }, [player]);
+    if (playerRef == null) return;
+    playerRef.video.currentTime -= 1;
+  }, [playerRef]);
 
   const onSuperSmallSkipBackwards = useCallback(() => {
-    const timeDiff = 0.1;
-
-    player?.seek(player.getCurrentTime() - timeDiff);
-  }, [player]);
+    if (playerRef == null) return;
+    playerRef.video.currentTime -= 0.1;
+  }, [playerRef]);
 
   const onToggleFullScreen = useCallback(() => {
     toggleFullScreen();

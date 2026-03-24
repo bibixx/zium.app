@@ -12,6 +12,7 @@
   user-select: none;
   transform: scale(1);
   cursor: pointer;
+  backdrop-filter: blur(4px);
   @include typography(label, 300);
 
   &::after {

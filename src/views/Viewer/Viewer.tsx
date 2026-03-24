@@ -1,7 +1,7 @@
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { PlayerAPI } from "bitmovin-player";
 import deepEqual from "fast-deep-equal/es6";
 import { Transition, TransitionGroup } from "react-transition-group";
+import { VideoPlayerRef } from "../../components/VideoPlayer/VideoPlayer.types";
 import { GridWindow } from "../../types/GridWindow";
 import { MainVideoWindow } from "../../components/VideoWindow/MainVideoWindow/MainVideoWindow";
 import { DriverVideoWindow } from "../../components/VideoWindow/DriverVideoWindow/DriverVideoWindow";
@@ -61,8 +61,8 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
     });
 
   const windowStreamMap = useMemo(() => getWindowStreamMap(windows, streams), [windows, streams]);
-  const windowVideojsRefMapRef = useRef<Record<string, PlayerAPI | null>>({});
-  const [mainVideoPlayer, setMainVideoPlayer] = useState<PlayerAPI | null>(null);
+  const windowVideojsRefMapRef = useRef<Record<string, VideoPlayerRef | null>>({});
+  const [mainVideoPlayer, setMainVideoPlayer] = useState<VideoPlayerRef | null>(null);
   const { onResize } = useCmdTutorial();
   useEffect(function closeFullScreenWhenLeavingViewer() {
     return () => {
@@ -167,7 +167,7 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
 
   const getLayoutChild = useCallback(
     (gridWindow: GridWindow, fillMode: GridLayoutFillMode) => {
-      const setRef = (video: PlayerAPI | null) => {
+      const setRef = (video: VideoPlayerRef | null) => {
         windowVideojsRefMapRef.current[gridWindow.id] = video;
       };
 
@@ -340,7 +340,7 @@ export const Viewer = memo(({ streams, season, isLive, raceInfo, playbackOffsets
     ],
   );
 
-  useSyncVideos({ windows, windowVideojsRefMapRef, isLive, playbackOffsets });
+  useSyncVideos({ windows, windowPlayerRefMapRef: windowVideojsRefMapRef, isLive, playbackOffsets });
   useGlobalShortcuts(mainVideoPlayer, setAreVideosPaused, setIsMuted);
   useNotifyAboutNewEvent(raceId);
 

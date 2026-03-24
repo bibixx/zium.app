@@ -11,10 +11,10 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
-  const packageJsonPath = fileURLToPath(import.meta.resolve("bitmovin-player/package.json"));
-  const packageJsonData = JSON.parse(readFileSync(packageJsonPath, "utf-8"));
-  if (packageJsonData) {
-    process.env.VITE_BITMOVIN_PLAYER_VERSION = packageJsonData.version;
+  const shakaPackageJsonPath = fileURLToPath(import.meta.resolve("shaka-player/package.json"));
+  const shakaPackageJsonData = JSON.parse(readFileSync(shakaPackageJsonPath, "utf-8"));
+  if (shakaPackageJsonData) {
+    process.env.VITE_SHAKA_PLAYER_VERSION = shakaPackageJsonData.version;
   }
 
   const posthogProjectId = process.env.POSTHOG_PROJECT_ID;
@@ -69,8 +69,8 @@ export default defineConfig(({ mode }) => {
           manualChunks: (id) => {
             const includes = (text: string, search: string) => text.indexOf(search) > 0;
 
-            if (includes(id, "node_modules/bitmovin-player") || includes(id, "node_modules/bitmovin-player-ui")) {
-              return "bitmovin";
+            if (includes(id, "node_modules/shaka-player")) {
+              return "shaka";
             }
 
             if (includes(id, "node_modules/lottie-react") || includes(id, "node_modules/lottie-web")) {
