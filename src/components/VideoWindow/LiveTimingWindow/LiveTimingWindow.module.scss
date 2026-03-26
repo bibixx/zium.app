@@ -1,5 +1,5 @@
 .liveTimingWindow {
-  background: var(--color-bg-primary);
+  background: var(--color-background-surface);
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -16,7 +16,7 @@
   align-items: center;
   justify-content: center;
   height: 100%;
-  color: var(--color-text-secondary);
+  color: var(--color-content-default);
   font-size: 14px;
 }
 
@@ -30,7 +30,7 @@
 .header {
   padding: 4px 12px;
   font-weight: 600;
-  color: var(--color-text-primary);
+  color: var(--color-content-strong);
   font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -52,30 +52,30 @@
   transition: transform var(--transition-medium);
 
   &:hover {
-    background: var(--color-bg-secondary);
+    background: var(--color-background-interactive-neutral-hover);
   }
 }
 
 .position {
   text-align: center;
   font-weight: 600;
-  color: var(--color-text-primary);
+  color: var(--color-content-strong);
 }
 
 .number {
   text-align: center;
   font-weight: 500;
-  color: var(--color-text-secondary);
+  color: var(--color-content-default);
   font-size: 12px;
 }
 
 .tla {
   font-weight: 600;
-  color: var(--color-text-primary);
+  color: var(--color-content-strong);
 }
 
 .gap {
-  color: var(--color-text-secondary);
+  color: var(--color-content-default);
   text-align: right;
   padding-right: 8px;
   font-size: 12px;
@@ -90,13 +90,13 @@
   justify-content: center;
   font-size: 11px;
   font-weight: 700;
-  color: var(--color-bg-primary);
+  color: var(--color-background-surface);
   background-color: var(--tire-color, #999);
 }
 
 .lapTime {
   text-align: right;
-  color: var(--color-text-primary);
+  color: var(--color-content-strong);
   font-size: 12px;
 
   &[data-overall-best] {
