@@ -68,6 +68,7 @@ export const contentPlayValidator = z.object({
   resultObj: z.object({
     url: z.string(),
     entitlementToken: z.string(),
+    laURL: z.string().optional(),
   }),
 });
 

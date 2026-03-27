@@ -312,22 +312,23 @@ function isShakaInterruptError(error: unknown): boolean {
 }
 
 function configureDrm(player: shaka.Player, videoStreamInfo: VideoStreamInfo) {
-  if (videoStreamInfo.streamType === "HLS") {
-    return;
-  }
+  // Reset DRM and networking state from previous source
+  player.getNetworkingEngine()?.clearAllRequestFilters();
+  player.configure({ drm: { servers: {} } });
 
-  if (videoStreamInfo.laURL == null) {
-    return;
-  }
-
-  player.configure({
-    drm: {
-      servers: {
-        "com.widevine.alpha": videoStreamInfo.laURL,
+  // Configure explicit license server if provided (DASH/non-HLS streams)
+  if (videoStreamInfo.laURL != null) {
+    player.configure({
+      drm: {
+        servers: {
+          "com.widevine.alpha": videoStreamInfo.laURL,
+        },
       },
-    },
-  });
+    });
+  }
 
+  // Register entitlement token for license requests — works for both
+  // explicit laURL and auto-detected license server from HLS #EXT-X-SESSION-KEY
   if (videoStreamInfo.entitlementToken != null) {
     const entitlementToken = videoStreamInfo.entitlementToken;
     player.getNetworkingEngine()?.registerRequestFilter((type, request) => {

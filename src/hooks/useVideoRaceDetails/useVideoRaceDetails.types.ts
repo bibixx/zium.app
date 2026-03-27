@@ -32,6 +32,8 @@ export interface PlaybackUrl {
   url: string;
   needsFetching: boolean;
   isDebug?: boolean;
+  entitlementToken?: string;
+  laURL?: string;
 }
 
 export interface BaseStreamInfo {

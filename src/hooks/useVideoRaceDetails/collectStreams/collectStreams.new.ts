@@ -34,10 +34,15 @@ const collectTMEStreamUrls = async (
   return Result.success(streams);
 };
 
-function getPlaybackUrl(stream: StreamData, tmeStreams: Partial<Record<number, string>>) {
+function getPlaybackUrl(
+  stream: StreamData,
+  tmeStreams: Partial<Record<number, string>>,
+  entitlementToken?: string,
+  laURL?: string,
+) {
   const tmeStreamUrl = tmeStreams[stream.channelId];
   if (tmeStreamUrl != null) {
-    return { url: tmeStreamUrl, needsFetching: false };
+    return { url: tmeStreamUrl, needsFetching: false, entitlementToken, laURL };
   }
 
   const baseUrl = "/2.0/R/ENG/WEB_HLS/ALL";
@@ -57,6 +62,8 @@ export const collectStreams = async (
 
   const parsedPlayContent = contentPlayValidator.safeParse(playContent);
   let tmeStreams: TMEStreamUrls = {};
+  let entitlementToken: string | undefined;
+  let laURL: string | undefined;
 
   if (parsedPlayContent.success) {
     const resultObj = parsedPlayContent.data.resultObj;
@@ -69,6 +76,9 @@ export const collectStreams = async (
     if (!tmeUrl.pathname.endsWith(".tme")) {
       return Result.failure("NOT_SUPPORTED");
     }
+
+    entitlementToken = resultObj.entitlementToken;
+    laURL = resultObj.laURL;
 
     const collectedStreamsResult = await collectTMEStreamUrls(resultObj.url, resultObj.entitlementToken, signal);
     if (collectedStreamsResult.state === "failure") {
@@ -102,7 +112,7 @@ export const collectStreams = async (
 
   for (const stream of streams) {
     const streamType = mapStreamIdentifierToType(stream.identifier);
-    const playbackUrl = getPlaybackUrl(stream, tmeStreams);
+    const playbackUrl = getPlaybackUrl(stream, tmeStreams, entitlementToken, laURL);
 
     const baseStreamInfo: BaseStreamInfo = {
       channelId: stream.channelId,
