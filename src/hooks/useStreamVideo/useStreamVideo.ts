@@ -49,13 +49,6 @@ export const useStreamVideo = (playbackUrl: PlaybackUrl | null) => {
       try {
         const data = await fetchVideoStream(playbackUrl, signal);
 
-        if (data.videoUrl.includes("akamaized")) {
-          console.log("retry");
-
-          fetchData(signal);
-          return;
-        }
-
         dispatch({ type: "done", data });
       } catch (error) {
         dispatch({ type: "error", error: error });
