@@ -7,9 +7,19 @@ import { ManifestOffsets, useManifestOffsets } from "../../../hooks/useManifestO
 
 // Drift thresholds (in seconds)
 const DRIFT_IGNORE_THRESHOLD = 0.05; // < 50ms — imperceptible
-const DRIFT_HARD_SEEK_THRESHOLD = 0.3; // > 300ms — too far for rate correction
+const DRIFT_HARD_SEEK_THRESHOLD = 0.3; // > 300ms — too far for rate correction on replay streams
+const LIVE_DRIFT_IGNORE_THRESHOLD = 0.5; // live edges/segments naturally jitter more than replays
+const LIVE_DRIFT_HARD_SEEK_THRESHOLD = 20;
+const LIVE_FORCE_SYNC_HARD_SEEK_THRESHOLD = 5;
+const LIVE_HARD_SEEK_COOLDOWN_MS = 60_000;
+const MANIFEST_OFFSET_MIN_ABS_SECONDS = 0.25;
+const PLAYBACK_RATE_UPDATE_EPSILON = 0.005;
 const RATE_CORRECTION_FAST = 1.03;
 const RATE_CORRECTION_SLOW = 0.97;
+const LIVE_RATE_CORRECTION_MIN_DELTA = 0.04;
+const LIVE_RATE_CORRECTION_MAX_DELTA = 0.2;
+const LIVE_RATE_CORRECTION_STEP = 0.04;
+const LIVE_RATE_CORRECTION_PROPORTIONAL_GAIN = 0.04;
 
 export interface SyncWindowState {
   windowId: string;
@@ -46,10 +56,65 @@ export const useSyncVideos = ({ windows, windowPlayerRefMapRef, isLive, playback
     const mainWindow = currentWindows.find((w): w is MainGridWindow => w.type === "main");
     if (mainWindow == null) return;
 
+    let isDisposed = false;
+
     // Shared master time — updated every frame by the master's rVFC callback
     let masterTime = 0;
-    let masterSeekRangeEnd = 0;
     let masterTimeShift = 0; // for live: distance from live edge
+    const liveHardSeekTimestamps: Record<string, number> = {};
+
+    const shouldHardSeek = (windowId: string, drift: number, forceSync = false) => {
+      const threshold = isLive
+        ? forceSync
+          ? LIVE_FORCE_SYNC_HARD_SEEK_THRESHOLD
+          : LIVE_DRIFT_HARD_SEEK_THRESHOLD
+        : DRIFT_HARD_SEEK_THRESHOLD;
+
+      if (Math.abs(drift) <= threshold) {
+        return false;
+      }
+
+      if (!isLive) {
+        return true;
+      }
+
+      const now = performance.now();
+      const lastHardSeek = liveHardSeekTimestamps[windowId] ?? -Infinity;
+      if (now - lastHardSeek < LIVE_HARD_SEEK_COOLDOWN_MS) {
+        return false;
+      }
+
+      liveHardSeekTimestamps[windowId] = now;
+      return true;
+    };
+
+    const setPlaybackRate = (video: HTMLVideoElement, playbackRate: number) => {
+      if (Math.abs(video.playbackRate - playbackRate) > PLAYBACK_RATE_UPDATE_EPSILON) {
+        video.playbackRate = playbackRate;
+      }
+    };
+
+    const setPlaybackRateForDrift = (video: HTMLVideoElement, drift: number) => {
+      const ignoreThreshold = isLive ? LIVE_DRIFT_IGNORE_THRESHOLD : DRIFT_IGNORE_THRESHOLD;
+
+      if (Math.abs(drift) <= ignoreThreshold) {
+        setPlaybackRate(video, 1.0);
+        return;
+      }
+
+      if (isLive) {
+        const correctionDelta = Math.min(
+          LIVE_RATE_CORRECTION_MAX_DELTA,
+          Math.max(LIVE_RATE_CORRECTION_MIN_DELTA, Math.abs(drift) * LIVE_RATE_CORRECTION_PROPORTIONAL_GAIN),
+        );
+        const quantizedCorrectionDelta =
+          Math.round(correctionDelta / LIVE_RATE_CORRECTION_STEP) * LIVE_RATE_CORRECTION_STEP;
+        setPlaybackRate(video, drift > 0 ? 1 - quantizedCorrectionDelta : 1 + quantizedCorrectionDelta);
+        return;
+      }
+
+      setPlaybackRate(video, drift > 0 ? RATE_CORRECTION_SLOW : RATE_CORRECTION_FAST);
+    };
 
     // --- Play/pause sync (runs periodically) ---
     const syncPlayPause = () => {
@@ -79,6 +144,8 @@ export const useSyncVideos = ({ windows, windowPlayerRefMapRef, isLive, playback
 
     // --- Master frame callback ---
     const onMasterFrame = () => {
+      if (isDisposed) return;
+
       const mainRef = windowPlayerRefMapRef.current[mainWindow.id];
       if (mainRef == null) return;
 
@@ -86,11 +153,10 @@ export const useSyncVideos = ({ windows, windowPlayerRefMapRef, isLive, playback
       masterTime = mainVideo.currentTime;
 
       if (isLive) {
-        masterSeekRangeEnd = mainRef.player.seekRange().end;
-        masterTimeShift = masterSeekRangeEnd - masterTime;
+        masterTimeShift = mainRef.player.seekRange().end - masterTime;
       }
 
-      if (supportsRVFC) {
+      if (supportsRVFC && !isDisposed) {
         mainVideo.requestVideoFrameCallback(onMasterFrame);
       }
     };
@@ -98,11 +164,23 @@ export const useSyncVideos = ({ windows, windowPlayerRefMapRef, isLive, playback
     // --- Minion sync callback ---
     const createMinionSync = (w: GridWindow) => {
       const onMinionFrame = () => {
+        if (isDisposed) return;
+
         const playerRef = windowPlayerRefMapRef.current[w.id];
         const mainRef = windowPlayerRefMapRef.current[mainWindow.id];
         if (playerRef == null || mainRef == null) return;
 
         const { video, player } = playerRef;
+
+        // Don't sync streams that are still buffering/seeking — they'll catch up
+        // once ready. Seeking them again just restarts the buffer cycle (especially
+        // problematic with DRM-encrypted streams where seeks are slow).
+        if (video.seeking || video.readyState < 3) {
+          if (supportsRVFC && !isDisposed) {
+            video.requestVideoFrameCallback(onMinionFrame);
+          }
+          return;
+        }
 
         const f1TVPlaceholderWindow: GridWindow = { type: "main", id: "", streamId: "f1live" };
         const mainWindowToF1TVOffset = getOffset(
@@ -121,37 +199,27 @@ export const useSyncVideos = ({ windows, windowPlayerRefMapRef, isLive, playback
           mainWindowToF1TVOffset,
         );
 
-        let drift: number;
-        if (isLive) {
-          const playerSeekRangeEnd = player.seekRange().end;
-          const playerTimeShift = playerSeekRangeEnd - video.currentTime;
-          drift = playerTimeShift - (masterTimeShift + offset);
-        } else {
-          const targetTime = masterTime - offset;
-          drift = video.currentTime - targetTime;
-        }
+        const targetTime = isLive
+          ? getLiveTargetTime(
+              player,
+              masterTime,
+              masterTimeShift,
+              offset,
+              hasManifestTimeline(manifestOffsetsRef.current, w.id),
+            )
+          : masterTime - offset;
+        const drift = video.currentTime - targetTime;
 
-        const absDrift = Math.abs(drift);
-
-        if (absDrift > DRIFT_HARD_SEEK_THRESHOLD) {
-          // Hard seek — too far for gradual correction
-          if (isLive) {
-            const playerRef2 = windowPlayerRefMapRef.current[w.id];
-            if (playerRef2 != null) {
-              video.currentTime = playerRef2.player.seekRange().end - (masterTimeShift + offset);
-            }
-          } else {
-            const targetTime = masterTime - offset;
-            if (targetTime >= 0) {
-              video.currentTime = targetTime;
-            }
+        if (shouldHardSeek(w.id, drift)) {
+          // Hard seek — too far for gradual correction. Live streams can land a little
+          // off-target after a seek, so live hard seeks are deliberately throttled.
+          if (targetTime >= 0) {
+            video.currentTime = targetTime;
           }
-          video.playbackRate = 1.0;
-        } else if (absDrift > DRIFT_IGNORE_THRESHOLD) {
-          // Rate correction — smooth, invisible
-          video.playbackRate = drift > 0 ? RATE_CORRECTION_SLOW : RATE_CORRECTION_FAST;
+          setPlaybackRate(video, 1.0);
         } else {
-          video.playbackRate = 1.0;
+          // Rate correction — smooth, invisible, and avoids seek loops on live streams.
+          setPlaybackRateForDrift(video, drift);
         }
 
         // Update sync state for debug overlay
@@ -161,7 +229,7 @@ export const useSyncVideos = ({ windows, windowPlayerRefMapRef, isLive, playback
           windowState.playbackRate = video.playbackRate;
         }
 
-        if (supportsRVFC) {
+        if (supportsRVFC && !isDisposed) {
           video.requestVideoFrameCallback(onMinionFrame);
         }
       };
@@ -182,9 +250,7 @@ export const useSyncVideos = ({ windows, windowPlayerRefMapRef, isLive, playback
       const mainRef = windowPlayerRefMapRef.current[mainWindow.id];
       if (mainRef == null) return false;
 
-      if (supportsRVFC) {
-        mainRef.video.requestVideoFrameCallback(onMasterFrame);
-      }
+      onMasterFrame();
       return true;
     };
 
@@ -222,6 +288,9 @@ export const useSyncVideos = ({ windows, windowPlayerRefMapRef, isLive, playback
 
         const { video, player } = playerRef;
 
+        // Skip minions that are already seeking/buffering to avoid cascade-seeking
+        if (video.seeking || video.readyState < 3) return;
+
         const f1TVPlaceholderWindow: GridWindow = { type: "main", id: "", streamId: "f1live" };
         const mainWindowToF1TVOffset = getOffset(
           playbackOffsets,
@@ -239,18 +308,23 @@ export const useSyncVideos = ({ windows, windowPlayerRefMapRef, isLive, playback
           mainWindowToF1TVOffset,
         );
 
-        if (isLive) {
-          const masterSeekEnd = mainRef.player.seekRange().end;
-          const masterShift = masterSeekEnd - currentMasterTime;
-          video.currentTime = player.seekRange().end - (masterShift + offset);
-        } else {
-          const targetTime = currentMasterTime - offset;
-          if (targetTime >= 0) {
-            video.currentTime = targetTime;
-          }
-        }
+        const targetTime = isLive
+          ? getLiveTargetTime(
+              player,
+              currentMasterTime,
+              mainRef.player.seekRange().end - currentMasterTime,
+              offset,
+              hasManifestTimeline(manifestOffsetsRef.current, w.id),
+            )
+          : currentMasterTime - offset;
 
-        video.playbackRate = 1.0;
+        const drift = video.currentTime - targetTime;
+        if (targetTime >= 0 && shouldHardSeek(w.id, drift, true)) {
+          video.currentTime = targetTime;
+          setPlaybackRate(video, 1.0);
+        } else {
+          setPlaybackRateForDrift(video, drift);
+        }
       });
 
       syncPlayPause();
@@ -274,10 +348,15 @@ export const useSyncVideos = ({ windows, windowPlayerRefMapRef, isLive, playback
     // --- Fallback for non-rVFC browsers: use rAF polling ---
     let rafId: number | null = null;
     const rafLoop = () => {
+      if (isDisposed) return;
+
       onMasterFrame();
       minionCallbacks.forEach((m) => m.callback());
       syncPlayPause();
-      rafId = requestAnimationFrame(rafLoop);
+
+      if (!isDisposed) {
+        rafId = requestAnimationFrame(rafLoop);
+      }
     };
 
     // --- Poll to discover and start players as they mount ---
@@ -310,6 +389,7 @@ export const useSyncVideos = ({ windows, windowPlayerRefMapRef, isLive, playback
     const currentPlayerRefMap = windowPlayerRefMapRef.current;
 
     return () => {
+      isDisposed = true;
       window.clearInterval(pollInterval);
       if (rafId != null) {
         cancelAnimationFrame(rafId);
@@ -331,6 +411,43 @@ export const useSyncVideos = ({ windows, windowPlayerRefMapRef, isLive, playback
   return { syncStateRef, manifestOffsetsRef, presentationStartTimesRef };
 };
 
+const getLiveTargetTime = (
+  player: VideoPlayerRef["player"],
+  masterTime: number,
+  masterTimeShift: number,
+  offset: number,
+  usePresentationTimeline: boolean,
+) => {
+  const seekRange = player.seekRange();
+
+  // If Shaka exposes a presentation timeline for this stream (even when the
+  // derived PDT offset is 0), the player's currentTime values are on the same
+  // clock as the main stream. Prefer that over comparing seekRange.end values,
+  // because live seek ranges refresh independently and can jitter by a segment.
+  const targetTime = usePresentationTimeline ? masterTime - offset : seekRange.end - (masterTimeShift + offset);
+
+  return clampToSeekRange(targetTime, seekRange);
+};
+
+const clampToSeekRange = (time: number, seekRange: { start: number; end: number }) => {
+  if (!Number.isFinite(seekRange.start) || !Number.isFinite(seekRange.end) || seekRange.end <= seekRange.start) {
+    return time;
+  }
+
+  return Math.min(Math.max(time, seekRange.start), seekRange.end);
+};
+
+const hasManifestTimeline = (manifestOffsets: ManifestOffsets, windowId: string) => manifestOffsets[windowId] != null;
+
+const getUsableManifestOffset = (manifestOffsets: ManifestOffsets, windowId: string) => {
+  const manifestOffset = manifestOffsets[windowId];
+  if (manifestOffset == null || Math.abs(manifestOffset) < MANIFEST_OFFSET_MIN_ABS_SECONDS) {
+    return null;
+  }
+
+  return manifestOffset;
+};
+
 const getOffset = (
   playbackOffsets: PlaybackOffsets,
   userOffsets: UserOffsets | null,
@@ -350,9 +467,11 @@ const getOffset = (
 
   // Prefer manifest-derived offsets (from HLS #EXT-X-PROGRAM-DATE-TIME tags)
   // over F1's static playbackOffsets, as they're measured per-session and more accurate.
-  const manifestOffset = manifestOffsets[w.id];
+  // Manifest offsets are already relative to the currently selected main stream,
+  // so the F1-live conversion offset is only needed for static API offsets.
+  const manifestOffset = getUsableManifestOffset(manifestOffsets, w.id);
   if (manifestOffset != null) {
-    return manifestOffset + userOffset + additionalOffset;
+    return manifestOffset + userOffset;
   }
 
   let f1Offset = 0;
