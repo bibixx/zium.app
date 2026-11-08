@@ -15,6 +15,7 @@
   background: var(--color-background-static-default);
   @extend .pos-1dp;
   border-radius: var(--radii-xsmall);
+  overflow: hidden;
   user-select: none;
   color: var(--color-content-default);
 
