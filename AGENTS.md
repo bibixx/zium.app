@@ -196,3 +196,9 @@ Debug flags in `src/hooks/useFeatureFlags/` (Zustand + persist + Zod validation)
 `forceUiVisibility`, `forceTVAccess`, `increaseBackgroundContrast`, `showWindowBorders`, `disableLiveNotifications`
 
 Toggle via Debug Panel: `Ctrl+Shift+D`
+
+### Agent Skills
+
+Skills live in `.agents/skills/`, which Codex reads directly. `.claude/skills` is a symlink to it for Claude Code, so add or edit skills only in `.agents/skills/`.
+
+The Chrome DevTools MCP server the browser skills depend on is configured in both `.mcp.json` (Claude Code) and `.codex/config.toml` (Codex). Keep the two in sync.

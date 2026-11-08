@@ -1,7 +1,7 @@
 ---
-name: "F1 Driver Avatars"
+name: f1-avatars
 description: "Fetch F1 driver photos from Sky Sports and save them as season avatars"
-alwaysAllow: ["Bash", "WebFetch", "Write"]
+allowed-tools: WebFetch(domain:www.skysports.com) Bash(mkdir -p public/images/avatars/*) Bash(curl -sL https://e0.365dm.com/*)
 ---
 
 # F1 Driver Avatars
@@ -22,14 +22,9 @@ https://e0.365dm.com/f1/drivers/256x256/h_full_1465.png
 
 ### 1. Fetch driver data
 
-Use `WebFetch` to scrape the Sky Sports page:
+Fetch `https://www.skysports.com/f1/drivers-teams` with the web tool you have available (`WebFetch` in Claude Code; web search or `curl` in Codex).
 
-```
-WebFetch(
-  url: "https://www.skysports.com/f1/drivers-teams",
-  prompt: "Extract ALL drivers. For each driver return: full name (first + last), team name, and the full image URL (from 365dm.com). List every driver."
-)
-```
+Extract ALL drivers. For each driver, get their full name (first + last), team name, and the full image URL (from 365dm.com).
 
 ### 2. Determine the season year
 
