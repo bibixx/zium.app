@@ -14,6 +14,7 @@ type LoggedInState =
   | {
       type: "loggedIn";
       tier: F1TVTier;
+      userId: string | null;
     };
 
 interface LoggedInStore {
@@ -31,14 +32,14 @@ export const useLoggedInStateExecutor = () => {
   const setState = useLoggedInStore((state) => state.setState);
 
   useEffect(() => {
-    getIsLoggedIn().then(({ isLoggedIn, tier, rawTier }) => {
+    getIsLoggedIn().then(({ isLoggedIn, tier, rawTier, userId }) => {
       posthog.register({ f1TvTier: tier, f1TvRawTier: rawTier });
-      setState(isLoggedIn ? { type: "loggedIn", tier } : { type: "loggedOut" });
+      setState(isLoggedIn ? { type: "loggedIn", tier, userId: userId ?? null } : { type: "loggedOut" });
     });
 
-    const onTokenChange = ({ isLoggedIn, tier, rawTier }: IsLoggedInArgs) => {
+    const onTokenChange = ({ isLoggedIn, tier, rawTier, userId }: IsLoggedInArgs) => {
       posthog.register({ f1TvTier: tier, f1TvRawTier: rawTier });
-      setState(isLoggedIn ? { type: "loggedIn", tier } : { type: "loggedOut" });
+      setState(isLoggedIn ? { type: "loggedIn", tier, userId: userId ?? null } : { type: "loggedOut" });
     };
 
     const cleanup = listenOnTokenChange(onTokenChange);

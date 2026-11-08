@@ -20,7 +20,7 @@ export const PrivacyPolicy = () => {
         <Logo className={styles.logo} height={40} aria-hidden />
       </h1>
 
-      <div className={styles.lastUpdated}>Last update: Mar 9, 2026</div>
+      <div className={styles.lastUpdated}>Last update: Nov 8, 2026</div>
 
       <p>
         We take your privacy seriously. This privacy policy explains how we collect, use, and protect your personal
@@ -32,7 +32,8 @@ export const PrivacyPolicy = () => {
       <p>
         We use PostHog to collect analytics data on our website. This includes information such as your IP address,
         browser type, device type, and pages visited. This information is used to analyze website traffic and improve
-        our website.
+        our website. If you accept analytics cookies and are logged in, we also link your activity using a one-way hash
+        of your F1 TV subscriber ID. We never receive the ID itself.
       </p>
 
       <p>

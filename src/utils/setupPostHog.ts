@@ -14,6 +14,7 @@ export const setupPostHog = () => {
   posthog.init(apiKey, {
     api_host: apiHost || "https://us.i.posthog.com",
     opt_out_capturing_by_default: true,
+    opt_out_persistence_by_default: true,
     capture_pageview: false,
     capture_pageleave: true,
     autocapture: false,
