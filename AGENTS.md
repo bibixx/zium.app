@@ -1,203 +1,101 @@
 # AGENTS.md
 
-## Project
+**zium.app** is a Formula 1 multi-view experience: a browser app for watching several F1 TV camera feeds at once in a resizable pit wall. It needs an F1 TV subscription and a companion Chrome extension.
 
-**zium.app** — Formula 1 Multi-View Experience. A browser app that lets users watch F1 races from multiple camera angles simultaneously, creating their own responsive pit-wall. Requires an active F1 TV subscription and a companion Chrome extension for API auth.
+Live: https://zium.app. Repo: https://github.com/bibixx/zium.app. Figma: https://www.figma.com/community/file/1250905585551204036/Zium.app. License: GPL v3+.
 
-- **Live app:** https://zium.app
-- **Repo:** https://github.com/bibixx/zium.app
-- **Figma:** https://www.figma.com/community/file/1250905585551204036/Zium.app
-- **License:** GPL v3+
-- **Authors:** Bartosz Legięć (development), Adam Ruthendorf-Przewoski (design)
+## Where to look
 
-## Tech Stack
+| Task | Read |
+|---|---|
+| What the app does, routes, flags | [docs/features.md](docs/features.md) |
+| How boot, auth, playback, sync, layouts, hotkeys work | [docs/code-paths.md](docs/code-paths.md) |
+| Conventions for new code | [docs/architecture.md](docs/architecture.md) |
+| Tokens, typography, mixins, motion | [docs/design-system.md](docs/design-system.md) |
+| How it should look and feel | [docs/design-language.md](docs/design-language.md) |
+| Adding or changing a component | [src/components/AGENTS.md](src/components/AGENTS.md) |
+| Modal surfaces | [docs/families/overlays.md](docs/families/overlays.md) |
+| The `as` prop | [docs/families/polymorphic.md](docs/families/polymorphic.md) |
+| Bugs and gaps | [docs/known-issues.md](docs/known-issues.md) |
+| Chrome extension | [extension/AGENTS.md](extension/AGENTS.md) |
 
-| Layer | Technology |
-|-------|-----------|
-| Framework | React 18, TypeScript 5 (strict mode) |
-| Build | Vite 4 + SWC, Yarn 3.5 (PnP w/ node-modules linker) |
-| State | Zustand (global), React Context (providers), useReducer (async) |
-| Validation | Zod (runtime schema validation for all API responses + localStorage) |
-| Styling | SCSS + CSS Modules (camelCase), Design Tokens via Style Dictionary |
-| Video | Shaka Player 5 (primary), HLS/DASH with Widevine DRM |
-| Analytics | PostHog (migrated from Sentry & Matomo) |
-| Icons | Heroicons (20/solid, 24/outline) |
-| Animations | React Transition Group, Lottie, CSS @keyframes + spring physics |
-| Deployment | Vercel (SPA rewrites, immutable asset caching) |
+## Stack
 
-## Directory Structure
+React 18, strict TypeScript, Vite with SWC, Yarn (node-modules linker). Zustand and React Context for state, Zod for runtime validation, SCSS Modules with design tokens, Shaka Player with Widevine, PostHog, Heroicons, deployed on Vercel. Versions are in `package.json`.
 
-```
-src/
-├── views/           # Page-level components (Races, Viewer, LogIn, etc.)
-├── components/      # 40+ reusable UI components
-├── hooks/           # 30+ custom hooks (data fetching, state, UI, utilities)
-├── utils/           # 35+ utility functions (api, validators, helpers)
-├── types/           # Centralized TypeScript type definitions
-├── constants/       # App constants (seasons, races, portals)
-├── styles/          # Global SCSS, mixins, CSS variables
-├── tokens/          # Design tokens (light.json, dark.json → CSS vars)
-└── assets/          # Static assets
-
-extension/           # Chrome extension companion (auth bridge to F1TV API)
-vite/                # Custom Vite plugins
-```
-
-## Core Architecture Patterns
-
-### Hook Co-location
-
-Each hook lives in its own directory with co-located files by suffix:
-
-```
-useHookName/
-├── useHookName.tsx          # Main hook
-├── useHookName.api.ts       # API calls (fetchJSON wrapper)
-├── useHookName.validator.ts # Zod schema (source of truth for types)
-├── useHookName.utils.ts     # Transformation/normalization helpers
-├── useHookName.types.ts     # Type definitions
-├── useHookName.constants.ts # Constants
-└── useHookName.hooks.ts     # Sub-hooks (component-specific)
-```
-
-### API Data Flow
-
-```
-Component → Custom Hook (useReducer: loading|error|done)
-  → .api.ts (fetchJSON against f1tv.formula1.com)
-    → Zod validation (.validator.ts)
-      → Transformation (.utils.ts)
-        → Normalized domain model
-```
-
-- All API responses are validated with Zod before use — validators are the source of truth for types
-- `fetchJSON` in `src/utils/api.ts` wraps native fetch with `ApiError` class (status, headers, body)
-- AbortSignal support throughout for request cancellation
-- No React Query/SWR — custom hooks with useReducer for async state
-
-### State Management
-
-- **Zustand:** Auth state (`useLoggedInStore`), Feature flags (`useFeatureFlags` with persist middleware), Hotkeys (`useHotkeysStore`), Snackbars
-- **React Context:** Theme, Analytics (PostHog), ViewerUIVisibility, UserOffsets, StreamPicker
-- **localStorage:** Persisted via `LocalStorageClient<T extends ZodType>` — generic class with Zod validation on read/write, auto-removal on schema mismatch
-
-### Discriminated Unions
-
-Used for exhaustive pattern matching throughout:
-```typescript
-// Response type — every async hook uses this
-type Response<T> = { state: "loading" } | { state: "error"; error: Error } | { state: "done"; data: T };
-
-// Grid windows — each window type is a tagged variant
-type GridWindow = MainGridWindow | DriverTrackerGridWindow | DataChannelGridWindow | DriverGridWindow;
-```
-Combined with `assertNever()` for compile-time exhaustiveness checking.
-
-### Component Patterns
-
-- **Polymorphic components:** `withAs("button")` utility enables `as` prop for rendering as different elements
-- **CSS Modules:** `classnames` (aliased as `cn`) for conditional class application
-- **Dynamic CSS vars:** `WithVariables` component injects CSS custom properties (cursor position, dimensions, offsets)
-- **Portals:** Dialog, Sheet, Snackbar render via `createPortal` to overlay container
-- **No barrel files** — all imports are explicit/relative for better tree-shaking
-
-## Key Focus Areas
-
-### Keyboard-First UX
-
-Scoped hotkey system built on Zustand (`src/hooks/useHotkeys/`):
-- Scope-based prioritization — later registered scopes take precedence
-- `allowPropagation` flag controls whether handling continues through scopes
-- Platform-aware modifiers (Cmd on Mac, Ctrl on Windows)
-- `enableOnFormTags` option to selectively allow shortcuts in inputs
-- Comprehensive shortcuts: playback (Space, arrows, `.`/`,`), layout switching (Alt+1-9), fullscreen (f), mute (m), closed captions (c), search (/), help (Cmd+?)
-- All shortcuts defined in `src/hooks/useHotkeys/useHotkeys.keys.tsx`
-- Human-readable shortcut display with `<kbd>` elements and platform-aware symbols
-
-### Multi-Window Video System
-
-Custom drag/resize implementation (no DND library):
-- **RnDWindow:** Draggable + resizable windows with 8 resize handles, grid snapping, minimum size constraints
-- **Grid snapping:** Configurable grid size with Shift (8px fine) and Cmd/Ctrl (freeform) modifiers
-- **Layout persistence:** Save/load named layouts, switch via Alt+number shortcuts
-- **Stream sync:** `useSyncVideos` keeps multiple video players in sync; per-window time offsets via `useUserOffsets`
-- **Stream types:** Main feed, international (with language selection), driver onboard cameras, driver tracker, data channel
-- **Spring physics:** Snackbar drag, Player collapse/expand, window interactions
-
-### Design Token System
-
-Figma → Code pipeline:
-1. Tokens in `src/tokens/light.json` and `dark.json` (from Figma via Tokens Studio)
-2. `token-transformer` expands typography/shadow/composition/border tokens
-3. `style-dictionary` builds CSS custom properties → `src/styles/theme/light.css` and `dark.css`
-4. GitHub Action auto-commits generated CSS when token files change
-5. Theme switching via `ThemeProvider` (Context) — toggles `html.light` class, stored in localStorage, system preference fallback
-
-Token categories: colors (semantic), typography, motion (timing functions + durations), elevation (shadow depths), radii, spacing.
-
-### Accessibility
-
-- **Focus traps:** `focus-trap-react` in Dialog, Sheet, Dropdown — with `allowOutsideClick: true`
-- **ARIA labels:** All interactive elements (buttons, inputs, dropdowns) have descriptive aria-labels
-- **Keyboard navigation:** Arrow keys in dropdowns, Tab/Shift+Tab cycling, Enter to select
-- **Reduced motion:** `@media (prefers-reduced-motion: reduce)` respected, `noTransition` class during theme switches
-- **Input mode detection:** `what-input` library for keyboard-vs-mouse focus styling (`[data-whatinput="keyboard"]`)
-- **Semantic HTML:** `<button>`, `<kbd>`, `<a>`, native checkboxes wrapped in `<label>`
-
-### Animations
-
-Three-tier system:
-1. **CSS transitions:** Token-driven durations (`--transition-fast/medium/slow`) with custom easing curves
-2. **React Transition Group:** State-based enter/exit animations for Dialog, Dropdown, Snackbar (CSSTransition with named class stages)
-3. **Spring physics:** Custom implementations for drag interactions (Snackbar, Player, RnDWindow) with configurable spring constants and snap thresholds
-
-## Development
-
-### Commands
+## Commands
 
 ```bash
-yarn dev              # Dev server
-yarn build            # TypeScript check → Lint → Vite build
-yarn type-check       # tsc --noEmit
-yarn lint:ts          # ESLint
-yarn lint:css         # Stylelint + Prettier on SCSS
-yarn lint             # All linting
-yarn build-tokens     # Regenerate CSS from design tokens
+yarn dev           # Dev server
+yarn build         # Type-check, lint, production build
+yarn type-check    # tsc --noEmit
+yarn lint          # ESLint, Stylelint, Prettier on SCSS, docs check
+yarn lint:docs     # Docs check only
+yarn build-tokens  # Regenerate theme CSS from tokens
 ```
 
-### Code Quality
+There's no test framework. Types, Zod, lint, and manual checks in the browser are the safety net. Debug panel: `Ctrl+Shift+D`.
 
-- **ESLint:** TypeScript + React + React Hooks + Prettier + Import ordering
-- **Prettier:** Double quotes, trailing commas, 120 char line width
-- **Stylelint:** Standard SCSS config + custom property validation against theme files
-- **TypeScript:** Strict mode, no JS allowed, CSS Modules plugin with camelCase
-- **No test framework** — relies on TypeScript strict mode + linting + Zod runtime validation
+## Hard invariants
 
-### Code Splitting
+Breaking these has caused real bugs.
 
-- `lazyWithPreload()` utility for lazy loading with early prefetch (Viewer component)
-- Vite manual chunks: `shaka`, `lottie`, `vendor` bundles separated from app code
+- **Persisted schemas stay backward compatible.** A failed parse deletes the stored value, which means all saved layouts. New fields need `.default()`, and new window types must be added to `useViewerState.validator.ts`.
+- **Dragging must not reload video.** Windows are memoised, with stable references and callbacks that take IDs (`src/views/Viewer/Viewer.tsx`). Don't pass freshly created objects to video windows.
+- **Never skip DRM setup based on the stream being HLS.** HLS can be encrypted. Reset DRM config and filters between sources (`configureDrm` in `src/components/VideoPlayer/VideoPlayer.tsx`).
+- **Live sync prefers rate correction.** Live seeks land off target and loop. Don't seek buffering minions (`src/views/Viewer/hooks/useSyncVideos.ts`).
+- **The main window can't be deleted or replaced by a non-main window.** Sync needs it.
+- **Extension fields stay optional on the page.** The store version can lag behind the web app.
+- **Keep the `identify` effect in the analytics provider, after opt-in** (`src/hooks/useAnalytics/useAnalytics.tsx`).
+- **A new season needs** `SUPPORTED_SEASONS`, `SEASON_TO_F1_ID_MAP`, and driver avatars (the `f1-avatars` skill).
 
-### Chrome Extension
+## Atoms
 
-Located in `extension/` — required for the app to function:
-- Handles F1TV OAuth authentication (credentials never leave the user's device)
-- CORS proxy for API requests to formula1.com
-- `postMessage` API bridge between page and extension (`src/utils/extensionApi.ts`)
-- Token change listeners for real-time auth state updates
+Check here before building a primitive. Each links to usage, props, do's and don'ts, and real examples.
 
-### SCSS Path Alias
+| Atom | What it is |
+|---|---|
+| [Button](src/components/Button/AGENTS.md) | Action control in four emphasis levels that can render as any element through `as`. |
+| [Input](src/components/Input/AGENTS.md) | Single-line text field with optional icon, clear button, and shortcut hint. |
+| [Checkbox](src/components/Checkbox/AGENTS.md) | Labelled boolean toggle, used only in the debug panel today. |
+| [Slider](src/components/Slider/AGENTS.md) | Horizontal 0 to 100 scrub track with optional buffer level and hover label. |
+| [Tooltip](src/components/Tooltip/AGENTS.md) | Short hover or focus hint that renders nothing extra when its content is empty. |
+| [Dialog](src/components/Dialog/AGENTS.md) | Centred modal with composable content parts for decisions and short forms. |
+| [Sheet](src/components/Sheet/AGENTS.md) | Full-height right panel with a built-in Close button for lists and pickers. |
+| [Dropdown](src/components/Dropdown/AGENTS.md) | Anchored action menu driven by a render-prop trigger and an options array. |
+| [ListItem](src/components/ListItem/AGENTS.md) | Full-width selectable row with a caption that can render as any element. |
+| [Snackbar](src/components/Snackbar/AGENTS.md) | Timed notification stack opened from anywhere through `useSnackbars`. |
+| [KeyIndicator](src/components/KeyIndicator/AGENTS.md) | Single keyboard key shown as `<kbd>`, with friendly key names. |
+| [Spinner](src/components/Spinner/AGENTS.md) | Rotating SVG shaped like an icon, for in-progress controls. |
+| [Loader](src/components/Loader/AGENTS.md) | Looping Lottie animation for full-screen waits. |
+| [Logo](src/components/Logo/AGENTS.md) | ZIUM wordmark sized by at least one dimension and coloured by a token. |
+| [FadeInImage](src/components/FadeInImage/AGENTS.md) | Image that fades in once loaded and accepts a not-yet-known source. |
+| [CustomIcons](src/components/CustomIcons/AGENTS.md) | SVG icons for F1 sessions and player actions that Heroicons doesn't cover. |
+| [WithVariables](src/components/WithVariables/AGENTS.md) | Element that writes runtime values to CSS custom properties. |
+| [TimedOutWrapper](src/components/TimedOutWrapper/AGENTS.md) | Hides loading placeholders until a delay passes, preventing flashes. |
 
-`@@` → `src/styles/mixins.scss` (configured in tsconfig.json for CSS Modules plugin)
+## Molecules
 
-### Feature Flags
+| Component | What it is |
+|---|---|
+| `HumanReadableShortcuts` | Full shortcut display with platform-aware modifiers. |
+| `ErrorMessage` | Inline error with fixed copy and a report link. |
+| `FullScreenError` | Page-level error; stays router-free for the error boundary. |
+| `ErrorBoundary` | Root boundary that reports to PostHog. |
+| `CookieBanner` | Analytics consent banner, needs the analytics provider and router. |
+| `OnboardingLayout` | Split layout with steps for onboarding screens. |
 
-Debug flags in `src/hooks/useFeatureFlags/` (Zustand + persist + Zod validation):
-`forceUiVisibility`, `forceTVAccess`, `increaseBackgroundContrast`, `showWindowBorders`, `disableLiveNotifications`
+Other components are F1 or viewer specific and are covered by the features and code-paths docs. `EventCardTag` is the only tag-like component; generalise it rather than adding another.
 
-Toggle via Debug Panel: `Ctrl+Shift+D`
+## Working here
 
-### Agent Skills
+- Source types win if a doc disagrees with the code. Fix the doc.
+- Each fact has one owner. Link to it rather than copying it.
+- Change a contract and its doc in the same commit. `yarn lint:docs` catches structural drift, and the `docs-audit` skill checks the prose.
+- Known issues aren't fixed in passing. A fix is its own change and removes the entry.
+- Commit messages are imperative and capitalised, with no prefix: "Fix live stream sync drift loops".
+
+## Agent Skills
 
 Skills live in `.agents/skills/`, which Codex reads directly. `.claude/skills` is a symlink to it for Claude Code, so add or edit skills only in `.agents/skills/`.
 

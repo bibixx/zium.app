@@ -4,7 +4,7 @@ To get a local copy up and running follow these steps.
 
 ## Prerequisites
 
-* [Node.js 16.18+](https://nodejs.org/en/download)
+* [Node.js 20.19+](https://nodejs.org/en/download)
 * [Yarn](https://yarnpkg.com/getting-started/install)
 
 ## Installation
